@@ -166,12 +166,14 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
     // Home made CCLinterpretor (ADN 18/9/98)
 
     Handle(TCollection_HAsciiString) namenewscript = new TCollection_HAsciiString("CCL");
+    Handle(TCollection_HAsciiString) namenewbinscript = new TCollection_HAsciiString("CCL");
     namenewscript->AssignCat(SubCode()->ToCString());
+    namenewbinscript->AssignCat(SubCode()->ToCString());
+    namenewbinscript->AssignCat("bin");
 
 #ifdef WNT
-
     namenewscript->AssignCat(".cmd");
-
+    namenewbinscript->AssignCat(".cmd");
 #endif
 
     filescript = new WOKernel_File(namenewscript,
@@ -204,6 +206,37 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
       outfile->SetLocateFlag(Standard_True);
       AddExecDepItem(infileCOMPONENTS,outfile,Standard_True);
     }
+
+
+    filescript = new WOKernel_File(namenewbinscript,
+				   parcelunit,
+				   parcelunit->GetFileType("executable"));
+    
+    filescript->GetPath();
+
+    Handle(TCollection_HAsciiString) bineval = Unit()->Params().Eval("WOKDeliv_BINScript");
+
+    anapi->AddVariable("%MYVAR",bineval->ToCString());
+
+    if (anapi->OpenFile("MYFILEBIN",filescript->Path()->Name()->ToCString()) != EDL_NORMAL) {
+      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute"
+	<< "Cannot open file " << filescript->Path()->Name() << endm;
+      okexec = Standard_False;
+    }
+    else {
+      
+      anapi->WriteFile("MYFILEBIN","%MYVAR");
+      anapi->CloseFile("MYFILEBIN");
+      Handle(WOKMake_OutputFile) outfile = 
+	new WOKMake_OutputFile(filescript->LocatorName(),
+			       filescript,
+			       bidon,
+			       filescript->Path());
+      outfile->SetReference();
+      outfile->SetExtern();
+      outfile->SetLocateFlag(Standard_True);
+      AddExecDepItem(infileCOMPONENTS,outfile,Standard_True);
+    }
     
     
     
@@ -226,7 +259,8 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
 	Handle(WOKernel_File) theinfile = thefiles->Value(i)->File();
 	if (!theinfile.IsNull()) {
 	  if (!theinfile->Name()->IsSameString(thesourceunit->Name())
-	      && !theinfile->Name()->IsSameString(namenewscript)) { // avoid scripts
+	      && !theinfile->Name()->IsSameString(namenewscript)
+	      && !theinfile->Name()->IsSameString(namenewbinscript)) { // avoid scripts
 	    Handle(WOKernel_FileType) outtype = parcelunit->FileTypeBase()->Type(theinfile->TypeName()->ToCString());
 	    
 	    Handle(WOKernel_File) theoutfile = new WOKernel_File(theinfile->Name(),
