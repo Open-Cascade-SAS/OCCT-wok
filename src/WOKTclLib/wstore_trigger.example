@@ -1,29 +1,23 @@
 ;#
-;# This proc is invoked by the command: wstore -trig <report>
-;# It should be placed in the Adm directory of the concerned shop,
-;# and the file should be named wstore_trigger.tcl
+;# This proc is invoked by wstore.
+;# To declare this trigger as activable use option -trigger while creating the queue.
+;# (wstore -create FAC:SHOP:WB -trigger /here/myfile.tcl -queue .. -type .. etc..)
+;# The proc name MUST be wstore_trigger as shown below.
+;# It receives report_path which actually is the root directory where stuff for this integration is
+;# placed. In this directory you can find :
+;# report-orig  : the full original text of the user report.
+;# report-notes : Comments extracted.
+;# report-work  : A pre-processed contents of the report file. You should not modify or reading it
+;# directly
+;# A list of names <Unit>.<t> where <Unit> is a unit name , <t> its wok short type.(ucreate)
+;# These names are directory names that contains files actually waiting for being integrated.
 ;#
-proc wstore_trigger { {action put} report_path } {
+proc wstore_trigger { report_path } {
 
     set saved_wokcd [wokcd]
 
-    switch -- $action {
+    some process here ...
 
-	put {
-	    ;# in this case <report_path> is the full path of the report being processed.
-	    set saved_wokcd [wokcd]
-	    wokcd KERNEL:Ker6
-	    wstore $report_path
-	}
-
-	rm {
-	    ;# in this case <report_path> is a digit: The queue index of the report being deleted.
-	}
-
-	default {
-	}
-    }
-    
     wokcd $saved_wokcd
     wokclose -a
     return 

@@ -8,6 +8,7 @@
 # Usage
 #
 proc wokStoreUsage { } {
+    global env
     puts stderr \
 	    {
 	Usage : wstore is used to enqueue a report file, to get 
@@ -15,9 +16,9 @@ proc wokStoreUsage { } {
                 (To update a workbench directly from a report see a the end of this help)
 
 	  >wstore file : without option adds a report in the report's queue 
-                         from <file> (created by wprepare).
+                         from <file>.
                          Queue name is deduced from the name of the father
-                         workbench found in <file>.   
+                         workbench written in <file>. (created by wprepare).
          To list all pending reports name and ID in a queue use the following command:
 
          > wstore -wb name -ls 
@@ -25,7 +26,6 @@ proc wokStoreUsage { } {
          In the following syntaxes the option -wb is used to specify a workbench name.
          (Use a full workbench path for the workbench name. <Factory:workshop:workbench>
          Default is the current wb. <ID> is a report ID (see above)
-         option -ls
 
          >wstore           [-rm|-cat] [-wb name] [ID]
 
@@ -53,6 +53,9 @@ proc wokStoreUsage { } {
 	   (Default behavior: Creates a a subdirectory adm in directory created using -base option)
          -welcome: If a report list new development units, by default store will refuse.
                    If you want wstore be quiet create the queue with -welcome option.
+         -trigger to specify the full path of a tcl file defining a tcl proc triggered after a 
+          report has been enqueued. An example for such a file can be found in 
+          $env(WOK_LIBRARY)/wstore_trigger.example.
 
 	To list all queues and their associated parameters:
 
@@ -85,7 +88,10 @@ proc wstore { args } {
     set tblreq(-wb)      value_required:string
 
     set tblreq(-create)  {}
-    set tblreq(-queue)    value_required:string
+
+    set tblreq(-queue)   value_required:string
+    set tblreq(-trigger) value_required:string
+
     set tblreq(-base)    value_required:string
     set tblreq(-type)    value_required:string
     set tblreq(-journal) value_required:string
@@ -126,6 +132,10 @@ proc wstore { args } {
 	    if [info exists tabarg(-queue)] {
 		set queue $tabarg(-queue)
 	    } 
+	    set trig {} 
+	    if [info exists tabarg(-trigger)] {
+		set trig $tabarg(-trigger)
+	    } 
 	    set type SCCS
 	    if [info exists tabarg(-type)] {
 		set type $tabarg(-type) 
@@ -156,7 +166,7 @@ proc wstore { args } {
 		set journal [file join $commonbase adm wintegre.jnl]
 	    }
 	    wokStore:Report:Configure set \
-		    [wokStore:Report:FileAdm $curwb] $curwb $queue $base $type $counter $journal $welcome
+		    [wokStore:Report:FileAdm $curwb] $curwb $queue $trig $base $type $counter $journal $welcome
 	    if { $verbose } {
 		msgprint -c WOKVC -i "Reports queue created under $queue " 
 		msgprint -c WOKVC -i "Repository ($type) created under $base " 
@@ -233,6 +243,7 @@ proc wstore { args } {
 	msgprint -c WOKVC -i "Repository ([wokIntegre:BASE:GetType]) under [wokIntegre:BASE:GetRootName]" 
 	msgprint -c WOKVC -i "Integration counter in : [wokIntegre:Number:GetName]"
 	msgprint -c WOKVC -i "Integration journal in : [wokIntegre:Journal:GetName]"
+	msgprint -c WOKVC -i "Trigger : [wokStore:Trigger:GetName]"
 	return
     }
 
@@ -329,6 +340,9 @@ proc wstore { args } {
 		msgprint -c WOKVC -i "Storing report in queue of workbench ${shop}:$wbpere"
 		set frigo [file join [wokStore:Report:GetRootName] ${entry}]
 		wokStore:Report:Add $ID table $banner $notes $frigo
+		if { [set trig [wokStore:Trigger:Exists]] != {} } {
+		   wokStore:Trigger:Invoke $trig $frigo 
+		}
 		return
 	    } else {
 		    msgprint -c WOKVC -e "Report name $TID should not contains a comma."
@@ -360,17 +374,17 @@ proc wokStore:Report:SetQName { wb {alert 0} } {
 		if { $alert == 1 } {
 		    msgprint -c WOKVC -e "File VCDEF.tcl not found in [file dirname $vc] of workbench $wb."
 		}
-		wokStore:Report:Configure unset {} {} {} {} {} {} {} {}
+		wokStore:Report:Configure unset {} {} {} {} {} {} {} {} {}
 		return {}
 	    }
 	} else {
 	    msgprint -c WOKVC -e "Entity $wb is not a workbench."
-	    wokStore:Report:Configure unset {} {} {} {} {} {} {} {}
+	    wokStore:Report:Configure unset {} {} {} {} {} {} {} {} {}
 	    return {}
 	}
     } else {
 	msgprint -c WOKVC -e "Entity $wb does not exists."
-	wokStore:Report:Configure unset {} {} {} {} {} {} {} {}
+	wokStore:Report:Configure unset {} {} {} {} {} {} {} {} {}
 	return {}
     }
 }
@@ -389,9 +403,11 @@ proc wokStore:Queue:Exists { wb } {
 ;#
 ;# Ecrit dans diradm le fichier VCDEF.tcl contenant les definitions de la queue.
 ;# 
-proc wokStore:Report:Configure { option fileadm wb queue base type counter journal welcome } {
+proc wokStore:Report:Configure { option fileadm wb queue trignam base type counter journal welcome } {
+    puts ccc
     set proc_defined_in_VC [list \
 	    wokStore:Report:GetRootName \
+	    wokStore:Trigger:GetName \
 	    wokIntegre:BASE:GetRootName \
 	    wokIntegre:BASE:GetType \
 	    wokIntegre:RefCopy:GetWB \
@@ -405,6 +421,7 @@ proc wokStore:Report:Configure { option fileadm wb queue base type counter journ
 	set {
 	    wokStore:mkdir $queue ;# the hook for the queue
 	    eval "proc wokStore:Report:GetRootName { } { return $queue }"
+	    eval "proc wokStore:Trigger:GetName { } { return $trignam }"
 	    wokStore:mkdir $base ;# the hook for the base
 	    eval "proc wokIntegre:BASE:GetRootName { } { return $base }"
 	    ;# the type of the base 
@@ -952,6 +969,7 @@ proc wokStore:queue:ls { lwb } {
 	    msgprint -c WOKVC -i "Repository ([wokIntegre:BASE:GetType]) under [wokIntegre:BASE:GetRootName]" 
 	    msgprint -c WOKVC -i "Integration counter in : [wokIntegre:Number:GetName]"
 	    msgprint -c WOKVC -i "Integration journal in : [wokIntegre:Journal:GetName]"
+	    msgprint -c WOKVC -i "Trigger : [wokStore:Trigger:GetName]"
 	    puts ""
 	}
     }
@@ -965,3 +983,34 @@ proc wokStore:queue:ls { lwb } {
 ;#
 ;# Workbench KAS:C40:ros 
 ;#wstore -create -wb :KAS:TEST:ros -base /adv_20/KAS/C40/SCCS/BASES -type SCCS -queue /adv_20/KAS/C40/SCCS/adm/C40/FRIGO -counter /adv_20/KAS/C40/SCCS/adm/C40/report.num  -journal /adv_20/KAS/C40/SCCS/adm/C40/wintegre.jnl
+#;>
+# Check if file trigger exists
+# 
+#;<
+proc wokStore:Trigger:Exists { } {
+    set trignam [wokStore:Trigger:GetName]
+    if { $trignam != {} } {
+	if { [file exists $trignam] } {
+	    return $trignam
+	} else {
+	    return {}
+	}
+    } else {
+	return {}
+    }
+}
+#;>
+# Invoke a trigger
+#;<
+proc wokStore:Trigger:Invoke { trignam report_path } {
+    uplevel #0 source $trignam 
+    ;#msgprint -c WOKVC -i "Invoking  file $trignam."
+    if { [catch { wstore_trigger $report_path } trigval ] == 0 } {
+	;#msgprint -c WOKVC -i "Trigger $trignam successfully completed"
+	return $trigval
+    } else {
+	msgprint -c WOKVC -e "Error in trigger: $trigval"
+	return {}
+    }
+    return
+}
