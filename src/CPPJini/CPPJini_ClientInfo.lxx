@@ -15,3 +15,9 @@ inline void CPPJini_ClientInfo :: SetRoot ( const Standard_Boolean aRoot )  {
  myRoot = aRoot;
 
 }  // end void CPPJini_ClientInfo :: SetRoot
+
+inline void CPPJini_ClientInfo :: SetLevel ( const Standard_Integer aLevel )  {
+
+ myLevel = aLevel;
+
+}  // end void CPPJini_ClientInfo :: SetLevel

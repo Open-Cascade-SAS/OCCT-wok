@@ -60,6 +60,10 @@ private class ClientInfo from CPPJini inherits Transient from Standard
    --          in the 'uses' hierarchy
    ---C++:     inline
 
+  SetLevel ( me : mutable; aLevel : Integer from Standard );
+   ---Purpose: sets a level of the client in the 'uses' hierarchy
+   ---C++:     inline
+
  fields
 
   myName         : HAsciiString      from TCollection;

@@ -361,14 +361,22 @@ $
 
 @template ValueGetValue(%ClassName,%ArgName) is
 $%ClassName* the_%ArgName = (%ClassName*) jcas_GetHandle(env,%ArgName);
+$if ( the_%ArgName == NULL ) {
+$
+$ the_%ArgName = new %ClassName ();
+$ jcas_SetHandle ( env, %ArgName, the_%ArgName );
+$
+$}  // end if
 @end;
 
 @template CStringGetValue(%ArgName) is
-$Standard_CString the_%ArgName = jcas_ConvertToCString(env,%ArgName);
+$TCollection_AsciiString theAscii_%ArgName = jcas_ConvertToCString(env,%ArgName);
+$Standard_CString the_%ArgName = theAscii_%ArgName.ToCString();
 @end;
 
 @template StringGetValue(%ArgName) is
-$Standard_ExtString the_%ArgName = jcas_ConvertToExtString(env,%ArgName);
+$TCollection_ExtendedString theExt_%ArgName = jcas_ConvertToExtString(env,%ArgName);
+$Standard_ExtString the_%ArgName = theExt_%ArgName.ToExtString();
 @end;
 
 @template BooleanGetValue(%ArgName) is
@@ -387,8 +395,8 @@ $Standard_Character the_%ArgName = jcas_GetCharacter(env,%ArgName);
 $Standard_Integer the_%ArgName = jcas_GetInteger(env,%ArgName);
 @end;
 
-@template IntegerGetEnumValue(%ArgName,%EnumName) is
-$%EnumName the_%ArgName = ( %EnumName )jcas_GetInteger ( env, %ArgName );
+@template ShortGetEnumValue(%ArgName,%EnumName) is
+$%EnumName the_%ArgName = ( %EnumName )jcas_GetShort ( env, %ArgName );
 @end;
 
 @template ExtCharacterGetValue(%ArgName) is
@@ -404,7 +412,8 @@ $Standard_ShortReal the_%ArgName = jcas_GetShortReal(env,%ArgName);
 @end;
 
 @template StringBufferGetValue(%ArgName) is
-$Standard_ExtString the_%ArgName = jcas_ConvertSBToExtString(env,%ArgName);
+$TCollection_ExtendedString theExt_%ArgName = jcas_ConvertSBToExtString(env,%ArgName);
+$Standard_ExtString the_%ArgName = theExt_%ArgName.ToExtString();
 @end;
 
 @template ThisTransientGetValue(%ClassName) is
@@ -447,6 +456,10 @@ $jcas_SetReal(env,%ArgName,the_%ArgName);
 
 @template CharacterSetValue(%ArgName) is
 $jcas_SetCharacter(env,%ArgName,the_%ArgName);
+@end;
+
+@template ShortSetValue(%ArgName) is
+$jcas_SetShort(env,%ArgName,the_%ArgName);
 @end;
 
 @template IntegerSetValue(%ArgName) is

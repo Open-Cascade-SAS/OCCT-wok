@@ -17,6 +17,8 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
+#include <Standard_ProgramError.hxx>
+
 #include <limits.h>
 
 #define CPPJINI_BOOLEAN         1
@@ -41,8 +43,8 @@ Handle( TCollection_HAsciiString ) CPPJini_ErrorArgument =
 Handle( TCollection_HAsciiString ) CPPJini_DotReplace ( char*, char = '_' );
 
 static CPPJini_SequenceOfClientInfo s_CltInfo;
-static WOKTools_MapOfHAsciiString   s_CltMap;
 static Standard_Integer             s_UseLevel;
+static WOKTools_MapOfHAsciiString   s_CltMap;
 
 WOKTools_MapOfHAsciiString                   g_ImportMap;
 WOKTools_DataMapOfHAsciiStringOfHAsciiString g_SkipMap;
@@ -307,24 +309,45 @@ static void _CPPJini_FillUses (
 
  ++s_UseLevel;
 
-  Standard_Integer i;
+  Standard_Integer i, j;
 
-  for ( i = 1; i <= use -> Length (); ++i )
+  for ( i = 1; i <= use -> Length (); ++i ) {
 
-   if (   !s_CltMap.Contains (  use -> Value ( i )  )   ) {
+   Handle( MS_Client ) clt;
 
-    Handle( MS_Client ) clt = ms -> GetClient (  use -> Value ( i )  );
+   if (   s_CltMap.Contains (  use -> Value ( i )  )   ) {
 
-    s_CltInfo.Prepend (
-               new CPPJini_ClientInfo (
-                    ms, use -> Value ( i ), s_UseLevel
-                   )
-              );
-    s_CltMap.Add (  use -> Value ( i )  );
-
-    _CPPJini_FillUses (  ms, clt -> Uses ()  );
+    ErrorMsg << "_CPPJini_FillUses"
+             << "Cyclic dependency between clients ( check your 'uses' lists )"
+             << endm;
+    Standard_ProgramError :: Raise ();
 
    }  // end if
+
+   for (  j = 1; j <= s_CltInfo.Length (); ++j  )
+
+    if (   s_CltInfo.Value ( j ) -> Name () -> IsSameString (  use -> Value ( i )  )   ) {
+
+     s_CltInfo.Value ( j ) -> SetLevel (
+                               s_CltInfo.Value ( j ) -> Level () + 1
+                              );
+     goto next;
+
+    }  // end if
+
+   clt = ms -> GetClient (  use -> Value ( i )  );
+
+   s_CltInfo.Prepend (
+              new CPPJini_ClientInfo (
+                   ms, use -> Value ( i ), s_UseLevel
+                  )
+             );
+
+   s_CltMap.Add (  use -> Value ( i )  );
+    _CPPJini_FillUses (  ms, clt -> Uses ()  );
+   s_CltMap.Remove (  use -> Value ( i )  );
+next: continue;
+  }  // end for
 
  if (  i == 1 && s_CltInfo.Length ()  )
 
@@ -372,7 +395,9 @@ void CPPJini_Init (
  s_CltMap.Clear  ();
 
  s_UseLevel = 0;
- _CPPJini_FillUses ( aMeta, use );
+ s_CltMap.Add ( aName );
+  _CPPJini_FillUses ( aMeta, use );
+ s_CltMap.Remove ( aName );
 
  g_SkipMap.Clear ();
 
@@ -642,7 +667,7 @@ void CPPJini_MethodUsedTypes (
 
   }  // end for
 
-  if ( fEnum ) List -> Append (  new TCollection_HAsciiString ( "Standard_Integer" )  );
+  if ( fEnum ) List -> Append (  new TCollection_HAsciiString ( "Standard_Short" )  );
 
  }  // end if
 
@@ -750,7 +775,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildType (
     
   if (   aType -> IsKind (  STANDARD_TYPE( MS_Enum )  )   )
 
-   parname = new TCollection_HAsciiString ( "int" );
+   parname = new TCollection_HAsciiString ( "short" );
 
   result -> AssignCat ( parname );
 
@@ -793,6 +818,7 @@ Standard_Boolean CPPJini_IsCasType (  const Handle( TCollection_HAsciiString )& 
  if (  !strcmp ( typeName, "Standard_Byte"         )  ) return Standard_True;
  if (  !strcmp ( typeName, "Standard_ShortReal"    )  ) return Standard_True;
  if (  !strcmp ( typeName, "Standard_Address"      )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Short"        )  ) return Standard_True;
 
  return Standard_False;
 
@@ -918,11 +944,11 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildParameterList (
 
       if (  aSeq -> Value ( i ) -> IsOut ()  )
 
-       parname = new TCollection_HAsciiString ( "Standard_Integer" );
+       parname = new TCollection_HAsciiString ( "Standard_Short" );
 
       else
 
-       parname = new TCollection_HAsciiString ( "int" );
+       parname = new TCollection_HAsciiString ( "short" );
 
      if (   aType -> IsKind (  STANDARD_TYPE( MS_PrimType )  )   ) {
 
@@ -1140,7 +1166,7 @@ Handle(TCollection_HAsciiString) CPPJini_ConvertToJavaType(const Handle(MS_MetaS
     if (aType->IsKind(STANDARD_TYPE(MS_Enum))) {
       typeprim = CPPJINI_ENUMERATION;
       if (!isout) {
-	result->AssignCat("jint");
+	result->AssignCat("jshort");
       }
       else {
 	result->AssignCat("jobject");
@@ -1325,9 +1351,9 @@ void   CPPJini_ArgumentBuilder(const Handle(MS_MetaSchema)& aMeta,
 	      ArgsInCall->AssignCat("the_");		      
 	      ArgsInCall->AssignCat(aSeqP->Value(i)->Name());
               api -> AddVariable (  "%EnumName", curtype -> FullName () -> ToCString ()  );
-	      api->Apply("%Method","IntegerGetEnumValue");
+	      api->Apply("%Method","ShortGetEnumValue");
 	      ArgsRetrieve->AssignCat(api->GetVariableValue("%Method"));
-	      api->Apply("%MetOut","IntegerSetValue");
+	      api->Apply("%MetOut","ShortSetValue");
 	      ArgsOut->AssignCat(api->GetVariableValue("%MetOut"));
 	      break;
 	    }
@@ -1844,9 +1870,6 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 
   // c'est fini
 
-  char* var1 = "MethodTemplateDefOBJS";
-  char* var2 = "MethodTemplateDef";
-
   api->AddVariable("%Method",metstart->ToCString());
   api->AddVariable("%MBody",metbody->ToCString());
 
@@ -1854,7 +1877,7 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
           "%Method",
           !strcmp (
             api -> GetVariableValue ( "%CPPJiniEXTDBMS" ) -> ToCString (), "OBJS"
-           ) ?  var1 : var2
+           ) ? "MethodTemplateDefOBJS" : "MethodTemplateDef"
          );
 
 }
@@ -2078,14 +2101,14 @@ void CPPJini_Extract (
             << " (already defined in " << cltName << ")" << endm;
 
     g_SkipMap.Bind ( aTypeName, cltName );
-
+#if 0
     if ( fDuplicate )
 
      WarningMsg << "CPPJini"
                 << aTypeName
                 << " defined in more than one client declared in 'uses' statement"
                 << endm;
-
+#endif
     return;
 
    }  // end if

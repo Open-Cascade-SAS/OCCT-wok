@@ -394,38 +394,38 @@ void CPPJini_MPVClass (
 
    }  // end else
 
-   if (  CPPJini_Defined ( theClass -> FullName (), aClt )  ) {  // create additional
-                                                                 //  constructors
-    Handle( TCollection_HAsciiString ) aShortClt =
-     new TCollection_HAsciiString ( aClt );
-
-     aShortClt -> RemoveAll ( '.' );
-     api -> AddVariable (  "%ShortPackName", aShortClt             -> ToCString ()  );
-     api -> AddVariable (  "%PackName",      aClt                  -> ToCString ()  );
-     api -> AddVariable (  "%PrevClassName", aClass -> FullName () -> ToCString ()  ); 
-
-     Handle( TCollection_HAsciiString ) shortName =
-      new TCollection_HAsciiString (  aClass -> FullName ()  );
-
-     shortName -> RemoveAll ( '_' );
-
-     api -> AddVariable (  "%ShortClassName", shortName -> ToCString ()  );
-
-     api -> Apply ( "%thePrevious", "ThePrevious" );
-     api -> Apply ( "%setPrevious", "SetPrevious" );
-     api -> Apply ( "%getPrevious", "GetPrevious" );
-     members -> AssignCat (  api -> GetVariableValue ( "%thePrevious" )  );
-     members -> AssignCat (  api -> GetVariableValue ( "%setPrevious" )  );
-     members -> AssignCat (  api -> GetVariableValue ( "%getPrevious" )  );
-
-   }   // end if
-
   } else {
 
    api -> AddVariable (  "%Inherits", CPPJini_MPVRootName () -> ToCString ()  );
    api -> AddVariable (  "%Imports",  CPPJini_MPVRootName () -> ToCString ()  );
 
   }  // end else
+
+  if (  CPPJini_Defined ( theClass -> FullName (), aClt )  ) {  // create additional
+                                                                 //  constructors
+   Handle( TCollection_HAsciiString ) aShortClt =
+    new TCollection_HAsciiString ( aClt );
+
+    aShortClt -> RemoveAll ( '.' );
+    api -> AddVariable (  "%ShortPackName", aShortClt             -> ToCString ()  );
+    api -> AddVariable (  "%PackName",      aClt                  -> ToCString ()  );
+    api -> AddVariable (  "%PrevClassName", aClass -> FullName () -> ToCString ()  ); 
+
+    Handle( TCollection_HAsciiString ) shortName =
+     new TCollection_HAsciiString (  aClass -> FullName ()  );
+
+    shortName -> RemoveAll ( '_' );
+
+    api -> AddVariable (  "%ShortClassName", shortName -> ToCString ()  );
+
+    api -> Apply ( "%thePrevious", "ThePrevious" );
+    api -> Apply ( "%setPrevious", "SetPrevious" );
+    api -> Apply ( "%getPrevious", "GetPrevious" );
+    members -> AssignCat (  api -> GetVariableValue ( "%thePrevious" )  );
+    members -> AssignCat (  api -> GetVariableValue ( "%setPrevious" )  );
+    members -> AssignCat (  api -> GetVariableValue ( "%getPrevious" )  );
+
+  }   // end if
 
   api -> AddVariable (  "%Methods", members -> ToCString ()  );
   api -> AddVariable (  "%Class", theClass -> FullName () -> ToCString ()  );
