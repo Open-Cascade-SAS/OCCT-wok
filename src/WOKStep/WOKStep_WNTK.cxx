@@ -21,8 +21,18 @@
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
-#include <stdlib.h>
-#include <fstream.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
+#endif
+#ifdef HAVE_STDLIB_H
+# include <stdlib.h>
+#endif
 
 #ifdef WNT
 # include <WOKNT_WNT_BREAK.hxx>

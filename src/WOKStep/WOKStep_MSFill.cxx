@@ -32,9 +32,15 @@
 #if defined(HAVE_TIME_H) || defined(WNT)
 # include <time.h>
 #endif
-
-#include <iostream.h>
+#ifdef HAVE_IOSTREAM
+# include <iostream>
+#elif defined (HAVE_IOSTREAM_H)
+# include <iostream.h>
 #endif
+
+// endif DONT_COMPENSATE
+#endif
+//
 
 #include <WOKTools_Messages.hxx>
 #include <WOKUtils_Path.hxx>

@@ -23,14 +23,20 @@
 # include <sys/types.h>
 #endif
 
-#include <sys/stat.h>
+#if defined (HAVE_SYS_STAT_H) || defined (WNT)
+# include <sys/stat.h>
+#endif
 #include <fcntl.h>
 
 #if defined(HAVE_TIME_H) || defined(WNT)
 # include <time.h>
 #endif
 
-#include <iostream.h>
+#ifdef HAVE_IOSTREAM
+# include <iostream>
+#elif defined (HAVE_IOSTREAM_H)
+# include <iostream.h>
+#endif
 #endif // DONT_COMPENSATE
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
