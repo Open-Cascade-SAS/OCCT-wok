@@ -175,7 +175,7 @@ Standard_Boolean CPPJini_Defined (
    cltName = new TCollection_HAsciiString (
                   s_CltInfo.Value (  sIndices.Value ( 1 )  ) -> Name ()
                  );
-   aType   = ( CPPJini_ExtractionType )sModes.Value ( 1 );
+   aType   = ( CPPJini_ExtractionType ) (int) sModes.Value ( 1 );
    retVal  = Standard_True;
 
   break;
@@ -198,7 +198,7 @@ Standard_Boolean CPPJini_Defined (
        s_CltInfo.Prepend ( ci );
        fDefined = Standard_True;
        cltName = new TCollection_HAsciiString (  ci -> Name ()  );
-       aType = ( CPPJini_ExtractionType )sModes.Value ( i );
+       aType = ( CPPJini_ExtractionType ) (int) sModes.Value ( i );
 
       } else {
 
@@ -231,7 +231,7 @@ Standard_Boolean CPPJini_Defined (
 
      ci      = s_CltInfo.Value ( index );
      cltName = new TCollection_HAsciiString (  ci -> Name ()  );
-     aType   = ( CPPJini_ExtractionType )sModes.Value ( j );
+     aType   = ( CPPJini_ExtractionType ) (int) sModes.Value ( j );
      s_CltInfo.Remove  ( index );
      s_CltInfo.Prepend ( ci    );
 
@@ -262,7 +262,7 @@ Standard_Boolean CPPJini_Defined (
 
     ci      = s_CltInfo.Value ( index );
     cltName = new TCollection_HAsciiString (  ci -> Name ()  );
-    aType   = ( CPPJini_ExtractionType )sModes.Value ( j );
+    aType   = ( CPPJini_ExtractionType ) (int) sModes.Value ( j );
     s_CltInfo.Remove  ( index );
     s_CltInfo.Prepend ( ci    );
 
