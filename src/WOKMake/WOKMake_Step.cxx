@@ -340,13 +340,12 @@ void WOKMake_Step::LoadDependencies()
   
   Handle(WOKernel_File) depfile    = LocateAdmFile(InLocator(), DepItemsFileName());
   if(depfile.IsNull()) return;
-  
+
   WOKMake_InputFile::ReadFile(inputfile->Path(), InLocator(),   mydepin);
   WOKMake_OutputFile::ReadFile(outputfile->Path(), OutLocator(), mydepout);
   WOKMake_DepItem::ReadFile(depfile->Path(), mydepitems);
 
-
-  if(mydepout.Extent() && mydepin.Extent())
+  if((mydepout.Extent()>0) && (mydepin.Extent()>0))
     {
       mydepmatrix = new TColStd_HArray2OfInteger(1, mydepout.Extent(), 1, mydepin.Extent(), 0);
 
@@ -927,7 +926,6 @@ void WOKMake_Step::AcquitExecution(const Handle(WOKMake_HSequenceOfInputFile)& e
 
   // Chargement de la map d'execution
   WOKTools_MapOfHAsciiString execmap;
-
   for(i=1; i<=execlist->Length(); i++)
     {
       execmap.Add(execlist->Value(i)->ID());
@@ -1018,7 +1016,7 @@ void WOKMake_Step::AcquitExecution(const Handle(WOKMake_HSequenceOfInputFile)& e
   Standard_Integer in_index, out_index;
   Standard_Integer depvalue, value;
   
-  if(outmap.Extent() && inmap.Extent())
+  if(outmap.Extent()>0 && inmap.Extent()>0)
     {
       matrix = new TColStd_HArray2OfInteger(1, outmap.Extent(), 1, inmap.Extent(), 0);
 
