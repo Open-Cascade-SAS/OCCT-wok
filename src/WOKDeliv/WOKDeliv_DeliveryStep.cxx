@@ -371,6 +371,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 		Unit()->Params().Set("%FilePath", afile->File()->Path()->Name()->ToCString());
 		
 		acmd = Unit()->Params().Eval(atempl->ToCString(),Standard_True);
+//                cout << "WOKDeliv_DeliveryStep : " << afile->File()->Path()->Name()->ToCString() << endl ;
 		
 		if(!acmd.IsNull())
 		  {

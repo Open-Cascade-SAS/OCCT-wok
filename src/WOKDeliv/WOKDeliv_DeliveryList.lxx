@@ -4,32 +4,32 @@
 // Author:	Arnaud BOUZY
 //		<adn>
 
-void WOKDeliv_DeliveryList::SetPutPath()
+inline void WOKDeliv_DeliveryList::SetPutPath()
 {
   myPutPath = Standard_True;
 }
 
-Standard_Boolean WOKDeliv_DeliveryList::IsPutPath() const
+inline Standard_Boolean WOKDeliv_DeliveryList::IsPutPath() const
 {
   return myPutPath;
 }
 
-void WOKDeliv_DeliveryList::SetPutLib()
+inline void WOKDeliv_DeliveryList::SetPutLib()
 {
   myPutLib = Standard_True;
 }
 
-Standard_Boolean WOKDeliv_DeliveryList::IsPutLib() const
+inline Standard_Boolean WOKDeliv_DeliveryList::IsPutLib() const
 {
   return myPutLib;
 }
 
-void WOKDeliv_DeliveryList::SetPutInclude()
+inline void WOKDeliv_DeliveryList::SetPutInclude()
 {
   myPutInclude = Standard_True;
 }
 
-Standard_Boolean WOKDeliv_DeliveryList::IsPutInclude() const
+inline Standard_Boolean WOKDeliv_DeliveryList::IsPutInclude() const
 {
   return myPutInclude;
 }

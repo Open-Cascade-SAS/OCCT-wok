@@ -10,4 +10,10 @@
   @string %CMPLRS_C_Options = %CMPLRS_C_Options " -Ae";
 @endif;
 
+@if ( %Station == "lin" ) then
+   @if ( %DebugMode == "False" ) then
+      @set %CMPLRS_C_ModeOpt = " -O2 -DNo_Exception ";
+    @endif;
+@endif;
+
 @endif;
