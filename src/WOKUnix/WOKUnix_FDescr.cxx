@@ -11,7 +11,9 @@
 # include <unistd.h>
 #endif
 
-#include <sys/stat.h>
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
 
 #ifdef HAVE_SYS_FILIO_H
 # include <sys/filio.h>
@@ -21,7 +23,7 @@
 # include <sys/ioctl.h>
 #endif
 
-#if defined(HAVE_SYS_VNODE_H) && defined(__FreeBSD__) 
+#if defined(HAVE_SYS_VNODE_H) && ( defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) )
 # include <sys/vnode.h>
 #endif
 

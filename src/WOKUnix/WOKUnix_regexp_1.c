@@ -1,6 +1,3 @@
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 /******************************************************************************/
 /* Extended regular expression matching and search.                           */
 /* Copyright (C) 1985 Free Software Foundation, Inc.                          */
@@ -29,26 +26,28 @@
 /***/
 
 /* JGA : to compile on Solaris */
-
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-
-#else
-/* alloca() non disponible sur HPUX 9.07 */
-# ifdef __cplusplus
-extern "C" {
-# endif  
-void *alloca(unsigned int);
-# ifdef __cplusplus
-}
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
-void *alloca(unsigned int size){return (void *)0L;}
-#endif
-
 
 #include <WOKUnix_regexp.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* AIX requires this to be the first thing in the file.  */
+#ifndef __GNUC__
+# if HAVE_ALLOCA_H
+#  include <alloca.h>
+# else
+#  ifdef _AIX
+ #pragma alloca
+#  else
+#   ifndef alloca /* predefined by HP cc +Olibcalls */
+char *alloca ();
+#   endif
+#  endif
+# endif
+#endif
 
 /***/
 /******************************************************************************/
@@ -1472,7 +1471,7 @@ int re_match_2 (
 
      if ( stacke - stackb > RE_MAX_FAILURES ) return -2;
 
-     stackx = ( _TUCHAR** ) alloca (  2 * ( stacke - stackb ) * sizeof ( _TCHAR* )  );
+     stackx = ( _TUCHAR** ) alloca(  2 * ( stacke - stackb ) * sizeof ( _TCHAR* )  );
      memcpy (  stackx, stackb, ( stacke - stackb ) * sizeof ( _TCHAR* )  );
      stackp = stackx + ( stackp - stackb );
      stacke = stackx + 2 * ( stacke - stackb );
@@ -1562,7 +1561,7 @@ nofinalize:
     if ( stackp == stacke ) {
 
      _TUCHAR** stackx =
-      ( _TUCHAR** ) alloca (  2 * ( stacke - stackb ) * sizeof ( _TUCHAR* )  );
+      ( _TUCHAR** ) alloca(  2 * ( stacke - stackb ) * sizeof ( _TUCHAR* )  );
 	      
      memcpy (  stackx, stackb, (stacke - stackb) * sizeof ( _TCHAR* )  );
      stackp = stackx + ( stackp - stackb );
