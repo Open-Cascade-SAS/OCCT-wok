@@ -1,17 +1,5 @@
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_STRSTREAM_H
-# include <strstream.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
+#include <Standard_Stream.hxx>
+#include <Standard_SStream.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_ErrorHandler.hxx>
 

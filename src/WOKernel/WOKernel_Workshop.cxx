@@ -2,17 +2,7 @@
 // Created:	Wed Jul 26 15:20:50 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
+#include <Standard_Stream.hxx>
 
 #include <WOKernel_Workshop.ixx>
 

@@ -2,17 +2,7 @@
 // Created:	Thu Jun 29 18:50:43 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
+#include <Standard_Stream.hxx>
 #include <WOKernel_Factory.ixx>
 
 #include <WOKernel_Workshop.hxx>
@@ -27,12 +17,6 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-
-#ifdef HAVE_IOMANIP
-# include <iomanip>
-#elif defined (HAVE_IOMANIP_H)
-# include <iomanip.h>
-#endif
 
 //=======================================================================
 //function : WOKernel_Factory

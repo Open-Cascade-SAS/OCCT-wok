@@ -3,16 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 #include <WOKernel_Session.ixx>
 
@@ -42,11 +33,11 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
-#ifdef HAVE_IOMANIP
-# include <iomanip>
-#elif defined (HAVE_IOMANIP_H)
-# include <iomanip.h>
-#endif
+//#ifdef HAVE_IOMANIP
+//# include <iomanip>
+//#elif defined (HAVE_IOMANIP_H)
+//# include <iomanip.h>
+//#endif
 
 //=======================================================================
 //function : WOKernel_Session

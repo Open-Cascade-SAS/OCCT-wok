@@ -2,19 +2,9 @@
 // Created:	Wed Jul 26 18:18:27 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
 #include <WOKTools_Messages.hxx>

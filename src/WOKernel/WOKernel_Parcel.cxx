@@ -2,16 +2,7 @@
 // Created:	Wed Jul 26 18:39:20 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -31,12 +22,6 @@
 #include <WOKernel_Session.hxx>
 
 #include <WOKernel_Parcel.ixx>
-
-#ifdef HAVE_IOMANIP
-# include <iomanip>
-#elif defined (HAVE_IOMANIP_H)
-# include <iomanip.h>
-#endif
 
 //=======================================================================
 //function : WOKernel_Parcel
