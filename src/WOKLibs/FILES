@@ -14,3 +14,5 @@ wokorbixsteps.dsp
 woksteps.dsp
 woktoolscmd.dsp
 wokutilscmd.dsp
+Makefile.am
+Makefile.in
