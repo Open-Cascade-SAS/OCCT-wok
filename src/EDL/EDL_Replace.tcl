@@ -44,23 +44,14 @@ proc EDL_Replace:Execute { unit args } {
 	set source    [woklocate -p EDL:source:$sourcename     [wokinfo -N $unit]]
 	set vistarget [woklocate -p EDL:privinclude:$name [wokinfo -N $unit]]
 #	set target    [wokinfo   -p EDL:privinclude:$name [wokinfo -N $unit]]
-msgprint -i -c "$source "
-	regsub -all "/" " $source $vistarget" $replstr  TheArgs
+        msgprint -i -c "$source "
+        regsub -all "/" " $source $vistarget" $replstr  TheArgs
 
-        if { [file exist $vistarget] } {
-	  set A [catch {eval "wokcmp $TheArgs"} result ]
-        } else {
-          set result 0 }
-	
-	if { ! $result } {
-	    msgprint -i -c "EDL_Replace::Execute" "Copy $source to $vistarget"
-	    if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
+        msgprint -i -c "EDL_Replace::Execute" "Copy $source to $vistarget"
+        if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
 		eval exec "chmod u+w $vistarget"
-	    }
-	    eval exec "$copycmd $TheArgs"
-	} else {
-	    msgprint -i -c "EDL_Replace::Execute" "No change in $source"
 	}
+	eval exec "$copycmd $TheArgs"
 
     return 0;
 }
