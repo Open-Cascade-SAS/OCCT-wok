@@ -9,3 +9,5 @@ CPPIntExt_EInit.cxx
 FILES
 Interface_Template.edl
 Engine_Template.edl
+CPPIntExt_LDSHR.edl
+
