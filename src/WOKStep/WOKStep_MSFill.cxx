@@ -7,36 +7,6 @@
 # include <config.h>
 #endif
 
-#ifndef DONT_COMPENSATE
-
-#include <stdio.h>
-
-#ifdef WNT
-# include <io.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#if defined(HAVE_SYS_TYPES_H) || defined(WNT)
-# include <sys/types.h>
-#endif
-
-#if defined(HAVE_SYS_STAT_H) || defined(WNT)
-# include <sys/stat.h>
-#endif
-
-#include <fcntl.h>
-
-#if defined(HAVE_TIME_H) || defined(WNT)
-# include <time.h>
-#endif
-#include <Standard_Stream.hxx>
-
-// endif DONT_COMPENSATE
-#endif
-//
 
 #include <WOKTools_Messages.hxx>
 #include <WOKUtils_Path.hxx>
@@ -151,70 +121,6 @@ void WOKStep_MSFill::Execute(const Handle(WOKMake_HSequenceOfInputFile)& )
   Handle(TColStd_HSequenceOfHAsciiString) aseq;
   Standard_Integer i;
   Standard_Boolean stop = Standard_False;
-
-#ifndef DONT_COMPENSATE
-
-  {
-    Handle(WOKernel_File) srcdir = new WOKernel_File(new TCollection_HAsciiString("testdate.temoin"), 
-						     Unit(), Unit()->GetFileType("source"));
-    
-    srcdir->GetPath();
-    
-    Standard_CString tempath = srcdir->Path()->Name()->ToCString();
-    Standard_Integer fd;
-    
-#ifndef WNT
-    if((fd=open(tempath, O_WRONLY | O_CREAT | O_TRUNC)) == -1)
-#else
-    if((fd=open(tempath, O_WRONLY | O_CREAT | O_TRUNC, _S_IREAD | _S_IWRITE)) == -1)
-#endif  // WNT
-      {
-	//SetFailed();
-      }
-    else
-      {
-	close(fd);
-      }	
-
-    if(fd!=-1)
-      {
-	struct stat buf;
-    
-	if(stat(tempath, &buf))
-	  {
-	    ErrorMsg << "WOKStep_MSFill::Execute"
-		     << "Could not stat : " << tempath << endm;
-	    //SetFailed();
-	  }
-    
-	time_t curdate ;
-
-	curdate = time(NULL);
-	if(curdate == -1)
-	  {
-	    ErrorMsg << "WOKStep_MSFill::Execute"
-		     << "Could not obtain current date" << endm;
-	  }
-  
-	unlink(tempath);
-
-	Standard_Integer decal =  buf.st_mtime - curdate;
-
-	if(decal < 0)
-	  {
-	    WarningMsg << "WOKStep_MSFill::Execute"
-		       << "Cannot compensate negative (" << decal << "s) time displace" << endm;
-	  }
-	else if(decal > 0)
-	  {
-	    WarningMsg << "WOKStep_MSFill::Execute"
-		       << "Trying compensate positive (" << decal << "s) time displace" << endm;
-	    sleep(decal);
-	  }
-      }
-  }  
-
-#endif
 
   acdlt->Load();
 

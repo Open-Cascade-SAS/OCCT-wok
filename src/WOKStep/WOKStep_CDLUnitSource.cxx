@@ -1,39 +1,11 @@
-// File:	WOKStep_CDLUnitSource.cxx
-// Created:	Tue Aug 29 21:40:36 1995
-// Author:	Jean GAUTIER
-//		<jga@cobrax>
+// File:        WOKStep_CDLUnitSource.cxx
+// Created:     Tue Aug 29 21:40:36 1995
+// Author:      Jean GAUTIER
+//              <jga@cobrax>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
-
-#ifndef DONT_COMPENSATE
-
-#include <stdio.h>
-
-#ifdef WNT
-# include <io.h>
-#endif  // WNT
-
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-
-#if defined (HAVE_SYS_STAT_H) || defined (WNT)
-# include <sys/stat.h>
-#endif
-#include <fcntl.h>
-
-#if defined(HAVE_TIME_H) || defined(WNT)
-# include <time.h>
-#endif
-
-#include <Standard_Stream.hxx>
-#endif // DONT_COMPENSATE
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
@@ -76,10 +48,10 @@
 //purpose  : 
 //=======================================================================
 WOKStep_CDLUnitSource::WOKStep_CDLUnitSource(const Handle(WOKMake_BuildProcess)& abp,
-					     const Handle(WOKernel_DevUnit)& aunit, 
-					     const Handle(TCollection_HAsciiString)& acode, 
-					     const Standard_Boolean checked, 
-					     const Standard_Boolean hidden)
+                                             const Handle(WOKernel_DevUnit)& aunit, 
+                                             const Handle(TCollection_HAsciiString)& acode, 
+                                             const Standard_Boolean checked, 
+                                             const Standard_Boolean hidden)
 : WOKStep_Source(abp, aunit, acode, checked, hidden)
 {
 }
@@ -118,72 +90,6 @@ void WOKStep_CDLUnitSource::ReadUnitDescr(const Handle(WOKMake_InputFile)& PKCDL
   Standard_Integer i;
   Standard_Boolean stop = Standard_False;
 
-
-#ifndef DONT_COMPENSATE
-
-  {
-    Handle(WOKernel_File) srcdir = new WOKernel_File(new TCollection_HAsciiString("testdate.temoin"), 
-						     Unit(), Unit()->GetFileType("source"));
-    
-    srcdir->GetPath();
-    
-    Standard_CString tempath = srcdir->Path()->Name()->ToCString();
-    Standard_Integer fd;
-#ifndef WNT        
-    if((fd=open(tempath, O_WRONLY | O_CREAT| O_TRUNC)) == -1)
-#else
-    if((fd=open(tempath, O_WRONLY | O_CREAT| O_TRUNC, _S_IREAD | _S_IWRITE)) == -1)
-#endif  // WNT
-      {
-	//WarningMsg << "WOKStep_MSFill::Execute"
-	//	   << "Could not create : " << tempath << endm;
-	//perror(tempath);
-      }
-    else
-      {
-	close(fd);
-      }
-
-    if(fd != -1 )
-      {
-	struct stat buf;
-	
-	if(stat(tempath, &buf))
-	  {
-	    ErrorMsg << "WOKStep_MSFill::Execute"
-		     << "Could not stat : " << tempath << endm;
-	  }
-  
-	time_t curdate ;
-	
-	curdate = time(NULL);
-	if(curdate == -1)
-	  {
-	    ErrorMsg << "WOKStep_MSFill::Execute"
-		     << "Could not obtain current date" << endm;
-	  }
-  
-	unlink(tempath);
-	
-	Standard_Integer decal =  buf.st_mtime - curdate;
-	
-	if(decal < 0)
-	  {
-	    WarningMsg << "WOKStep_MSFill::Execute"
-		       << "Cannot compensate negative (" << decal << "s) time displace" << endm;
-	  }
-	else if(decal > 0)
-	  {
-	    WarningMsg << "WOKStep_MSFill::Execute"
-		       << "Trying compensate positive (" << decal << "s) time displace" << endm;
-	    sleep(decal);
-	  }
-      }
-  }  
-
-#endif
-
-
   // Initialisation du traducteur
   acdlt->Load();
   acdlt->SetMSchema(WOKBuilder_MSTool::GetMSchema());
@@ -218,25 +124,25 @@ _TEST_BREAK();
       acdlfile = Locator()->Locate(aunitname, new TCollection_HAsciiString("source"), astr);
       
       if(!acdlfile.IsNull())
-	{
-	  aspec = new WOKBuilder_CDLFile(acdlfile->Path());
-	  
-	  switch(anit.Execute(acdlt, anaction, aspec))
-	    {
-	    case WOKBuilder_Unbuilt:
-	    case WOKBuilder_Success:
-	      break;
-	    case WOKBuilder_Failed:
-	      stop = Standard_True;
-	      anit.Reset();
-	      break;
-	    }
-	}
+        {
+          aspec = new WOKBuilder_CDLFile(acdlfile->Path());
+          
+          switch(anit.Execute(acdlt, anaction, aspec))
+            {
+            case WOKBuilder_Unbuilt:
+            case WOKBuilder_Success:
+              break;
+            case WOKBuilder_Failed:
+              stop = Standard_True;
+              anit.Reset();
+              break;
+            }
+        }
       else
-	{
-	  WarningMsg << "WOKStep_MSFill::Execute" << "No file " << astr << " in " << aunitname << endm;
-	  SetIncomplete();
-	}
+        {
+          WarningMsg << "WOKStep_MSFill::Execute" << "No file " << astr << " in " << aunitname << endm;
+          SetIncomplete();
+        }
       
       anit.Next();
     }
@@ -246,42 +152,42 @@ _TEST_BREAK();
     // test du type d'ud
     if (WOKernel_IsPackage(Unit())) {
       if (!theschema->IsPackage(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsSchema(Unit())) {
       if (!theschema->IsSchema(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsInterface(Unit())) {
       if (!theschema->IsInterface(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsClient(Unit())) {
       if (!theschema->IsClient(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsEngine(Unit())) {
       if (!theschema->IsEngine(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsExecutable(Unit())) {
       if (!theschema->IsExecutable(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     else if (WOKernel_IsServer(Unit())) {
       if (!theschema->IsComponent(Unit()->Name())) {
-	stop = Standard_True;
+        stop = Standard_True;
       }
     }
     if (stop) {
       ErrorMsg << "WOKStep_MSFill::Execute" 
-	<< "Unit and cdl file definition type mismatch for unit " << Unit()->Name() << endm;
+        << "Unit and cdl file definition type mismatch for unit " << Unit()->Name() << endm;
     }
   }
 
@@ -297,14 +203,14 @@ _TEST_BREAK();
 #endif  // WNT
       anent  = Locator()->Locate(Unit()->Name(), sourcetype, WOKBuilder_MSTool::GetMSchema()->AssociatedFile(aseq->Value(i)));
       if(!anent.IsNull())
-	{
-	  Handle(WOKMake_OutputFile) outfile = new WOKMake_OutputFile(anent->LocatorName(), 
-								      anent,
-								      Handle(WOKBuilder_Entity)(), anent->Path());
-	  outfile->SetLocateFlag(Standard_True);
-	  outfile->SetProduction();
-	  AddExecDepItem(PKCDL, outfile, Standard_True);
-	}
+        {
+          Handle(WOKMake_OutputFile) outfile = new WOKMake_OutputFile(anent->LocatorName(), 
+                                                                      anent,
+                                                                      Handle(WOKBuilder_Entity)(), anent->Path());
+          outfile->SetLocateFlag(Standard_True);
+          outfile->SetProduction();
+          AddExecDepItem(PKCDL, outfile, Standard_True);
+        }
     }
 
   if(stop)
@@ -328,41 +234,41 @@ void WOKStep_CDLUnitSource::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
       Standard_Integer i;
 
       for(i=1; i<=execlist->Length(); i++)
-	{
-	  if(!strcmp(execlist->Value(i)->File()->Name()->ToCString(), FILES->Name()->ToCString()))
-	    {
-	      ReadFILES(execlist->Value(i));
-	    }
-	  if(!strcmp(execlist->Value(i)->File()->Name()->ToCString(), PKCDL->Name()->ToCString()))
-	    {
-	      ReadFILES(execlist->Value(i));
-	    }
-	}
+        {
+          if(!strcmp(execlist->Value(i)->File()->Name()->ToCString(), FILES->Name()->ToCString()))
+            {
+              ReadFILES(execlist->Value(i));
+            }
+          if(!strcmp(execlist->Value(i)->File()->Name()->ToCString(), PKCDL->Name()->ToCString()))
+            {
+              ReadFILES(execlist->Value(i));
+            }
+        }
     }
   else
     {
       if(!FILES.IsNull())
-	{
-	  Handle(WOKMake_InputFile) infile = new WOKMake_InputFile(FILES->LocatorName(), FILES, 
-								   Handle(WOKBuilder_Entity)(), FILES->Path());
-	  execlist->Append(infile);
-	  infile->SetDirectFlag(Standard_True);
-	  infile->SetLocateFlag(Standard_True);
-	  
-	  ReadFILES(infile);
-	}
+        {
+          Handle(WOKMake_InputFile) infile = new WOKMake_InputFile(FILES->LocatorName(), FILES, 
+                                                                   Handle(WOKBuilder_Entity)(), FILES->Path());
+          execlist->Append(infile);
+          infile->SetDirectFlag(Standard_True);
+          infile->SetLocateFlag(Standard_True);
+          
+          ReadFILES(infile);
+        }
 
       if(CheckStatus("FILES reading")) return;
       if(!PKCDL.IsNull())
-	{
-	  Handle(WOKBuilder_Specification) cdlent = new WOKBuilder_CDLFile(PKCDL->Path());
-	  Handle(WOKMake_InputFile) infile = new WOKMake_InputFile(PKCDL->LocatorName(), PKCDL, 
-								   cdlent , PKCDL->Path());
-	  execlist->Append(infile);
-	  infile->SetDirectFlag(Standard_True);
-	  infile->SetLocateFlag(Standard_True);
-	  ReadUnitDescr(infile);
-	}
+        {
+          Handle(WOKBuilder_Specification) cdlent = new WOKBuilder_CDLFile(PKCDL->Path());
+          Handle(WOKMake_InputFile) infile = new WOKMake_InputFile(PKCDL->LocatorName(), PKCDL, 
+                                                                   cdlent , PKCDL->Path());
+          execlist->Append(infile);
+          infile->SetDirectFlag(Standard_True);
+          infile->SetLocateFlag(Standard_True);
+          ReadUnitDescr(infile);
+        }
       if(CheckStatus("CDL processing")) return;
     }
   return;
