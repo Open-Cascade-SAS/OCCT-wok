@@ -1,7 +1,8 @@
 
-//#include <Standard_Macro.hxx>
+#include <Standard_Macro.hxx>
+#include <TCollection_HAsciiString.hxx>
 
-#include <WOKernel_FileTypeKeyWords.hxx>
+//#include <WOKernel_FileTypeKeyWords.hxx>
 
 //#define IMPLEMENT_WOK_STATIC(Name,Value) extern Standard_EXPORT const char Name [] = Value;
 #define IMPLEMENT_WOK_STATIC(Name,Value) Standard_EXPORT const char *Name = Value;
