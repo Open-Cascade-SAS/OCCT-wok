@@ -9,14 +9,14 @@ is
     
     executable woksh 
     uses
-       Tcl_Lib as external
+       Tcl_Libs as external
     is
     	woksh;
     end;
     
     executable wokprocess 
     uses
-       Tcl_Lib as external
+       Tcl_Libs as external
     is
     	wokprocess;
     end;
