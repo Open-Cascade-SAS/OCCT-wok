@@ -8,16 +8,19 @@
 
 
 @if ( %Station == "hp" ) then
-        @set %OBJSSCHEMA_Shared   = "libOBJSSchema.sl";
+        --@set %OBJSSCHEMA_Shared   = "libOBJSSchema.sl";
+        @set %OBJSSCHEMA_Shared   = "libTKOBJSSchema.sl";
 @endif;
 
 @if ( %Station != "hp" ) then
-        @set %OBJSSCHEMA_Shared   = "libOBJSSchema.so";
+        --@set %OBJSSCHEMA_Shared   = "libOBJSSchema.so";
+        @set %OBJSSCHEMA_Shared   = "libTKOBJSSchema.so";
 @endif;
 
 
 @if ( %Station == "wnt" ) then
-        @set %OBJSSCHEMA_Shared   = "OBJSSchema.dll";
+        --@set %OBJSSCHEMA_Shared   = "OBJSSchema.dll";
+        @set %OBJSSCHEMA_Shared   = "TKOBJSSchema.dll";
 @endif;
 
 @set %OBJSSCHEMA_Name     = "OBJSSchema";
