@@ -103,7 +103,7 @@ proc wokWaffQueue { {loc {}} } {
     set IWOK_WINDOWS($w,text)        [$p2.text subwidget text]
     set IWOK_WINDOWS($w,reports)     $fw.but
     set IWOK_WINDOWS($w,journal)     $gw.but
-    set IWOK_WINDOWS($w,journal,day) [clock scan "00:00:00"]
+    set IWOK_WINDOWS($w,journal,day) [clock scan yesterday]
     set IWOK_WINDOWS($w,shop)        $shop
     set IWOK_WINDOWS($w,frigo)       [wokStore:Report:GetRootName $IWOK_WINDOWS($w,shop)]
     set IWOK_WINDOWS($w,basewrite)   [wokIntegre:BASE:Writable $IWOK_WINDOWS($w,shop)]
@@ -164,7 +164,7 @@ proc wokEditJnl { w } {
 ;#
 proc wokToday { w } {
     global IWOK_WINDOWS
-    set IWOK_WINDOWS($w,journal,day) [clock scan "00:00:00"]
+    set IWOK_WINDOWS($w,journal,day) [clock scan yesterday]
     wokThisday $w
 }
 ;#
