@@ -249,8 +249,8 @@
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
 
-      @set %CSF_X11_INCLUDE = "-I/usr/X11R6/include ";
-      @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
+      @set %CSF_X11_INCLUDE = " -I/usr/X11R6/include ";
+      @set %CSF_OPENGL_INCLUDE = " -I/usr/X11R6/include ";
 
       @set %X11_LIB = "/usr/X11R6/lib";
 
@@ -268,6 +268,7 @@
 	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
       @endif;
 
+--      @set %CSF_CXX_COMPILER = "/home/forte/SUNWspro/bin/CC ";
       @set %CSF_CXX_COMPILER = "/opt/DEV5_1/SUNWspro/bin/CC ";
       @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun " ;
       @set %CSF_CXX_Options  = "-DSOLARIS -DNO_CXX_EXCEPTION " ;
@@ -298,17 +299,17 @@
       @set %CSF_JAVA_JNI        = "javah";
 
 
-      @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl -lC -lc " ;
+      @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl  -lc " ;
       --@set %CSF_RISCRETURNObject = "/adv_23/KL/dev/ref/src/EngineStarter/risc_return.o" ;
       @set %CSF_RISCRETURNObject = "/missing/missing/risc_return.o" ;
 
       @string %CSF_JavaLibs = " -L" %CSF_JavaHome "/jre/lib/sparc/ -ljava ";
 
-      @set %CSF_TCL_HOME = "/usr/tcltk";
+      @set %CSF_TCL_HOME = "/PRODUCTS/tcltk-83";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
-      @set %CSF_X11_INCLUDE = "-I/usr/openwin/include/X11 ";
-      @set %CSF_OPENGL_INCLUDE = "-I/usr/openwin/include ";
+      @set %CSF_X11_INCLUDE = " -I/usr/openwin/include/X11 ";
+      @set %CSF_OPENGL_INCLUDE = " -I/usr/openwin/include ";
 
       @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl "; 
       @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk "; 
@@ -412,6 +413,7 @@
 
 
       @set %CSF_F77_COMPILER = "f77 ";
+      @set %CSF_LINKER_SysShared = " -shared ";
 
       @set %CSF_FPELibs = "-L/usr/lib32 -lfpe" ;
 
@@ -452,10 +454,10 @@
       @set %CSF_TCL_HOME = "/missing/missing ";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
-      @set %CSF_X11_INCLUDE = "-I/usr/include/X11R6 ";
-      @set %CSF_XMU_INCLUDE = "-I/usr/contrib/X11R6/include ";
-      @set %CSF_MOTIF_INCLUDE = "-I/usr/include/Motif1.2 ";
-      @set %CSF_OPENGL_INCLUDE = "-I/opt/graphics/OpenGL/include ";
+      @set %CSF_X11_INCLUDE    = " -I/usr/include/X11R6 ";
+      @set %CSF_XMU_INCLUDE    = " -I/usr/contrib/X11R6/include ";
+      @set %CSF_MOTIF_INCLUDE  = " -I/usr/include/Motif1.2 ";
+      @set %CSF_OPENGL_INCLUDE = " -I/opt/graphics/OpenGL/include ";
 
       @set %CSF_SOCKETLibs = "" ;
 
