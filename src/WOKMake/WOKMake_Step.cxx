@@ -1348,6 +1348,7 @@ WOKMake_Status WOKMake_Step::Make()
           !strcmp ( aType, "WOKStep_DynamicLibrary" ) ||
           !strcmp ( aType, "WOKStep_DLLink"         ) ||
           !strcmp ( aType, "WOKStep_ExecLink"       ) ||
+          !strcmp ( aType, "WOKStep_ExeLink"        ) ||
           !strcmp ( aType, "WOKStep_LibLink"        )
     ) {
 
