@@ -330,6 +330,37 @@ proc wokUtils:FILES:DirMapToProc { d TclFile ProcName } {
 	return -1
     }
 }
+;#
+;# 1.Scan each element of liste
+;# 2.For each element e:
+;#    substr from  e of of the string of pathliste
+;# Create a map indexed by the common roots
+;# Each entry contains a list of file name that begins under this entry.
+;# 3.Returns the list of element where substr failed.
+;# CAUTION : add a slash at the end of pathes in pathliste so entries will be directly usable
+;# tt [list /adv_11/KAS/C30/ref/  /adv_11/KAS/C30/UpdateC31/] FOC.lst
+;# Easy for preparing Gnu tar command using option --from-file.
+;#
+proc wokUtils:FILES:RelativePathes { pathliste liste map } {
+    upvar $map TLOC
+    set ret {}
+    foreach e [wokUtils:FILES:FileToList $liste] {
+	set yy [wokUtils:EASY:trytrim $pathliste $e]
+	if { $yy != {} } {
+	    set yy0 [lindex $yy 0]
+	    if [info exists TLOC($yy0)] {
+		set li $TLOC($yy0)
+		lappend li [lindex $yy 1]
+		set TLOC($yy0) $li
+	    } else {
+		set TLOC($yy0) [lindex $yy 1]
+	    }
+	} else {
+	    lappend ret $e
+	}
+    }
+    return $ret
+}
 #
 # Compare contents of directory d with a previous state.
 # (previous state in file $d/__PreviousState.tcl)
@@ -456,6 +487,26 @@ proc wokUtils:FILES:AppendListToFile { liste path } {
 	close $id
 	return 1
     } 
+}
+;#
+;# substr "" in elements of lp (path part) in fname
+;# returns a liste of 2 elements : e1 e2
+;# e1 1 st element that match
+;# e2 fname after substr example:
+;# tt:parseloc {/adv_11/KAS/C30/ref/  /adv_11/KAS/C30/UpdateC31/} /adv_11/KAS/C30/UpdateC31/README
+;# => /adv_11/KAS/C30/UpdateC31/ README
+;# tt:parseloc {/adv_11/KAS/C30/ref/  /adv_11/KAS/C30/UpdateC31/} /adv_11/KAS/C30/ref/src/gp/gp_Pnt.cxx
+;# => /adv_11/KAS/C30/ref/ src/gp/gp_Pnt.cxx
+;#
+proc wokUtils:EASY:trytrim { lp pname } {
+    set res {}
+    foreach p $lp {
+	if [regsub $p $pname "" dst] {
+	    set res [list  $p $dst]
+	    break
+	}
+    }
+    return $res
 }
 #
 # Replace s1 by s2 in fin and write result in fout
