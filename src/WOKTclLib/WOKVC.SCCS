@@ -102,8 +102,8 @@ proc wokIntegre:BASE:GetFile { Sfile invrs {fileid stdout} } {
 #;>
 # retourne la liste des sfile dans une base
 #;<
-proc wokIntegre:BASE:List { fshop Bname vrs } {
-    set diradm [glob -nocomplain [wokIntegre:BASE:GetRootName $fshop]/${Bname}.?]
+proc wokIntegre:BASE:List { Bname vrs } {
+    set diradm [glob -nocomplain [wokIntegre:BASE:GetRootName]/${Bname}.?]
     if [file exists $diradm] {
 	set l {}
 	foreach Sfile [lsort [readdir $diradm]] {
@@ -118,7 +118,7 @@ proc wokIntegre:BASE:List { fshop Bname vrs } {
     }
 }
 #;>
-# Ecrit dans fileid la fin d'un envoi. Permet a BASE:Execute de retourner un status
+# Writes on fileid a pattern that indicates the wintegre.cmd command completion.
 #;<
 proc wokIntegre:BASE:EOF { {fileid stdout} } {
     puts $fileid "echo Successfull completion"
@@ -126,13 +126,13 @@ proc wokIntegre:BASE:EOF { {fileid stdout} } {
     return
 }
 #;>
-# Execute les commandes SCCS command dans un Bourne Shell
-# 1. Ecrit sur fileid quand certains pattern sont reconnus.
-#    Retourne 1 si tout est OK. (Pattern De BASE::EOF bien recu)
+# Execute  SCCS command in a Bourne Shell
+# 1. Writes on fileid when specific pattern are matched.
+#    Returns  1 if everything's OK. (Pattern De BASE::EOF has been received.)
 # debugger:
-#    exp_internal 1         : patterns sur stderr ( ca suffit en general)
-#    exp_internal -f file 0 : stdout et patterns dans file
-#    exp_internal -f file 1 : stdout et patterns dans file + pattern sur stderr
+#    exp_internal 1         : patterns on stderr 
+#    exp_internal -f file 0 : stdout and patterns in file
+#    exp_internal -f file 1 : stdout and patterns in file + pattern on stderr
 #;<
 proc wokIntegre:BASE:Execute { VERBOSE command {fileid stdout} } {
     spawn -noecho sh $command
@@ -269,42 +269,4 @@ proc wokIntegre:BASE:tree { infile fils} {
 	}
     }
     return [list $data $next]
-}
-#
-#  ((((((((((((((((VERSION))))))))))))))))
-#
-#;>
-# Verifie que l'on peu plugger shop avec le numero ver retourne ver si OK
-#;<
-proc wokIntegre:Version:Check { fshop ver } {
-    set f [wokIntegre:Version:GetTableName $fshop 1]
-    set l [wokUtils:FILES:FileToList $f]
-    set str [wokinfo -n [wokinfo -s $fshop]]
-    foreach e $l {
-	if { [lindex $e 0] == $str } {
-	    if { [lindex $e 1] != $ver } {
-		msgprint -c WOKVC -e "The shop $str is already registered with number [lindex $e 1]"
-		return {}
-	    } else {
-		return $ver
-	    }
-	}
-    }
-    set mx 0
-    foreach e $l {
-	set n [lindex $e 1]
-	set mx [expr ( $mx > $n ) ? $mx : $n]
-    }
-    foreach e $l {
-	set n [lindex $e 1]
-	if {$ver < $n } {
-	    msgprint -c WOKVC -e "Bad version number. Should be strictly greater than $mx "
-	    return {}
-	}
-	if {$ver == $n } {
-	    msgprint -c WOKVC -e "The version $ver is already assigned to the shop [lindex $e 0]"
-	    return {}
-	}
-    }
-    return $ver
 }

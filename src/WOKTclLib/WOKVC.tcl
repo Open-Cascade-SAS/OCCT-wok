@@ -671,22 +671,27 @@ proc wokGetUsage { } {
 	    {
 	Usage:
 	
-	wget  [-f] [-ud <udname>] <filename> [-v <version>]
-	wget  [-f] [-ud <udname>] <filename_1> ... <filename_N>
-	
-	-ud     : Keyword used to specify a unit name
+	wget  -wb wbnam [-f] [-ud <udname>] <filename> [-v <version>]
+	wget  -wb wbnam [-f] [-ud <udname>] <filename_1> ... <filename_N>
 
-	-wb     : Specify the workbench repository to copy from.
+	-wb     : Specify the workbench to copy from. This option is mandatory.
+                  If the specified workbench has a repository attached to, the file(s)
+                  are getted from there. In this case and if only one file is selected
+                  then option -v can specify the version you want to get.
+                  If the specified workbench has no repository attahec to, the file(s)
+                  are directly copied form the specified workbench.
 
-	-f      : Force files to be overwritten if they already exist.
+	-ud     : Specify a unit name. If it does not exist in the current workbench it is
+                  created with the same type than in the origin workbench.
 
-	wget -l : List "gettable" files for the current unit (default)
+	-f      : Force files to be overwritten if they already exist in the current
+                  unit..
+
+	wget -l : List "gettable" files for the current unit 
 
     }
     return
 }
-
-
 #
 # Point d'entree de la commande
 #
@@ -700,7 +705,6 @@ proc wget { args } {
     set tblreq(-V)      {}
     set tblreq(-v)      value_required:string
     set tblreq(-ud)     value_required:string
-    set tblreq(-r)      value_required:string
     set tblreq(-wb)     value_required:string
     
     set param {}
@@ -708,39 +712,26 @@ proc wget { args } {
 
     set VERBOSE [info exists tabarg(-V)]
 
-    ;# recup 1 er workbench dans l'arbre"
-    ;#
+    if [info exists tabarg(-h)] {
+	wokGetUsage
+	return
+    }
 
     if [info exists tabarg(-wb)] {
 	set fromwb $tabarg(-wb)
     } else {
-	msgprint -c WOKVC -e "Option -from is required."
-	return
-    }
-
-
-    if { "[wokinfo -t [wokinfo -w $fromwb]]" == "workbench" } {
-	if { [wokStore:Report:SetQName $fromwb] == {} } {	
-	    msgprint -c WOKVC -e "$fromwb has no repository. Copying from workbench $fromwb."
-	    set directcp 1
-	}
-    } else {
-	msgprint -c WOKVC -e "$fromwb is not a workbench. Nothing done."
+	msgprint -c WOKVC -e "Option -wb is required."
 	return
     }
     
 
     set workbench [wokinfo -n [wokinfo -w [wokcd]]]
     if { "[wokinfo -n [wokinfo -w $fromwb]]" == "$workbench" } {
-	msgprint -c WOKVC -e "Cannot piss on my foot"
+	msgprint -c WOKVC -e "Cannot get from current workbench"
 	return
     }
 
     set fshop [wokinfo -s [wokcd]]
-
-    if { $VERBOSE } {
-	puts "Copying from $fromwb "
-    }
 
     if [info exists tabarg(-ud)] {
 	set ud $tabarg(-ud)
@@ -762,17 +753,74 @@ proc wget { args } {
 	catch {unset listbase}
     }
 
-    if { [set BTYPE [wokIntegre:BASE:InitFunc]] == {} } {
-	return -1
-    }
 
-    if { ![file exists [set broot [wokIntegre:BASE:GetRootName]]] } {
-	msgprint -c WOKVC -e "The repository does not exists."
-	return -1
+    if { "[wokinfo -t [wokinfo -w $fromwb]]" != "workbench" } {
+	msgprint -c WOKVC -e "$fromwb is not a workbench. Nothing done."
+	return
     }
+    
+    if { [wokStore:Report:SetQName $fromwb] != {} } {	
+	if { [set BTYPE [wokIntegre:BASE:InitFunc]] == {} } {
+	    return -1
+	}
+	if { ![file exists [set broot [wokIntegre:BASE:GetRootName]]] } {
+	    msgprint -c WOKVC -e "The repository does not exists."
+	    return -1
+	}
+	wokGetbase
+	return
+    } else {
+	if [info exists version] {
+	    msgprint -c WOKVC -w "Option -v ignored in this context"
+	}
+	wokGetcopy
+	return
+    }
+}
+;#
+;#
+;#
+proc wokGetcopy { } {
+    uplevel {
+	if [wokinfo -x ${fromwb}:$ud] {
+	    set listfileinbase [uinfo -f -Tsource ${fromwb}:$ud]
+	} else {
+	    set listfileinbase {}
+	}
+	
+	if [info exists listbase] {
+	    if { $param == {} } { 
+		foreach f [wokUtils:LIST:GM $listfileinbase *] {
+		    puts $f
+		}
+	    } else {
+		foreach f [wokUtils:LIST:GM $listfileinbase $param] {
+		    puts $f
+		}
+	    }
+	    return
+	}
+	
+	if { [set RES [wokUtils:LIST:GM $listfileinbase $param]]  == {} } {
+	    msgprint -c WOKVC -e "No match for $param in unit ${fromwb}:$ud. "
+	    return
+	}
+	if { ![wokinfo -x ${workbench}:$ud] } {
+	    ucreate ${workbench}:${ud}
+	}
+	
+	set from [wokinfo -p source:. ${fromwb}:${ud}]
+	set to [wokinfo -p source:. ${workbench}:${ud}]
 
-    wokGetbase
-    return
+	foreach e $RES {
+	    if { [file exists [file join $to $e]] } {
+		msgprint -c WOKVC -w "Renamed [file join $to $e] [file join $to $e]-sav"
+		frename [file join $to $e] [file join $to $e]-sav
+	    }
+	    if { $VERBOSE } { msgprint -c WOKVC -i "Copying [file join $from $e] to [file join $to $e]" } 
+	    wokUtils:FILES:copy [file join $from $e] [file join $to $e]
+	}
+    }
 }
 ;#
 ;# 
