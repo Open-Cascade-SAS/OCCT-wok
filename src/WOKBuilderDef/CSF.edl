@@ -69,6 +69,7 @@
       @string %CSF_dpsLibs = "-L" %X11_LIB " -ldps" ;
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
+      @string %CSF_MotifLibs = "-L" %MOTIF_LIB " -lXm -L"%X11_LIB " -lXt -lX11 " ;
 
       @set %CSF_TclLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltcl7.5i"; 
       @set %CSF_TclTkLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltk4.1i"; 
@@ -102,6 +103,7 @@
       @set %CSF_dpsLibs = "-L/usr/lib32 -ldps" ;
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
+      @string %CSF_MotifLibs = " -lXm -lXt -lX11 " ;
 
       @set %CSF_TclLibs = "-L/usr/tcltk.64/lib -rpath /usr/tcltk.64/lib -ltcl7.5i"; 
       @set %CSF_TclTkLibs = "-L/usr/tcltk.64/lib -rpath /usr/tcltk.64/lib -ltk4.1i"; 

@@ -332,6 +332,8 @@
             ) is
   $C++ compiler: \^
   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+  $ -I/PRODUCTS/java1.2.2/include         \
+  $ -I/PRODUCTS/java1.2.2/include/irix \
   $%IncDirectives %DBDirectives -MDupdate -c <Source.cxx> -o <Object.o>
   @end;
 
@@ -341,6 +343,8 @@
              %BaseName, %OutputDir, %TmpFile
             ) is
   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+  $ -I/PRODUCTS/java1.2.2/include         \
+  $ -I/PRODUCTS/java1.2.2/include/irix \
   $ %IncDirectives %DBDirectives -MDupdate %TmpFile \
   $  -c %Source -o %OutputDir/%BaseName.o
   $set stat = $status
@@ -591,7 +595,7 @@
   @set %CMPLRS_F77_Options = "-fPIC";
 
   @set %CMPLRS_C_Command = "/usr/bin/gcc -fPIC";
-  @set %CMPLRS_C_Options = "-DLIN -DLININTEL -DCSFDB -funsigned-char -Wall";
+  @set %CMPLRS_C_Options = " -DLIN -DLININTEL -DCSFDB -funsigned-char -Wall";
 
   @template CMPLRS_C_OptLine (
              %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives
@@ -617,7 +621,7 @@
   @end;
 
   @set %CMPLRS_CXX_Command = "/usr/bin/g++ -fPIC";
-  @set %CMPLRS_CXX_Options = "-DLIN -DLININTEL -DCSFDB -DNO_CXX_EXCEPTION -funsigned-char -Wall";
+  @set %CMPLRS_CXX_Options = " -DLIN -DLININTEL -DCSFDB -DNO_CXX_EXCEPTION -funsigned-char -Wall";
 
   @template CMPLRS_CXX_OptLine (
              %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
@@ -636,6 +640,7 @@
             ) is
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options \^
    $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \^
+   $-I/PRODUCTS/java/jdk1.2.2/include \^
    $-I/PRODUCTS/java/jdk1.2.2/include/linux \^
    $%IncDirectives %DBDirectives -H  \^
    $-c %Source -o %OutputDir/%BaseName.o >& %TmpFile
@@ -659,8 +664,8 @@
 
  @if ( %Station == "aix" ) then
   @if ( %DebugMode == "True" ) then
-   @set %CMPLRS_CXX_ModeOpt = "-g0 -DDEB -D_DEBUG";
-   @set %CMPLRS_C_ModeOpt   = "-g0 -DDEB -D_DEBUG";
+   @set %CMPLRS_CXX_ModeOpt = "-g -DDEB -D_DEBUG";
+   @set %CMPLRS_C_ModeOpt   = "-g -DDEB -D_DEBUG";
    @set %CMPLRS_F77_ModeOpt = "-g  -DDEB -D_DEBUG";
   @else
    @set %CMPLRS_CXX_ModeOpt = "-O2 ";
@@ -714,6 +719,7 @@
             ) is
    $C++ compiler: \^
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+  $ -I/usr/java_dev2/include \
    $%IncDirectives %DBDirectives -c <Source.cxx> -o <Object.o> > &<tmp_file>
   @end;
 
@@ -722,17 +728,20 @@
              %CMPLRS_CXX_DBMSOpt, %IncDirectives, %DBDirectives, %Source,
              %BaseName, %OutputDir, %TmpFile
             ) is
+   $cd %OutputDir
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options \^
+   $-I/usr/java_dev2/include \
    $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives  \^
-   $-c %Source -o %OutputDir/%BaseName.o >& %TmpFile
+   $-M  -c %Source -o %OutputDir/%BaseName.o 
    $set stat = $status
    $if ( $stat == 0 ) then
-   $ sed -e 's/ //g' -e '/:/d' %TmpFile | sort -u > %OutputDir/%BaseName.m
+   $ sed   -e 's#%OutputDir/%BaseName.o:##g' %BaseName.u | sort -u > %OutputDir/%BaseName.m
    $endif
-   $if( -e %TmpFile ) grep ':' %TmpFile
-   $/bin/rm -f %TmpFile
+   $/bin/rm -f %BaseName.u
    $set status = $stat
   @end;
+
+
  @endif;
 
  @if (  defined( %UnitType )  )  then
