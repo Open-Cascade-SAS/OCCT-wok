@@ -22,7 +22,7 @@
 @if ( %Station != "wnt" ) then
 	@template WOKSteps_Dummy_Include ( %FilePath ) is
 	 $ /bin/rm -f %FilePath
-	 $ echo '#error %FilePath has disappeared' > %FilePath
+---##POP	 $ echo '#error %FilePath has disappeared' > %FilePath
 	@end;
 
 	@template WOKSteps_Save_File     ( %FilePath ) is

@@ -33,9 +33,8 @@
  @set %WOKSteps_jini_LinksWith    = "";
  @set %WOKSteps_toolkit_LinksWith      = " obj.lib ";
 
-  @set %WOKSteps_toolkit_ListWith       = " obj.comp ";
+ @set %WOKSteps_toolkit_ListWith       = " obj.comp ";
 
-	
   @set %WOKSteps_delivery_cdl_list_steps = "src";
   @set %WOKSteps_delivery_cdl_list_extensions = ".cdl";
   @set %WOKSteps_delivery_inc_list_steps = "xcpp.sch";
