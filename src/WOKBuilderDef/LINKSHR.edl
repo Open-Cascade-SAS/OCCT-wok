@@ -4,51 +4,48 @@
 -- Copyright:	 Matra Datavision 1996
 
 @ifnotdefined ( %LINKSHR_EDL ) then
-@set %LINKSHR_EDL = "";
+ @set %LINKSHR_EDL = "";
 
-@ifnotdefined ( %LDSHR_EDL ) then
+ @ifnotdefined ( %LDSHR_EDL ) then
   @uses "LDSHR.edl";
-@endif;
+ @endif;
 
-@set %LINKSHR_Header          = "LINKSHR_Header";
-@set %LINKSHR_ObjectRef       = "LD_ObjectRef";
-@set %LINKSHR_ShortRef        = "LD_ShortRef";
-@set %LINKSHR_LongRef         = "LD_LongRef";
-@set %LINKSHR_SharedFullPath  = "LD_SharedFullPath";
-@set %LINKSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
-@set %LINKSHR_ExternRef       = "LD_ExternRef";
-@set %LINKSHR_Footer          = "LD_Footer";
-
-@if ( %Station == "sun" ) then
+ @set %LINKSHR_Header          = "LINKSHR_Header";
+ @set %LINKSHR_ObjectRef       = "LD_ObjectRef";
+ @set %LINKSHR_ShortRef        = "LD_ShortRef";
+ @set %LINKSHR_LongRef         = "LD_LongRef";
+ @set %LINKSHR_SharedFullPath  = "LD_SharedFullPath";
+ @set %LINKSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
+ @set %LINKSHR_ExternRef       = "LD_ExternRef";
+ @set %LINKSHR_Footer          = "LD_Footer";
+ 
+ @if ( %Station == "sun" ) then
   @set %LINKSHR_DBMSOpt = "-mt";
-@else
+ @else
   @set %LINKSHR_DBMSOpt = "";
-@endif;
+ @endif;
 
-@if ( %Station != "hp" ) then
+ @if ( %Station != "hp" ) then
   @template LINKSHR_FileName ( %LINKSHR_LibName ) is
    $lib%LINKSHR_LibName.so\^
   @end;
-@endif;
+ @endif;
 
-@if ( %Station == "hp" ) then
+ @if ( %Station == "hp" ) then
   @template LINKSHR_FileName ( %LINKSHR_LibName ) is
    $lib%LINKSHR_LibName.sl\^
   @end;
-@endif;
+ @endif;
 
+ @template LINKSHR_ArchiveFullPath ( %LibDir, %LibName ) is
+ $ -all %LibDir/lib%LibName.a -none \
+ @end;
 
-@template LINKSHR_ArchiveFullPath ( %LibDir, %LibName ) is
-$ -all %LibDir/lib%LibName.a -none \
-@end;
-
-@if( %Station == "sun" ) then 
-
+ @if( %Station == "sun" ) then 
   @set %LINKSHR_Footer          = "LINKSHR_Footer";
-
   @set %LINKSHR_ArchiveFullPath = "LINKSHR_ArchiveFullPath";
 
-  @template LINKSHR_ArchiveFullPath ( ) is
+  @template LINKSHR_ArchiveFullPath () is
    $\^
   @end;
 
@@ -56,24 +53,45 @@ $ -all %LibDir/lib%LibName.a -none \
    $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8  -G %LINKSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LINKSHR_Footer ( ) is
+  @template LINKSHR_Footer () is
     $ -lC -lc ;
+    $ set ld_status=$status;
+    $ if ( $?LD_LIBRARY_PATH ) then
+    $  set ld_library_path=$LD_LIBRARY_PATH
+    $ endif
   @end;
 
-@endif;
+  @template LINKSHR_CheckUndefHeader (
+             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH
+            ) is 
+   $if ( $?LD_LIBRARY_PATH ) then
+   $ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:%LD_LIBRARY_PATH
+   $else
+   $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
+   $endif
+   $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8 %LINKSHR_DBMSOpt -o /dev/null \
+  @end;
 
-@if( %Station == "ao1") then
+  @template LINKSHR_CheckUndefFooter () is
+    $ -lC -lc ;
+    $ set status=$ld_status
+    $ if ( $?ld_library_path ) then
+    $  setenv LD_LIBRARY_PATH $ld_library_path
+    $ else
+    $  unsetenv LD_LIBRARY_PATH
+    $ endif
+  @end;
+ @endif;
 
+ @if( %Station == "ao1") then
   @set %LINKSHR_LibLimit = "300";
 
   @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName ) is 
    $cxx -shared %LINKSHR_DBMSOpt -msym -o %Target -soname %LogicalName \
   @end;
+ @endif;
 
-@endif;
-
-@if( %Station == "sil" ) then
-
+ @if( %Station == "sil" ) then
   @set %LINKSHR_ObjectRef       = "LINKSHR_ObjectRef";
 
   @template LINKSHR_ObjectRef ( %ObjectPath ) is
@@ -85,56 +103,63 @@ $ -all %LibDir/lib%LibName.a -none \
    $  -all -objectlist %LD_ObjList -none \
   @end;
 
-@endif;
+  @template LINKSHR_CheckUndefHeader ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList ) is
+   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %LINKSHR_DBMSOpt -o /dev/null \
+   $  -all -objectlist %LD_ObjList -none \
+  @end;
 
-@if( %Station == "hp" ) then
+  @template LINKSHR_CheckUndefFooter () is
+    $ ;
+  @end;
+ @endif;
 
+ @if( %Station == "hp" ) then
   @set %LINKSHR_Footer          = "LINKSHR_Footer";
   @set %LINKSHR_ObjectRef       = "LINKSHR_ObjectRef";
 
   @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LD_ObjList, %LogicalName ) is
-    $\mv %LD_ObjList %LD_ObjList.o
-    $/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b -o %Target  \
-    $-Wl,-c%LD_ObjList.o \
+   $\mv %LD_ObjList %LD_ObjList.o
+   $/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b -o %Target  \
+   $-Wl,-c%LD_ObjList.o \
   @end;
 
   @template LINKSHR_Footer (%LD_ObjList) is
-    $;
-    $set lnk_status = $status
-    $\mv %LD_ObjList.o %LD_ObjList;
-    $set status = $lnk_status
+   $;
+   $set lnk_status = $status
+   $\mv %LD_ObjList.o %LD_ObjList;
+   $set status = $lnk_status
   @end;
 
   @template LINKSHR_ObjectRef () is
-    $\^
+   $\^
+  @end;
+ @endif;
+
+ @if ( %Station == "lin" ) then
+  @set %LINKSHR_Footer          = "LINKSHR_Footer";
+  @set %LINKSHR_ArchiveFullPath = "LINKSHR_ArchiveFullPath";
+
+  @template LINKSHR_ArchiveFullPath () is
+   $\^
   @end;
 
-@endif;
+  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ) is
+   $/usr/bin/g++ -shared %LINKSHR_DBMSOpt -o %Target \
+  @end;
 
-@if ( %Station == "lin" ) then
- @set %LINKSHR_Footer          = "LINKSHR_Footer";
- @set %LINKSHR_ArchiveFullPath = "LINKSHR_ArchiveFullPath";
+  @template LINKSHR_Footer () is
+   $ ;
+   $ set ld_status=$status;
+  @end;
 
- @template LINKSHR_ArchiveFullPath ( ) is
-  $\^
- @end;
+  @template LINKSHR_CheckUndefHeader ( %Target, %LINKSHR_DBMSOpt ) is
+   $/usr/bin/g++ -nostartfiles %LINKSHR_DBMSOpt -o /dev/null \
+  @end;
 
- @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ) is
-  $/usr/bin/g++ -shared %LINKSHR_DBMSOpt -o %Target \
- @end;
-
- @template LINKSHR_Footer ( ) is
-  $ ;
- @end;
-
- @template LINKSHR_CheckUndefHeader ( %Target, %LINKSHR_DBMSOpt ) is
-  $/usr/bin/g++ -nostartfiles %LINKSHR_DBMSOpt -o /dev/null \
- @end;
-
- @template LINKSHR_CheckUndefFooter ( ) is
-  $ ;
- @end;
-
-@endif;
+  @template LINKSHR_CheckUndefFooter () is
+   $ ;
+   $ set status=$ld_status;
+  @end;
+ @endif;
 @endif;
 

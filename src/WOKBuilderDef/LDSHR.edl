@@ -4,53 +4,45 @@
 -- Copyright:	 Matra Datavision 1996
 
 @ifnotdefined ( %LDSHR_EDL ) then
-@set %LDSHR_EDL = "";
+ @set %LDSHR_EDL = "";
 
-@ifnotdefined ( %LD_EDL ) then
+ @ifnotdefined ( %LD_EDL ) then
   @uses "LD.edl";
-@endif;
+ @endif;
 
-@set %LDSHR_Header          = "LDSHR_Header";
-@set %LDSHR_ObjectRef       = "LD_ObjectRef";
-@set %LDSHR_ShortRef        = "LD_ShortRef";
-@set %LDSHR_LongRef         = "LD_LongRef";
-@set %LDSHR_SharedFullPath  = "LD_SharedFullPath";
-@set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
-@set %LDSHR_ExternRef       = "LD_ExternRef";
-@set %LDSHR_Footer          = "LD_Footer";
+ @set %LDSHR_Header          = "LDSHR_Header";
+ @set %LDSHR_ObjectRef       = "LD_ObjectRef";
+ @set %LDSHR_ShortRef        = "LD_ShortRef";
+ @set %LDSHR_LongRef         = "LD_LongRef";
+ @set %LDSHR_SharedFullPath  = "LD_SharedFullPath";
+ @set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
+ @set %LDSHR_ExternRef       = "LD_ExternRef";
+ @set %LDSHR_Footer          = "LD_Footer";
 
-@if ( ( %DBMS == "OBJS" ) && ( %Station == "sun" ) ) then
-
+ @if ( ( %DBMS == "OBJS" ) && ( %Station == "sun" ) ) then
   @set %LDSHR_DBMSOpt = "-mt";
-
-@else
-
+ @else
   @set %LDSHR_DBMSOpt = "";
+ @endif;
 
-@endif;
-
-
-@if ( %Station != "hp" ) then
+ @if ( %Station != "hp" ) then
   @template LDSHR_FileName ( %LDSHR_LibName ) is
    $lib%LDSHR_LibName.so\^
   @end;
-@endif;
+ @endif;
 
-@if ( %Station == "hp" ) then
+ @if ( %Station == "hp" ) then
   @template LDSHR_FileName ( %LDSHR_LibName ) is
    $lib%LDSHR_LibName.sl\^
   @end;
-@endif;
+ @endif;
 
+ @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
+ $ -all %LibDir/lib%LibName.a -none \
+ @end;
 
-@template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
-$ -all %LibDir/lib%LibName.a -none \
-@end;
-
-@if( %Station == "sun" ) then 
-
+ @if( %Station == "sun" ) then 
   @set %LDSHR_Footer          = "LDSHR_Footer";
-
   @set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
 
   @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
@@ -61,41 +53,47 @@ $ -all %LibDir/lib%LibName.a -none \
    $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8 -G %LDSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LDSHR_Footer ( ) is
-    $ -lC -lc ;
+  @template LDSHR_Footer () is
+   $ -lC -lc ;
+   $ set ld_status=$status; 
   @end;
 
-@endif;
+  @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+   $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8 %LDSHR_DBMSOpt -o %Target \
+  @end;
 
-@if( %Station == "ao1") then
+  @template LDSHR_CheckUndefFooter () is
+   $ -lC -lc ;
+   $ set status=$ld_status;
+  @end;
+ @endif;
 
+ @if( %Station == "ao1") then
   @set %LDSHR_LibLimit = "1";
 
   @template LDSHR_Header ( %LDSHR_DBMSOpt, %Target, %LogicalName ) is 
    $cxx -shared %LDSHR_DBMSOpt -msym -o %Target -soname %LogicalName -expect_unresolved '*' \
   @end;
+ @endif;
 
-@endif;
-
-@if( %Station == "sil" ) then
-
-  @set %LDSHR_ObjectRef       = "LDSHR_ObjectRef";
-
-  @template LDSHR_ObjectRef ( %ObjectPath ) is
-   $\^
-  @end;
-
+ @if( %Station == "sil" ) then
   @template LDSHR_Header ( %LDSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList ) is
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -ignore_unresolved -shared %LDSHR_DBMSOpt -o %Target -soname %LogicalName \
-   $  -all -objectlist %LD_ObjList -none \
+   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -ignore_unresolved -shared %LDSHR_DBMSOpt -o %Target \
+   $  -all -none \
   @end;
 
-@endif;
+  @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %LDSHR_DBMSOpt -o %Target -soname %LogicalName \
+  @end;
 
-@if( %Station == "hp" ) then
+  @template LDSHR_CheckUndefFooter () is
+   $ ;
+  @end;
+ @endif;
 
-  @set %LDSHR_Footer          = "LDSHR_Footer";
-  @set %LDSHR_ObjectRef       = "LDSHR_ObjectRef";
+ @if( %Station == "hp" ) then
+  @set %LDSHR_Footer    = "LDSHR_Footer";
+  @set %LDSHR_ObjectRef = "LDSHR_ObjectRef";
 
   @template LDSHR_Header ( %LDSHR_DBMSOpt,  %LD_ObjList, %Target, %LogicalName ) is
     $\mv %LD_ObjList %LD_ObjList.o
@@ -114,38 +112,36 @@ $ -all %LibDir/lib%LibName.a -none \
     $\^
   @end;
 
-
   @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
    $ -Wl,-Fl%LibDir/lib%LibName.a \
   @end;
+ @endif;
 
-@endif;
+ @if ( %Station == "lin" ) then
+  @set %LDSHR_Footer          = "LDSHR_Footer";
+  @set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
 
-@if ( %Station == "lin" ) then
- @set %LDSHR_Footer          = "LDSHR_Footer";
- @set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
+  @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
+   $\^
+  @end;
 
- @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
-  $\^
- @end;
+  @template LDSHR_Header ( %Target, %LDSHR_DBMSOpt ) is
+   $/usr/bin/g++ -shared %LDSHR_DBMSOpt -o %Target \
+  @end;
 
- @template LDSHR_Header ( %Target, %LDSHR_DBMSOpt ) is
-  $/usr/bin/g++ -shared %LDSHR_DBMSOpt -o %Target \
- @end;
+  @template LDSHR_Footer () is
+   $ ;
+   $ set ld_status=$status;
+  @end;
 
- @template LDSHR_Footer ( ) is
-  $ ;
- @end;
+  @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+   $/usr/bin/g++ -nostartfiles %LDSHR_DBMSOpt -o %Target \
+  @end;
 
- @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
-  $/usr/bin/g++ -nostartfiles %LDSHR_DBMSOpt -o %Target \
- @end;
-
- @template LDSHR_CheckUndefFooter ( ) is
-  $ ;
- @end;
-
-@endif;
-
+  @template LDSHR_CheckUndefFooter () is
+   $ ;
+   $ set status=$ld_status;
+  @end;
+ @endif;
 @endif;
 
