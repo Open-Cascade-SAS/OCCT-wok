@@ -43,7 +43,8 @@ extern "C" int   numFileDesc;
 #endif  // WNT
 
 extern "C" {
-  void EDLerror(char* err,char *arg) {
+//  void EDLerror(char* err,char *arg) {
+  void EDLerror(char* ,char *) {
     EDL::PrintError(EDL_SYNTAXERROR," ");
     Standard_NullObject::Raise();
   }
