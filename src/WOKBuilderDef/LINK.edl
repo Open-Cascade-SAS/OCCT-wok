@@ -27,7 +27,8 @@
  @set %LINK_ExeType = "CONSOLE";
 
 -- Set %LINK_NoDefStub if you do not want tu link with stub objects
- 
+   @set %LINK_NoDefStub = " ";
+
 
 
  @set %LINK_LinkerPDBOption = " -pdb:";

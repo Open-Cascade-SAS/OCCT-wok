@@ -139,31 +139,31 @@ $%File.Z\^
 
 
 @template COMMAND_Copy ( %Source, %Dest )  is
-$ wokCP %Source %Dest 
+$ @cp.exe %Source %Dest 
 @end;
 
 @template COMMAND_PreserveCopy ( %Source, %Dest )  is
-$ wokCP -p %Source %Dest 
+$ @cp.exe -p %Source %Dest 
 @end;
 
 @template COMMAND_PreserveCopyAndChmod ( %Source, %Dest )  is
-$ wokCP -p %Source %Dest;
+$ @cp.exe -p %Source %Dest;
 @end;
 
 @template COMMAND_PreserveCopyAndChmodExecute ( %Source, %Dest )  is
-$ wokCP -p %Source %Dest;
+$ @cp.exe -p %Source %Dest;
 @end;
 
 @template COMMAND_CopyAndChmod ( %Source, %Dest )  is
-$ wokCP -p %Source %Dest;
+$ @cp.exe -p %Source %Dest;
 @end;
 
 @template COMMAND_CopyAndChmodRecursive ( %Source, %Dest )  is
-$ wokCP -pr %Source %Dest;
+$ @cp.exe -pr %Source %Dest;
 @end;
 
 @template COMMAND_Move ( %Source, %Dest )  is
-$ wokMV %Source %Dest 
+$ @mv.exe %Source %Dest 
 @end;
 
 @template COMMAND_ReplIfCh ( %Source, %Dest ) is
