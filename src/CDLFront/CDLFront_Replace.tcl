@@ -12,7 +12,7 @@ proc CDLFront_Replace:HandleInputFile { ID } {
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     
     switch $name {
-         step.tab.c  {return 1;} 
+         CDL.tab.c  {return 1;} 
 	default {
 	    return 0;
 	}
@@ -21,7 +21,7 @@ proc CDLFront_Replace:HandleInputFile { ID } {
 
 proc CDLFront_Replace:Execute { unit args } {
     
-    msgprint -i -c "CDLFront_Replace::Execute" "Copying of CDLFront includes  $unit $args "
+    msgprint -i -c "CDLFront_Replace::Execute" "Copying of CDLFront derivated files  $unit $args "
 
     global tcl_interactive
 
