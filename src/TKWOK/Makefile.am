@@ -48,7 +48,6 @@ libTKWOK_la_SOURCES = \
 DELIVERY.tab.c \
 EDL.cxx \
 EDL.tab.c \
-EDL.tab.c \
 EDL_API.cxx \
 EDL_DataMapIteratorOfMapOfFile_0.cxx \
 EDL_DataMapIteratorOfMapOfLibrary_0.cxx \
