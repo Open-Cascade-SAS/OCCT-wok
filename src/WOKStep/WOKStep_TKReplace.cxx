@@ -365,6 +365,10 @@ Handle(TCollection_HAsciiString) WOKStep_TKReplace::GetTKForUnit(const Handle(TC
   if(mytks.Extent())
     {
       Standard_Integer i, uidx = myuds.FindIndex(aunit);
+      if ( uidx == 0 ) { 
+	// aunit  is not in the list -> certainly a toolkit ; so return aunit
+	result = aunit ;
+      } else {
 
       for(i=mymatrix->LowerRow(); i<=mymatrix->UpperRow(); i++)
 	{
@@ -390,7 +394,10 @@ _TEST_BREAK();
 		}
 	    }
 	}
+      }
+
     }
+
   return result;
 }
 
@@ -413,9 +420,7 @@ Handle(WOKMake_OutputFile) WOKStep_TKReplace::SubstituteInput(const Handle(WOKMa
       Handle(TCollection_HAsciiString) current = TheUnit->Name();
 
       mytreated.Add(current);
-
       Handle(TCollection_HAsciiString) curtk = GetTKForUnit(current);
-
       if(!curtk.IsNull())
 	{
 	  // gerer l'apparition de ce TK
@@ -550,7 +555,7 @@ Handle(WOKMake_OutputFile) WOKStep_TKReplace::SubstituteInput(const Handle(WOKMa
                                                                   afile -> File () -> Nesting ()
                                                                  );
    Handle( TCollection_HAsciiString ) current = TheUnit -> Name ();
-   Handle( TCollection_HAsciiString ) curtk   = GetTKForUnit ( current );
+   Handle( TCollection_HAsciiString ) curtk = GetTKForUnit ( current );
    Handle( TCollection_HAsciiString ) libname = curtk.IsNull () ? current : curtk;
 
    if (  !mytreated.Contains ( libname )  ) {
@@ -605,8 +610,7 @@ _TEST_BREAK();
 #endif  // WNT
 	    {
 	      Handle(WOKernel_DevUnit) TheUnit = Unit()->Session()->GetDevUnit(afile->File()->Nesting());
-	      Handle(TCollection_HAsciiString) atk = GetTKForUnit(TheUnit->Name());
-	      
+	      Handle(TCollection_HAsciiString) atk = TheUnit->Name() ;
 	      if(!atk.IsNull())
 		{
 		  mydirecttks.Add(atk);
