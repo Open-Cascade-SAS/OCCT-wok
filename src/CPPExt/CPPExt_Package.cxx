@@ -185,15 +185,11 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
 
       CPP_BuildMethod(aMeta,api,methods->Value(i),methods->Value(i)->Name());
 
-#ifdef WNT
-      if (  !methods -> Value ( i ) -> IsInline ()  )
-#endif  // WNT
+      if (  !(methods -> Value ( i ) -> IsInline ())  ) {
         api->Apply(VMethod,"MethodTemplateDec");
-#ifdef WNT
-      else
+      } else {
         api->Apply(VMethod,"MethodTemplateDecInlineWNT" );
-#endif  // WNT
-      
+      }
       MS::MethodUsedTypes(aMeta,methods->Value(i),List,incp);
 
       if (methods->Value(i)->Private()) {

@@ -275,15 +275,10 @@ void CPP_TransientClass(const Handle(MS_MetaSchema)& aMeta,
       }
 
       CPP_BuildMethod(aMeta,api,methods->Value(i),methods->Value(i)->Name());
-
-#ifdef WNT
       if (  !methods -> Value ( i ) -> IsInline ()  )
-#endif  // WNT
         api->Apply(VMethod,"MethodTemplateDec");
-#ifdef WNT
       else
         api->Apply(VMethod,"MethodTemplateDecInlineWNT" );
-#endif  // WNT
 
       if (methods->Value(i)->Private()) {
 	privates->AssignCat(api->GetVariableValue(VMethod));
