@@ -4,10 +4,13 @@
 //		<jga@cobrax>
 
 #ifdef WNT
-#include <io.h>
-#else
-#include <stream.h>
-#include <unistd.h>
+# include <io.h>
+#endif
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 #include <WOKTools_Verbose.ixx>

@@ -6,19 +6,27 @@
 #include <WOKTools_BasicMap.ixx>
 #include <TCollection.hxx>
 #include <WOKTools_BasicMapIterator.hxx>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #ifdef WNT
 #include <windows.h>
 #else
-#include <unistd.h>
-#include <memory.h>
+# include <memory.h>
 #endif
 
-#include <malloc.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
-#ifdef LIN
+#ifdef HAVE_MALLOC_H
+# include <malloc.h>
+#endif
+
+#ifdef HAVE_IOMANIP_H
 # include <iomanip.h>
-#endif  // LIN
+#endif
 
 //=======================================================================
 //function : WOKTools_BasicMap

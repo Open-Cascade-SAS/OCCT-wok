@@ -3,9 +3,16 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include <string.h>
 #include <stdlib.h>
-
 
 #include <WOKTools_Options.ixx>
 
@@ -14,7 +21,7 @@
 
 #include <TCollection_AsciiString.hxx>
 
-#if defined( LIN )
+#if defined(HAVE_GETOPT_H) && !defined(HAVE_UNISTD_H)
 # include <getopt.h>
 #elif !defined( WNT )
 extern char *optarg;
@@ -22,7 +29,7 @@ extern int  optind;
 #else
 extern "C" Standard_IMPORT char *optarg;
 extern "C" Standard_IMPORT int   optind;
-extern "C" Standard_IMPORT int   getopt ( int, char**, char* );
+extern "C" Standard_IMPORT int   getopt( int, char**, char* );
 #endif  // WNT
 
 //=======================================================================
@@ -43,7 +50,7 @@ WOKTools_Options::WOKTools_Options(const Standard_Integer argc,
   mydefines = new WOKTools_HSequenceOfDefine;
   myargs    = new TColStd_HSequenceOfHAsciiString;
   myerrflg  = Standard_False;
-#if !defined( WNT ) && !defined( LIN )
+#if !defined( WNT ) && !defined( __GNUC__ )
   optind    = 1;
 #else
   optind    = 0;
