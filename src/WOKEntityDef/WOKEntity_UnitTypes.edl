@@ -10,7 +10,7 @@
 --- Definition des Types d'uds dans un WB
 
 @set    %WOKEntity_UnitTypes  = " package schema interface client engine executable nocdlpack toolkit ";
-@string %WOKEntity_UnitTypes += " resource documentation ccl frontal delivery idl server";
+@string %WOKEntity_UnitTypes += " resource documentation ccl frontal delivery idl server jini ";
 
 
 @set %WOKEntity_package_Key              = "p";
@@ -58,8 +58,8 @@
 @set %WOKEntity_server_Key               = "S";
 @set %WOKEntity_server_LongDescr         = "Corba compliant server";
 
-@set %WOKEntity_environ_Key              = "E";
-@set %WOKEntity_environ_LongDescr        = "Environment definition unit";
+@set %WOKEntity_jini_Key               = "j";
+@set %WOKEntity_jini_LongDescr         = "Java Native Interface";
 
 
 
