@@ -7,6 +7,7 @@
 #include <Standard_SStream.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Macro.hxx>
 
 #include <OSD.hxx>
 
@@ -152,9 +153,9 @@ int Wok_Init(WOKTclTools_PInterp interp)
   }
   catch(Standard_Failure) {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
-    strstream astream;
+    Standard_SStream astream;
     astream << E << ends;
-    ErrorMsg << "WOKTCL_AppInit" << "Exception was raised : " << astream.str() << endm;
+    ErrorMsg << "WOKTCL_AppInit" << "Exception was raised : " << GetSString(astream) << endm;
     WOKUtils_ProcessManager::UnArm();
     return TCL_ERROR;
   }
