@@ -4,61 +4,131 @@
 -- Copyright:	 Matra Datavision 1996
 
 @ifnotdefined ( %CSF_EDL) then
-@set %CSF_EDL = "";
+   @set %CSF_EDL = "";
 
-@set %CSF_SOCKETLibs  = "";
+   @set %CSF_SOCKETLibs  = "";
+   @set %CSF_RISCRETURNObject = "" ;
+   @set %CSF_FPELibs = "" ;
 
-@set %CSF_OODBLibs = "";
-@set %CSF_STANDARDDB = "StandardTRAN";
+   @set %CSF_advapi32 = "" ;
+   @set %CSF_gdi32 = "" ;
+   @set %CSF_user32 = "" ;
+   @set %CSF_glu32 = "" ;
+   @set %CSF_opengl32 = "" ;
+   @set %CSF_wsock32 = "" ;
+   @set %CSF_dpsLibs = "" ;
 
-@ifnotdefined ( %DBMS ) then
-  @set %DBMS = "DFLT";
+   @set %CSF_TclLibs = "" ;
+   @set %CSF_TclTkLibs = "" ;
+
+   @set %CSF_OODBLibs = "";
+   @set %CSF_STANDARDDB = "StandardTRAN";
+
+   @ifnotdefined ( %DBMS ) then
+     @set %DBMS = "DFLT";
+   @endif;
+
+   @if ( %DBMS == "DFLT") then
+      @set %CSF_STANDARDDB = "StandardCSFDB";
+   @endif;
+
+   @if ( %DBMS == "OBJY" ) then
+      @set %CSF_STANDARDDB = "StandardOBJY";
+   @endif;
+
+   @if ( %DBMS == "OBJS" ) then
+      @set %CSF_STANDARDDB = "StandardOBJS";
+   @endif;
+
+   @if ( %Station == "sun" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
+      @endif;
+
+      @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl" ;
+      @set %CSF_RISCRETURNObject = "/adv_23/KL/dev/ref/src/EngineStarter/risc_return.o" ;
+
+      @set %PHIGS_LIB = "/opt/SUNWits/Graphics-sw/sunphigs-3.0/lib";
+      @set %XGL_LIB   = "/opt/SUNWits/Graphics-sw/xgl-3.0/lib";
+      @set %MOTIF_LIB = "/usr/dt/lib";
+
+      @set %X11_LIB   = "/usr/openwin/lib";
+      @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+      @set %CSF_dpsLibs = "-ldps" ;
+
+      @set %CSF_TclLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltcl7.5i"; 
+      @set %CSF_TclTkLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltk4.1i"; 
+   @endif;
+
+   @if ( %Station == "ao1" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+      @endif;
+
+      @set %X11_LIB = "/usr/shlib";
+      @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+      @set %CSF_dpsLibs = "-ldps" ;
+
+      @set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+   @endif;
+
+   @if ( %Station == "sil" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.3/lib/ -los -losths -loscol -losmop";
+      @endif;
+
+      @set %CSF_FPELibs = "-L/usr/lib32 -lfpe" ;
+
+      @set %X11_LIB = "/usr/lib32";
+      @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+      @set %CSF_dpsLibs = "-ldps" ;
+
+      @set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+   @endif;
+
+   @if ( %Station == "hp" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+      @endif;
+
+      @set %XMU_LIB = "/usr/contrib/X11R6/lib";
+
+      @set %X11_LIB = "/usr/lib/X11R6";
+      @string %CSF_XwLibs = "-L" %X11_LIB " -L" %XMU_LIB " -lX11 -lXext -lXmu";
+
+      @set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+   @endif;
+
+@if (%Station == "wnt") then
+
+   @set %CSF_advapi32 = "advapi32.lib" ;
+   @set %CSF_gdi32 = "gdi32.lib" ;
+   @set %CSF_user32 = "user32.lib" ;
+   @set %CSF_glu32 = "glu32.lib" ;
+   @set %CSF_opengl32 = "opengl32.lib" ;
+   @set %CSF_wsock32 = "wsock32.lib" ;
+
+   @set %X11_LIB = "";
+
+   @string %CSF_XwLibs  = "";
+
+   @set %CSF_TclLibs = "D:/DevTools/TclTk/lib/tcl76i.lib";
+
 @endif;
 
-@set %CSF_SOCKETLibs  = "";
+   @if ( %Station == "lin" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = "";
+      @endif;
 
-@if ( %DBMS == "DFLT") then
-@set %CSF_STANDARDDB = "StandardCSFDB";
-@endif;
+      @set %CSF_SOCKETLibs = " -ldl" ;
 
-@if ( %DBMS == "OBJY" ) then
-	@set %CSF_STANDARDDB = "StandardOBJY";
-@endif;
+      @set %X11_LIB = "/usr/X11R6/lib";
+      @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lMesaGL -lMesaGLU -lglut -lXi";
 
-@if ( %DBMS == "OBJS" ) then
-	@set %CSF_STANDARDDB = "StandardOBJS";
-@endif;
-
-@if ( %Station == "sun" ) then
-	@if ( %DBMS == "OBJS" ) then
-		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
-	@endif;
-	@set %CSF_SOCKETLibs  = " -lsocket -lnsl";
-	@set %CSF_TclLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltcl7.5i"; 
-@endif;
-
-
-
-@if ( %Station == "ao1" ) then
-	@if ( %DBMS == "OBJS" ) then
-		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
-	@endif;
-	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
-@endif;
-
-@if ( %Station == "sil" ) then
-	@if ( %DBMS == "OBJS" ) then
-		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.3/lib/ -los -losths -loscol -losmop";
-	@endif;
-	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
-@endif;
-
-@if ( %Station == "hp" ) then
-	@if ( %DBMS == "OBJS" ) then
-		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
-	@endif;
-	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
-@endif;
+      @set %CSF_TclLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltcl8.0"; 
+      @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0";
+   @endif;
 
 
 @endif;

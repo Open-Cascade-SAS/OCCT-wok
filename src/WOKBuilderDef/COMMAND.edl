@@ -15,12 +15,16 @@
   @set %COMMAND_CMPCmd = "/usr/bin/cmp";
 @endif;
 
-@if ( %Station == "hp" ) then
+@if ( %Station == "hp" || %Station == "lin") then
   @set %COMMAND_CPCmd = "/bin/cp";
   @set %COMMAND_CHMODCmd = "/bin/chmod";
   @set %COMMAND_MVCmd = "/bin/mv";
   @set %COMMAND_RMCmd = "/bin/rm";
-  @set %COMMAND_CMPCmd = "/bin/cmp";
+  @if ( %Station == "hp" ) then
+    @set %COMMAND_CMPCmd = "/bin/cmp";
+  @else
+    @set %COMMAND_CMPCmd = "/usr/bin/cmp";
+  @endif;
 @endif;
 
 

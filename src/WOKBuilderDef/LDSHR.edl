@@ -135,7 +135,7 @@
   @end;
 
   @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
-   $/usr/bin/g++ -nostartfiles %LDSHR_DBMSOpt -o %Target \
+   $/usr/bin/ld -nostartfiles %LDSHR_DBMSOpt -o %Target \
   @end;
 
   @template LDSHR_CheckUndefFooter () is
