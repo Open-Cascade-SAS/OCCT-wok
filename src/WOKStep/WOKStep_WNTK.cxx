@@ -164,7 +164,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 	   return;
 	 }
 
-       if( !(WOKernel_IsPackage(unit) || WOKernel_IsNocdlpack(unit) || WOKernel_IsDelivery(unit))) 
+       if( !(WOKernel_IsPackage(unit) || WOKernel_IsNocdlpack(unit) || WOKernel_IsDelivery(unit) || WOKernel_IsClient(unit) || WOKernel_IsSchema ( unit ))) 
 	 {
 	   ErrorMsg << "WOKStep_WNTK::Execute"
 		    << "Unit " << aStr << " of type " << unit->Type()
