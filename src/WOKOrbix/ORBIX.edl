@@ -34,7 +34,7 @@ $ -I%IncDirectory \
   @string %ORBIX_IDL_Options += " -DSOLARIS";
   -- Options liees aux BDs Objet
   @if ( %DBMS == "OBJS" ) then
-    @set %DBMSOpt = " -mt -vdelx -DOBJS -I/PRODUCTS/OS4.0.2/sunpro/include ";
+    @set %DBMSOpt = "-vdelx -DOBJS -I/PRODUCTS/OS4.0.2/sunpro/include ";
   @endif;
 @endif;
 

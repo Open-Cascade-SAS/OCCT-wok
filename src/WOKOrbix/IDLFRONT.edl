@@ -8,14 +8,17 @@
 
 @if ( %Station != "wnt" ) then
   @if ( %LocalArch != "hp" ) then
-    @set %IDLFRONT_SHARED = "libIDLFront.so";
+    --@set %IDLFRONT_SHARED = "libIDLFront.so";
+    @set %IDLFRONT_SHARED = "libTKIDLFront.so";
   @endif;
 
   @if ( %LocalArch == "hp" ) then
-    @set %IDLFRONT_SHARED = "libIDLFront.sl";
+    --@set %IDLFRONT_SHARED = "libIDLFront.sl";
+    @set %IDLFRONT_SHARED = "libTKIDLFront.sl";
   @endif;
 @else
-  @set %IDLFRONT_SHARED = "IDLFront.dll";
+  --@set %IDLFRONT_SHARED = "IDLFront.dll";
+  @set %IDLFRONT_SHARED = "TKIDLFront.dll";
 @endif;
 
 @set %IDLFRONT_NAME   = "IDLTranslate";
