@@ -258,7 +258,7 @@
 
       @string %CSF_XwLibs = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
 
-      @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL -lglut " ;
+      @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
 
       @string %CSF_TclLibs = "-L" %CSF_TCL_HOME "/lib  -ltcl"; 
       @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib  -ltk -L" %X11_LIB " -lX11";
@@ -361,7 +361,7 @@
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
 
-      @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
+      @set %CSF_TCL_HOME = "D:/DevTools/TclTk/tcl8.3";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
       @string %CSF_TclLibs = %CSF_TCL_HOME "/lib/tcl83.lib";
       @string %CSF_TclTkLibs = %CSF_TCL_HOME "/lib/tk83.lib";
