@@ -143,5 +143,7 @@ srcinc:::ud2cvs_unix
 srcinc:::template.dsp
 srcinc:::template.dspx
 srcinc:::template.min
+srcinc:::template.minx
 srcinc:::template.mam
+srcinc:::template.mamx
 srcinc:::osutils.tcl

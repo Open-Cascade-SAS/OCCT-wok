@@ -25,13 +25,23 @@ proc osutils:am:readtemplate { } {
     return [wokUtils:FILES:FileToString $loc]
 
 }
+proc osutils:am:readtemplatex { } {
+    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc /adv_20/KAS/C40/ros/src/WOKTclLib/template.mamx]"
+    return [wokUtils:FILES:FileToString $loc]
+
+}
 proc osutils:in:readtemplate { } {
     puts stderr "Info : readtemplate : Template for Makefile.in from [set loc /adv_20/KAS/C40/ros/src/WOKTclLib/template.min]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
+proc osutils:in:readtemplatex { } {
+    puts stderr "Info : readtemplatex : Template for Makefile.in from [set loc /adv_20/KAS/C40/ros/src/WOKTclLib/template.minx]"
+    return [wokUtils:FILES:FileToString $loc]
+
+}
 ;#
-;#
+;# 
 ;#
 proc osutils:dsw:header { } {
     append var \
@@ -388,28 +398,18 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
     puts "$tkloc requires  $tkused"
     regsub -all -- {__TKDEP__} $temp0  $tkused temp1
     set files ""
-    ;#set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
-    ;#set listloc [osutils:tk:units [woklocate -u $tkloc]]
-    ;#set resultloc [osutils:justwnt $listloc]
-    ;#puts "result = $resultloc"
-    ;#set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justwnt]]
-    ;#if [array exists written] { unset written }
-    ;#foreach fxlo $resultloc {
-	;#set tkloc [set xlo [wokinfo -n $fxlo]]
-	set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
-	foreach f $lsrc {
-	    ;#puts " f = $f"
-	    if { ![info exists written([file tail $f])] } {
-		set written([file tail $f]) 1
-		append files "# Begin Source File" "\n"
-		append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
-		append files [format $fmtcpp $tkloc $tkloc $tkloc] "\n"
-		append files "# End Source File" "\n"
-	    } else {
-		puts "Warning : in dsp more than one occurences for [file tail $f]"
-	    }
+    set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
+    foreach f $lsrc {
+	if { ![info exists written([file tail $f])] } {
+	    set written([file tail $f]) 1
+	    append files "# Begin Source File" "\n"
+	    append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
+	    append files [format $fmtcpp $tkloc $tkloc $tkloc] "\n"
+	    append files "# End Source File" "\n"
+	} else {
+	    puts "Warning : in dsp more than one occurences for [file tail $f]"
 	}
-    ;#}
+    }
     
     regsub -all -- {__FILES__} $temp1 $files temp2
     puts $fp $temp2
@@ -436,8 +436,6 @@ proc osutils:tk:mkam { dir tkloc } {
     set lobj   [wokUtils:LIST:sanspoint $lsrc]
 
     set lcsf   [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
-    set lcsf   [osutils:tk:hascsf /adv_23/KL/dev/C30/Linuxros/src/$tkloc/EXTERNLIB]
-    ;# la bonne solution pour les lib est de les mettre en tete comme les includes.
 
     set final 0
     set externinc ""
@@ -493,6 +491,87 @@ proc osutils:tk:mkam { dir tkloc } {
 
     return [list $fmam $fmin]
 }
+;#
+;# Create in dir the Makefile.am associated with toolkit tkloc.
+;# Returns the full path of the created file.
+;#
+proc osutils:tk:mkamx { dir tkloc } {
+    set pkgs [woklocate -p ${tkloc}:EXTERNLIB]
+    if { $pkgs == {} } {
+	puts stderr "osutils:tk:mkamx : Error. File EXTERNLIB not found for executable $tkloc."
+	return {}
+    }
+
+    set tmplat [osutils:am:readtemplatex]
+    set lpkgs  [osutils:justunix [wokUtils:FILES:FileToList $pkgs]]
+    set close  [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
+    set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justunix]]
+    set lobj   [wokUtils:LIST:sanspoint $lsrc]
+
+    set lcsf   [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
+
+    set lcsf {}
+    foreach tk $close {
+	set lcsf [concat $lcsf [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]]
+    }
+    
+    set final 0
+    set externinc ""
+    set externlib ""
+    if { $lcsf != {} } {
+	set final 1
+	set fmtinc "\$(%s_INCLUDES) "
+	set fmtlib "\$(%s_LIB) "
+	set externinc [wokUtils:EASY:FmtSimple1 $fmtinc $lcsf 0]
+	set externlib [wokUtils:EASY:FmtSimple1 $fmtlib $lcsf 0]
+    }
+
+    regsub -all -- {__XQTNAM__} "$tmplat" "$tkloc"   temp0
+    set temp1 $temp0
+    set inclu [osutils:am:__INCLUDES__ $lpkgs]
+    regsub -all -- {__INCLUDES__} "$temp1" "$inclu" temp2
+    if { $close != {} } {
+	set libadd [osutils:am:__LIBADD__ $close $final]
+    } else {
+	set libadd ""
+    }
+    regsub -all -- {__LIBADD__} "$temp2" "$libadd"  temp3
+    set source [osutils:am:__SOURCES__ $lsrc]
+    regsub -all -- {__SOURCES__} "$temp3" "$source" temp4
+    regsub -all -- {__EXTERNINC__} "$temp4" "$externinc" temp5
+    regsub -all -- {__EXTERNLIB__} "$temp5" "$externlib" MakeFile_am
+
+    wokUtils:FILES:StringToFile "$MakeFile_am" [set fmam [file join $dir Makefile.am]]
+
+    catch { unset temp0 temp1 temp2 temp3 temp4 temp5}
+
+    set tmplat [osutils:in:readtemplatex]
+    
+    regsub -all -- {__XQTNAM__} "$tmplat" "$tkloc"   temp0
+    if { $close != {} } {
+	set dpncies  [osutils:in:__DEPENDENCIES__ $close]
+    } else {
+	set dpncies ""
+    }
+    regsub -all -- {__DEPENDENCIES__} "$temp0" "$dpncies" temp1
+
+    ;#set objects  [osutils:in:__OBJECTS__ $lobj]
+    ;#regsub -all -- {__OBJECTS__} "$temp1" "$objects" temp2
+    set temp2 $temp1
+    ;#set amdep    [osutils:in:__AMPDEP__ $lobj]
+    ;#regsub -all -- {__AMPDEP__} "$temp2" "$amdep" temp3
+    set temp3 $temp2
+    ;#set amdeptrue [osutils:in:__AMDEPTRUE__ $lobj]
+    ;#regsub -all -- {__AMDEPTRUE__} "$temp3" "$amdeptrue" temp4
+    set temp4 $temp3
+;#  so easy..    
+    regsub -all -- {__MAKEFILEIN__} "$temp4" "$MakeFile_am" MakeFile_in
+
+    wokUtils:FILES:StringToFile "$MakeFile_in" [set fmin [file join $dir Makefile.in]]
+
+    return [list $fmam $fmin]
+}
+
 ;#
 ;#  ((((((((((((( Formats in Makefile.am )))))))))))))
 ;#
