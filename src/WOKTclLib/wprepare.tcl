@@ -155,17 +155,42 @@ proc wokPrepare:Unit:Ref { Fout Wb Uliste } {
 # Boucle sur une liste  {type name}, ecrit dans table le resultat de la comparaison
 # wokPrepare:Unit:Loop Mytable DEMO:Demo:Kernel DEMO:Demo:FK  {NTD AccesServer}
 # Pere = FACT:SHOP:WBPERE , Fils: FACT:SHOP:WBFILS
+# Pour chacune des Uds il faut chercher dans quel workbench elle se trouve au dessus.
+# si elle n'existe pas =. on met {}. 
+#
 #;<
 proc wokPrepare:Unit:Loop { Fout Pere Fils Uliste } {
-    set lupere [w_info -l $Pere]
+    wokPrepare:Unit:ouestu ${Pere} $Uliste map
     foreach e $Uliste {
 	set t [uinfo -t ${Fils}:${e}]
 	$Fout uheader "$e.$t"
 	set loc [uinfo -fl -Tsource ${Fils}:$e]
-	if { [lsearch $lupere $e] != -1 } {
-	    wokPrepare:Unit:Diff $Fout [uinfo -fp -Tsource ${Pere}:$e] [uinfo -fp -Tsource ${Fils}:$e] $loc
+	
+	if { $map($e) != {} } {
+	    set ances $map($e)
+	    wokPrepare:Unit:Diff $Fout [uinfo -fp -Tsource $ances:$e] [uinfo -fp -Tsource ${Fils}:$e] $loc
 	} else {
 	    wokPrepare:Unit:Diff $Fout {} [uinfo -fp -Tsource ${Fils}:$e] $loc
+	}
+    }
+}
+
+#;>
+# retourne le nom du workbench ou se trouve u
+# dans l'ascendance de wb, (wb inclus)
+# wb est un full path
+#;<
+proc wokPrepare:Unit:ouestu { wb lu map} {
+    upvar $map TLOC
+    set pfx [wokinfo -s $wb]
+    set ancestors [w_info -A $wb]
+    foreach u $lu {
+	foreach w $ancestors {
+	    set TLOC($u) {}
+	    if { [wokinfo -x ${pfx}:${w}:$u] } {
+		set TLOC($u) ${pfx}:$w
+		break
+	    }
 	}
     }
 }
