@@ -12,12 +12,28 @@
 ;# the full path of a MS project template file.
 ;# Should be overwritten
 ;#
+proc osutils:vcproj:readtemplate { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.vcproj]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
+proc osutils:vcproj:readtemplatex { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.vcprojx]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
 proc osutils:dsp:readtemplate { } {
     puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.dsp ]]"
     return [wokUtils:FILES:FileToString $loc]
 }
 proc osutils:dsp:readtemplatex { } {
     puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.dspx]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
+proc osutils:mak:readtemplate { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.mak ]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
+proc osutils:mak:readtemplatex { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.makx]]"
     return [wokUtils:FILES:FileToString $loc]
 }
 proc osutils:am:readtemplate { } {
@@ -50,6 +66,11 @@ proc osutils:dsw:header { } {
 	    "\n" \
 	    "###############################################################################" "\n" \
 	    "\n"
+    return $var
+}
+proc osutils:sln:header { } {
+    append var \
+	    "Microsoft Visual Studio Solution File, Format Version 8.00\n" 
     return $var
 }
 ;#
@@ -130,16 +151,33 @@ proc osutils:dsw:footer { } {
 proc osutils:dsp:fmtcpp { } {
     return {# ADD CPP /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
 }
+proc osutils:mak:fmtcpp { } {
+    return {CPP_SWITCHES=$(CPP_PROJ) /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
+}
 ;#
 ;# An item for compiling a c++ main
 ;#
 proc osutils:dsp:fmtcppx { } {
     return {# ADD CPP /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
 }
+proc osutils:vcproj:fmtcpp { } {
+    return {AdditionalIncludeDirectories="..\..\inc,..\..\drv\%s,..\..\src\%s"
+                                                        PreprocessorDefinitions="__%s_DLL;"}
+}
+proc osutils:vcproj:fmtcppx { } {
+    return {AdditionalIncludeDirectories="..\..\inc,..\..\drv\%s,..\..\src\%s"
+                                                        PreprocessorDefinitions="__%s_DLL;$(NoInherit)"}
+}
+proc osutils:mak:fmtcppx { } {
+    return {CPP_SWITCHES=$(CPP_PROJ) /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
+}
 ;#
 ;# List extensions of files devoted to be eaten by cl.exe compiler.
 ;#
 proc osutils:dsp:compilable { } {
+    return [list .c .cxx .cpp]
+}
+proc osutils:vcproj:compilable { } {
     return [list .c .cxx .cpp]
 }
 ;#
@@ -212,14 +250,16 @@ proc LibToLink {tkit} {
 
 proc LibToLinkX {tkit name} {
     if {[uinfo -t $tkit] == "executable"} {
-    set l {}
+        set l {}
 	set LibList [woklocate -p [wokinfo -n $tkit]:stadmfile:[wokinfo -n $tkit]_exec_tks_${name}.Out]
-    if ![ catch { set id [ open $LibList r ] } status ] {
-	while {[gets $id x] >= 0 } {
+        if ![ catch { set id [ open $LibList r ] } status ] {
+ 	  while {[gets $id x] >= 0 } {
 	    if [regexp -- {(-E[^ ]*)} $x] {
-                set endnameid [expr { [string wordend $x 4] -1 }]
-		set fx [string range $x 3 $endnameid]
-		lappend l $fx
+		if {[regexp -- {library} $x]} {
+                  set endnameid [expr { [string wordend $x 4] -1 }]
+                  set fx [string range $x 3 $endnameid]
+		  lappend l $fx
+                }
 	    }
 	    #if [regexp -- {(-VE[^ ]*)} $x] {
             #    set startid [string first CSF $x]
@@ -232,12 +272,12 @@ proc LibToLinkX {tkit name} {
 	    #	}
 	    #}
 
-	}
-	close $id
-    } else {
-	puts $status
-    }
-    return $l
+	 }
+	 close $id
+       } else {
+	 puts $status
+       }
+       return $l
     }
 }
 
@@ -253,7 +293,7 @@ proc osutils:tk:close { ltk } {
     set recurse {}
     foreach dir $ltk {
 	#set ids [woklocate -p [wokinfo -n [wokinfo -u $dir]]:source:EXTERNLIB [wokinfo -w $dir]]
-	set ids [LibToLink $dir]
+        set ids [LibToLink $dir]
 	set eated [osutils:tk:eatpk $ids]
 	set result [concat $result $eated]
         set ids [LibToLink $dir]
@@ -405,8 +445,8 @@ proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } 
 				lappend lret @top_srcdir@/src/[wokinfo -n $loc]/[file tail $f]
 			    }
 			    } elseif {$type == "derivated" || $type == "drvfile"} {
-			    if {[lsearch $lret "@top_srcdir@/src/[wokinfo -n $loc]/[file tail $f]"] == -1} {
-				lappend lret @top_srcdir@/drv/[wokinfo -n $loc]/[file tail $f]
+				if {[lsearch $lret "@top_srcdir@/src/[wokinfo -n $loc]/[file tail $f]"] == -1} {
+				    lappend lret @top_srcdir@/drv/[wokinfo -n $loc]/[file tail $f]
 			    }
 			}
 		    } else {
@@ -516,6 +556,101 @@ proc osutils:mkdsp { dir tkloc {tmplat {} } {fmtcpp {} } } {
     close $fp
     return $fdsp
 }
+proc osutils:vcproj { dir tkloc {tmplat {} } {fmtcpp {} } } {
+   if { $tmplat == {} } {set tmplat [osutils:vcproj:readtemplate]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:vcproj:fmtcpp]}
+    set fp [open [set fvcproj [file join $dir ${tkloc}.vcproj]] w]
+    fconfigure $fp -translation crlf
+    set l_compilable [osutils:dsp:compilable]
+    regsub -all -- {__TKNAM__} $tmplat $tkloc  temp0
+    set tkused ""
+    foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
+	append tkused "${tkx}.lib "
+    }
+    foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
+	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+	    if {[wokparam -t %$element] != 0} {
+		set felem [file tail [lindex [wokparam -v "%$element"] 0]]
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+		    set tkused [concat $tkused $felem]
+		}
+	     }   
+	   }
+	}
+    }
+
+    puts "$tkloc requires  $tkused"
+    regsub -all -- {__TKDEP__} $temp0  $tkused temp1
+    set files ""
+    set listloc [osutils:tk:units [woklocate -u $tkloc]]
+    set resultloc [osutils:justwnt $listloc]
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+        set xlo [wokinfo -n $fxlo]        
+	append files "        <Filter\n"
+        append files "                                Name=\"${xlo}\"\n"
+        append files "                                Filter=\"\">\n"
+        set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+        set needparam ""
+        foreach partopt $fxloparam {
+	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
+		if { "-I[lindex [wokparam -v %CSF_JAVA_INCLUDE] 0]" != "$partopt "} {
+        	  set needparam "$needparam $partopt"
+                }
+	    }
+        }
+        foreach f $lsrc {
+	    #puts " f = $f"
+	    if { ![info exists written([file tail $f])] } {
+		set written([file tail $f]) 1
+		append files "\t\t\t\t<File\n"
+		append files "\t\t\t\t\tRelativePath=\"..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]]\">\n"
+                append files "\t\t\t\t\t<FileConfiguration\n"
+                append files "\t\t\t\t\t\tName=\"Debug\|Win32\">\n"
+                append files "\t\t\t\t\t\t<Tool\n"
+                append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+                if {$needparam != ""} {
+                  append files "\t\t\t\t\t\t\tAdditionalOptions=\""
+                  foreach paramm $needparam {
+                     append files "$paramm "
+                  }
+                  append files "\"\n"
+                }
+                append files "\t\t\t\t\t\t\tOptimization=\"0\"\n"
+		append files "\t\t\t\t\t\t\t[format $fmtcpp $xlo $xlo $xlo]\n"
+                append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+                append files "\t\t\t\t\t</FileConfiguration>\n"
+                append files "\t\t\t\t\t<FileConfiguration\n"
+                append files "\t\t\t\t\t\tName=\"Release\|Win32\">\n"
+                append files "\t\t\t\t\t\t<Tool\n"
+                append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+                if {$needparam != ""} {
+                  append files "\t\t\t\t\t\t\tAdditionalOptions=\""
+                  foreach paramm $needparam {
+                     append files "$paramm "
+                  }
+                  append files "\"\n"
+                }
+                append files "\t\t\t\t\t\t\tOptimization=\"2\"\n"
+		append files "\t\t\t\t\t\t\t[format $fmtcpp $xlo $xlo $xlo]\n"
+                append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+                append files "\t\t\t\t\t</FileConfiguration>\n"
+		append files "\t\t\t\t</File>\n"
+	    } else {
+		puts "Warning : in vcproj more than one occurences for [file tail $f]"
+	    }
+	}
+    append files "\t\t\t</Filter>"
+    }
+    
+    regsub -all -- {__FILES__} $temp1 $files temp2
+    puts $fp $temp2
+    close $fp
+    return $fvcproj
+}
 ;#
 ;# Create file tkloc.dsp for a executable "console" application
 ;# in dir return the full path of the created file
@@ -544,23 +679,23 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	  }
         }
         foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
-	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+	    foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokinfo -N [woklocate -u $tk]]]] {
 	    if {[wokparam -t %$element] != 0} {
-		set felem0 [wokparam -v "%$element"]
-		if {$felem0 != "\{\}"} {
-		    set felem [file tail [lindex $felem0 0]]
-		    if {[lsearch $tkused $felem] == "-1"} {
-			#puts "was found $element $felem"	   
-			set tkused [concat $tkused $felem]
-		    }
-		}  
+              set elemlist [wokparam -v "%$element"]
+	      set felem [file tail [lindex $elemlist 0]] 
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+                    #puts "was found $element $felem"	   
+		    set tkused [concat $tkused $felem]
+		}
+	      }   
 	    }
 	 }
        }
        if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
            set tkused [concat $tkused "\/dll"]
            regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
-           regsub -all -- {__COMPOPTD__} $temp1 "/\MDd" temp2 
+           regsub -all -- {__COMPOPTD__} $temp1 "\/MDd" temp2 
        } else {
 	   regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
 	   regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
@@ -572,7 +707,7 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
        ;#foreach f $lsrc {
 	if { ![info exists written([file tail $f])] } {
 	    set written([file tail $f]) 1
-           append files "# Begin Group \"" $tkloc "\" \n"
+            append files "# Begin Group \"" $tkloc "\" \n"
 	    append files "# Begin Source File" "\n"
 	    append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
 	    append files [format $fmtcpp $tkloc $tkloc $tkloc] "\n"
@@ -590,6 +725,440 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
     }
     return $fout
 }
+proc osutils:vcprojx { dir tkloc {tmplat {} } {fmtcpp {} } } {
+    if { $tmplat == {} } {set tmplat [osutils:vcproj:readtemplatex]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:vcproj:fmtcppx]}
+    set fout {}
+    foreach f [osutils:tk:files $tkloc osutils:am:compilable 0] {
+        puts "1"
+        set tf [file rootname [file tail $f]]   
+        set l_compilable [osutils:dsp:compilable]
+        regsub -all -- {__XQTNAM__} $tmplat $tf  temp0
+        set tkused ""
+        foreach tkx [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
+	    append tkused "${tkx}.lib "
+	  }
+          if {[lsearch [w_info -l] $tkx] == "-1"} {
+	    append tkused "${tkx}.lib "
+	  }
+        }
+       foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
+	    if {[wokparam -t %$element] != 0} {
+                set elemlist [wokparam -v "%$element"]
+		set felem [file tail [lindex $elemlist 0]] 
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+                    #puts "was found $element $felem"	   
+		    set tkused [concat $tkused $felem]
+		}
+	      }   
+	    }
+	 }
+       }
+       if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
+           set tkused [concat $tkused "\/dll"]
+           set binext 2
+           regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
+           regsub -all -- {__COMPOPTD__} $temp1 "/\MDd" temp2 
+       } else {
+	   regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
+	   regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
+           set binext 1
+       }
+       #puts "$tf requires  $tkused"
+       regsub -all -- {__TKDEP__} $temp2  $tkused temp3
+       set files ""
+       ;#set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
+       ;#foreach f $lsrc {
+	if { ![info exists written([file tail $f])] } {
+	    set written([file tail $f]) 1
+            append files "\t\t\t<Filter\n"
+            append files "\t\t\t\tName=\"$tkloc\"\n"
+	    append files "\t\t\t\tFilter=\"\">\n"
+            append files "\t\t\t\t<File\n"
+	    append files "\t\t\t\t\tRelativePath=\"..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]]\">\n"
+            append files "\t\t\t\t\t<FileConfiguration\n"
+            append files "\t\t\t\t\t\tName=\"Debug|Win32\">\n"
+            append files "\t\t\t\t\t\t<Tool\n"
+            append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+            append files "\t\t\t\t\t\t\tOptimization=\"0\"\n"
+            append files "\t\t\t\t\t\t\t[format $fmtcpp $tkloc $tkloc $tkloc] \n"
+	    append files "\t\t\t\t\t\t\tBasicRuntimeChecks=\"3\"\n"
+            append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+            append files "\t\t\t\t\t</FileConfiguration>\n"
+            append files "\t\t\t\t\t<FileConfiguration\n"
+            append files "\t\t\t\t\t\tName=\"Release|Win32\">\n"
+            append files "\t\t\t\t\t\t<Tool\n"
+            append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+            append files "\t\t\t\t\t\t\tOptimization=\"2\"\n"
+            append files "\t\t\t\t\t\t\t[format $fmtcpp $tkloc $tkloc $tkloc] \n"
+            append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+            append files "\t\t\t\t\t</FileConfiguration>\n"
+            append files "\t\t\t\t</File>\n"
+            append files "\t\t\t</Filter>\n"
+	} else {
+	    puts "Warning : in dsp more than one occurences for [file tail $f]"
+	}
+	;#}
+    #puts "$temp3 $files"
+    regsub -all -- {__FILES__} $temp3 $files temp4
+    regsub -all -- {__CONF__} $temp4 $binext temp5
+    set fp [open [set fdsp [file join $dir ${tf}.vcproj]] w]
+    fconfigure $fp -translation crlf
+ 
+    puts $fp $temp5
+    set fout [lappend fout $fdsp]
+    close $fp
+   }
+   return $fout
+}
+
+;#
+;# Create file tkloc.mak for a shareable library (dll).
+;# in dir return the full path of the created file
+;#
+proc osutils:mkmak { dir tkloc {tmplat {} } {fmtcpp {} } } {
+    puts $tkloc
+    if { $tmplat == {} } {set tmplat [osutils:mak:readtemplate]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:mak:fmtcpp]}
+    set fp [open [set fdsp [file join $dir ${tkloc}.mak]] w]
+    fconfigure $fp -translation crlf
+    set l_compilable [osutils:dsp:compilable]
+    set tkused [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
+    set listloc [osutils:tk:units [woklocate -u $tkloc]]
+    set resultloc [osutils:justwnt $listloc]
+    regsub -all -- {__TKNAM__} $tmplat $tkloc  temp0
+    set area1 ""
+    append area1 "\!IF \"\$(RECURSE)\" == \"0\" \n"
+    append area1 "ALL : \"\$(OUTDIR)\\${tkloc}.dll\"\n"
+    append area1 "\!ELSE\n"
+    append area1 "ALL : "
+    if {$tkused != ""} {
+      foreach tkproj $tkused {
+        append area1 "\"$tkproj - Win32 Release\" " 
+      }
+    }
+    append area1 " \"\$(OUTDIR)\\$tkloc.dll\"\n"
+    append area1 "\!ENDIF \n"
+    append area1 "\!IF \"\$(RECURSE)\" == \"1\"\n" 
+    append area1 "CLEAN :"
+    if {$tkused != ""} {
+      foreach tkproj $tkused {
+        append area1 "\"$tkproj - Win32 ReleaseCLEAN\" " 
+      }
+    }
+    append area1 "\n" 
+    append area1 "\!ELSE\n" 
+    append area1 "CLEAN :\n"
+    append area1 "\!ENDIF\n"
+    set tclused 0
+    set javaused 0
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+      set xlo [wokinfo -n $fxlo]
+      set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+      set fxlocxxparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
+      set fxlocparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]
+      if {[lsearch [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0] "-I[lrange [lindex [wokparam -v %CSF_TCL_INCLUDE] 0] 0 end]"] != -1} {
+        set tclused 1
+      }
+      if {[lsearch [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0] "-I[lrange [lindex [wokparam -v %CSF_JavaHome]/include 0] 0 end]"] != -1} {
+       set javaused 1
+      }
+      if {[lsearch [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0] "-I[lrange [lindex [wokparam -v %CSF_TCL_INCLUDE] 0] 0 end]"] != -1} {
+         set tclused 1
+      }
+      if {[lsearch [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0] "-I[lrange [lindex [wokparam -v %CSF_JavaHome]/include 0] 0 end]"] != -1} {
+         set javaused 1
+      }
+
+      foreach srcfile $lsrc {
+        if { ![info exists written([file tail $srcfile])] } {
+	  set written([file tail $srcfile]) 1
+	  append area1 "\t-@erase \"\$(INTDIR)\\[wokUtils:EASY:bs1 [file root [wokUtils:FILES:wtail $srcfile 1]]].obj\"\n"
+        }
+      }
+    } 
+    regsub -all -- {__FIELD1__} $temp0 $area1  temp1
+
+    set area2 "LINK32_FLAGS=-nologo -subsystem:windows -dll -incremental:no -machine:IX86 -libpath:\"\$(LIBDIR)\" -implib:\$(LIBDIR)\\$tkloc.lib -out:\$(OUTDIR)\\$tkloc.dll "
+    set libused ""
+    foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
+	append libused "${tkx}.lib "
+    }
+    set ltk [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
+    set ltk [lappend ltk $tkloc]
+    foreach tk $ltk {
+        foreach element [osutils:tk:hascsf [woklocate -p $tk:source:EXTERNLIB [wokcd]]] {
+	    if {[wokparam -t %$element] != 0} {
+	      set felem [file tail [lindex [wokparam -v "%$element"] 0]]
+	      if {[lsearch $libused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+		    set libused [concat $libused $felem]
+		}
+	     }   
+	   }
+	}
+    }
+    if {$tclused == 1} {
+      append area2 "-libpath:\"\$(TCLHOME)\\lib\" "
+    }
+    
+    foreach tk $libused {
+      append area2 "$tk "
+    }
+    append area2 "\n"
+    append area2 "LINK32_OBJS= \\\n"
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+        set xlo [wokinfo -n $fxlo]
+        set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+        foreach srcfile $lsrc {
+          if { ![info exists written([file tail $srcfile])] } {
+  	    set written([file tail $srcfile]) 1
+	    append area2 "\t\"\$(INTDIR)\\[wokUtils:EASY:bs1 [file root [wokUtils:FILES:wtail $srcfile 1]]].obj\" \\\n"
+          }
+        }
+    } 
+ 
+    regsub -all -- {__FIELD2__} $temp1 $area2  temp2
+	
+    set area3 ""
+    append area3 "\!IF \"\$(RECURSE)\" == \"0\" \n"
+    append area3 "ALL : \"\$(OUTDIR)\\${tkloc}.dll\"\n"
+    append area3 "\!ELSE\n"
+    append area3 "ALL : "
+    if {$tkused != ""} {
+      foreach tkproj $tkused {
+        append area3 "\"$tkproj - Win32 Debug\" " 
+      }
+    }
+    append area3 " \"\$(OUTDIR)\\$tkloc.dll\"\n"
+    append area3 "\!ENDIF \n"
+    append area3 "\!IF \"\$(RECURSE)\" == \"1\"\n" 
+    append area3 "CLEAN :"
+    if {$tkused != ""} {
+      foreach tkproj $tkused {
+        append area3 "\"$tkproj - Win32 DebugCLEAN\"" 
+      }
+    }
+    append area3 "\n" 
+    append area3 "\!ELSE\n" 
+    append area3 "CLEAN :\n"
+    append area3 "\!ENDIF\n"
+    if [array exists written] { unset written }
+ 
+   foreach fxlo $resultloc {
+      set xlo [wokinfo -n $fxlo]
+      set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+
+      foreach srcfile $lsrc {
+        if { ![info exists written([file tail $srcfile])] } {
+	  set written([file tail $srcfile]) 1
+	  append area3 "\t-@erase \"\$(INTDIR)\\[wokUtils:EASY:bs1 [file root [wokUtils:FILES:wtail $srcfile 1]]].obj\"\n"
+        }
+      }
+    } 
+    regsub -all -- {__FIELD3__} $temp2 $area3  temp3
+
+    set area4 "LINK32_FLAGS=-nologo -subsystem:windows -dll -incremental:no -machine:IX86 -debug -libpath:\"\$(LIBDIR)\"  -implib:\$(LIBDIR)\\$tkloc.lib -out:\$(OUTDIR)\\$tkloc.dll -pdb:\$(OUTDIR)\\$tkloc.pdb "
+    foreach tk $libused {
+      append area4 "$tk "
+    }
+    if {$tclused == 1} {
+      append area4 "-libpath:\"\$(TCLHOME)\\lib\" "
+    }
+
+    append area4 "\n"
+    append area4 "LINK32_OBJS= \\\n"
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+        set xlo [wokinfo -n $fxlo]
+        set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+        foreach srcfile $lsrc {
+          if { ![info exists written([file tail $srcfile])] } {
+  	    set written([file tail $srcfile]) 1
+	    append area4 "\t\"\$(INTDIR)\\[wokUtils:EASY:bs1 [file root [wokUtils:FILES:wtail $srcfile 1]]].obj\" \\\n"
+          }
+        }
+    } 
+ 
+    regsub -all -- {__FIELD4__} $temp3 $area4  temp4
+
+    set area5 ""
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+      set xlo [wokinfo -n $fxlo]
+      set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+      set fxlocxxparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
+      set fxlocparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]
+      if {$tclused == 1} {
+        set fxlocxxparam "-I\$(TCLHOME)\\include"
+      }
+      if {$javaused == 1} {
+         set fxlocxxparam "-I\$(JAVAHOME)\\include -I\$(JAVAHOME)\\include\\win32"
+      }
+      set fxloparam "$fxlocparam $fxlocxxparam"
+      #puts $fxloparam
+      foreach srcfile $lsrc {
+        if { ![info exists written([file tail $srcfile])] } {
+	  set written([file tail $srcfile]) 1
+          set pkname [wokUtils:EASY:bs1 [file root [wokUtils:FILES:wtail $srcfile 1]]]
+          
+	  append area5 "SOURCE=..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $srcfile 3]]\n"
+          append area5 "\!IF  \"\$(CFG)\" == \"$tkloc - Win32 Release\"\n"
+	  append area5 "CPP_SWITCHES=\/nologo \/MD \/W3 \/GX \/O2 $fxloparam \/I \"..\\..\\inc\" \/I \"..\\..\\drv\\$xlo\" \/I \"..\\..\\src\\$xlo\" \/D \"WIN32\" \/D \"NDEBUG\" \/D \"_WINDOWS\" \/D \"WNT\" \/D \"No_Exception\" \/D \"__${xlo}_DLL\" \/Fo\"\$(INTDIR)\\\\\\\" \/Fd\"\$(INTDIR)\\\\\\\" \/FD \/D \"CSFDB\" \/c\n"
+          append area5 "\"\$(INTDIR)\\$pkname.obj\" : \$(SOURCE) \"\$(INTDIR)\"\n"
+          append area5 "\t\t\$(CPP) \$(CPP_SWITCHES) \$(SOURCE)\n"
+          append area5 "\n"
+          append area5 "\!ELSEIF  \"\$(CFG)\" == \"$tkloc - Win32 Debug\"\n"
+	  append area5 "CPP_SWITCHES=\/nologo \/MDd \/W3 \/GX \/Zi \/Od $fxloparam \/I \"..\\..\\inc\" \/I \"..\\..\\drv\\$xlo\" \/I \"..\\..\\src\\$xlo\" \/D \"WIN32\" \/D \"DEB\" \/D \"_DEBUG\" \/D \"_WINDOWS\" \/D \"WNT\" \/D \"CSFDB\" \/D \"__${xlo}_DLL\" \/Fo\"\$(INTDIR)\\\\\\\" \/Fd\"\$(INTDIR)\\\\\\\" \/FD \/c \n"
+          append area5 "\"\$(INTDIR)\\$pkname.obj\" : \$(SOURCE) \"\$(INTDIR)\"\n"
+          append area5 "\t\t\$(CPP) \$(CPP_SWITCHES) \$(SOURCE)\n"
+          append area5 "\n"
+          append area5 "\!ENDIF \n"
+        }
+      }
+    } 
+    regsub -all -- {__FIELD5__} $temp4 $area5  temp5
+
+    set area6 ""
+    foreach tk $tkused {
+      append area6 "\!IF  \"\$(CFG)\" == \"$tkloc - Win32 Release\"\n"
+      append area6 "\"$tk - Win32 Release\" \: \n"
+      append area6 "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Release\" \n"
+      append area6 "\"$tk - Win32 ReleaseCLEAN\" \: \n"
+      append area6 "   \$(MAKE)\/NOLOGO  \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Release\" RECURSE=1 CLEAN\n"
+      append area6 "\!ELSEIF  \"\$(CFG)\" == \"$tkloc - Win32 Debug\"\n"
+      append area6 "\"$tk - Win32 Debug\" \: \n"
+      append area6 "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Debug\" \n"
+      append area6 "\"$tk - Win32 DebugCLEAN\" \: \n"
+      append area6 "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Debug\" RECURSE=1 CLEAN\n"
+      append area6 "\!ENDIF\n"
+    }
+    regsub -all -- {__FIELD6__} $temp5 $area6  temp6
+   
+    if {$tclused == 1} {
+       set tclwarning "\!IFNDEF TCLHOME \n\!MESSAGE Compilation of this toolkit requires tcl. Set TCLHOME environment variable for proper compilation\n\!ENDIF"
+    } else {
+       set tclwarning ""
+    }
+    regsub -all -- {__TCLUSED__} $temp6 $tclwarning  temp7
+
+    if {$javaused == 1} {
+       set javawarning "\!IFNDEF JAVAHOME \n\!MESSAGE Compilation of this toolkit requires java. Set JAVAHOME environment variable for proper compilation\n\!ENDIF"
+    } else {
+       set javawarning ""
+    }
+    regsub -all -- {__JAVAUSED__} $temp7 $javawarning  temp8
+    puts $fp $temp8
+    close $fp
+    return $fdsp
+}
+
+proc osutils:mkmakx { dir tkloc {tmplat {} } {fmtcpp {} } } {
+    if { $tmplat == {} } {set tmplat [osutils:mak:readtemplatex]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:mak:fmtcppx]}
+    foreach f [osutils:tk:files $tkloc osutils:am:compilable 0] {
+        set tf [file rootname [file tail $f]]   
+        set fp [open [set fdsp [file join $dir ${tf}.mak]] w]
+        puts $fdsp
+        set tclused 0
+        fconfigure $fp -translation crlf
+        set l_compilable [osutils:dsp:compilable]
+        regsub -all -- {__XQTNAM__} $tmplat $tf  temp0
+        set tkused ""
+        puts [LibToLinkX [woklocate -u $tkloc] $tf]
+        foreach tkx [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
+	    append tkused "${tkx}.lib "
+	  }
+	  if {[woklocate -u $tkx] == "" } {
+	      append tkused "${tkx}.lib "
+	  }
+        }
+        foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+	    if {[wokparam -t %$element] != 0} {
+                set elemlist [wokparam -v "%$element"]
+		set felem [file tail [lindex $elemlist 0]] 
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+                    #puts "was found $element $felem"	
+                    if {$element == "CSF_TclLibs"} { set tclused 1}   
+		    set tkused [concat $tkused $felem]
+		}
+	      }   
+	    }
+	 }
+       }
+ 
+       if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)" } { 
+           set tkused [concat $tkused "\/dll"]
+           if {$tclused != 1} {
+             regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
+             regsub -all -- {__COMPOPTD__} $temp1 "\/MDd" temp2 
+           } else {
+             regsub -all -- {__COMPOPT__} $temp0 "\/MD \/I \"\$(TCLHOME)\\include\"" temp1 
+             regsub -all -- {__COMPOPTD__} $temp1 "\/MDd \/I \"\$(TCLHOME)\\include\"" temp2 
+           }             
+           regsub -all -- {__XQTNAMEX__} $temp2 "$tf.dll" temp3
+       } else {
+           if {$tclused != 1} {
+	     regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
+	     regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
+           } else {
+	     regsub -all -- {__COMPOPT__} $temp0 "\/MT \/I \"\$(TCLHOME)\\include\"" temp1
+	     regsub -all -- {__COMPOPTD__} $temp1 "\/MTd \/I \"\$(TCLHOME)\\include\"" temp2 
+           }
+           regsub -all -- {__XQTNAMEX__} $temp2 "$tf.exe" temp3
+       }
+       #puts "$tf requires  $tkused"
+       if {$tclused == 1} {
+          append tkused " -libpath:\"\$(TCLHOME)\\lib\" "
+       }
+       regsub -all -- {__TKDEP__} $temp3  $tkused temp4
+       set files ""
+       set field1 ""
+       set field2 ""
+       set field3 ""
+       set field4 ""
+       foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
+
+         append files "\!IF  \"\$(CFG)\" == \"$tf - Win32 Release\"\n"
+         append files "\"$tk - Win32 Release\" \: \n"
+         append files "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Release\" \n"
+         append files "\"$tk - Win32 ReleaseCLEAN\" \: \n"
+         append files "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Release\" RECURSE=1 CLEAN\n"
+         append files "\!ELSEIF  \"\$(CFG)\" == \"$tf - Win32 Debug\"\n"
+         append files "\"$tk - Win32 Debug\" \: \n"
+         append files "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Debug\" \n"
+         append files "\"$tk - Win32 DebugCLEAN\" \: \n"
+         append files "   \$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\$tk.mak CFG=\"$tk - Win32 Debug\" RECURSE=1 CLEAN\n"
+         append files "\!ENDIF\n"
+ 
+         append field1 "\"$tk - Win32 Release\" "
+         append field2 "\"$tk - Win32 ReleaseCLEAN\" "
+         append field3 "\"$tk - Debug\" "
+         append field4 "\"$tk - Win32 DebugCLEAN\" "
+         
+      }
+      regsub -all -- {__FILES__} $temp4 $files temp5
+      regsub -all -- {__FIELD1__} $temp5 $field1 temp6
+      regsub -all -- {__FIELD2__} $temp6 $field2 temp7
+      regsub -all -- {__FIELD3__} $temp7 $field3 temp8
+      regsub -all -- {__FIELD4__} $temp8 $field4 temp9
+      regsub -all -- {__XNAM__} $temp9 $tkloc temp10
+      puts $fp $temp10
+      close $fp
+      set fout [lappend fout $fdsp]
+    }
+    return $fout
+}
+
+
 ;# 
 ;# (((((((((((((((((((((((( AUTOMAKE/ PROJECTs )))))))))))))))))))))))
 ;#

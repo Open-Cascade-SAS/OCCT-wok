@@ -146,6 +146,10 @@ srcinc:::template.min
 srcinc:::template.minx
 srcinc:::template.mam
 srcinc:::template.mamx
+srcinc:::template.mak
+srcinc:::template.makx
+srcinc:::template.vcproj
+srcinc:::template.vcprojx
 srcinc:::osutils.tcl
 srcinc:::config.h
 srcinc:::opencascade.gif
