@@ -31,7 +31,8 @@
 #include <WOKStep_WNTLink.ixx>
 
 // ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
-extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+//Standard_IMPORT MMgt_StorageManager aStorageManager;
 
 #ifdef WNT
 #include <windows.h>

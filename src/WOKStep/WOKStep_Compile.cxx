@@ -256,8 +256,13 @@ _TEST_BREAK();
 
             if (  !s.IsNull () && !s -> IsEmpty ()  ) {
 
-             str -> AssignCat ( s  );
-             str -> AssignCat ( NL );
+             s   -> RemoveAll ( '\\' );
+#ifdef WNT
+             s   -> RemoveAll ( '\r' );
+#endif  // WNT
+             s   -> RemoveAll ( '\n' );
+             str -> AssignCat (   s  );
+             str -> AssignCat (   NL );
            
             }  // end if
 
