@@ -103,7 +103,11 @@ int Wok_Init(WOKTclTools_PInterp interp)
 	}
     }
 
+#ifndef LIN
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.5");
+#else
+  WOKTclTools_Package tcl ( CurrentInterp, "Tcl", "8.0" );
+#endif  // LIN
   
   tcl.Require();
   
