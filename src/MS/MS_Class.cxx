@@ -112,7 +112,7 @@ void MS_Class::Inherit(const Handle(TCollection_HAsciiString)& aClass)
 
 Handle(MS_HSequenceOfClass) MS_Class::GetInherits() const 
 {
-  Handle(MS_HSequenceOfClass) aClassSeq;
+  Handle(MS_HSequenceOfClass) aClassSeq = new MS_HSequenceOfClass();
   
   if (GetMetaSchema() != UndefinedHandleAddress) {    
     Standard_Integer i;
