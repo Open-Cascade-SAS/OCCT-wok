@@ -1,12 +1,13 @@
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct _edlstring {
 	char *str;
 	int  length;
 } edlstring;
-
-#ifdef HPUX
-#define const
-#endif
 
 void edl_set_var(const edlstring,const edlstring);
 void edl_set_varvar(const edlstring,const edlstring);
@@ -70,6 +71,6 @@ edlstring edl_strdup(const char *, const int );
 edlstring edl_string(const char *, const int );
 void edlstring_free(const edlstring );
 
-#ifdef HPUX
-#undef const
+#ifdef __cplusplus
+}
 #endif

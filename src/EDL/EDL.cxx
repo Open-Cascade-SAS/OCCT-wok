@@ -4,12 +4,11 @@
 #include <stdio.h>
 
 #ifndef WNT
-  extern int EDLlineno;
-  extern TCollection_AsciiString  EDL_CurrentFile;
+extern int EDLlineno;
 #else
-  extern "C" int EDLlineno;
-  extern TCollection_AsciiString EDL_CurrentFile;
+extern "C" int EDLlineno;
 #endif  // WNT
+extern TCollection_AsciiString EDL_CurrentFile;
 
 
 static void (*EDL_ErrorMsgHandler) (Standard_CString aMsg) = NULL;

@@ -11,18 +11,21 @@
 
 #include <stdio.h>
 
-extern "C" {
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <edl_rule.h>
-}
 
 #include <EDL.tab.h>
 
 #ifdef WNT
-#include <windows.h>
-#else
-#include <unistd.h>
+# include <windows.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 extern "C" {int EDLparse();}
 extern "C" {int EDLlex();}
@@ -818,10 +821,6 @@ void EDL_Interpretor::AddToArgList(const Standard_CString aVariable, const Stand
 
 // Implementation
 // --------------
-
-#ifdef HPUX
-#define const
-#endif
 
 // add an includes directory to the table
 //
@@ -1722,13 +1721,7 @@ void edl_uses(const edlstring filename)
     while (!IsFound && DirCount <= IncludeDirectory->Length()) {
       static char tmpName[1024];
 
-#ifdef HPUX
-#undef const
-#endif
       const TCollection_AsciiString& adir = IncludeDirectory->Value(DirCount);
-#ifdef HPUX
-#define const
-#endif
       memcpy(tmpName, adir.ToCString(), adir.Length());
       tmpName[adir.Length()] = '/';
       strcpy(&(tmpName[adir.Length()+1]),filename.str); 
@@ -1807,6 +1800,3 @@ void edlstring_free(const edlstring buf)
   if(buf.str) Standard::Free((void*&)buf.str, buf.length+1);
 }
 
-#ifdef HPUX
-#undef const
-#endif

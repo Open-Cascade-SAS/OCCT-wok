@@ -1,22 +1,21 @@
 #include <EDL_Library.ixx>
 
-#ifdef HPUX
-#define LIBLEN  3
-#define TAILLEN 3
-#define TAILWORD ".sl"
-#define HEADWORD "lib"
+#ifdef WNT
+# define TAILWORD ".dll"
+# define HEADWORD ""
+# define LIBLEN  0
+# define TAILLEN 4
 #else
-#if WNT
-#define TAILWORD ".dll"
-#define HEADWORD ""
-#define LIBLEN  0
-#define TAILLEN 4
-#else
-#define LIBLEN  3
-#define TAILLEN 3
-#define TAILWORD ".so"
-#define HEADWORD "lib"
-#endif
+# define LIBLEN  3
+# define TAILLEN 3
+# define LIBLEN  3
+# define TAILLEN 3
+# define HEADWORD "lib"
+# ifdef __hpux
+#  define TAILWORD ".sl"
+# else
+#  define TAILWORD ".so"
+# endif
 #endif
 
 
