@@ -9,6 +9,20 @@ proc __restore_env__ {} {
   }
   array set env $__initenv__
 }
+proc UNC { path } {
+
+ if { [cindex $path 0] == "{" && [cindex $path [clength $path]-1] == "}" } {
+  set path [crange $path 1 [clength $path]-2]
+ }
+
+ if { [cindex $path 0] == "\\" && [cindex $path 1] == "\\"} {
+  set path "//[crange $path 2 [clength $path]]"
+ }
+
+ return $path
+
+}
+
 
 auto_load wok_cd_proc
 auto_load wok_exit_proc
@@ -36,5 +50,8 @@ set WOK_GLOBALS(cd_proc,tcl)       1
 set WOK_GLOBALS(source_proc,term)  1
 set WOK_GLOBALS(source_proc,emacs) 1
 set WOK_GLOBALS(source_proc,tcl)   1
-
+update
 set WOK_GLOBALS(wokinterp,tclcommands) "Winfo|finfo|pinfo|screate|sinfo|srm|ucreate|uinfo|umake|urm|w_info|wcreate|wokcd|wokclose|wokinfo|wokparam|wokprofile|wokenv|wrm|wmove|msclear|wprepare|wstore|wintegre|upack|iwok|wsrc|wdrv|wls|wcd|cd"
+update
+
+
