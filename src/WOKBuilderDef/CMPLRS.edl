@@ -419,7 +419,7 @@
 					      %BaseName, 
 					      %OutputDir ,
                                               %TmpFile , %Entity ) is
-      $cd %OutputDir &&  $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
+      $cd %OutputDir &&  %CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
       $set stat = $status
       $echo '$C_COMPILER  %CMPLRS_C_SysOptions %CMPLRS_C_Options $INCDIRS %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c $SOURCE -o $OBJECT' > %OutputDir/../%Entity/.adm/c.compile
       $if ( $stat == 0 ) then
@@ -464,7 +464,7 @@
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile , %Entity ) is
-      $cd %OutputDir && $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
+      $cd %OutputDir && %CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
       $set stat = $status
       
       $if ( $stat == 0 ) then
