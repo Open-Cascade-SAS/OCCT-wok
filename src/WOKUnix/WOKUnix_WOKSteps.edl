@@ -1,6 +1,6 @@
 -- File:	WOKUnix_WOKSteps.edl
 -- Author:	Jean GAUTIER
--- History:	Tue Aug 12 17:19:49 1997	Jean GAUTIER	Creation
+-- History:	Tue Aug 12 17:21:24 1997	Jean GAUTIER	Creation
 -- Copyright:	 Matra Datavision 1997
 
 @ifnotdefined ( %WOKUnix_WOKSteps_EDL) then
