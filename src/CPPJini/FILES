@@ -8,3 +8,5 @@ CPPJini_General.edl
 CPPJini.hxx
 CPPJini_Define.hxx
 FILES
+CPPJini_LDSHR.edl
+
