@@ -342,7 +342,7 @@ proc wokPrepare:Report:InitTypes {} {
     set ucreateP \
 	    [list {p package} {s schema} {i interface} {C client} {e engine} {x executable}\
 	    {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal}\
-	    {d delivery} {I idl} {S server}]
+	    {d delivery} {I idl} {S server} {j jini}]
     foreach itm $ucreateP {
 	set shrt [lindex $itm 0]
 	set long [lindex $itm 1]
