@@ -211,6 +211,13 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
   Handle( TCollection_HAsciiString ) name =
    new TCollection_HAsciiString (  Unit () -> Name ()  );
 
+  if (  !SubCode ().IsNull ()  ) {
+
+   name -> AssignCat ( "_"          );
+   name -> AssignCat (  SubCode ()  );
+
+  }  // end if
+
   name -> AssignCat (  tool -> EvalCFExt ()  );
   
   Handle( WOKernel_File ) cmdFile = new WOKernel_File (  name, Unit (), stadmtype  );
