@@ -1,5 +1,9 @@
 
 %{
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #if STDC_HEADERS
 # include <string.h>
 #else
@@ -16,9 +20,13 @@
 #include <stdio.h>
 #ifdef WNT
 # include <io.h>
-#else
-# include <unistd.h>
 #endif  /* WNT */
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+
 #define yylval EDLlval
 #include <edl_rule.h>
 #include <EDL.tab.h>
