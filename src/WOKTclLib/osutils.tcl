@@ -673,7 +673,7 @@ proc osutils:in:__AMDEPTRUE__ { l } {
 ;#
 proc TESTAM { {root home/AUTOCONF/src} } {
 
-    ;#set root /adv_21/KAS/C40/yan/work/auto/src
+    set root /home/AUTOCONF/src/
 
     wokcd  KAS:C40:ros
     set ltk [w_info  -T toolkit [wokcd]]
@@ -682,5 +682,13 @@ proc TESTAM { {root home/AUTOCONF/src} } {
 	puts " toolkit: $tkloc ==> [woklocate -p ${tkloc}:source:EXTERNLIB KAS:C40:ros]"
 	wokUtils:FILES:mkdir $root/$tkloc
 	osutils:tk:mkam $root/$tkloc $tkloc 
+    }
+
+    set ltk [w_info  -T executable [wokcd]]
+#    set ltk {}
+    foreach tkloc $ltk {
+	puts " Executable: $tkloc ==> [woklocate -p ${tkloc}:source:EXTERNLIB KAS:C40:ros]"
+	wokUtils:FILES:mkdir $root/$tkloc
+	osutils:tk:mkamx  $root/$tkloc $tkloc 
     }
 }
