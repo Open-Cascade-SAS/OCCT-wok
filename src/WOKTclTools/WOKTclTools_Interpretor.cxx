@@ -4,6 +4,7 @@
 //		<jga@cobrax>
 
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_Macro.hxx>
 
 #include <WOKTools_ReturnValue.hxx>
 #include <WOKTools_StringValue.hxx>
@@ -107,9 +108,9 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
     catch (Standard_Failure) {
       Handle(Standard_Failure) E = Standard_Failure::Caught();
       
-      strstream astream;
+      Standard_SStream astream;
       astream << E << ends;
-      ErrorMsg << argv[0] << "Exception was raised : " << astream.str() << endm;
+      ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
       WOKUtils_ProcessManager::UnArm();
       return TCL_ERROR;
     }
