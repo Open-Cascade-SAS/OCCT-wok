@@ -2,8 +2,7 @@
 // Created:	Thu Oct 26 18:36:01 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#include <fstream.h>
+#include <Standard_Stream.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 

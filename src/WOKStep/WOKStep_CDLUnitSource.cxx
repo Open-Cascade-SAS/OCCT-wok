@@ -32,11 +32,7 @@
 # include <time.h>
 #endif
 
-#ifdef HAVE_IOSTREAM
-# include <iostream>
-#elif defined (HAVE_IOSTREAM_H)
-# include <iostream.h>
-#endif
+#include <Standard_Stream.hxx>
 #endif // DONT_COMPENSATE
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>

@@ -20,15 +20,10 @@
 #include <WOKUtils_ShellManager.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <Standard_Stream.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
 #endif
 #ifdef HAVE_STDLIB_H
 # include <stdlib.h>

@@ -2,19 +2,13 @@
 // Created:	Mon Aug 18 15:41:22 1997
 // Author:	Jean GAUTIER
 //		<jga@hourax.paris1.matra-dtv.fr>
-
+#include <Standard_Stream.hxx>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
 #ifdef WNT
 #include <io.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -72,9 +66,9 @@
 #define CHECK_REMOTE 1
 #endif // WNT
 
-#ifdef HAVE_IOMANIP_H
-# include <iomanip.h>
-#endif
+//#ifdef HAVE_IOMANIP_H
+//# include <iomanip.h>
+//#endif
 
 //=======================================================================
 //function : WOKStep_ProcessStep
