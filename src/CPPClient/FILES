@@ -8,3 +8,5 @@ CPPClient_General.edl
 CPPClient.hxx
 CPPClient_Define.hxx
 FILES
+CPPClient_LDSHR.edl
+
