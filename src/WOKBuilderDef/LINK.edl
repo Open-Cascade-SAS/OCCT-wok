@@ -7,7 +7,6 @@
 
 @ifnotdefined ( %LINK_EDL ) then
 -- @set %LINK_EDL = ""--; Syntax error
- @cout "LINK";
 
  @uses "CSF.edl";
 
@@ -54,16 +53,16 @@
  @end;
 
  @template LINK_LinkerHeaderDLL ( %CSF_LINKER ,
-                                               %Station,
-                                               %LINKModeOpt ) is
+                                  %Station,
+                                  %LINKModeOpt ) is
 	$%CSF_LINKER -nologo -subsystem:windows -dll -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
  @template LINK_LinkerHeaderEXE ( %CSF_LINKER ,
-                                               %Station,
-                                               %LINKModeOpt,
-                                               %LINKSubsystem ) is
-	$%CSF_LINKER -nologo -subsystem:%LINKSubsystem -incremental:no -machine:IX86 %LINKModeOpt \^
+                                  %Station,
+                                  %LINKModeOpt,
+                                  %LinkSubsystem ) is
+	$%CSF_LINKER -nologo -subsystem:%LinkSubsystem -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
 @endif;
