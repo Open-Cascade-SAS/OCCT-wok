@@ -1034,7 +1034,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_FileTypeBase::GetDirectories(co
 Handle(TColStd_HSequenceOfHAsciiString) WOKernel_FileTypeBase::GetFiles(const Handle(WOKernel_Entity)& Theentity,
 									const Handle(WOKernel_HSequenceOfDBMSID)& dbmss,
 									const Handle(WOKernel_HSequenceOfStationID)& stations,
-									const Standard_Boolean hasentity)
+//									const Standard_Boolean hasentity)
+									const Standard_Boolean )
      const
 {
   WOKTools_MapOfHAsciiString amap;

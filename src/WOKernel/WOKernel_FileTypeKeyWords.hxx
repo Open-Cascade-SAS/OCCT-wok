@@ -11,7 +11,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 //#define DECLARE_WOK_STATIC(aStr) Standard_IMPORT extern const char aStr [];
-#define DECLARE_WOK_STATIC(aStr) Standard_IMPORT const char *aStr ;
+#define DECLARE_WOK_STATIC(aStr) Standard_IMPORT const char *aStr;
 
 DECLARE_WOK_STATIC(WOKENTITY)
 DECLARE_WOK_STATIC(WOKENTITYFILELIST)
@@ -60,7 +60,8 @@ DECLARE_WOK_STATIC(FILEVAR)
 
 
 
-#define DECLARE_WOK_STATIC_STRING(aStr) extern Standard_EXPORT  const Handle(TCollection_HAsciiString)& WOK_STATIC_##aStr();
+//#define DECLARE_WOK_STATIC_STRING(aStr) extern Standard_EXPORT  const Handle(TCollection_HAsciiString)& WOK_STATIC_##aStr();
+#define DECLARE_WOK_STATIC_STRING(aStr) Standard_EXPORT  const Handle(TCollection_HAsciiString)& WOK_STATIC_##aStr();
 
 
 
