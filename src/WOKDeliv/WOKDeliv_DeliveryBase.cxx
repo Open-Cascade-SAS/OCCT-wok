@@ -3,7 +3,16 @@
 // Author:	Arnaud BOUZY
 //		<adn>
 
-#include <fstream.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
+#endif
+
 
 #include <WOKDeliv_DeliveryBase.ixx>
 #include <WOKMake_InputFile.hxx>
