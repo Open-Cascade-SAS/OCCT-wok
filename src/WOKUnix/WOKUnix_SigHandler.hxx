@@ -21,7 +21,7 @@
 #define FPE_FLTOVF_TRAP FPE_FLTOVF 
 #define FPE_INTOVF_TRAP FPE_INTOVF
 #define FPE_FLTUND_TRAP FPE_FLTUND 
-extern "C" {int ieee_handler(char *,char *, sigfpe_handler_type&);};
+extern "C" {int ieee_handler(char *,char *, sigfpe_handler_type&);}
 #endif
 
 
