@@ -84,7 +84,7 @@ $catch (Standard_Failure) {
 $  Standard_SStream Err;
 $  Err <<   Standard_Failure::Caught(); 
 $  Err << (char) 0;
-$  jcas_ThrowException(env,Err.rdbuf()->str());
+$  jcas_ThrowException(env,GetSString(Err));
 $}
 $}
 $alock.Release();
@@ -107,7 +107,7 @@ $catch (Standard_Failure) {
 $  Standard_SStream Err;
 $  Err <<   Standard_Failure::Caught(); 
 $  Err << (char) 0;
-$  jcas_ThrowException(env,Err.rdbuf()->str());
+$  jcas_ThrowException(env,GetSString(Err));
 $}
 $OS_END_FAULT_HANDLER;
 $}
