@@ -28,14 +28,8 @@
 # include <strings.h>
 #endif
 
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
 #include <stdio.h>
-
+#include <Standard_Stream.hxx>
 #include <WOKTools_Messages.hxx>
 
 #include <WOKUnix_ASyncStatus.hxx>

@@ -8,7 +8,16 @@
 #define WOKUnix_MaxPipeSize_HeaderFile
 
 #include <sys/param.h>
-#include <limits.h>
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_LIMITS
+# include <limits>
+#elif defined (HAVE_LIMITS_H)
+# include <limits.h>
+#endif
 
 #define MAX_PIPE_SIZE PIPE_BUF
 
