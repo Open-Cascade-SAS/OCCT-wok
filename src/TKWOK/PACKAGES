@@ -1,6 +1,5 @@
 EDL
 MS
-MSAPI
 WOKAPI
 WOKBuilder
 WOKDFLT
@@ -9,9 +8,6 @@ WOKMake
 WOKOBJS
 WOKOrbix
 WOKStep
-WOKTCL
-WOKTclTools
-WOKTclUtils
 WOKTools
 WOKUnix
 WOKUtils
