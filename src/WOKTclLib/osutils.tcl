@@ -146,12 +146,13 @@ proc osutils:tk:close { ltk } {
     set recurse {}
     foreach dir $ltk {
 	set ids [woklocate -p [wokinfo -n [wokinfo -u $dir]]:source:EXTERNLIB [wokinfo -w $dir]]
-	;#puts "EXTERNLIB dir = $dir  ids = $ids"
-	set result [concat $result [wokUtils:FILES:FileToList $ids]]
-	foreach file [wokUtils:FILES:FileToList $ids] {
+	set eated [osutils:tk:eatpk $ids]
+	set result [concat $result $eated]
+	;#puts "EXTERNLIB dir = $dir ids = $ids result = $result"
+	foreach file $eated {
 	    ;#puts "file = $file"
 	    set kds [woklocate -p [wokinfo -n [wokinfo -u $file]]:source:EXTERNLIB [wokinfo -w $file]]
-	    if { [wokUtils:FILES:FileToList $kds ] !=  {} } {
+	    if { [osutils:tk:eatpk $kds] !=  {} } {
 		lappend recurse $file
 	    }
 	}
@@ -281,6 +282,19 @@ proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } 
 		}
 	    }
 	}
+    }
+    return $lret
+}
+;#
+;# 
+;#
+proc osutils:tk:eatpk { EXTERNLIB  } {
+    set l [wokUtils:FILES:FileToList $EXTERNLIB]
+    set lret  {}
+    foreach str $l {
+	 if ![regexp -- {(CSF_[^ ]*)} $str csf] {
+	     lappend lret $str
+	 }
     }
     return $lret
 }
