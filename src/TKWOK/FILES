@@ -2,3 +2,5 @@ EXTERNLIB
 PACKAGES
 TKWOK_LINKSHR.edl
 
+Makefile.am
+Makefile.in
