@@ -458,7 +458,7 @@ proc wokUtils:FILES:AppendListToFile { liste path } {
     } 
 }
 #
-# Replace s1 by s2 in f and write result in g
+# Replace s1 by s2 in fin and write result in fout
 # return 1 if substitution was performed.
 #
 proc wokUtils:EASY:replace { fin fout s1 s2  } {
@@ -469,6 +469,35 @@ proc wokUtils:EASY:replace { fin fout s1 s2  } {
 	    set done 0
 	    if { [set nbsub [regsub -all -- $s1 $strin $s2 strout]] != 0 } {
 		set done 1
+	    }
+	    puts $out $strout
+	    close $out
+	    return $done
+	} else {
+	    puts stderr "Error: $errout"
+	    return 0
+	}
+    } else {
+	    puts stderr "Error: $errin"
+	return 0
+    }
+}
+#
+# Same as Replace but l is a list of couple {s1 s2}
+# return 1 if at least one substitution has been done.
+# This proc differs of the above one for lazyness purpose.
+#
+proc wokUtils:EASY:lreplace { fin fout ls1s2 } {
+    if { [catch { set in [ open $fin r ] } errin] == 0 } {
+	if { [catch { set out [ open $fout w ] } errout] == 0 } {
+	    set strin [read $in [file size $fin]]
+	    close $in
+	    foreach [list s1 s2] $ls1s2 {
+		set done 0
+		if { [set nbsub [regsub -all -- $s1 $strin $s2 strout]] != 0 } {
+		    set done 1
+		}
+		set strin $strout
 	    }
 	    puts $out $strout
 	    close $out
