@@ -1,4 +1,2 @@
 EXTERNLIB
 PACKAGES
-Makefile.am
-Makefile.in
