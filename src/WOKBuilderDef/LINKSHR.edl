@@ -3,9 +3,8 @@
 -- History:	Fri Feb 16 17:04:32 1996	Jean GAUTIER	Creation
 -- Copyright:	 Matra Datavision 1996
 
---@ifnotdefined ( %LINKSHR_EDL ) then
+@ifnotdefined ( %LINKSHR_EDL ) then
  @set %LINKSHR_EDL = "";
- @cout "LinuxWOK_LINKSHR_EDL";
 
  @ifnotdefined ( %LDSHR_EDL ) then
   @uses "LDSHR.edl";
@@ -56,7 +55,7 @@
 
   @template LINKSHR_Footer () is
     $ -lC -lc ;
-    $ set ld_status=$status;
+    $ set ld_status=$status
     $ if ( $?LD_LIBRARY_PATH ) then
     $  set ld_library_path=$LD_LIBRARY_PATH
     $ endif
@@ -70,17 +69,23 @@
    $else
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
    $endif
-   $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8 %LINKSHR_DBMSOpt -o /dev/null \
+   $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+   $/usr/ccs/bin/ld -o /dev/null \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
     $ ;
-    $ set status=$ld_status
+    $ if ( $status ) then
+    $   echo "Check failed"
+    $ else
+    $   echo "Check successed"
+    $ endif
     $ if ( $?ld_library_path ) then
     $  setenv LD_LIBRARY_PATH $ld_library_path
     $ else
     $  unsetenv LD_LIBRARY_PATH
     $ endif
+    $ set status=$ld_status
   @end;
  @endif;
 
@@ -100,17 +105,44 @@
   @end;
 
   @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList ) is
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -shared %LINKSHR_DBMSOpt -o %Target -soname %LogicalName \
+   --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -shared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -shared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
    $  -all -objectlist %LD_ObjList -none \
   @end;
 
-  @template LINKSHR_CheckUndefHeader ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList ) is
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %LINKSHR_DBMSOpt -o /dev/null \
-   $  -all -objectlist %LD_ObjList -none \
+  @template LINKSHR_Footer ( %Station ) is
+    $-lm ;
+    $ set ld_status=$status
+    --$ /usr/bin/rm -f so_locations
+    --$ if ( $?LD_LIBRARY_PATH ) then
+    --$  set ld_library_path=$LD_LIBRARY_PATH
+    --$ endif
+  @end;
+
+  @template LINKSHR_CheckUndefHeader ( %LD_LIBRARY_PATH ) is
+   --$if ( $?LD_LIBRARY_PATH ) then
+   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+   --$else
+   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
+   --$endif
+   $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+   $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
+   $/usr/bin/ld -n32 -mips3 -mmap -multigot -no_unresolved -o /dev/null \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
     $ ;
+    --$ if ( $status ) then
+    --$   echo "Check failed"
+    --$ else
+    --$   echo "Check successed"
+    --$ endif
+    --$ if ( $?ld_library_path ) then
+    --$  setenv LD_LIBRARY_PATH $ld_library_path
+    --$ else
+    --$  unsetenv LD_LIBRARY_PATH
+    --$ endif
+    $ set status=$ld_status
   @end;
  @endif;
 
@@ -119,16 +151,47 @@
   @set %LINKSHR_ObjectRef       = "LINKSHR_ObjectRef";
 
   @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LD_ObjList, %LogicalName ) is
-   $\mv %LD_ObjList %LD_ObjList.o
-   $/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b -o %Target  \
+   $\cp %LD_ObjList %LD_ObjList.o
+   --$/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b +Z -Wl,+s -Wl,+h%LogicalName -Wl,+vshlibunsats -v -o %Target  \
+   $/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b +Z -Wl,+s -Wl,+h%LogicalName -Wl,+vshlibunsats -o %Target  \
+   --$/opt/aCC/bin/aCC %LINKSHR_DBMSOpt -b -o %Target  \
    $-Wl,-c%LD_ObjList.o \
   @end;
 
-  @template LINKSHR_Footer (%LD_ObjList) is
+  @template LINKSHR_Footer ( %Station ) is
+   $-L/usr/lib/aCC -ldld -L/usr/lib -lM -lstd -lCsup -lstream -lcl -lc -lm \
    $;
-   $set lnk_status = $status
-   $\mv %LD_ObjList.o %LD_ObjList;
-   $set status = $lnk_status
+   $ set ld_status=${status}
+   --$ if ( $?SHLIB_PATH ) then
+   --$  set ld_library_path="${SHLIB_PATH}"
+   --$ endif
+  @end;
+
+  @template LINKSHR_CheckUndefHeader ( %LD_LIBRARY_PATH ) is 
+   --$if ( $?SHLIB_PATH ) then
+   --$ setenv SHLIB_PATH "%LD_LIBRARY_PATH:${SHLIB_PATH}"
+   --$else
+   --$ setenv SHLIB_PATH "%LD_LIBRARY_PATH"
+   --$endif
+   $echo "Check of undefined symbols with SHLIB_PATH : ${SHLIB_PATH}"
+   $echo "Does not run on HP : -Wl,+vshlibunsats gives always __shlinit undefined and does not give an error status ..."
+   $/opt/aCC/bin/aCC -b -Wl,+s -Wl,+vshlibunsats -o /dev/null \
+  @end;
+
+  @template LINKSHR_CheckUndefFooter () is
+    $ ;
+    --$ if ( ${status} ) then
+    --$   echo "Check failed"
+    --$ else
+    --$   echo "Check successed"
+    --$ endif
+    --$ if ( $?ld_library_path ) then
+    --$  setenv SHLIB_PATH "${ld_library_path}"
+    --$ else
+    --$  unsetenv SHLIB_PATH
+    --$ endif
+    $ set status=$ld_status
+   $
   @end;
 
   @template LINKSHR_ObjectRef () is
@@ -150,7 +213,7 @@
 
   @template LINKSHR_Footer () is
    $ -lc;
-   $ set ld_status=$status;
+   $ set ld_status=$status
    $ if ( $?LD_LIBRARY_PATH ) then
    $  set ld_library_path=$LD_LIBRARY_PATH
    $ endif
@@ -164,18 +227,24 @@
    $else
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
    $endif
-   $/usr/bin/ld -nostartfiles %LINKSHR_DBMSOpt -o /dev/null \
+   $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+   $/usr/bin/ld -nostartfiles -o /dev/null \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
-   $ ;
-   $ set status=$ld_status;
-   $ if ( $?ld_library_path ) then
-   $  setenv LD_LIBRARY_PATH $ld_library_path
-   $ else
-   $  unsetenv LD_LIBRARY_PATH
-   $ endif
+    $ ;
+    $ if ( $status ) then
+    $   echo "Check failed"
+    $ else
+    $   echo "Check successed"
+    $ endif
+    $ if ( $?ld_library_path ) then
+    $  setenv LD_LIBRARY_PATH $ld_library_path
+    $ else
+    $  unsetenv LD_LIBRARY_PATH
+    $ endif
+    $ set status=$ld_status
   @end;
  @endif;
---@endif;
+@endif;
 

@@ -9,15 +9,18 @@
 @if ( %Station != "wnt" ) then
 
 @if ( %LocalArch != "hp" ) then
-  @set %TCPP_Shared   = "libTCPPExt.so";
+  --@set %TCPP_Shared   = "libTCPPExt.so";
+  @set %TCPP_Shared   = "libTKTCPPExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @set %TCPP_Shared   = "libTCPPExt.sl";
+  --@set %TCPP_Shared   = "libTCPPExt.sl";
+  @set %TCPP_Shared   = "libTKTCPPExt.sl";
 @endif;
 
 @else
-  @set %TCPP_Shared   = "TCPPExt.dll";
+  --@set %TCPP_Shared   = "TCPPExt.dll";
+  @set %TCPP_Shared   = "TKTCPPExt.dll";
 
 @endif;
 

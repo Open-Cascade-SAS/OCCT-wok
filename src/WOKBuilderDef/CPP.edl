@@ -7,15 +7,18 @@
 @set %CPP_EDL = "";
 
 @if ( %LocalArch != "hp" ) then
-  @set %CPP_Shared   = "libCPPExt.so";
+  --@set %CPP_Shared   = "libCPPExt.so";
+  @set %CPP_Shared   = "libTKCPPExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @set %CPP_Shared   = "libCPPExt.sl";
+  --@set %CPP_Shared   = "libCPPExt.sl";
+  @set %CPP_Shared   = "libTKCPPExt.sl";
 @endif;
 
 @if ( %LocalArch == "wnt" ) then
-  @set %CPP_Shared   = "CPPExt.dll";
+  --@set %CPP_Shared   = "CPPExt.dll";
+  @set %CPP_Shared   = "TKCPPExt.dll";
 @endif;
 
 @set %CPP_Name     = "CPP";

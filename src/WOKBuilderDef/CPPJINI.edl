@@ -8,26 +8,30 @@
 
 @if ( %Station != "wnt" ) then
 @if ( %LocalArch != "hp" ) then
-  @set %CPPJINI_SHARED   = "libCPPJini.so";
+  --@set %CPPJINI_SHARED   = "libCPPJini.so";
+  @set %CPPJINI_SHARED   = "libTKCPPJini.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @set %CPPJINI_SHARED   = "libCPPJini.sl";
+  --@set %CPPJINI_SHARED   = "libCPPJini.sl";
+  @set %CPPJINI_SHARED   = "libTKCPPJini.sl";
 @endif;
 
---@set %CPPCLIENT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPClient/src";
 @set %CPPJINI_NAME     = "CPPJini";
 
 @if ( %LocalArch != "hp" ) then
-  @set %CPPJINI_Shared   = "libCPPJini.so";
+  --@set %CPPJINI_Shared   = "libCPPJini.so";
+  @set %CPPJINI_Shared   = "libTKCPPJini.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @set %CPPJINI_Shared   = "libCPPJini.sl";
+  --@set %CPPJINI_Shared   = "libCPPJini.sl";
+  @set %CPPJINI_Shared   = "libTKCPPJini.sl";
 @endif;
 
 @else
-  @set %CPPJINI_Shared   = "CPPJini.dll";
+  --@set %CPPJINI_Shared   = "CPPJini.dll";
+  @set %CPPJINI_Shared   = "TKCPPJini.dll";
 @endif;
 
 @set %CPPJINI_Name   = "CPPJini";

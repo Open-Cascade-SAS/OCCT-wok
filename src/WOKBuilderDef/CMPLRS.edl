@@ -3,7 +3,7 @@
 -- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
 -- Copyright:	 Matra Datavision 1996
 
-@ifnotdefined ( %CMPLRS_EDL ) then
+--@ifnotdefined ( %CMPLRS_EDL ) then
  @set %CMPLRS_EDL = "";
 
  @set %CMPLRS_C_Template     = "CmdLine";
@@ -110,7 +110,7 @@
   @endif;
 
   @if ( %DBMS == "DFLT" ) then
-   @set %CMPLRS_CXX_DBMSOpt = "-mt -vdelx -DCSFDB";
+   @set %CMPLRS_CXX_DBMSOpt = "-vdelx -DCSFDB";
   @endif;
 
   @set %CMPLRS_C_Command = "/opt/DEV5_1/SUNWspro/bin/cc -K PIC";
@@ -393,7 +393,7 @@
    @set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
   @endif;
 
-  @set %CMPLRS_C_Command = "cc +Z +DAportable +DS2.0";
+  @set %CMPLRS_C_Command = "cc -Aa +Z +DAportable +DS2.0";
   @set %CMPLRS_C_Options = "-DHPUX";
 
   @template CMPLRS_C_OptLine (
@@ -433,7 +433,7 @@
              %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
              %CMPLRS_CXX_DBMSOpt, %IncDirectives, %Source, %BaseName, %OutputDir
             ) is
-  $cd %OutputDir
+  --$cd %OutputDir
   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives  \
   $  -c %Source -o %OutputDir/%BaseName.o
   $set stat = $status
@@ -485,7 +485,6 @@
   @endif;
 
   @set %CMPLRS_C_Command = "D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1";
-  --@set %CMPLRS_C_Command = "C:/Program Files/Microsoft Visual Studio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1";
   @set %CMPLRS_C_Options = "-DWNT -D_WINDOWS -DWIN32";
   @set %CMPLRS_PDBPrefix = " -Fd";
 
@@ -513,7 +512,6 @@
   @end;
 
   @set %CMPLRS_CXX_Command = "D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1";
-  --@set %CMPLRS_CXX_Command = "C:/Program Files/Microsoft Visual Studio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1 ";
   @set %CMPLRS_CXX_Options = "-DWNT -D_WINDOWS -DWIN32";
 
   @string %CMPLRS_CXX_Options += " -ID:/jdk1.2.2/include";
@@ -661,5 +659,5 @@
   @endif;
  @endif;
 
-@endif;
+--@endif;
 

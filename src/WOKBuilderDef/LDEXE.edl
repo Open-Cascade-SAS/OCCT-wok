@@ -52,7 +52,8 @@ $ /usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -call_shared -o %Target \
 @if ( %Station == "hp" ) then
   
  @template LDEXE_Header ( %Target ) is
-   $/opt/aCC/bin/aCC -Wl,+FPZO -Wl,-E -o %Target \
+   $/opt/aCC/bin/aCC -Wl,+FPZO -Wl,-E -Wl,+s -o %Target \
+   $/opt/langtools/lib/end.o \
  @end;
 
 @endif;

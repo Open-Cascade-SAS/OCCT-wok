@@ -66,9 +66,10 @@ $ %ExternRef \
 
 @if( %Station == "sun" ) then 
 
-  @template LD_Footer (  ) is
-      $ -lC -lc ;
-  @end;
+        @template LD_Footer (  ) is
+         $ -lC -lc ;
+         $ ;
+        @end;
 
 @endif;
 
@@ -92,10 +93,12 @@ $ %ExternRef \
 @if( %Station == "sil" ) then
 
 	@template LD_Footer ( %Station ) is
-	 $-lm ;
-	 $set stat = $status
-	 $/usr/bin/rm -f so_locations
-	 $set status = $stat
+         $-lm ;
+         $ set ld_status=$status;
+         $ /usr/bin/rm -f so_locations
+         $ if ( $?LD_LIBRARY_PATH ) then
+         $  set ld_library_path=$LD_LIBRARY_PATH
+         $ endif
 	@end;
 @endif;
 
@@ -106,6 +109,7 @@ $ %ExternRef \
 
 	@template LD_Footer ( %Station ) is
 	 $-L/lib -lm ;
+         $ ;
 	@end;
 
 @endif;
@@ -113,9 +117,9 @@ $ %ExternRef \
 -- Definition du Linux
 
 @if ( %Station == "lin" ) then
- @template LD_Footer ( %Station ) is
- $ ;
- @end;
+        @template LD_Footer ( %Station ) is
+         $ ;
+        @end;
 @endif;
 
 @endif;

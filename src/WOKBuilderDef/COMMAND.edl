@@ -147,9 +147,7 @@ $ wokCP -p %Source %Dest
 @end;
 
 @template COMMAND_PreserveCopyAndChmod ( %Source, %Dest )  is
----JGA$ wokCHMOD -R u+w %Dest;
 $ wokCP -p %Source %Dest;
----JGA$ wokCHMOD a+rx %Dest
 @end;
 
 @template COMMAND_PreserveCopyAndChmodExecute ( %Source, %Dest )  is
@@ -157,15 +155,11 @@ $ wokCP -p %Source %Dest;
 @end;
 
 @template COMMAND_CopyAndChmod ( %Source, %Dest )  is
----JGA$ wokCHMOD -R u+w %Dest;
 $ wokCP -p %Source %Dest;
----JGA$ wokCHMOD a+rx %Dest
 @end;
 
 @template COMMAND_CopyAndChmodRecursive ( %Source, %Dest )  is
----JGA$ wokCHMOD -R u+w %Dest;
 $ wokCP -pr %Source %Dest;
----JGA$ wokCHMOD -R a+rx %Dest;
 @end;
 
 @template COMMAND_Move ( %Source, %Dest )  is

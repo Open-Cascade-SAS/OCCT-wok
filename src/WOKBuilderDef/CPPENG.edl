@@ -5,27 +5,32 @@
 
 @if ( %Station != "wnt" ) then
 @if ( %LocalArch != "hp" ) then
-  @string %CPPENG_SHARED   = "libCPPIntExt.so";
+  --@string %CPPENG_SHARED   = "libCPPIntExt.so";
+  @string %CPPENG_SHARED   = "libTKCPPIntExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @string %CPPENG_SHARED   = "libCPPIntExt.sl";
+  --@string %CPPENG_SHARED   = "libCPPIntExt.sl";
+  @string %CPPENG_SHARED   = "libTKCPPIntExt.sl";
 @endif;
 
 @set    %CPPENG_TMPLDIRS = "/home/wb/kl/nw/prod/CPPIntExt/src";
 @set    %CPPENG_NAME     = "CPPEng";
 
 @if ( %LocalArch != "hp" ) then
-  @string %CPPENG_Shared   = "libCPPIntExt.so";
+  --@string %CPPENG_Shared   = "libCPPIntExt.so";
+  @string %CPPENG_Shared   = "libTKCPPIntExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @string %CPPENG_Shared   = "libCPPIntExt.sl";
+  --@string %CPPENG_Shared   = "libCPPIntExt.sl";
+  @string %CPPENG_Shared   = "libTKCPPIntExt.sl";
 @endif;
 
 
 @else
-  @string %CPPENG_Shared   = "CPPIntExt.dll";
+  --@string %CPPENG_Shared   = "CPPIntExt.dll";
+  @string %CPPENG_Shared   = "TKCPPIntExt.dll";
 
 @endif;
 

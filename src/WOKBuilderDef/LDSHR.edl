@@ -96,15 +96,22 @@
   @set %LDSHR_ObjectRef = "LDSHR_ObjectRef";
 
   @template LDSHR_Header ( %LDSHR_DBMSOpt,  %LD_ObjList, %Target, %LogicalName ) is
-    $\mv %LD_ObjList %LD_ObjList.o
-    $/opt/aCC/bin/aCC %LDSHR_DBMSOpt -b  -o %Target  \
+    $\cp %LD_ObjList %LD_ObjList.o
+    $/opt/aCC/bin/aCC %LDSHR_DBMSOpt -b -Wl,+s -Wl,+h%LogicalName -o %Target  \
     $-Wl,-c%LD_ObjList.o \
   @end;
 
   @template LDSHR_Footer (%LD_ObjList) is
     $;
     $set lnk_status = $status
-    $\mv %LD_ObjList.o %LD_ObjList;
+  @end;
+
+  @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+    $/opt/aCC/bin/aCC -o /dev/null \
+  @end;
+
+  @template LDSHR_CheckUndefFooter () is
+    $ ;
     $set status = $lnk_status
   @end;
 
