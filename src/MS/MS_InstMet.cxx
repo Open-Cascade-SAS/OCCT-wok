@@ -2,7 +2,7 @@
 #include <MS_AccessMode.hxx>
 
 MS_InstMet::MS_InstMet(const Handle(TCollection_HAsciiString)& aName, 
-		       const Handle(TCollection_HAsciiString)& aClass) : myMode(0), MS_MemberMet(aName,aClass)
+		       const Handle(TCollection_HAsciiString)& aClass) : MS_MemberMet(aName,aClass), myMode(0)
 {
 }
 

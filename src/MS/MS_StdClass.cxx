@@ -4,7 +4,8 @@
 #include <Standard_NoSuchObject.hxx>
 
 MS_StdClass::MS_StdClass(const Handle(TCollection_HAsciiString)& aName, 
-			 const Handle(TCollection_HAsciiString)& aPackage) : myNestingState(Standard_False),MS_Class(aName,aPackage)
+			 const Handle(TCollection_HAsciiString)& aPackage) :
+                         MS_Class(aName,aPackage), myNestingState(Standard_False)
 {
 }
 
@@ -14,7 +15,7 @@ MS_StdClass::MS_StdClass(const Handle(TCollection_HAsciiString)& aName,
 			 const Standard_Boolean aPrivate, 
 			 const Standard_Boolean aDeferred, 
 			 const Standard_Boolean aInComplete) 
-: myNestingState(Standard_False),MS_Class(aName,aPackage,Mother,aPrivate,aDeferred,aInComplete)
+: MS_Class(aName,aPackage,Mother,aPrivate,aDeferred,aInComplete), myNestingState(Standard_False)
 {
 }
 

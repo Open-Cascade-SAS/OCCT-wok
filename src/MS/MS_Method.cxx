@@ -10,7 +10,7 @@
 #define MET_OPERATOR 0x20
 #define MET_FUNCCALL 0x40
 
-MS_Method::MS_Method(const Handle(TCollection_HAsciiString)& aName) : myAttribute(0),MS_Common(aName),myRaises(new TColStd_HSequenceOfHAsciiString)
+MS_Method::MS_Method(const Handle(TCollection_HAsciiString)& aName) : MS_Common(aName),myAttribute(0),myRaises(new TColStd_HSequenceOfHAsciiString)
 {
 }
 

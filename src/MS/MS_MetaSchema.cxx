@@ -1178,7 +1178,7 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
 {
   Standard_Boolean                        result        = Standard_True,
                                           isFound,
-                                          locRes;
+                                          locRes        = Standard_False;
   Standard_Integer                        i,j,k;
   Handle(MS_HSequenceOfField)             aSeqField     = aClass->GetFields();
   Handle(TColStd_HSequenceOfHAsciiString) uses;
@@ -1924,7 +1924,7 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 	  else if (aType->IsKind(STANDARD_TYPE(MS_StdClass))) {
 	    Handle(MS_StdClass)                     theClass      = *((Handle(MS_StdClass)*)&aType);
 	    Handle(TColStd_HSequenceOfHAsciiString) aSeqAncestors = theClass->GetFullInheritsNames();
-	    Standard_Integer                        j,k;
+	    Standard_Integer                        j;
 	    Handle(MS_InstClass)                    anNestInst;
 
 	    locRes = Standard_False;
@@ -2002,7 +2002,7 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 
 	  if (locRes) {  
 	    Handle(TCollection_HAsciiString) typeName;
-	    Standard_Integer                 pos;
+	    Standard_Integer                 pos = 0;
 
 	    gettypeper1 = GetType(anNestInst->GenClass());
 	    theGenClass = *((Handle(MS_GenClass)*)&gettypeper1);

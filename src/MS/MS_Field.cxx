@@ -3,7 +3,7 @@
 #include <MS_MetaSchema.hxx>
 
 MS_Field::MS_Field(const Handle(MS_Class)& aClass, 
-		   const Handle(TCollection_HAsciiString)& aName) : myClass(aClass->FullName()),myDimension(new TColStd_HSequenceOfInteger),myProtected(Standard_False),MS_Common(aName)
+		   const Handle(TCollection_HAsciiString)& aName) : MS_Common(aName), myClass(aClass->FullName()),myDimension(new TColStd_HSequenceOfInteger),myProtected(Standard_False)
 {
 }
 

@@ -8,7 +8,7 @@
 #include <MS_Class.hxx>
 
 MS_ParamWithValue::MS_ParamWithValue(const Handle(MS_Method)& aMethod, 
-		   const Handle(TCollection_HAsciiString)& aName) : myTypeVal(MS_NONE),MS_Param(aMethod,aName)
+		   const Handle(TCollection_HAsciiString)& aName) : MS_Param(aMethod,aName), myTypeVal(MS_NONE)
 {
 }
 

@@ -10,7 +10,7 @@
 #include <MS_AccessMode.hxx>
 
 MS_Param::MS_Param(const Handle(MS_Method)& aMethod, 
-		   const Handle(TCollection_HAsciiString)& aName) : myMethod(aMethod.operator->()),myAccessMode(0),myType(new TCollection_HAsciiString), MS_Common(aName)
+		   const Handle(TCollection_HAsciiString)& aName) : MS_Common(aName), myMethod(aMethod.operator->()),myAccessMode(0),myType(new TCollection_HAsciiString)
 {
 }
 

@@ -10,9 +10,9 @@
 
 MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName, 
 			   const Handle(TCollection_HAsciiString)& aPackage) 
-: myGenClass(new TCollection_HAsciiString),myBasicInsType(new TColStd_HSequenceOfHAsciiString),myInstType(new TColStd_HSequenceOfHAsciiString),
+: MS_Class(aName,aPackage), myGenClass(new TCollection_HAsciiString),myBasicInsType(new TColStd_HSequenceOfHAsciiString),myInstType(new TColStd_HSequenceOfHAsciiString),
   myGenType(new TColStd_HSequenceOfHAsciiString),myNestStd(new TColStd_HSequenceOfHAsciiString),
-  myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False),MS_Class(aName,aPackage)
+  myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False)
 {
 }
 
@@ -22,9 +22,9 @@ MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName,
 			   const Standard_Boolean aPrivate, 
 			   const Standard_Boolean aDeferred, 
 			   const Standard_Boolean aInComplete) 
-: myGenClass(new TCollection_HAsciiString),myBasicInsType(new TColStd_HSequenceOfHAsciiString),myInstType(new TColStd_HSequenceOfHAsciiString),
+: MS_Class(aName,aPackage,Mother,aPrivate,aDeferred,aInComplete), myGenClass(new TCollection_HAsciiString),myBasicInsType(new TColStd_HSequenceOfHAsciiString),myInstType(new TColStd_HSequenceOfHAsciiString),
   myGenType(new TColStd_HSequenceOfHAsciiString),myNestStd(new TColStd_HSequenceOfHAsciiString),
-  myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False),MS_Class(aName,aPackage,Mother,aPrivate,aDeferred,aInComplete)
+  myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False)
 {
 }
 

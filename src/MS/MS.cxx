@@ -67,7 +67,7 @@ Handle(TCollection_HAsciiString) MS::BuildComplexName(const Handle(TCollection_H
 						      const Handle(TCollection_HAsciiString)& aGEName,
 						      const Handle(TCollection_HAsciiString)& aName)
 {
-  Standard_Integer                 Locate,Length;
+  Standard_Integer                 Locate, Length = 0;
   Handle(TCollection_HAsciiString) theComplexName = new TCollection_HAsciiString(aGEName);
   
   theComplexName = new TCollection_HAsciiString(aGEName);
