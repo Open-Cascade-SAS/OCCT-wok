@@ -23,7 +23,7 @@ Standard_EXPORT void EDL_SetErrorMsgHandler(void (*aMsgHandler) (Standard_CStrin
 void EDL::PrintError(const EDL_Error anError, const Standard_CString anArg)
 {
   char *format;
-  char *errortext;
+  char *errortext = "";
 
   if (EDLlineno >= 0) {
     format = "%s : line %d : %s%s\n";
@@ -55,6 +55,8 @@ void EDL::PrintError(const EDL_Error anError, const Standard_CString anArg)
 		   break;
   case EDL_TOOMANYINCLUDELEVEL: errortext = "Too many include levels : ";
 		   break;
+  case EDL_FILENOTFOUND:  errortext = "File not found : ";
+                   break;
   }
 
   if(!EDL_ErrorMsgHandler) {

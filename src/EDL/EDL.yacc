@@ -1,11 +1,14 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 /* all parser must define this variable */
 
 #define yyv EDLv
 
+extern int  EDLlex();
+extern void EDLerror ();
 extern FILE *FileDesc[];
-extern numFileDesc;
+extern int numFileDesc;
 extern FILE *EDLin;
 /* extern int edl_must_execute(); */
 

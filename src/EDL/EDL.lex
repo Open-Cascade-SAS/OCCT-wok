@@ -2,19 +2,22 @@
 %{
 #include <string.h>
 #include <stdio.h>
+#ifdef WNT
+# include <io.h>
+#else
+# include <unistd.h>
+#endif  /* WNT */
 #define yylval EDLlval
 #include <edl_rule.h>
 #include <EDL.tab.h>
 
+#ifndef YY_NO_UNPUT
+# define YY_NO_UNPUT
+#endif  /* YY_NO_UNPUT */
+
 #define MAX_CHAR     256              /* The limit of a identifier.  */
 #define MAX_STRING   (MAX_CHAR * 10)  /* The limit of a string.      */
 #define MAX_COMMENT  (MAX_CHAR * 300) /* The limit of comment line   */
-
-static char identifier[MAX_CHAR +1];
-static char integer   [MAX_CHAR +1];
-static char real      [MAX_CHAR +1];
-static char literal   [MAX_CHAR +1];
-static char string    [MAX_STRING +1];
 
 char  FileName[11][256];
 FILE *FileDesc[10];
@@ -81,12 +84,12 @@ is                                { if (VerboseMode && edl_must_execute()) print
 @unset                            { if (VerboseMode && edl_must_execute()) printf("%d. @unset ",EDLlineno); return(UNSET); }
 @ifdefined                        { if (VerboseMode && edl_must_execute()) printf("%d. @ifdefined ",EDLlineno); return(IFDEFINED); }
 @ifnotdefined                     { if (VerboseMode && edl_must_execute()) printf("%d. @ifnotdefined ",EDLlineno); return(IFNOTDEFINED); }
-defined                           { if (VerboseMode && edl_must_execute()) printf(" defined ",EDLlineno); return(INSTRDEFINED); }
-notdefined                           { if (VerboseMode && edl_must_execute()) printf(" notdefined ",EDLlineno); return(INSTRNOTDEFINED); }
+defined                           { if (VerboseMode && edl_must_execute()) printf("%d. defined ",EDLlineno); return(INSTRDEFINED); }
+notdefined                           { if (VerboseMode && edl_must_execute()) printf("%d. notdefined ",EDLlineno); return(INSTRNOTDEFINED); }
 @iffile                           { if (VerboseMode && edl_must_execute()) printf("%d. @iffile ",EDLlineno); return(IFFILE); }
 @ifnotfile                        { if (VerboseMode && edl_must_execute()) printf("%d. @ifnotfile ",EDLlineno); return(IFNOTFILE); }
-file                            { if (VerboseMode && edl_must_execute()) printf(" file ",EDLlineno); return(INSTRFILE); }
-notfile                         { if (VerboseMode && edl_must_execute()) printf(" notfile ",EDLlineno); return(INSTRNOTFILE); }
+file                            { if (VerboseMode && edl_must_execute()) printf("%d file ",EDLlineno); return(INSTRFILE); }
+notfile                         { if (VerboseMode && edl_must_execute()) printf("%d notfile ",EDLlineno); return(INSTRNOTFILE); }
 @if                               { if (VerboseMode && edl_must_execute()) printf("%d. @if ",EDLlineno); return(IF); }
 then                              { if (VerboseMode && edl_must_execute()) printf(" then\n"); return(THEN); }
 @else                             { if (VerboseMode && edl_must_execute()) printf("@else\n"); return(ELSE); }
@@ -138,7 +141,6 @@ void EDL_SetFile()
 /* we need this for '@uses' clause */
 int EDLwrap()
 {
-  char c[2];
   edlstring _currentFile;
 
   if (numFileDesc < 0) {

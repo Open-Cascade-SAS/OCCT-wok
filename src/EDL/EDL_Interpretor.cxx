@@ -24,8 +24,8 @@ extern "C" {
 #endif
 
 
-extern "C" {EDLparse();}
-extern "C" {EDLlex();}
+extern "C" {int EDLparse();}
+extern "C" {int EDLlex();}
 extern "C" {void EDL_SetFile();}
 
 #ifndef WNT
@@ -33,13 +33,13 @@ extern FILE *EDLin;
 extern int   EDLlineno;
 extern char *EDLtext;
 extern char  FileName[][256];
-extern numFileDesc;
+extern int   numFileDesc;
 #else
 extern "C" FILE *EDLin;
 extern "C" int   EDLlineno;
 extern "C" char *EDLtext;
 extern "C" char  FileName[][256];
-extern "C" numFileDesc;
+extern "C" int   numFileDesc;
 #endif  // WNT
 
 extern "C" {
@@ -136,8 +136,7 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
 {
   GlobalInter = this;
   Standard_Boolean IsFound  = Standard_False;
-  Standard_Integer DirCount = 1,
-                   LenName  = strlen(aFile);
+  Standard_Integer DirCount = 1;
 
   Handle(TColStd_HSequenceOfAsciiString) IncludeDirectory = GlobalInter->GetIncludeDirectory();
   
@@ -145,7 +144,7 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
     FILE *fic = 0L;
     DirCount  = 1;
 
-    if (fic = fopen(aFile,"r")) {
+    if (   (  fic = fopen ( aFile, "r" )  ) != NULL   ) {
       IsFound = Standard_True;
     }
 
@@ -162,7 +161,7 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
       if ( GetFileAttributes(tmpName) != 0xFFFFFFFF ) 
 #endif
       {
-	if (fic = fopen(tmpName,"r")) {
+	if (   (  fic = fopen ( tmpName, "r" )  ) != NULL   ) {
 	  IsFound = Standard_True;
 	}
       }
@@ -359,8 +358,7 @@ Standard_Boolean EDL_Interpretor::IsFile(const Standard_CString aFileName) const
     TCollection_AsciiString  fname(aFileName);
     
     Standard_Boolean IsFound  = Standard_False;
-    Standard_Integer DirCount = 1,
-                     LenName  = fname.Length();
+    Standard_Integer DirCount = 1;
 
     Handle(TColStd_HSequenceOfAsciiString) IncludeDirectory = GetIncludeDirectory();
 
@@ -1661,12 +1659,12 @@ void edl_close_file(const edlstring varname)
 #ifndef WNT
   extern FILE *FileDesc[];
   extern int   LineStack[];
-  extern numFileDesc;
+  extern int   numFileDesc;
   extern FILE *EDLin;
 #else
   extern "C" FILE *FileDesc[];
   extern "C" int   LineStack[];
-  extern "C" numFileDesc;
+  extern "C" int   numFileDesc;
   extern "C" FILE *EDLin;
 #endif  // WNT
 
@@ -1691,8 +1689,7 @@ void edl_uses_var(const edlstring var)
 void edl_uses(const edlstring filename) 
 {
   Standard_Boolean IsFound  = Standard_False;
-  Standard_Integer DirCount = 1,
-                   LenName  = filename.length;
+  Standard_Integer DirCount = 1;
 
   Handle(TColStd_HSequenceOfAsciiString) IncludeDirectory = GlobalInter->GetIncludeDirectory();
 
