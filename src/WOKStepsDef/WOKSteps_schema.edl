@@ -34,6 +34,7 @@
  @set %WOKSteps_executable_LinksWith   = " obj.lib ";
  @set %WOKSteps_engine_LinksWith       = " obj.lib ";
  @set %WOKSteps_interface_LinksWith    = " obj.lib ";
+ @set %WOKSteps_jini_LinksWith    = " obj.lib ";
  @set %WOKSteps_toolkit_LinksWith      = " obj.lib ";
 
 	

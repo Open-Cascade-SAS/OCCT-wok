@@ -23,6 +23,7 @@
   @string %WOKStepsStep_DefinedSteps += " WOKStep_Include            WOKStep_HeaderExtract ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_ServerExtract      WOKStep_EngineExtract ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_ClientExtract      WOKStep_SourceExtract ";
+  @string %WOKStepsStep_DefinedSteps += " WOKStep_JiniExtract ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_CodeGenerate       WOKStep_TemplateExtract ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_ExtractExecList ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_Compile ";

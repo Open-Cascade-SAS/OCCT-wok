@@ -32,4 +32,5 @@ srcinc:::WOKSteps_schema_OBJY.edl
 srcinc:::WOKSteps_server.edl
 srcinc:::WOKSteps_toolkit.edl
 srcinc:::WOKSteps_toolkit_wnt.edl
+srcinc:::WOKSteps_jini.edl
 srcinc:::FRONTAL.edl
