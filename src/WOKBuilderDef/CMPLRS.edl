@@ -428,6 +428,7 @@
 					      %BaseName, 
 					      %OutputDir ,
                                               %TmpFile , %Entity ) is
+     $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
      $cd %OutputDir
      $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
       $set stat = $status
@@ -477,16 +478,17 @@
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile , %Entity ) is
-     $cd %OutputDir
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
+     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
+     $cd %OutputDir 
+     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o >& %TmpFile
       $set stat = $status
       $if ( $stat == 0 ) then
       $  if ( -e %OutputDir/%BaseName.d ) then
       $    sed -e '/:/d' -e 's/\\/ /g'  %OutputDir/%BaseName.d | tr ' ' '\012' | sort -u > %OutputDir/%BaseName.m
       $  endif
       $endif
---      $if( -e %TmpFile ) grep ':' %TmpFile
---      $/bin/rm -f %TmpFile
+      $if( -e %TmpFile ) grep ':' %TmpFile
+      $/bin/rm -f %TmpFile
       $set status = $stat
     
     @end;
@@ -676,12 +678,16 @@
     @end;
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-DDEB -D_DEBUG";
-       @set %CMPLRS_C_ModeOpt   = "-DDEB -D_DEBUG";
+       @set %CMPLRS_CXX_ModeOpt = "-D_DEBUG ";
+       @set %CMPLRS_C_ModeOpt   = "-D_DEBUG ";
+       @set %CMPLRS_CXX_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
+       @set %CMPLRS_C_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
        @set %CMPLRS_F77_ModeOpt = "-DDEB -D_DEBUG";
     @else
-       @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception";
-       @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception";
+       @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception ";
+       @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception ";
+       @set %CMPLRS_CXX_SysOptions = "-nologo -MD -W3 -GX -O2 ";
+       @set %CMPLRS_C_SysOptions = "-nologo -MD -W3 -GX -O2 ";
        @set %CMPLRS_F77_ModeOpt = "-DNDEBUG -DNo_Exception";
     @endif;
 
@@ -691,6 +697,9 @@
 
     @if ( %DBMS == "OBJS" ) then
        @set %CMPLRS_CXX_DBMSOpt = "-DOBJS";
+    @endif;
+    @if ( %DBMS == "DFLT" ) then
+	@set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
     @endif;
 
     @template CMPLRS_C_Footer (
@@ -752,25 +761,16 @@
     $%IncDirectives
     @end;
 
-
-
-  @template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_COMPILER, 
-				 %CMPLRS_CXX_SysOptions, 
-				 %CMPLRS_CXX_Options, 
-				 %CMPLRS_CXX_ModeOpt,
-				 %CMPLRS_CXX_JAVA ,	
-			         %IncDirectives, 
-				 %PDBName, 
-				 %Source,
-			         %BaseName, 
-				 %OutputDir, 
-				 %CMPLRS_ExportBehaviour
+  @template CMPLRS_CXX_CmdLine (
+             %CMPLRS_CXX_COMPILER, %CMPLRS_CXX_SysOptions, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
+             %CMPLRS_CXX_JAVA, %CMPLRS_CXX_DBMSOpt, %IncDirectives, %CMPLRS_CXX_INCLUDE, %PDBName, %Source,
+             %BaseName, %OutputDir, %CMPLRS_ExportBehaviour
             ) is
   $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
-  $  %IncDirectives %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_JAVA \^
+  $  %IncDirectives %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt\^
   $ -Fd%PDBName -c -Tp %Source -Fo%OutputDir%BaseName.obj;
   $set cmplrs_status=%status%;
-  $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
+  $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL  -D_MT %CMPLRS_ExportBehaviour  %IncDirectives %CMPLRS_CXX_INCLUDE\^
   $ %Source -o %OutputDir%BaseName.m;
   $set status=%cmplrs_status%;
   @end;

@@ -7,6 +7,7 @@
 
 @ifnotdefined ( %LINK_EDL ) then
 -- @set %LINK_EDL = ""--; Syntax error
+ @cout "LINK";
 
  @uses "CSF.edl";
 
@@ -26,10 +27,22 @@
  @set %LINKModeOpt  = "-debug";
 
 -- Set %LINK_NoDefStub if you do not want to link with stub objects
- @set %LINK_NoDefStub = " ";
+ @set %LINK_NoDefStub = "1 ";
 
+ @if ( %DebugMode == "True" ) then
+ 	@set %LinkModeOpt = "-debug ";
+	@set %LINK_LinkerPDBOption = " -pdb:";
+	@template LINK_LinkerPDB ( %CollectorOutput ) is
+		$%CollectorOutput.pdb\^
+	@end;
+ @else
+	@set %LinkModeOpt = " ";
+	@set %LINK_LinkerPDBOption = " ";
+	@template LINK_LinkerPDB ( %CollectorOutput ) is
+		$ \^
+	@end;
 
- @set %LINK_LinkerPDBOption = " -pdb:";
+ @endif;
  
 
  @template LINK_LinkerIMP ( %CollectorOutput ) is
@@ -44,24 +57,20 @@
 	$%CollectorOutput.dll\^
  @end;
 
- @template LINK_LinkerPDB ( %CollectorOutput ) is
-	$%CollectorOutput.pdb\^
- @end;
-
  @template LINK_LinkerEXE ( %CollectorOutput ) is
 	$%CollectorOutput.exe\^
  @end;
 
  @template LINK_LinkerHeaderDLL ( %CSF_LINKER ,
-                                  %Station,
-                                  %LINKModeOpt ) is
+                                               %Station,
+                                               %LINKModeOpt ) is
 	$%CSF_LINKER -nologo -subsystem:windows -dll -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
  @template LINK_LinkerHeaderEXE ( %CSF_LINKER ,
-                                  %Station,
-                                  %LINKModeOpt,
-                                  %LinkSubsystem ) is
+                                               %Station,
+                                               %LINKModeOpt,
+                                               %LinkSubsystem ) is
 	$%CSF_LINKER -nologo -subsystem:%LinkSubsystem -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
