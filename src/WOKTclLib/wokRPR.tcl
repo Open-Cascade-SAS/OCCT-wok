@@ -14,7 +14,9 @@ proc wokUpdateRepository { {loc {}} } {
     }
     set fact [wokinfo -f $verrue]
     set shop [wokinfo -s $verrue]
-    set type [wokIntegre:BASE:InitFunc]
+    set curwb [wokinfo -w $verrue]
+
+   
 
     set w [wokTPL rpr${verrue}]
     if [winfo exists $w ] {
@@ -23,11 +25,16 @@ proc wokUpdateRepository { {loc {}} } {
 	return 
     }
 
+    if { [wokStore:Report:SetQName $curwb] == {} } {
+	return
+    }
+    
+    set type [wokIntegre:BASE:InitFunc]
+
     toplevel    $w
-    wm title    $w "Repository of $shop ."
+    wm title    $w "Repository of $curwb ."
     wm geometry $w 1124x658+135+92
     wokButton setw [list Rpr_close $w]
-    ;#bind $w <Destroy> { if [winfo exists %W] {wokRPRExit %W}}
 
     tixBusy $w on
     update

@@ -21,6 +21,10 @@ proc wokWaffQueue { {loc {}} } {
 	return 
     }
     
+    if { [wokStore:Report:SetQName $curwb] == {} } {
+	return
+    }
+
     toplevel $w
     wm title $w "Integration Queue of $curwb"
     wm geometry $w 742x970+515+2
@@ -95,6 +99,7 @@ proc wokWaffQueue { {loc {}} } {
     tixForm $w.journal -top $w.file -left $w.reports -right -2
     tixForm $w.top -top $w.reports  -left 2 -right  %99 -bottom $w.lab 
     tixForm $w.lab -left 2 -right %99  -bottom %99
+
     
     set IWOK_WINDOWS($w,menu)        $w.file.m
     set IWOK_WINDOWS($w,label)       $w.lab
