@@ -9,7 +9,7 @@
 --- Insert your stuff Here
 
  @set %CASCADESamplesJni_WOKSteps_EDL  = "";
- @string %WOKSteps_XcppGroup += "xcpp.repl";
+ @string %WOKSteps_XcppGroup += " xcpp.repl ";
  @set %WOKSteps_xcpp_repl     = "*EDL_Replace(obj.inc)";
 
 
