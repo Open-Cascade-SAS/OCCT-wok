@@ -4,6 +4,7 @@
 //		<jga@cobrax.paris1.matra-dtv.fr>
 
 #include <Standard_SStream.hxx>
+#include <Standard_Macro.hxx>
 
 #include <tcl.h>
 
@@ -84,10 +85,10 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
   catch (Standard_Failure) {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
     
-    strstream astream;
+    Standard_SStream astream;
     astream << E << ends;
 
-    ErrorMsg << argv[0] << "Exception was raised : " << astream.str() << endm;
+    ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
 
     WOKAPI_Session* asess = (WOKAPI_Session *) &(C->i->Session());
     asess->GeneralFailure(E);
