@@ -5,3 +5,12 @@ WOKLibs_WOKSteps.edl
 pkgIndex.tcl
 pkgIndex.tcl-hp
 pkgIndex.tcl-wnt
+mscmd.dsp
+wokcmd.dsp
+wokdeliverysteps.dsp
+wokdfltsteps.dsp
+wokobjssteps.dsp
+wokorbixsteps.dsp
+woksteps.dsp
+woktoolscmd.dsp
+wokutilscmd.dsp
