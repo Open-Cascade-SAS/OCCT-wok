@@ -19,7 +19,19 @@
 
 #include <Standard_ProgramError.hxx>
 
-#include <limits.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_LIMITS
+# include <limits>
+#elif defined (HAVE_LIMITS_H)
+# include <limits.h>
+#endif
+
+#ifdef WNT
+# include <limits>
+#endif
 
 #define CPPJINI_BOOLEAN         1
 #define CPPJINI_CHARACTER       2
