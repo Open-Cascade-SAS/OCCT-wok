@@ -38,11 +38,15 @@
 
 #include <Standard_NoSuchObject.hxx>
 
+#ifndef _Standard_Macro_HeaderFile
+# include <Standard_Macro.hxx>
+#endif
+
 extern "C" {
 
-        Handle(TColStd_HSequenceOfHAsciiString) TCPP_TemplatesUsed();
+        Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) TCPP_TemplatesUsed();
 
-        void TCPP_Extract(const Handle(MS_MetaSchema)& ams,
+        void Standard_EXPORT TCPP_Extract(const Handle(MS_MetaSchema)& ams,
 			 const Handle(TCollection_HAsciiString)& aname,
 			 const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,
 			 const Handle(TCollection_HAsciiString)& outdir,
