@@ -49,7 +49,8 @@ void CPP_ExceptionDerivated(const Handle(MS_MetaSchema)& aMeta,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Class)& aClass,			    
 			    const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
-			    const Handle(TColStd_HSequenceOfHAsciiString)& inclist,
+//			    const Handle(TColStd_HSequenceOfHAsciiString)& inclist,
+			    const Handle(TColStd_HSequenceOfHAsciiString)& ,
 			    const Handle(TColStd_HSequenceOfHAsciiString)& supplement)
 {
   Standard_Integer                        i;

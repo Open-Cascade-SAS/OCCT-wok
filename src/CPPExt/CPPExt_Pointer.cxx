@@ -15,7 +15,8 @@
 
 // Extraction of a transient class (inst or std)
 //
-void CPP_Pointer(const Handle(MS_MetaSchema)& aMeta,
+//void CPP_Pointer(const Handle(MS_MetaSchema)& aMeta,
+void CPP_Pointer(const Handle(MS_MetaSchema)& ,
 		 const Handle(EDL_API)& api,
 		 const Handle(MS_Pointer)& aPointer,
 		 const Handle(TColStd_HSequenceOfHAsciiString)& outfile)

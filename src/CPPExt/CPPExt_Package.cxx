@@ -45,7 +45,8 @@
 //   the supplement variable is used for non inline methods generated 
 //   by the extractor like destructor (added to .ixx ans _0.cxx
 //
-void CPP_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+//void CPP_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Package)& aPackage,			    
 			    const Handle(TColStd_HSequenceOfHAsciiString)& outfile,

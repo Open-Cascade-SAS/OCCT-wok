@@ -71,7 +71,8 @@ void CPP_GenericMDTVDefineOBJY(const Handle(MS_MetaSchema)& aMeta,
 			   const Handle(MS_InstClass)& aCreator,
 			   const Standard_CString VARDefine,
 			   const Standard_CString VARUndefine,
-			   const Standard_Boolean handleUsed)
+//			   const Standard_Boolean handleUsed)
+			   const Standard_Boolean )
 {
 //  Handle(MS_GenClass)                     aGenClass   = Handle(MS_GenClass)::DownCast(aMeta->GetType(aCreator->GenClass()));
 //  Handle(TColStd_HSequenceOfHAsciiString) theGenTypes = aCreator->GenTypes();
@@ -222,10 +223,14 @@ void CPP_GenericMDTVDefineOBJY(const Handle(MS_MetaSchema)& aMeta,
 // create a VArray OBJY dependent declaration for DBC instance
 //            look EDL template : VArrayFieldOBJY 
 //
-void CPP_BuildVArrayDeclarationOBJY(const Handle(MS_MetaSchema)& aMeta, 
-			      const Handle(EDL_API)& api, 
-			      const Handle(MS_StdClass)& aClass,
-			      const Handle(TCollection_HAsciiString)& Result)
+//void CPP_BuildVArrayDeclarationOBJY(const Handle(MS_MetaSchema)& aMeta, 
+//			      const Handle(EDL_API)& api, 
+//			      const Handle(MS_StdClass)& aClass,
+//			      const Handle(TCollection_HAsciiString)& Result)
+void CPP_BuildVArrayDeclarationOBJY(const Handle(MS_MetaSchema)& , 
+			      const Handle(EDL_API)& , 
+			      const Handle(MS_StdClass)& ,
+			      const Handle(TCollection_HAsciiString)& )
 {
 //  if (!aClass->GetMyCreator().IsNull()) {
 //    Handle(MS_InstClass)             anInst = aClass->GetMyCreator();
@@ -243,10 +248,14 @@ void CPP_BuildVArrayDeclarationOBJY(const Handle(MS_MetaSchema)& aMeta,
 // create a VArray OBJY dependent field for DBC instance
 //            look EDL template : VArrayFieldOBJY 
 //
-void CPP_BuildVArrayFieldOBJY(const Handle(MS_MetaSchema)& aMeta, 
-			      const Handle(EDL_API)& api, 
-			      const Handle(MS_StdClass)& aClass,
-			      const Handle(TCollection_HAsciiString)& Result)
+//void CPP_BuildVArrayFieldOBJY(const Handle(MS_MetaSchema)& aMeta, 
+//			      const Handle(EDL_API)& api, 
+//			      const Handle(MS_StdClass)& aClass,
+//			      const Handle(TCollection_HAsciiString)& Result)
+void CPP_BuildVArrayFieldOBJY(const Handle(MS_MetaSchema)& , 
+			      const Handle(EDL_API)& , 
+			      const Handle(MS_StdClass)& ,
+			      const Handle(TCollection_HAsciiString)& )
 {
 //  if (!aClass->GetMyCreator().IsNull()) {
 //    Handle(MS_InstClass)             anInst = aClass->GetMyCreator();
@@ -345,7 +354,8 @@ void CPP_BuildOidOBJYMethod(const Handle(MS_MetaSchema)& aMeta,
   }
 }
 
-Handle(TCollection_HAsciiString) CPP_BuildOidImmTestOBJY(const Handle(MS_MetaSchema)& aMeta,
+//Handle(TCollection_HAsciiString) CPP_BuildOidImmTestOBJY(const Handle(MS_MetaSchema)& aMeta,
+Handle(TCollection_HAsciiString) CPP_BuildOidImmTestOBJY(const Handle(MS_MetaSchema)& ,
 						     const Handle(EDL_API)& api,
 						     const Handle(MS_Method)& Method,
 						     const Standard_Boolean UseMutability)

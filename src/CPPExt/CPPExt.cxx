@@ -462,7 +462,8 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
 // build an INLINE "function call" body method for "C++: function call" comment
 //
 Handle(TCollection_HAsciiString) CPP_BuildFunctionCall(const Handle(MS_MetaSchema)& aMeta,
-						       const Handle(EDL_API)& api,
+//						       const Handle(EDL_API)& api,
+						       const Handle(EDL_API)& ,
 						       const Handle(MS_MemberMet)& method,
 						       const Standard_Boolean isInlineMode)
 {
@@ -699,7 +700,8 @@ void CPP_GenericDefine(const Handle(MS_MetaSchema)& aMeta,
 		       const Handle(MS_InstClass)& aCreator,
 		       const Standard_CString VARDefine,
 		       const Standard_CString VARUndefine,
-		       const Standard_Boolean handleUsed)
+//		       const Standard_Boolean handleUsed)
+		       const Standard_Boolean )
 {
   Handle(MS_GenClass)                     aGenClass   = Handle(MS_GenClass)::DownCast(aMeta->GetType(aCreator->GenClass()));
   Handle(TColStd_HSequenceOfHAsciiString) theGenTypes = aCreator->GenTypes();
@@ -810,7 +812,8 @@ void CPP_GenericDefine(const Handle(MS_MetaSchema)& aMeta,
 
 
 
-void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
+//void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
+void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& ,
 		      const Handle(EDL_API)& api,
 		      const Handle(MS_Class)& aClass,
 		      const Standard_CString var)
