@@ -56,10 +56,10 @@ Standard_Boolean  WOKTools_BasicMap::BeginResize
     else
       return Standard_False;
   }
-  data1 = aStorageManager.Allocate((N+1)*sizeof(void*));
+  data1 = Standard::Allocate((N+1)*sizeof(void*));
   memset(data1, 0, (N+1)*sizeof(void*));
   if (isDouble) {
-    data2 = aStorageManager.Allocate((N+1)*sizeof(void*));
+    data2 = Standard::Allocate((N+1)*sizeof(void*));
     memset(data2, 0, (N+1)*sizeof(void*));
   }
   else
@@ -79,9 +79,9 @@ void  WOKTools_BasicMap::EndResize(const Standard_Integer NbBuckets,
 				      const Standard_Address data2)
 {
   if (myData1)
-    aStorageManager.Free(myData1,(myNbBuckets+1)*sizeof(void*));
+    Standard::Free(myData1,(myNbBuckets+1)*sizeof(void*));
   if (myData2)
-    aStorageManager.Free(myData2,(myNbBuckets+1)*sizeof(void*));
+    Standard::Free(myData2,(myNbBuckets+1)*sizeof(void*));
   myNbBuckets = N;
   mySaturated = myNbBuckets <= NbBuckets;
   myData1 = data1;
@@ -99,10 +99,10 @@ void  WOKTools_BasicMap::Destroy()
   mySize = 0;
   mySaturated = Standard_False;
   if (myData1)
-    aStorageManager.Free(myData1,(myNbBuckets+1)*sizeof(void*));
+    Standard::Free(myData1,(myNbBuckets+1)*sizeof(void*));
   if (isDouble) {
     if (myData2)
-      aStorageManager.Free(myData2,(myNbBuckets+1)*sizeof(void*));
+      Standard::Free(myData2,(myNbBuckets+1)*sizeof(void*));
   }
   myData1 = myData2 = NULL;
 }

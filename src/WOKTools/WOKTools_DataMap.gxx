@@ -16,9 +16,9 @@ template <class Item, class Key> class DataMapNode  : public WOKTools_MapNode {
     DataMapNode(const Key& K, const Standard_Integer ahascode, const Item& I, DataMapNode* n) :
       WOKTools_MapNode(n), key(K), hashcode(ahascode) { value = I; }
   void* operator new(size_t aSize) 
-    {return aStorageManager.Allocate(aSize);}
+    {return Standard::Allocate(aSize);}
   void  operator delete(void* aNode, size_t aSize) {
-    aStorageManager.Free(aNode,aSize);
+    Standard::Free(aNode,aSize);
   }
 
   Key           key;
@@ -35,9 +35,9 @@ class Node  : public WOKTools_MapNode {
     Node(const TheKey& K, const Standard_Integer ahascode, const TheItem& I, Node* n) :
       WOKTools_MapNode(n), key(K), hashcode(ahascode) { value = I; }
   void* operator new(size_t aSize) 
-    {return aStorageManager.Allocate(aSize);}
+    {return Standard::Allocate(aSize);}
   void  operator delete(void* aNode, size_t aSize) {
-    aStorageManager.Free(aNode,aSize);
+    Standard::Free(aNode,aSize);
   }
 
   TheKey           key;

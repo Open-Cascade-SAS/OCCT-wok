@@ -19,10 +19,10 @@ template <class Key, class Item> class IndexedDataMapNode : public WOKTools_MapN
 		 const Standard_Integer ahashcode, IndexedDataMapNode* n1, IndexedDataMapNode* n2) 
     : WOKTools_MapNode(n1),key(K1),index(K2),value(I),next2(n2),hashcode(ahashcode) {}
   void* operator new(size_t aSize) {
-    return aStorageManager.Allocate(aSize);
+    return Standard::Allocate(aSize);
   }
   void  operator delete(void* aNode, size_t aSize) {
-    aStorageManager.Free(aNode,aSize);
+    Standard::Free(aNode,aSize);
   }
 
   Key                 key;
@@ -42,10 +42,10 @@ class Node : public WOKTools_MapNode {
 	 const Standard_Integer ahashcode, Node* n1, Node* n2) :
       WOKTools_MapNode(n1),key(K1),index(K2),hashcode(ahashcode),next2(n2) { value =I;}
   void* operator new(size_t aSize) {
-    return aStorageManager.Allocate(aSize);
+    return Standard::Allocate(aSize);
   }
   void  operator delete(void* aNode, size_t aSize) {
-    aStorageManager.Free(aNode,aSize);
+    Standard::Free(aNode,aSize);
   }
 
   TheKey                key;
