@@ -1,0 +1,20 @@
+-- File:	CPPJini.cdl
+-- Created:	Wed Mar 24 11:22:00 1999
+-- Author:	Arnaud BOUZY
+--		<adn@motox.paris1.matra-dtv.fr>
+---Copyright:	 Matra Datavision 1999
+
+package CPPJini
+
+uses TCollection
+
+is
+
+
+    class DataMapOfAsciiStringInteger 
+    instantiates DataMap from TCollection(AsciiString from TCollection,
+    	    	    	    	    	  Integer,
+					  AsciiString from TCollection);
+					  
+end CPPJini;
+

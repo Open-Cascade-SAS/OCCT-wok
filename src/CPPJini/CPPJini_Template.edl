@@ -1,0 +1,542 @@
+-- File:	CPPJini_Template.edl
+-- Author:	Kernel (CLE)
+-- History:	Tue Dec 19 08:22:43 1995	Kernel	Creation
+-- Copyright:	 Matra Datavision 1995
+
+
+@template TransientRootClientJAVA(%Interface) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$import jcas.Object;
+$
+$public class Standard_Transient extends jcas.Object {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$
+$}
+@end;
+
+@template StorableRootClientJAVA(%Interface) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$import jcas.Object;
+$
+$public class Standard_Storable extends jcas.Object {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$}
+@end;
+
+@template MemoryRootClientJAVA(%Interface) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$import jcas.Object;
+$import %Interface.Standard_Transient;
+$
+$public class MMgt_TShared extends %Interface.Standard_Transient {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$}
+@end;
+
+@template TransientClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$import jcas.Object;
+$import %Inherits;
+$%Includes
+$
+$public class %Class extends %Inherits {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$%Methods
+$
+$
+$}
+@end;
+
+@template TransientClassClientCXX(%Interface,%Class,%Methods,%Includes) is
+$//                     Copyright (C) 1991,1995 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$
+$#include <%Interface_%Class.h>
+$#include <%Class.hxx>
+$#include <jcas.hxx>
+$#include <stdlib.h>
+$#include <Standard_ErrorHandler.hxx>
+$#include <Standard_SStream.hxx>
+$
+$%Includes
+$
+$extern "C" {
+$%Methods
+$}
+@end;
+
+@template ValueClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$import jcas.Object;
+$import %Inherits;
+$%Includes
+$
+$public class %Class extends %Inherits {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$%Methods
+$
+$native static void FinalizeValue(long anHID);
+$
+$public void finalize() {
+$	FinalizeValue(HID);
+$}
+$
+$}
+@end;
+
+@template ValueClassClientCXX(%Interface,%Class,%Methods,%Includes) is
+$//                     Copyright (C) 1991,1995 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$
+$#include <%Interface_%Class.h>
+$#include <%Class.hxx>
+$#include <jcas.hxx>
+$#include <stdlib.h>
+$#include <Standard_ErrorHandler.hxx>
+$#include <Standard_SStream.hxx>
+$
+$%Includes
+$
+$extern "C" {
+$%Methods
+$}
+@end;
+
+@template PackageClientJAVA(%Interface,%Class,%Includes,%Methods) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$%Includes
+$
+$public class %Class {
+$
+$ static {
+$    System.loadLibrary("%Interface");
+$ }
+$            
+$%Methods
+$
+$
+$}
+@end;
+
+@template PackageClientCXX(%Interface,%Class,%Methods,%Includes) is
+$//                     Copyright (C) 1991,1995 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$
+$
+$#include <%Interface_%Class.h>
+$#include <%Class.hxx>
+$#include <jcas.hxx>
+$#include <stdlib.h>
+$#include <Standard_ErrorHandler.hxx>
+$#include <Standard_SStream.hxx>
+$
+$%Includes
+$
+$extern "C" {
+$%Methods
+$}
+@end;
+
+@template EnumJAVA(%Interface,%Class,%Values) is
+$// Java Native Class from Cas.Cade
+$//                     Copyright (C) 1991,1999 by
+$//  
+$//                      MATRA DATAVISION, FRANCE
+$//  
+$// This software is furnished in accordance with the terms and conditions
+$// of the contract and with the inclusion of the above copyright notice.
+$// This software or any other copy thereof may not be provided or otherwise
+$// be made available to any other person. No title to an ownership of the
+$// software is hereby transferred.
+$//  
+$// At the termination of the contract, the software and all copies of this
+$// software must be deleted.
+$//
+$
+$
+$package %Interface;
+$
+$
+$public class %Class extends jcas.Standard_Enumeration  {
+$
+$%Values
+$
+$  
+$}
+@end;
+
+-- method header
+
+@template CreateMethodDec(%MethodName) is
+$
+$
+$JNIEXPORT void JNICALL %MethodName (JNIEnv *env, jobject theobj\^
+@end;
+
+@template InstMethodDec(%MethodName,%Return) is
+$
+$
+$JNIEXPORT %Return JNICALL %MethodName (JNIEnv *env, jobject theobj\^
+@end;
+
+@template ClassMethodDec(%MethodName,%ClassName,%Return) is
+$
+$
+$JNIEXPORT %Return JNICALL %MethodName (JNIEnv *env, jclass\^
+@end;
+
+@template PackMethodDec(%MethodName,%ClassName,%Return) is
+$
+$
+$JNIEXPORT %Return JNICALL %MethodName (JNIEnv *env, jclass\^
+@end;
+
+
+@template MethodArg(%TypeName,%ArgName) is
+$, %TypeName %ArgName\^
+@end;
+
+
+-- argument transfert
+
+@template TransientGetValue(%ClassName,%ArgName) is
+$Handle(%ClassName) the_%ArgName;
+$ if ( %ArgName ) the_%ArgName = *((Handle(%ClassName)*) jcas_GetHandle(env,%ArgName));
+@end;
+
+@template ValueGetValue(%ClassName,%ArgName) is
+$%ClassName* the_%ArgName = (%ClassName*) jcas_GetHandle(env,%ArgName);
+@end;
+
+@template CStringGetValue(%ArgName) is
+$Standard_CString the_%ArgName = jcas_ConvertToCString(env,%ArgName);
+@end;
+
+@template StringGetValue(%ArgName) is
+$Standard_ExtString the_%ArgName = jcas_ConvertToExtString(env,%ArgName);
+@end;
+
+@template BooleanGetValue(%ArgName) is
+$Standard_Boolean the_%ArgName = jcas_GetBoolean(env,%ArgName);
+@end;
+
+@template RealGetValue(%ArgName) is
+$Standard_Real the_%ArgName = jcas_GetReal(env,%ArgName);
+@end;
+
+@template CharacterGetValue(%ArgName) is
+$Standard_Character the_%ArgName = jcas_GetCharacter(env,%ArgName);
+@end;
+
+@template IntegerGetValue(%ArgName) is
+$Standard_Integer the_%ArgName = jcas_GetInteger(env,%ArgName);
+@end;
+
+@template ExtCharacterGetValue(%ArgName) is
+$Standard_ExtCharacter the_%ArgName = jcas_GetExtCharacter(env,%ArgName);
+@end;
+
+@template ByteGetValue(%ArgName) is
+$Standard_Byte the_%ArgName = jcas_GetByte(env,%ArgName);
+@end;
+
+@template ShortRealGetValue(%ArgName) is
+$Standard_ShortReal the_%ArgName = jcas_GetShortReal(env,%ArgName);
+@end;
+
+@template StringBufferGetValue(%ArgName) is
+$Standard_ExtString the_%ArgName = jcas_ConvertSBToExtString(env,%ArgName);
+@end;
+
+@template ThisTransientGetValue(%ClassName) is
+$Handle(%ClassName) the_this = *((Handle(%ClassName)*) jcas_GetHandle(env,theobj));
+@end;
+
+@template ThisValueGetValue(%ClassName) is
+$%ClassName* the_this = (%ClassName*) jcas_GetHandle(env,theobj);
+@end;
+
+
+-- out argument
+
+@template TransientSetValue(%ClassName,%ArgName) is
+$Handle(%ClassName)* theprevious_%ArgName = (Handle(%ClassName)*) jcas_GetHandle(env,%ArgName);
+$if (theprevious_%ArgName) delete theprevious_%ArgName;
+$Handle(%ClassName)* thenew_%ArgName = new Handle(%ClassName);
+$(*thenew_%ArgName) = the_%ArgName;
+$jcas_SetHandle(env,%ArgName,thenew_%ArgName);
+@end;
+
+@template CStringSetValue(%ArgName) is
+$jcas_SetCStringValue(env,%ArgName,the_%ArgName);
+@end;
+
+@template BooleanSetValue(%ArgName) is
+$jcas_SetBoolean(env,%ArgName,the_%ArgName);
+@end;
+
+@template RealSetValue(%ArgName) is
+$jcas_SetReal(env,%ArgName,the_%ArgName);
+@end;
+
+@template CharacterSetValue(%ArgName) is
+$jcas_SetCharacter(env,%ArgName,the_%ArgName);
+@end;
+
+@template IntegerSetValue(%ArgName) is
+$jcas_SetInteger(env,%ArgName,the_%ArgName);
+@end;
+
+@template ExtCharacterSetValue(%ArgName) is
+$jcas_SetExtCharacter(env,%ArgName,the_%ArgName);
+@end;
+
+@template ByteSetValue(%ArgName) is
+$jcas_SetByte(env,%ArgName,the_%ArgName);
+@end;
+
+@template ShortRealSetValue(%ArgName) is
+$jcas_SetShortReal(env,%ArgName,the_%ArgName);
+@end;
+
+@template StringBufferSetValue(%ArgName) is
+$jcas_SetExtStringToStringBuffer(env,%ArgName,the_%ArgName);
+@end;
+
+-- templates for call
+
+
+@template ClassMethodCall(%MethodName,%ClassName,%ArgsInCall) is
+$%ClassName::%MethodName(%ArgsInCall)\^
+@end;
+
+@template PackMethodCall(%MethodName,%ClassName,%ArgsInCall) is
+$%ClassName::%MethodName(%ArgsInCall)\^
+@end;
+
+@template InstMethodCall(%MethodName,%ClassName,%ArgsInCall) is
+$the_this->%MethodName(%ArgsInCall)\^
+@end;
+
+-- constructors
+
+@template ValueCreateMethodCall(%ClassName,%ArgsInCall) is
+$%ClassName* theret = new %ClassName(%ArgsInCall);
+$jcas_SetHandle(env,theobj,theret);
+@end;
+
+@template TransientCreateMethodCall(%ClassName,%ArgsInCall) is
+$Handle(%ClassName)* theret = new Handle(%ClassName);
+$*theret = new %ClassName(%ArgsInCall);
+$jcas_SetHandle(env,theobj,theret);
+@end;
+
+-- return type
+
+@template ReturnHandle(%ClassName,%MethodCall,%FromInterface) is
+$Handle(%ClassName)* theret = new Handle(%ClassName);
+$*theret = %MethodCall;
+$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+@end;
+
+@template ReturnValueMagic(%ClassName,%MethodCall,%FromInterface) is
+$%ClassName* theret = new %ClassName(%MethodCall);
+$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+@end;
+
+@template ReturnValueRef(%ClassName,%MethodCall,%FromInterface) is
+$const %ClassName& theret = %MethodCall;
+$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",&theret);
+@end;
+
+@template ReturnValueEmpty(%ClassName,%MethodCall,%FromInterface) is
+$%ClassName* theret = new %ClassName();
+$*theret = %MethodCall;
+$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+@end;
+
+@template ReturnValueMalloc(%ClassName,%MethodCall,%FromInterface) is
+$%ClassName *theret = ((%ClassName *) malloc(sizeof(%ClassName)));
+$*theret = %MethodCall;
+$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+@end;
+
+@template ReturnCString(%MethodCall) is
+$Standard_CString sret = %MethodCall;
+$jclass CLSret  = env->FindClass("jcas/Standard_CString");
+$jobject thejret = env->AllocObject(CLSret);
+$jcas_SetCStringValue(env,thejret,sret);
+@end;
+
+@template ReturnString(%MethodCall) is
+$Standard_ExtString sret = %MethodCall;
+$jstring thejret = jcas_ConvertTojstring(env,sret);
+@end;
+
+-- finalize for MPV types
+
+@template FinalizeForValue(%Class,%MethodName) is
+$
+$
+$JNIEXPORT void JNICALL %MethodName(JNIEnv *, jclass, jlong theid)
+${
+$if (theid) {
+$  %Class* theobj = (%Class*) theid;
+$  delete theobj;
+$}
+$}
+$
+@end;
+
