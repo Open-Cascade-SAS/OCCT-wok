@@ -3,7 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-
 #include <fstream.h>
 
 #include <WOKTools_Messages.hxx>
@@ -457,12 +456,11 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 
   Params().Set("%LD_ObjList", objlistpath->Name()->ToCString()); 
 // CheckUndef
-//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
 #ifndef WNT
   Handle( TCollection_HAsciiString ) args[ 10 ];
 #else
   Handle( TCollection_HAsciiString ) args[  4 ];
-#endif  // LIN
+#endif  // WNT
 
   args[ 0 ] = EvalHeader      ();
   args[ 1 ] = EvalObjectList  ();
@@ -474,7 +472,7 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   Shell () -> Send ( args[ 0 ] );
   Shell () -> Send ( args[ 1 ] );
   Shell () -> Send ( args[ 2 ] );
-//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
+
 #ifdef WNT
   Shell () -> Execute ( args[ 3 ] );
 
@@ -485,15 +483,15 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
  }  // end if
 
  Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 1 );
-# if defined( LIN )
+# if defined( linux ) || defined( LIN )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
-# elif defined ( SOLARIS )
+# elif defined ( __sun ) || defined ( SOLARIS )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
  static Handle( TCollection_HAsciiString ) skipStr1 =
   new TCollection_HAsciiString ( "/crt1.o" );
-# else // not LIN || SOLARIS
+# else // not linux || __sun
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
 # endif
@@ -565,22 +563,19 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   f.Build (  OSD_WriteOnly, OSD_Protection ()  );
 
   if (  !f.Failed ()  ) {
-//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
 #ifdef WNT
    for ( i = 0; i < 4; ++i ) {
 #else
-//   for ( i = 0; i < 11; ++i ) { JR :
    for ( i = 0; i < 10; ++i ) {
-#endif  // LIN || SOLARIS
+#endif  // WNT
     if (  !args[ i ].IsNull () && !args[ i ] -> String ().IsEmpty ()  )
 
      f.Write (  args[ i ] -> String (), args[ i ] -> Length ()  );
 
    }  // end for
-//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
 #ifdef WNT
    f.Write ( "\n", 1 );
-#endif  // LIN
+#endif  // WNT
    f.Close ();
 
   }  // end if
@@ -599,11 +594,10 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       ErrorMsg.DontPrintHeader();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
 #ifndef WNT
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
-#endif  // LIN || SOLARIS
-#ifdef SOLARIS
+#endif  // WNT
+#if defined (__sun) || defined(SOLARIS)
           if (  errmsgs -> Value ( i ) -> Search ( skipStr1 ) ==
                 errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
           ) continue;
@@ -618,20 +612,19 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       Standard_Boolean ph = InfoMsg.PrintHeader();
       InfoMsg.DontPrintHeader();
       errmsgs = Shell()->Errors();
-#ifdef SOLARIS
+#if defined (__sun) || defined(SOLARIS)
       if (   !(  errmsgs -> Length () == 4 &&
                  errmsgs -> Value ( 3 ) -> Search ( skipStr1 ) ==
                  errmsgs -> Value ( 3 ) -> Length () - skipStr1 -> Length () + 1
               )
       )
-#endif  // SOLARIS
+#endif  // __sun
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
 #ifndef WNT
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
-#endif  // LIN || SOLARIS
-#ifdef SOLARIS
+#endif  // WNT
+#if defined (__sun) || defined(SOLARIS)
           if (  errmsgs -> Value ( i ) -> Search ( skipStr1 ) ==
                 errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
           ) continue;

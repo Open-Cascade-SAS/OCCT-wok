@@ -5,13 +5,19 @@
 
 #include <Standard_ProgramError.hxx>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <WOKTools_Messages.hxx>
 
 #include <WOKBuilder_MSAction.ixx>
 
 #include <sys/types.h>
 
-#include <time.h>
+#if defined(HAVE_TIME_H) || defined(WNT)
+# include <time.h>
+#endif
 
 //=======================================================================
 //function : WOKBuilder_MSAction
