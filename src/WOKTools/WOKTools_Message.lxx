@@ -15,7 +15,7 @@ extern WOKTools_Message& FileLogEndMsgHandler(WOKTools_Message& amsgq, const Sta
 //function : IsSet
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKTools_Message::IsSet() const
+inline Standard_Boolean WOKTools_Message::IsSet() const
 {
   return myison;
 }
@@ -25,7 +25,7 @@ Standard_Boolean WOKTools_Message::IsSet() const
 //function : PrintContext
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKTools_Message::PrintContext() const
+inline Standard_Boolean WOKTools_Message::PrintContext() const
 {
   return myprintcontext;
 }
@@ -35,7 +35,7 @@ Standard_Boolean WOKTools_Message::PrintContext() const
 //function : PrintContext
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKTools_Message::PrintHeader() const
+inline Standard_Boolean WOKTools_Message::PrintHeader() const
 {
   return myprintheader;
 }
@@ -45,7 +45,7 @@ Standard_Boolean WOKTools_Message::PrintHeader() const
 //function : Index
 //purpose  : 
 //=======================================================================
-Standard_Integer WOKTools_Message::Index() const
+inline Standard_Integer WOKTools_Message::Index() const
 {
   return myindex;
 }
@@ -55,7 +55,7 @@ Standard_Integer WOKTools_Message::Index() const
 //function : EndMsgHandler
 //purpose  : 
 //=======================================================================
-WOKTools_MsgHandler WOKTools_Message::EndMsgHandler() const
+inline WOKTools_MsgHandler WOKTools_Message::EndMsgHandler() const
 {
   if(!mylogflag)
     return myendmsghandlr;
@@ -68,7 +68,7 @@ WOKTools_MsgHandler WOKTools_Message::EndMsgHandler() const
 //function : Message
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKTools_Message::Message() const
+inline const Handle(TCollection_HAsciiString)& WOKTools_Message::Message() const
 {
   return mymessage;
 }
@@ -77,7 +77,7 @@ const Handle(TCollection_HAsciiString)& WOKTools_Message::Message() const
 //function : Switcher
 //purpose  : 
 //=======================================================================
-Standard_CString WOKTools_Message::Switcher() const
+inline Standard_CString WOKTools_Message::Switcher() const
 {
   return myswitcher;
 }
@@ -85,7 +85,7 @@ Standard_CString WOKTools_Message::Switcher() const
 //function : LogStream
 //purpose  : 
 //=======================================================================
-WOKTools_MsgStreamPtr WOKTools_Message::LogStream() const
+inline WOKTools_MsgStreamPtr WOKTools_Message::LogStream() const
 {
   return mylogstream;
 }
@@ -95,7 +95,7 @@ WOKTools_MsgStreamPtr WOKTools_Message::LogStream() const
 //function : ToPrint
 //purpose  : 
 //=======================================================================
- Standard_CString WOKTools_Message::ToPrint() const
+inline Standard_CString WOKTools_Message::ToPrint() const
 {
   static char EMPTY[1] = "" ;
   if(myindex == 1)

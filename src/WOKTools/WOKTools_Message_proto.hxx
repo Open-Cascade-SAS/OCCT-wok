@@ -66,15 +66,15 @@ public:
   Standard_EXPORT   Standard_Boolean LogToStream(const WOKTools_MsgStreamPtr& astream) ;
   Standard_EXPORT   void EndLogging() ;
 
-  // inline methods
-  inline   WOKTools_MsgStreamPtr LogStream() const;
-  inline   Standard_Boolean IsSet() const;
-  inline   Standard_Boolean PrintHeader() const;
-  inline   Standard_Boolean PrintContext() const;
-  inline   WOKTools_MsgHandler EndMsgHandler() const;
-  inline   Standard_Integer Index() const;
-  inline  const Handle(TCollection_HAsciiString)& Message() const;
-  inline   Standard_CString ToPrint() const;
+  // Inline methods
+  WOKTools_MsgStreamPtr LogStream() const;
+  Standard_Boolean IsSet() const;
+  Standard_Boolean PrintHeader() const;
+  Standard_Boolean PrintContext() const;
+  WOKTools_MsgHandler EndMsgHandler() const;
+  Standard_Integer Index() const;
+  const Handle(TCollection_HAsciiString)& Message() const;
+  Standard_CString ToPrint() const;
 
   virtual ~WOKTools_Message () {}
 
@@ -83,7 +83,7 @@ protected:
   // Methods PROTECTED
   // 
   Standard_EXPORT WOKTools_Message(const Standard_CString aclass,const Standard_CString aheader);
-  inline   Standard_CString Switcher() const;
+  Standard_CString Switcher() const;
   Standard_EXPORT   void SetSwitcher(const Standard_CString aswitcher) ;
 
 private: 

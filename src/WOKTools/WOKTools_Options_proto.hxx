@@ -59,7 +59,7 @@ private:
 
 
 
-// other inline functions and methods (like "C++: function call" methods)
+// other Inline functions and methods (like "C++: function call" methods)
 //
 
 
