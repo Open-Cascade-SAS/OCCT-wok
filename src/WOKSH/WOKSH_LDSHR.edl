@@ -1,0 +1,11 @@
+@ifnotdefined ( %WOKSH_LDSHR_EDL ) then
+ @cout "WOKSH_LDSHR_EDL used";
+ @set %WOKSH_LDSHR_EDL = "";
+ @if ( %Station == "sun" ) then
+  @cout "LDSHR_Footer";
+  @template LDSHR_Footer () is
+  $ -lC -lc;
+  @end;
+ @endif;
+@endif;
+
