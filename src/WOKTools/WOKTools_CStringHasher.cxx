@@ -23,7 +23,7 @@ Standard_Integer WOKTools_CStringHasher::HashCode (const Standard_CString Value)
   alen = strlen(Value);
   
   while(i < alen) {
-    for (count = 0,pos = i;count < sizeof(int); count++) {
+    for (count = 0,pos = i;count < (Standard_Integer)sizeof(int); count++) {
       if (pos + count >= alen)  tabchar[count] = '\0';
       else tabchar[count] = charPtr[pos + count];
       i++;

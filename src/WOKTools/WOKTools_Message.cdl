@@ -22,6 +22,9 @@ is
 
     Initialize(aclass:CString from Standard; aheader : CString from Standard);
 
+    Destroy ( me );
+    ---C++: alias "Standard_EXPORT virtual ~WOKTools_Message () {}"
+
     Init(me:out);
 
     Code(me)

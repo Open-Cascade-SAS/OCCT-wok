@@ -15,7 +15,7 @@
 template <class Key> class IndexedMapNode : public WOKTools_MapNode {
   public :
   IndexedMapNode(const Key& K1, const Standard_Integer K2, const Standard_Integer ahashcode, IndexedMapNode* n1, IndexedMapNode* n2) 
-    : WOKTools_MapNode(n1),key(K1),index(K2),hashcode(ahashcode),next2(n2) {}
+    : WOKTools_MapNode(n1),key(K1),index(K2),next2(n2),hashcode(ahashcode) {}
   void* operator new(size_t aSize) {
     return aStorageManager.Allocate(aSize);
   }

@@ -106,8 +106,6 @@ Handle(TCollection_HAsciiString) WOKTools_InterpFileValue::InterpFormat(const WO
 //=======================================================================
 WOKTools_InterpFileType WOKTools_InterpFileValue::InterpType(const Handle(TCollection_HAsciiString)& atype)
 {
-  WOKTools_InterpFileType result;
-
   if(!atype.IsNull())
     {
       Standard_CString astr = atype->ToCString();

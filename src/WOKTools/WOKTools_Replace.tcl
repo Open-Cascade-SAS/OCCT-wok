@@ -1,15 +1,15 @@
 
 
-proc WOKTools_Replace::AdmFileType {} {
+proc WOKTools_Replace:AdmFileType {} {
     return "dbadmfile";
 }
 
-proc WOKTools_Replace::OutputDirTypeName {} {
+proc WOKTools_Replace:OutputDirTypeName {} {
     return "dbtmpfile";
 }
 
 
-proc WOKTools_Replace::HandleInputFile { ID } { 
+proc WOKTools_Replace:HandleInputFile { ID } { 
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
 
@@ -22,14 +22,14 @@ proc WOKTools_Replace::HandleInputFile { ID } {
     }
 }
 
-proc WOKTools_Replace::Execute { unit args } {
+proc WOKTools_Replace:Execute { unit args } {
     
     global tcl_interactive
 
     set tcl_interactive 1
     package require Wokutils
 
-    msgprint -i -c "WOKTools_Replace::Execute" "Copying of WOKTools includes"
+    msgprint -i -c "WOKTools_Replace:Execute" "Copying of WOKTools includes"
 
     if { [wokparam -e %Station $unit] != "wnt" } {
 	set copycmd "cp -p "
@@ -57,13 +57,13 @@ proc WOKTools_Replace::Execute { unit args } {
 	}
 	
 	if { ! $result } {
-	    msgprint -i -c "WOKTools_Replace::Execute" "Copy $source to $target"
+	    msgprint -i -c "WOKTools_Replace:Execute" "Copy $source to $target"
 	    if { [wokparam -e %Station $unit] != "wnt" } {
 		eval exec "chmod u+w $target"
 	    }
 	    eval exec "$copycmd $TheArgs"
 	} else {
-	    msgprint -i -c "WOKTools_Replace::Execute" "No change in $source"
+	    msgprint -i -c "WOKTools_Replace:Execute" "No change in $source"
 	}
     }
     return 0;

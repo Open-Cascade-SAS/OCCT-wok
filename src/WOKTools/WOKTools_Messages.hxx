@@ -31,7 +31,6 @@ extern __WOKTools_API WOKTools_Verbose VerboseMsg;
 extern __WOKTools_API WOKTools_Message& endm(WOKTools_Message&);
 extern __WOKTools_API WOKTools_Message& flushm(WOKTools_Message&);
 
-#define DEB
 #ifdef  DEB
 #define WOK_VERBOSE 1
 #endif

@@ -1,4 +1,3 @@
-static const char* sccsid = "@(#)WOKTools_BasicMap.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // File:	WOKTools_BasicMap.cxx
 // Created:	Fri Feb 26 17:20:43 1993
 // Author:	Remi LEQUETTE
@@ -28,12 +27,12 @@ static const char* sccsid = "@(#)WOKTools_BasicMap.cxx	3.2 95/01/10"; // Do not 
 
 WOKTools_BasicMap::WOKTools_BasicMap(const Standard_Integer NbBuckets, 
 					   const Standard_Boolean single) :
+       myData1(NULL),
+       myData2(NULL),
        isDouble(!single),
        mySaturated(Standard_False),
        myNbBuckets(NbBuckets),
-       mySize(0),
-       myData1(NULL),
-       myData2(NULL)
+       mySize(0)
 {
 }
 

@@ -1,4 +1,3 @@
-static const char* sccsid = "@(#)WOKTools_BasicMapIterator.cxx	3.2 95/01/10"; // Do not delete this line. Used by sccs.
 // File:	WOKTools_BasicMapIterator.cxx
 // Created:	Fri Feb 26 15:46:25 1993
 // Author:	Remi LEQUETTE
@@ -14,10 +13,10 @@ static const char* sccsid = "@(#)WOKTools_BasicMapIterator.cxx	3.2 95/01/10"; //
 //=======================================================================
 
 WOKTools_BasicMapIterator::WOKTools_BasicMapIterator () :
+       myNode(NULL),
        myNbBuckets(0),
        myBuckets(NULL),
-       myBucket(0),
-       myNode(NULL)
+       myBucket(0)
 {}
 
 
@@ -28,10 +27,10 @@ WOKTools_BasicMapIterator::WOKTools_BasicMapIterator () :
 
 WOKTools_BasicMapIterator::WOKTools_BasicMapIterator 
   (const WOKTools_BasicMap& M) :
+  myNode(NULL),
   myNbBuckets(M.myNbBuckets),
   myBuckets(M.myData1),
-  myBucket(-1),
-  myNode(NULL)
+  myBucket(-1)
 {
   if (!myBuckets) myNbBuckets = -1;
   Next();

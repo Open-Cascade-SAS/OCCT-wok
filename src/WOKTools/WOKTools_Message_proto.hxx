@@ -76,6 +76,8 @@ public:
   inline  const Handle(TCollection_HAsciiString)& Message() const;
   inline   Standard_CString ToPrint() const;
 
+  virtual ~WOKTools_Message () {}
+
 protected:
 
   // Methods PROTECTED

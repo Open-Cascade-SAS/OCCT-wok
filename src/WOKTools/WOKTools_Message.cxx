@@ -47,12 +47,17 @@ WOKTools_Message& FileLogEndMsgHandler(WOKTools_Message& amsgq, const Standard_B
 //function : WOKTools_Message
 //purpose  : 
 //=======================================================================
- WOKTools_Message::WOKTools_Message(const Standard_CString aclass, const Standard_CString aheader)
-   : myheader(aheader), myswitcher(aclass), myison(Standard_True), myprintcontext(Standard_False), myprintheader(Standard_True), 
-     myendmsghandlr(DefaultEndMsgHandler), myindex(1), mylogstream(NULL), mylogflag(Standard_False)
-{
-}
-
+ WOKTools_Message :: WOKTools_Message (
+                      const Standard_CString aclass,
+                      const Standard_CString aheader
+                     ) : myheader(aheader),
+                         myindex(1),
+                         myison(Standard_True),
+                         myprintcontext(Standard_False),
+                         myprintheader(Standard_True), 
+                         myswitcher(aclass),
+                         myendmsghandlr(DefaultEndMsgHandler),
+                         mylogstream(NULL) {}
 //=======================================================================
 //function : Init
 //purpose  : 
