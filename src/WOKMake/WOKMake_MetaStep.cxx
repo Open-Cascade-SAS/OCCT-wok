@@ -124,6 +124,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
   for(i=1; i<=subcodeseq->Length(); i++)
     {
       Handle(TCollection_HAsciiString) thesubcode = subcodeseq->Value(i);
+//      cout << "WOKMake_MetaStep::GetUnderlyingSteps1 -> GetAndAddStep" << endl ;
       Handle(WOKMake_Step) thestep = BuildProcess()->GetAndAddStep(Unit(), Code(), thesubcode);
 
       if(thestep.IsNull())
@@ -158,10 +159,12 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
 	  
 	  if(apart->IsEmpty())
 	    {
+//              cout << "WOKMake_MetaStep::GetUnderlyingSteps2 -> GetAndAddStep" << endl ;
 	      precstep = BuildProcess()->GetAndAddStep(precunit, acode, Handle(TCollection_HAsciiString)());
 	    }
 	  else
 	    {
+//              cout << "WOKMake_MetaStep::GetUnderlyingSteps3 -> GetAndAddStep" << endl ;
 	      precstep = BuildProcess()->GetAndAddStep(precunit, acode, apart);
 	    }
 	  
@@ -249,6 +252,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetLastUnderlyingSteps
 	  Handle(TCollection_HAsciiString) acode  = outfile->ID()->Token(":", 2);
 	  Handle(TCollection_HAsciiString) apart  = outfile->ID()->Token(":", 3);
 
+//          cout << "WOKMake_MetaStep::GetUnderlyingSteps4 -> GetAndAddStep" << endl ;
 	  Handle(WOKMake_Step) thestep = BuildProcess()->GetAndAddStep(Unit(), acode, apart);
 
 	  if(thestep.IsNull())
@@ -535,6 +539,7 @@ Standard_Boolean WOKMake_MetaStep::HandleOutputFile(const Handle(WOKMake_OutputF
 	case WOKMake_Disappeared:
 	  {  
 	    Handle(TCollection_HAsciiString) apart  = afile->ID()->Token(":", 3);
+//            cout << "WOKMake_MetaStep::HandleOutputFile -> GetAndAddStep" << endl ;
 	    Handle(WOKMake_Step) thesubstep = BuildProcess()->GetAndAddStep(Unit(), Code(), apart);
 	    if (!thesubstep.IsNull())
 	      {

@@ -22,7 +22,7 @@
 //function : ID
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKMake_StepFile::ID() const
+inline const Handle(TCollection_HAsciiString)& WOKMake_StepFile::ID() const
 {
   return myid;
 }
@@ -32,7 +32,7 @@ const Handle(TCollection_HAsciiString)& WOKMake_StepFile::ID() const
 //function : File
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_File)& WOKMake_StepFile::File() const
+inline const Handle(WOKernel_File)& WOKMake_StepFile::File() const
 {
   return myfile;
 }
@@ -43,7 +43,7 @@ const Handle(WOKernel_File)& WOKMake_StepFile::File() const
 //function : BuilderEntity
 //purpose  : 
 //=======================================================================
-const Handle(WOKBuilder_Entity)& WOKMake_StepFile::BuilderEntity() const
+inline const Handle(WOKBuilder_Entity)& WOKMake_StepFile::BuilderEntity() const
 {
   return myent;
 }
@@ -53,7 +53,7 @@ const Handle(WOKBuilder_Entity)& WOKMake_StepFile::BuilderEntity() const
 //function : LastPath
 //purpose  : 
 //=======================================================================
-const Handle(WOKUtils_Path)& WOKMake_StepFile::LastPath() const
+inline const Handle(WOKUtils_Path)& WOKMake_StepFile::LastPath() const
 {
   return mylastpath;
 }
@@ -64,7 +64,7 @@ const Handle(WOKUtils_Path)& WOKMake_StepFile::LastPath() const
 //function : Status
 //purpose  : 
 //=======================================================================
-WOKMake_FileStatus WOKMake_StepFile::Status() const
+inline WOKMake_FileStatus WOKMake_StepFile::Status() const
 {
   return mystatus;
 }
@@ -74,7 +74,7 @@ WOKMake_FileStatus WOKMake_StepFile::Status() const
 //function : IsLocateAble
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_StepFile::IsLocateAble() const
+inline Standard_Boolean WOKMake_StepFile::IsLocateAble() const
 {
   if(myattr & STEPFILE_LOCATE) return Standard_True;
   else                         return Standard_False;
@@ -86,7 +86,7 @@ Standard_Boolean WOKMake_StepFile::IsLocateAble() const
 //function : IsPhysic
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_StepFile::IsPhysic() const
+inline Standard_Boolean WOKMake_StepFile::IsPhysic() const
 {
   if(myattr & STEPFILE_PHYSIC) return Standard_True;
   else                         return Standard_False;
@@ -97,7 +97,7 @@ Standard_Boolean WOKMake_StepFile::IsPhysic() const
 //function : IsXStep
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_StepFile::IsStepID() const
+inline Standard_Boolean WOKMake_StepFile::IsStepID() const
 {
   if(myattr & STEPFILE_STEPID) return Standard_True;
   else                         return Standard_False;

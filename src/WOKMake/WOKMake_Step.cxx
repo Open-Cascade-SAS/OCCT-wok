@@ -1524,6 +1524,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 		if(afile->File()->Path()->Exists() || afile->File()->Path()->IsSymLink())
 		  {
 		    Unit()->Params().Set("%FilePath", afile->File()->Path()->Name()->ToCString());
+//                    cout << "WOKMake_Step : " << afile->File()->Path()->Name()->ToCString() << endl ;
 		
 		    acmd = Unit()->Params().Eval(atempl->ToCString(),Standard_True);
 		

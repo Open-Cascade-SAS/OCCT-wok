@@ -12,7 +12,7 @@
 //function : BuildProcess
 //purpose  : 
 //=======================================================================
-Handle(WOKMake_BuildProcess) WOKMake_Step::BuildProcess() const
+inline Handle(WOKMake_BuildProcess) WOKMake_Step::BuildProcess() const
 {
   return myprocess;
 }
@@ -22,7 +22,7 @@ Handle(WOKMake_BuildProcess) WOKMake_Step::BuildProcess() const
 //function : Unit
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_DevUnit)& WOKMake_Step::Unit() const
+inline const Handle(WOKernel_DevUnit)& WOKMake_Step::Unit() const
 {
   return myunit;
 }
@@ -33,7 +33,7 @@ const Handle(WOKernel_DevUnit)& WOKMake_Step::Unit() const
 //function : Locator
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_Locator)& WOKMake_Step::Locator() const
+inline const Handle(WOKernel_Locator)& WOKMake_Step::Locator() const
 {
   return myprocess->Locator();
 }
@@ -44,7 +44,7 @@ const Handle(WOKernel_Locator)& WOKMake_Step::Locator() const
 //function : Locator
 //purpose  : 
 //=======================================================================
-const Handle(WOKUtils_Shell)& WOKMake_Step::Shell() const
+inline const Handle(WOKUtils_Shell)& WOKMake_Step::Shell() const
 {
   return myprocess->Shell();
 }
@@ -55,7 +55,7 @@ const Handle(WOKUtils_Shell)& WOKMake_Step::Shell() const
 //function : Locator
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_UnitGraph)& WOKMake_Step::UnitGraph() const
+inline const Handle(WOKernel_UnitGraph)& WOKMake_Step::UnitGraph() const
 {
   return myprocess->UnitGraph();
 }

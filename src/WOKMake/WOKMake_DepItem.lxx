@@ -9,7 +9,7 @@
 //function : IssuedFrom
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKMake_DepItem::IssuedFrom() const 
+inline const Handle(TCollection_HAsciiString)& WOKMake_DepItem::IssuedFrom() const 
 {
   return myorigin;
 }
@@ -18,7 +18,7 @@ const Handle(TCollection_HAsciiString)& WOKMake_DepItem::IssuedFrom() const
 //function : OutputFile
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKMake_DepItem::OutputFile() const 
+inline const Handle(TCollection_HAsciiString)& WOKMake_DepItem::OutputFile() const 
 {
   return myfile;
 }
@@ -28,7 +28,7 @@ const Handle(TCollection_HAsciiString)& WOKMake_DepItem::OutputFile() const
 //function : IsDirectDep
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_DepItem::IsDirectDep() const
+inline Standard_Boolean WOKMake_DepItem::IsDirectDep() const
 {
   return mydirect;
 }
@@ -38,7 +38,7 @@ Standard_Boolean WOKMake_DepItem::IsDirectDep() const
 //function : Status
 //purpose  : 
 //=======================================================================
-WOKMake_FileStatus WOKMake_DepItem::Status() const
+inline WOKMake_FileStatus WOKMake_DepItem::Status() const
 {
   return mystatus;
 }

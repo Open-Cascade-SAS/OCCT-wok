@@ -9,7 +9,7 @@
 //function : IsDirectInput
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_InputFile::IsDirectInput() const
+inline Standard_Boolean WOKMake_InputFile::IsDirectInput() const
 {
   if(myattr & STEPFILE_DIRECT) return Standard_True;
   else                         return Standard_False;

@@ -304,11 +304,11 @@ const Handle(WOKMake_Step)& WOKMake_BuildProcess::GetAndAddStep(const Handle(WOK
 
   if(myunits.IsBound(aunit->Name()) && asubcode.IsNull())
     {
-      ErrorMsg << "WOKMake_BuildProcess::GetAndAddStep" 
+      WarningMsg << "WOKMake_BuildProcess::GetAndAddStep" 
 	       << "Cannot get step (" << acode << ") for unit " << aunit->Name() << " (type : " << aunit->Type() << ")" << endm;
-      return NULLRESULT;
+//      return NULLRESULT;
     }
-  else
+//  else
     {
       Handle(WOKMake_Step) thestep = WOKMake_StepBuilder::BuildStep(this, aunit, acode,asubcode);
       if(!thestep.IsNull())

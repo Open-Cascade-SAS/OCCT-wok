@@ -10,7 +10,7 @@
 //function : IsProduction
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_OutputFile::IsProduction() const
+inline Standard_Boolean WOKMake_OutputFile::IsProduction() const
 {
   if(myattr & STEPFILE_REFPROD) return Standard_True;
   else                          return Standard_False;
@@ -21,7 +21,7 @@ Standard_Boolean WOKMake_OutputFile::IsProduction() const
 //function : IsMember
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKMake_OutputFile::IsMember() const
+inline Standard_Boolean WOKMake_OutputFile::IsMember() const
 {
   if(myattr & STEPFILE_MEMBEXT) return Standard_True;
   else                          return Standard_False;
