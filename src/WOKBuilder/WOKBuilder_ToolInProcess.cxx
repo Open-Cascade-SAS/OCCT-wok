@@ -3,6 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#include <Standard_NotImplemented.hxx>
 
 #include <WOKBuilder_ToolInProcess.ixx>
 
@@ -60,6 +61,11 @@ void WOKBuilder_ToolInProcess::Load(const Handle(WOKUtils_Path)& alibrary,
       Standard_ProgramError::Raise("WOKBuilder_ToolInProcess");
     }
   SetLoaded();
+}
+
+void WOKBuilder_ToolInProcess::Load()
+{
+ Standard_NotImplemented::Raise("WOKBuilder_ToolInProcess::Load() not implemented") ;
 }
 
 //=======================================================================

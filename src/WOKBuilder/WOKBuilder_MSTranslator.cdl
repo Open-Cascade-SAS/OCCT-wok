@@ -158,6 +158,11 @@ is
                               anit     : out MSTranslatorIterator from WOKBuilder)
     	returns BuildStatus from WOKBuilder is private;
 
+    Execute(me:mutable)
+    	returns BuildStatus  from WOKBuilder
+	raises  ProgramError from Standard
+	is redefined;
+  
     Execute(me:mutable; anaction : MSAction                 from WOKBuilder; 
     	    	    	afile    : Specification            from WOKBuilder;
     	    	    	anit     : out MSTranslatorIterator from WOKBuilder)

@@ -21,6 +21,9 @@ raises
 is
     Initialize(aname: HAsciiString from TCollection;  params : Param from WOKUtils);
     
+    Load(me:mutable) 
+    	is redefined;
+	
     Load(me:mutable; alibrary: Path from WOKUtils; afunc : HAsciiString from  TCollection);
 
     Shared(me)  returns HAsciiString from TCollection;

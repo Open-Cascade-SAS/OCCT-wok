@@ -38,6 +38,10 @@ is
     	   params    : Param           from WOKUtils)
     	returns CompilerIterator from WOKBuilder;
 
+    Init(me:out; ashell    : Shell        from WOKUtils; 
+	    	 adir      : Path         from WOKUtils)
+    	is redefined;
+
     Init(me:out; ashell    : Shell           from WOKUtils; 
 	    	 adir      : Path            from WOKUtils;
 	    	 incdirs   : HSequenceOfPath from WOKUtils;

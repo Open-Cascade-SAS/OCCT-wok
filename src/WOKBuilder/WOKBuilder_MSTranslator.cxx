@@ -3,6 +3,8 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#include <Standard_NotImplemented.hxx>
+
 #include <Standard_ProgramError.hxx>
 
 #include <OSD_SharedLibrary.hxx>
@@ -1989,4 +1991,9 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::Execute(const Handle(WOKBuilder_
     }
 }
 
-
+WOKBuilder_BuildStatus WOKBuilder_MSTranslator::Execute(void)
+{
+// Standard_NotImplemented::Raise("WOKBuilder_MSTranslator::Execute(void) not implemented") ;
+// return WOKBuilder_Failed ;
+ return WOKBuilder_MSTool::Execute() ;
+}

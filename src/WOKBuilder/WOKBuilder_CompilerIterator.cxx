@@ -3,6 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#include <Standard_NotImplemented.hxx>
 
 #include <WOKBuilder_CompilerIterator.ixx>
 
@@ -93,6 +94,11 @@ void WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,
     }
 }
 
+void WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,const Handle(WOKUtils_Path)& adir)
+{
+// Standard_NotImplemented::Raise("WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,const Handle(WOKUtils_Path)& adir) not implemented") ;
+ WOKBuilder_ToolInShellIterator::Init( ashell , adir ) ;
+}
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
