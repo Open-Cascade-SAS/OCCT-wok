@@ -6,13 +6,14 @@
 (require 'shell)
 (require 'wok-comm)
 
-(defvar woksh-program "tclsh"
+;;(defvar woksh-program "ntsh.exe"
+(defvar woksh-program "wish84"
   "*Name of program to invoke woksh")
 
-(defvar woksh-explicit-args nil
+(defvar woksh-explicit-args "P:/cmd-input.tcl"
   "*List of arguments to pass to woksh on the command line.")
 
-(defvar woksh-mode-hook nil
+(defvar woksh-mode-hook nil 
   "*Hooks to run after setting current buffer to woksh-mode.")
 
 (defvar woksh-process-connection-type t
@@ -105,13 +106,21 @@ re-synching of directories.")
       (add-hook 'comint-output-filter-functions 'woksh-carriage-filter)
 
       (cd-absolute (concat comint-file-name-prefix "~/"))))
+
+    ;; workaround concerning unproper work of tclsh under Emacs on Windows
+    (if (equal (getenv "WOKSTATION") "wnt")
+      (progn 
+        (insert 
+           (concat "source " (getenv "WOKHOME") "/site/interp.tcl")) 
+        (comint-send-input)))
+
     (if (not (eq iport 0))
 	(if (not  (wok-connectedp))
 	    (progn
 	      (send-string nil (format "wokemacs_init %d\n" iport))
 	      (wok-connect-to-controller "localhost" iport)
 	      (send-string nil "auto_load wok_cd_proc\n")
-	      (erase-buffer)
+	      ;(erase-buffer)
 	  )))))
  
 (defun woksh-mode ()
