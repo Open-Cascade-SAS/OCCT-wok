@@ -7,7 +7,7 @@
 //function : Entity
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_Entity)& WOKAPI_Entity::Entity() const 
+inline const Handle(WOKernel_Entity)& WOKAPI_Entity::Entity() const 
 {
   return myEntity;
 }
