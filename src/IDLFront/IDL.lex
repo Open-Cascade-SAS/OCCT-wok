@@ -7,12 +7,16 @@
 #define yylval IDLlval
 #include <IDL.tab.h>
 #include <string.h>
+#include <ctype.h>
+#ifdef WNT
+# include <io.h>
+#else
+# include <unistd.h>
+#endif  /* WNT */
 
 static char	idl_escape_reader(char *);
 static double	idl_atof(char *);
 static long	idl_atoi(char *, long);
-static void	idl_parse_line_and_file(char *);
-static void	idl_store_pragma(char *);
 
 /* static char	*yytext = (char *) yytext; */
 #define yyinput() input()
@@ -220,9 +224,7 @@ idl_atoi(char *s, long b)
 static double
 idl_atof(char *s)
 {
-	char    *h = s;
 	double	d = 0.0;
-	double	f = 0.0;
 	double	e, k;
 	long	neg = 0, negexp = 0;
 

@@ -6,10 +6,20 @@
 
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #define yyv IDLv
 #if (defined(apollo) || defined(hpux)) && defined(__cplusplus)
 extern	"C" int IDLwrap();
 #endif	// (defined(apollo) || defined(hpux)) && defined(__cplusplus)
+
+
+extern void IDL_SetIdentifier            ( char* );
+extern void IDL_InterfaceDeclaration     ( void  );
+extern void IDL_InterfaceDefinitionBegin ( void  );
+extern void IDL_InterfaceDefinitionEnd   ( void  );
+
+extern int  IDLlex   ( void  );
+extern void IDLerror ( char* );
 
 %}
 

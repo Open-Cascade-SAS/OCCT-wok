@@ -28,12 +28,11 @@ extern FILE             *IDLin;
 #else
 extern "C" FILE             *IDLin;
 #endif  // WNT
-extern "C" IDLparse();
+extern "C" int IDLparse();
 
 
 // BEGIN Variables
 //
-static char *YY_fileName="";      
 static int   YY_nb_error;
 static int   YY_nb_warning;
 
@@ -158,7 +157,7 @@ int IDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 		 const Handle(TColStd_HSequenceOfHAsciiString)& anInstList,
 		 const Handle(TColStd_HSequenceOfHAsciiString)& anGenList) 
 {
-  Standard_Integer  ErrorLevel = 0;
+  volatile Standard_Integer  ErrorLevel = 0;
 
   theMetaSchema    = aMetaSchema;
   ListOfGlobalUsed = aGlobalList;
