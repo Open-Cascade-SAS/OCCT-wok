@@ -3,9 +3,14 @@
 // Author:	Jean GAUTIER
 //		<jga@hourax.paris1.matra-dtv.fr>
 
-#include <fstream.h>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
 #endif
 
 #include <WOKTools_Messages.hxx>
@@ -26,7 +31,9 @@
 
 #define READBUF_SIZE 1024
 
-#ifdef HAVE_IOMANIP_H
+#ifdef HAVE_IOMANIP
+# include <iomanip>
+#elif defined (HAVE_IOMANIP_H)
 # include <iomanip.h>
 #endif
 

@@ -8,7 +8,11 @@
 
 #ifdef WNT
 #include <io.h>
-#else
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
 # include <fstream.h>
 #endif
 
