@@ -25,6 +25,12 @@ is
     	   searchlist : HSequenceOfHAsciiString from TColStd)
     	returns mutable MSHeaderExtractor from WOKBuilder;
     
+    Create (
+     aname      : HAsciiString            from TCollection;
+     ashared    : HAsciiString            from TCollection;
+     searchlist : HSequenceOfHAsciiString from TColStd
+    ) returns mutable MSHeaderExtractor from WOKBuilder;
+
     Create(aname : HAsciiString from TCollection; params : Param from WOKUtils)
     	returns mutable MSHeaderExtractor from WOKBuilder;
 

@@ -4,12 +4,12 @@
 //		<jga@cobrax.paris1.matra-dtv.fr>
 
 
-const Handle(TCollection_HAsciiString)& WOKBuilder_MSEntity::Name() const 
+inline const Handle(TCollection_HAsciiString)& WOKBuilder_MSEntity::Name() const 
 {
   return myname;
 }
 
-const Handle(WOKBuilder_Specification)& WOKBuilder_MSEntity::File() const
+inline const Handle(WOKBuilder_Specification)& WOKBuilder_MSEntity::File() const
 {
   return myfile;
 }

@@ -9,7 +9,7 @@
 //function : Entity
 //purpose  : 
 //=======================================================================
-const Handle(WOKBuilder_MSEntity)& WOKBuilder_MSAction::Entity() const 
+inline const Handle(WOKBuilder_MSEntity)& WOKBuilder_MSAction::Entity() const 
 {
   return myent;
 }
@@ -19,7 +19,7 @@ const Handle(WOKBuilder_MSEntity)& WOKBuilder_MSAction::Entity() const
 //function : Type
 //purpose  : 
 //=======================================================================
-WOKBuilder_MSActionType WOKBuilder_MSAction::Type() const 
+inline WOKBuilder_MSActionType WOKBuilder_MSAction::Type() const 
 {
   return mytype;
 }
@@ -29,7 +29,7 @@ WOKBuilder_MSActionType WOKBuilder_MSAction::Type() const
 //function : Date
 //purpose  : 
 //=======================================================================
-WOKUtils_TimeStat WOKBuilder_MSAction::Date() const 
+inline WOKUtils_TimeStat WOKBuilder_MSAction::Date() const 
 {
   return mydate;
 }

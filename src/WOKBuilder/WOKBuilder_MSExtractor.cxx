@@ -90,7 +90,7 @@ void WOKBuilder_MSExtractor::Load()
       if(libpath.IsNull())
 	{
 	  ErrorMsg << "WOKBuilder_MSExtractor::Load" 
-		   << "Could not find file : " << myshared << endm;
+		   << "WOKBuilder_MSExtractor::Load Could not find file : " << myshared << endm;
 	}
     }
 

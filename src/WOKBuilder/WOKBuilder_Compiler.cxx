@@ -281,7 +281,9 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
 
   if (  !astr -> IsEmpty ()  ) {
 
-   OSD_Path dPath (  OutputDir () -> Name () -> ToCString ()  );
+//   OSD_Path dPath (  OutputDir () -> Name () -> ToCString ()  );
+   TCollection_AsciiString atstr = OutputDir () -> Name () -> ToCString () ;
+   OSD_Path dPath ( atstr );
 
    dPath.SetName (  Compilable () -> Path () -> BaseName () -> ToCString ()  );
    dPath.SetExtension ( ".d" );

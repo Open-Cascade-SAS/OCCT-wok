@@ -24,9 +24,6 @@
 #endif //WNT
 
 static void FASTCALL _print_output ( Standard_CString, WOKBuilder_Tool* );
-#ifdef DEB
-static void FASTCALL _delete_file  (  const Handle( TCollection_HAsciiString )&  );
-#endif
 //---> EUG4YAN
 Standard_IMPORT Standard_Boolean g_fCompOrLnk;
 //<--- EUG4YAN
@@ -243,13 +240,3 @@ static void FASTCALL  _print_output( Standard_CString msg, WOKBuilder_Tool* tool
 
   InfoMsg << endm;
 }
-
-// Unused :
-#ifdef DEB
-static void FASTCALL _delete_file(const Handle(TCollection_HAsciiString)& name) 
-{
- Handle(WOKUtils_Path) path = new WOKUtils_Path(name);
- 
- if(path->Exists()) path->RemoveFile();
-}
-#endif

@@ -4,7 +4,7 @@
 //function : Params
 //purpose  : 
 //=======================================================================
-const WOKUtils_Param& WOKBuilder_Tool::Params() const
+inline const WOKUtils_Param& WOKBuilder_Tool::Params() const
 {
   return myparams;
 }

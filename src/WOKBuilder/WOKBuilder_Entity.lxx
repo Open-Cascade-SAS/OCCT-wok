@@ -9,7 +9,7 @@
 //function : Path
 //purpose  : 
 //=======================================================================
-const Handle(WOKUtils_Path)& WOKBuilder_Entity::Path() const
+inline const Handle(WOKUtils_Path)& WOKBuilder_Entity::Path() const
 {
   return mypath;
 }

@@ -23,6 +23,11 @@
 #include <WOKBuilder_MSHeaderExtractor.ixx>
 
 
+WOKBuilder_MSHeaderExtractor :: WOKBuilder_MSHeaderExtractor (
+                                 const Handle( TCollection_HAsciiString        )&      aname,
+                                 const Handle( TCollection_HAsciiString        )&    ashared,
+                                 const Handle( TColStd_HSequenceOfHAsciiString )& searchlist
+                                ) : WOKBuilder_MSExtractor ( aname, ashared, searchlist ) {}
 
 //=======================================================================
 //function : WOKBuilder_MSHeaderExtractor
@@ -56,102 +61,121 @@ WOKBuilder_MSHeaderExtractor::WOKBuilder_MSHeaderExtractor(const Handle(TCollect
 //function : GetTypeDepList
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKBuilder_MSHeaderExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& aname) const
-{
-  Handle(TColStd_HSequenceOfHAsciiString) result = new TColStd_HSequenceOfHAsciiString;
-  Handle(TColStd_HSequenceOfHAsciiString) aList  = new TColStd_HSequenceOfHAsciiString;
-  Handle(TCollection_HAsciiString) astr;
-  Handle(MS_MetaSchema) ameta = MSchema()->MetaSchema();
-  Handle(MS_Type) atype;
-  Standard_Integer i;
+Handle( TColStd_HSequenceOfHAsciiString )
+ WOKBuilder_MSHeaderExtractor :: GetTypeDepList (
+                                  const Handle( TCollection_HAsciiString )& aname
+                                 ) const {
 
-  result->Append(aname);
+ Standard_Integer                          i;
+ Handle( MS_Type                         ) atype;
+ Handle( TCollection_HAsciiString        ) astr;
+ Handle( TCollection_HAsciiString        ) aName  = aname -> Token ( "@" );
+ Handle( TColStd_HSequenceOfHAsciiString ) result = new TColStd_HSequenceOfHAsciiString ();
+ Handle( TColStd_HSequenceOfHAsciiString ) aList  = new TColStd_HSequenceOfHAsciiString ();
+ Handle( MS_MetaSchema                   ) ameta  = MSchema () -> MetaSchema ();
 
-  if(ameta->IsPackage(aname))
-    {
-      WOK_TRACE {
-	VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
-				  << "Package not yet Implemented : Out of date" << endm;
-      }
-      return result;
-    }
-  
-  atype = ameta->GetType(aname);
-  
-  if(atype.IsNull())
-    {
-      Handle(MS_Package) apk = ameta->GetPackage(aname);
-      
-      if(apk.IsNull())
-	{
-	  ErrorMsg << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
-		   << aname << " is not a known package and not a known type" << endm;
-	  return result;
-	}
-    }
-  
-  if(atype->IsKind(STANDARD_TYPE(MS_Class)))
-    {
-      Handle(MS_Class) aclass = Handle(MS_Class)::DownCast(atype);
-     
-      if(!aclass->IsKind(STANDARD_TYPE(MS_GenClass)))
-	{
-	  MS::ClassUsedTypes(ameta, aclass, aList, aList);
-	  
-	  if(atype->IsKind(STANDARD_TYPE(MS_StdClass)))
-	    {
-	      Handle(MS_StdClass) msclass = Handle(MS_StdClass)::DownCast(atype);
-	      
-	      if(!msclass->GetMyCreator().IsNull())
-		{
-		  // instantiation
-		  result->Append(MSchema()->AssociatedEntity(aname));
-		}
-	      if(atype->IsKind(STANDARD_TYPE(MS_Error)))
-		{
-		  // exception
-		  result->Append(MSchema()->AssociatedEntity(aname));
-		}
-	    }
-	  
-	  WOKTools_MapOfHAsciiString amap;
-	  
-	  for(i=1; i<=aList->Length(); i++)
-	    {
-	      astr = aList->Value(i);
-	      if(!strncmp("Handle_", aList->Value(i)->ToCString(), strlen("Handle_")))
-		{
-		  astr = astr->SubString(strlen("Handle_")+1, astr->Length());
-		}
-	      if(!amap.Contains(astr))
-		{
-		  amap.Add(astr);
-		  result->Append(astr);
-		}
-	    }
-	}
-    }
-  else
-    {
-      if(atype->IsKind(STANDARD_TYPE(MS_Pointer)))
-	{
-	  Handle(MS_Pointer) apointer = Handle(MS_Pointer)::DownCast(atype);
-	
-	  result->Append(apointer->Type());
-	}
-      else
-	{
-	  if(atype->IsKind(STANDARD_TYPE(MS_Alias)))
-	    {
-	      Handle(MS_Alias) analias = Handle(MS_Alias)::DownCast(atype);
-	      
-	      result->Append(analias->Type());
-	    }
-	}
-    }
+ result -> Append ( aName );
+
+ if (  ameta -> IsPackage ( aName )  ) {
+
+  WOK_TRACE {
+
+   VerboseMsg ( "WOK_EXTRACT" ) << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
+                                << "Package not yet Implemented : out of date"
+                                << endm;
+  }  // end WOK_TRACE
+
   return result;
-}
 
+ }  // end if
+  
+ atype = ameta -> GetType ( aName );
+  
+ if (  atype.IsNull ()  ) {
+
+  Handle( MS_Package ) apk = ameta -> GetPackage ( aName );
+      
+  if (  apk.IsNull ()  ) {
+
+   ErrorMsg << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
+            << aName
+            << " is not a known package and not a known type"
+            << endm;
+
+   return result;
+
+  }  // end if
+
+ }  // end if
+  
+ if (   atype -> IsKind (  STANDARD_TYPE( MS_Class )  )   ) {
+
+  Handle( MS_Class ) aclass = Handle( MS_Class ) :: DownCast ( atype );
+     
+  if (   !aclass -> IsKind (  STANDARD_TYPE( MS_GenClass )  )   ) {
+
+   MS :: ClassUsedTypes (ameta, aclass, aList, aList );
+	  
+   if (   atype -> IsKind (  STANDARD_TYPE( MS_StdClass )  )   ) {
+
+    Handle( MS_StdClass ) msclass = Handle( MS_StdClass ) :: DownCast ( atype );
+	      
+    if (  !msclass -> GetMyCreator ().IsNull ()  )
+
+     result -> Append (  MSchema () -> AssociatedEntity ( aName )  );
+
+    if (   atype -> IsKind (  STANDARD_TYPE( MS_Error )  )   )
+
+     result -> Append (  MSchema () -> AssociatedEntity ( aName )  );
+
+   }  // end if
+	  
+   WOKTools_MapOfHAsciiString amap;
+	  
+   for (  i = 1; i <= aList -> Length (); ++i  ) {
+
+    astr = aList -> Value ( i );
+
+    if (   !strncmp (  "Handle_", aList -> Value ( i ) -> ToCString (), strlen ( "Handle_" )  )   )
+
+     astr = astr -> SubString (  strlen ( "Handle_" ) + 1, astr -> Length ()  );
+
+    if (  !amap.Contains ( astr )  ) {
+
+     amap.Add ( astr );
+     result -> Append ( astr );
+
+    }  // end if
+
+   }  // end for
+
+  }  // end if
+
+ } else {
+
+  if (   atype -> IsKind (  STANDARD_TYPE( MS_Pointer )  )   ) {
+
+   Handle( MS_Pointer ) apointer = Handle( MS_Pointer ) :: DownCast ( atype );
+	
+   result -> Append (  apointer -> Type ()  );
+
+  } else {
+
+   if (   atype -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
+
+    Handle( MS_Alias ) analias = Handle( MS_Alias ) :: DownCast ( atype );
+	      
+    result -> Append (  analias -> Type ()  );
+
+   }  // end if
+
+  }  // end else
+
+ }  // end else
+
+ return result;
+
+}  // end WOKBuilder_MSHeaderExtractor :: GetTypeDepList
 //=======================================================================
 //function : GetTypeMDate
 //purpose  : 

@@ -456,7 +456,9 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   objstream.close();
 
   Params().Set("%LD_ObjList", objlistpath->Name()->ToCString()); 
-#if defined( LIN ) || defined( SOLARIS )
+// CheckUndef
+//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
+#ifndef WNT
   Handle( TCollection_HAsciiString ) args[ 10 ];
 #else
   Handle( TCollection_HAsciiString ) args[  4 ];
@@ -472,7 +474,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   Shell () -> Send ( args[ 0 ] );
   Shell () -> Send ( args[ 1 ] );
   Shell () -> Send ( args[ 2 ] );
-#if !defined( LIN ) && !defined( SOLARIS )
+//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
+#ifdef WNT
   Shell () -> Execute ( args[ 3 ] );
 
  } else {
@@ -482,15 +485,21 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
  }  // end if
 
  Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 1 );
-#if defined( LIN )
+# if defined( LIN )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
-#elif defined ( SOLARIS )
+# elif defined ( SOLARIS )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
  static Handle( TCollection_HAsciiString ) skipStr1 =
   new TCollection_HAsciiString ( "/crt1.o" );
-#endif  // LIN || SOLARIS
+# elif defined ( IRIX )
+ static Handle( TCollection_HAsciiString ) skipStr =
+  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
+# elif defined ( HPUX )
+ static Handle( TCollection_HAsciiString ) skipStr =
+  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
+# endif  // LIN || SOLARIS
  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
 
  if (  !uType.IsNull () &&
@@ -559,7 +568,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   f.Build (  OSD_WriteOnly, OSD_Protection ()  );
 
   if (  !f.Failed ()  ) {
-#if !defined( LIN ) && !defined( SOLARIS )
+//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
+#ifdef WNT
    for ( i = 0; i < 4; ++i ) {
 #else
 //   for ( i = 0; i < 11; ++i ) { JR :
@@ -570,7 +580,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
      f.Write (  args[ i ] -> String (), args[ i ] -> Length ()  );
 
    }  // end for
-#if !defined( LIN ) && !defined( SOLARIS )
+//#if !defined( LIN ) && !defined( SOLARIS ) && !defined( IRIX ) && !defined( HPUX )
+#ifdef WNT
    f.Write ( "\n", 1 );
 #endif  // LIN
    f.Close ();
@@ -591,7 +602,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       ErrorMsg.DontPrintHeader();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-#if defined( LIN ) || defined( SOLARIS )
+//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
+#ifndef WNT
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
 #endif  // LIN || SOLARIS
 #ifdef SOLARIS
@@ -618,7 +630,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 #endif  // SOLARIS
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-#if defined( LIN ) || defined( SOLARIS )
+//#if defined( LIN ) || defined( SOLARIS ) || defined( IRIX ) || defined( HPUX )
+#ifndef WNT
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
 #endif  // LIN || SOLARIS
 #ifdef SOLARIS

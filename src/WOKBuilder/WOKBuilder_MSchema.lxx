@@ -8,7 +8,7 @@
 //function : MetaSchema
 //purpose  : 
 //=======================================================================
-const Handle(MS_MetaSchema)& WOKBuilder_MSchema::MetaSchema() const 
+inline const Handle(MS_MetaSchema)& WOKBuilder_MSchema::MetaSchema() const 
 {
   return myschema;
 }

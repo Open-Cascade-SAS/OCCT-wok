@@ -11,7 +11,7 @@
 //function : WOKBuilder_MSActionID
 //purpose  : 
 //=======================================================================
- WOKBuilder_MSActionID::WOKBuilder_MSActionID(const Handle(TCollection_HAsciiString)& aname, 
+ inline WOKBuilder_MSActionID::WOKBuilder_MSActionID(const Handle(TCollection_HAsciiString)& aname, 
 					      const WOKBuilder_MSActionType atype)
 : myname(aname), mytype(atype)
 {
@@ -21,7 +21,7 @@
 //function : Name
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKBuilder_MSActionID::Name() const 
+inline const Handle(TCollection_HAsciiString)& WOKBuilder_MSActionID::Name() const 
 {
   return myname;
 }
@@ -30,7 +30,7 @@ const Handle(TCollection_HAsciiString)& WOKBuilder_MSActionID::Name() const
 //function : Type
 //purpose  : 
 //=======================================================================
-WOKBuilder_MSActionType WOKBuilder_MSActionID::Type() const 
+inline WOKBuilder_MSActionType WOKBuilder_MSActionID::Type() const 
 {
   return mytype;
 }
