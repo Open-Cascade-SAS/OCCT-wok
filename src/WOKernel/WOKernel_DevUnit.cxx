@@ -52,7 +52,7 @@
 WOKernel_DevUnit::WOKernel_DevUnit(const Handle(WOKernel_UnitTypeDescr)& atype,
 				   const Handle(TCollection_HAsciiString)& aname, 
 				   const Handle(WOKernel_UnitNesting)& anesting) 
-  : mytype(atype), WOKernel_Entity(aname, anesting)
+  : WOKernel_Entity(aname, anesting), mytype(atype)
 {
 }
 
@@ -990,11 +990,13 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
 {
   Handle(TColStd_HSequenceOfHAsciiString)  result = new TColStd_HSequenceOfHAsciiString;
   Handle(TColStd_HSequenceOfHAsciiString)  NULLRESULT;
-  Standard_Boolean                         IsCyclic = Standard_False;
+  Standard_Boolean                         IsCyclic;
   WOKernel_SortedImpldepFromIterator       algo;
   Standard_Integer                         i;
 
   try {
+
+    IsCyclic = Standard_False;
 
     agraph->Add(name,alist); 
     
@@ -1039,9 +1041,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
       ErrorMsg << "WOKernel_DevUnit::ImplementationDep" << "Exception was raised : " << astream.str() << endm;
       return NULLRESULT ;
     }
-#ifdef WNT
-      return NULLRESULT;
-#endif  // WNT
+  return NULLRESULT;
 
 }
 
@@ -1099,6 +1099,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
 
   try {
 
+    IsCyclic = Standard_False;
+
     algo.FromVertex(Name());
     algo.Perform(aclientgraph);
     
@@ -1140,9 +1142,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
       ErrorMsg << "WOKernel_DevUnit::ImplClients" << "Exception was raised : " << astream.str() << endm;
       return NULLRESULT ;
     }
-#ifdef WNT
-      return NULLRESULT ;
-#endif  // WNT
+   return NULLRESULT ;
 }
 
 

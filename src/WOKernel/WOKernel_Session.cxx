@@ -175,12 +175,11 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
   
   if(ahost.Failed()) ahost.Perror();
   
-  WOKernel_StationID thestation;
+  WOKernel_StationID thestation = WOKernel_SUN;
 
   switch(ahosttype)
     {
     case OSD_SUN:
-      thestation = WOKernel_SUN;
       break;
     case OSD_DEC:
       thestation = WOKernel_DECOSF;

@@ -23,7 +23,7 @@ Standard_Integer WOKernel_HAsciiStringHasher::HashCode (const Handle(TCollection
   alen = Value->Length();
   
   while(i < alen) {
-    for (count = 0,pos = i;count < sizeof(int); count++) {
+    for (count = 0,pos = i;count < ( Standard_Integer )sizeof(int); count++) {
       if (pos + count >= alen)  tabchar[count] = '\0';
       else tabchar[count] = charPtr[pos + count];
       i++;

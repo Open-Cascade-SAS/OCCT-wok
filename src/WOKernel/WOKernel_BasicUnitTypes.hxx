@@ -11,7 +11,7 @@
 #define WOKernel_IsPackage(aunit)       (aunit->TypeCode() == 'p')
 #define WOKernel_IsSchema(aunit)        (aunit->TypeCode() == 's')
 #define WOKernel_IsInterface(aunit)     (aunit->TypeCode() == 'i')
-#define WOKernel_IsClient(aunit)        (aunit->TypeCode() == 'C')
+#define WOKernel_IsClient(aunit)        (aunit->TypeCode() == 'C'||aunit->TypeCode()=='j')
 #define WOKernel_IsEngine(aunit)        (aunit->TypeCode() == 'e')
 #define WOKernel_IsExecutable(aunit)    (aunit->TypeCode() == 'x')
 #define WOKernel_IsNocdlpack(aunit)     (aunit->TypeCode() == 'n')
