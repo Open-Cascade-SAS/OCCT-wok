@@ -150,4 +150,5 @@ void CDL_MustNotCheckUses();
 void Client_Begin(char *);	       
 void Client_Interface(char*);	       
 void Client_Method(char*,int);	       
+void Client_Use(char*);
 void Client_End();	
