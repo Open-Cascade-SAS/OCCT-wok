@@ -100,7 +100,7 @@ proc wprepare { args } {
 
     wokPrepare:Report:InitTypes
 
-    ; wokinfo -n "" => WOKSESSION..
+    ;# wokinfo -n "" => WOKSESSION..
     if { [info exists tabarg(-ref)] || [wokUtils:WB:IsRoot $WBFils] } {
 	wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBFils] [wokinfo -n $WBFils] 	
 	wokPrepare:Unit:Ref wokPrepare:Report:Output ${WBFils} $LUnits
