@@ -1,0 +1,18 @@
+@ifnotdefined ( %WOKLibs_LINKSHR_EDL ) then
+ @set %WOKLibs_LINKSHR_EDL = "";
+ @if ( %Station == "lin" ) then
+  @template LINKSHR_Footer () is
+   $ -ltcl -ldl;
+  @end;
+  @template LINKSHR_CheckUndefFooter () is
+   $ -ltcl -ldl;
+  @end;
+ @else @if ( %Station == "sun" ) then
+   @template LINKSHR_Footer () is
+    $ -lC -lc -z defs;
+   @end;
+   @set %LINKSHR_DBMSOpt = "";
+  @endif;
+ @endif;
+@endif;
+
