@@ -8,7 +8,7 @@
 
 @if ( %Station == "hp" ) then
   @string %CMPLRS_C_Options = %CMPLRS_C_Options " -Ae";
-  @string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w +a1";
+  --HPJR@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -w +a1";
 @endif;
 
 @endif;
