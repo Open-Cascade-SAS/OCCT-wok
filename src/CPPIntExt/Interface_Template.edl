@@ -286,6 +286,8 @@ $
 $  switch(Eng_Status) {                                                      
 $    case Engine_Exception:Engine_MethodException::Raise(Err.rdbuf()->str());
 $    case Engine_Error    :Engine_ExecutionError::Raise(Err.rdbuf()->str()); 
+$    default:
+$      break;	
 $  }                                                                         
 $}                                                                           
 @end;
@@ -317,6 +319,8 @@ $
 $  switch(Eng_Status) {                                                      
 $    case Engine_Exception:Engine_MethodException::Raise(Err.rdbuf()->str());
 $    case Engine_Error    :Engine_ExecutionError::Raise(Err.rdbuf()->str()); 
+$    default:
+$      break;	
 $  }                                                                         
 $}                                                                           
 @end;
