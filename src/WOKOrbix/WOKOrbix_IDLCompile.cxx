@@ -213,6 +213,7 @@ _TEST_BREAK();
 	  fails->Append(infile);
 	  ErrorMsg << "WOKOrbix_IDLCompile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
+         default: break;
 	}
     }
 

@@ -1,14 +1,14 @@
 
-proc WOKOrbix_ClientObjects::AdmFileType {} {
+proc WOKOrbix_ClientObjects:AdmFileType {} {
     
     return dbadmfile;
 }
 
-proc WOKOrbix_ClientObjects::OutputDirTypeName {} {
+proc WOKOrbix_ClientObjects:OutputDirTypeName {} {
     return dbtmpdir;
 }
 
-proc WOKOrbix_ClientObjects::HandleInputFile { ID } {
+proc WOKOrbix_ClientObjects:HandleInputFile { ID } {
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     
@@ -20,10 +20,10 @@ proc WOKOrbix_ClientObjects::HandleInputFile { ID } {
     return 0;
 }
 
-proc WOKOrbix_ClientObjects::Execute { unit args } {
+proc WOKOrbix_ClientObjects:Execute { unit args } {
 
-    msgprint -i -c "WOKOrbix_ClientObjects::Execute" "Processing client objects : $unit"
-    msgprint -i -c "WOKOrbix_ClientObjects::Execute"
+    msgprint -i -c "WOKOrbix_ClientObjects:Execute" "Processing client objects : $unit"
+    msgprint -i -c "WOKOrbix_ClientObjects:Execute"
 
     set unitname [wokinfo -n $unit]
  
