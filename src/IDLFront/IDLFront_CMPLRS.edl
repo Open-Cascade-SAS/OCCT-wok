@@ -1,0 +1,5 @@
+@if (%Station == "hp") then
+
+@string %CMPLRS_C_Options += " -Ae ";
+
+@endif;
