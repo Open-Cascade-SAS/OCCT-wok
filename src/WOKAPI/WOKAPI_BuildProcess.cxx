@@ -1022,8 +1022,7 @@ void WOKAPI_BuildProcess::PrintBanner() const
 
   InfoMsg.DontPrintHeader();
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" << endm;
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" << endm;
+  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" << "\n" << endm;
   InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
           <<  TIRETS << endm;
 
