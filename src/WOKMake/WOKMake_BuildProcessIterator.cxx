@@ -169,9 +169,9 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
       if(!mylogflag) 
 	{
 	  theinfo .DontPrintHeader();
-	  theinfo << "WOKMake_BuildProcessIterator::MakeStep" << endm;
+	  theinfo << "WOKMake_BuildProcessIterator::MakeStep" << " " << endm;
 	  theinfo << "WOKMake_BuildProcessIterator::MakeStep" << "=====> " << step->UniqueName() << endm;
-	  theinfo << "WOKMake_BuildProcessIterator::MakeStep" << endm;
+	  theinfo << "WOKMake_BuildProcessIterator::MakeStep" << " " << endm;
 	  theinfo.DoPrintHeader();
 	}
       else
