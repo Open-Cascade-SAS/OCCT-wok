@@ -9,7 +9,7 @@
 
 // Node definition and nodes storage management
 
-#if (defined IRIX || defined WNT || defined LIN)
+#if (defined IRIX || defined WNT || defined LIN )
 
 template <class TheKey> class MapNode : public WOKTools_MapNode {
   public :
