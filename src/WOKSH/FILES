@@ -1,7 +1,7 @@
-wokprocess.csh
+wokprocess.dsp
+woksh.dsp
 WOKSH_CMPLRS.edl
 WOKSH_LD.edl
 WOKSH_LDSHR.edl
 WOKSH_LINKSHR.edl
 WOKSH_LDEXE.edl
-
