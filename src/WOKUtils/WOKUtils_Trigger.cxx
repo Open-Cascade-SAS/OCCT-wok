@@ -21,7 +21,7 @@
 //purpose  : 
 //=======================================================================
 WOKUtils_Trigger::WOKUtils_Trigger()
-  : mystat(WOKUtils_Unknown), myidx(1)
+  : myidx(1), mystat(WOKUtils_Unknown)
 {
 }
 
@@ -58,6 +58,7 @@ WOKUtils_TriggerStatus DefaultHandler(WOKUtils_Trigger& atrigger)
 	    InfoMsg << "DefaultHandler" << "Arg " << i << " is : " << astrval->Value() << endm;
 	  }
 	  break;
+        default: break;
 	}
     }
   return WOKUtils_Unknown;

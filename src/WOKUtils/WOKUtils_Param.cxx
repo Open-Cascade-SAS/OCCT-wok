@@ -453,6 +453,10 @@ Standard_Boolean WOKUtils_Param::LoadFile(const Handle(TCollection_HAsciiString)
       ErrorMsg << "WOKUtils_Param::LoadParamClass"
 	       << "Too many include levels while loading file : " << afile << endm;
       break;
+    case EDL_FILENOTFOUND:
+      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+	       << "File not found : " << afile << endm;
+      break;
     }
   return Standard_False;
 }
