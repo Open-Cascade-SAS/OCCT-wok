@@ -1,5 +1,4 @@
 EXTERNLIB
-TOOLKITS
 WOKLibs_CMPLRS.edl
 WOKLibs_LINKSHR.edl
 WOKLibs_WOKSteps.edl
