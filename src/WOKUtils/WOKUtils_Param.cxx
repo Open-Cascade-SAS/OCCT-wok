@@ -3,6 +3,10 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <TCollection_HAsciiString.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
@@ -17,22 +21,19 @@
 #include <WOKTools_Messages.hxx>
 #include <WOKUtils_Path.hxx>
 #include <WOKUtils_HSequenceOfPath.hxx>
-
 #include <WOKUtils_ParamItem.hxx>
 #include <WOKUtils_HSequenceOfParamItem.hxx>
-
 #include <WOKUtils_SearchList.hxx>
-
 #include <WOKUtils_WOKVersion.hxx>
-
 #include <WOKUtils_Param.ixx>
 
 #ifdef WNT
-#include <windows.h>
-#else
-#include <unistd.h>
+# include <windows.h>
 #endif
 
+#if defined(HAVE_UNISTD_H) 
+# include <unistd.h>
+#endif
 
 //=======================================================================
 //function : WOKUtils_Param
@@ -50,10 +51,20 @@ void WOKUtils_Param :: SetBasicVariables ( void ) {
  myapi -> AddVariable ( "%WOK_VERSION", WOK_VERSION );
 #ifdef WNT
  myapi -> AddVariable ( "%Station",     "wnt"       );
-#elif defined( SOLARIS )
+#elif defined(__sun) || defined(SOLARIS)
  myapi -> AddVariable ( "%Station",     "sun"       );
-#elif defined( LIN )
+#elif defined(linux) || defined(LIN)
  myapi -> AddVariable ( "%Station",     "lin"       );
+#elif defined(__osf__)
+ myapi -> AddVariable ( "%Station",     "ao1"       );
+#elif defined(__hpux) || defined(HP-UX)
+ myapi -> AddVariable ( "%Station",     "hp"       );
+#elif defined(_AIX)
+ myapi -> AddVariable ( "%Station",     "aix"       );
+#elif defined(__FreeBSD__)
+ myapi -> AddVariable ( "%Station",     "bsd"       );
+#else
+ myapi -> AddVariable ( "%Station",     "def"       );
 #endif  // WNT
 
 }  // end WOKUtils_Param :: SetBasicVariables
@@ -474,8 +485,6 @@ Standard_Boolean WOKUtils_Param::LoadFile(const Handle(TCollection_HAsciiString)
 	       << "Function not found while loading file : " << afile << endm;
       break;
     case EDL_FILEOPENED:
-      if(filemaynotexist) return Standard_True;
-      break;
     case EDL_FILENOTOPENED:
       if(filemaynotexist) return Standard_True;
       ErrorMsg << "WOKUtils_Param::LoadParamClass"
