@@ -14,25 +14,25 @@ proc wcd { args } {
 }
 
 proc wsrc {{entity ""}} {
-    if { $entity != "" } { wokcd -Tsource $entity } {wokcd -Tsource}
+    if { $entity != "" } { wokcd -Tsrcdir $entity } {wokcd -Tsrcdir}
 }
 
 proc wdrv {{entity ""}} {
-    if { $entity != "" } { wokcd -Tderivated $entity } {wokcd -Tderivated}
+    if { $entity != "" } { wokcd -Tdrvdir $entity } {wokcd -Tdrvdir}
 }
 
 proc wlib {{entity ""}} {
-    if { $entity != "" } { wokcd -Tlibrary $entity } {wokcd -Tlibrary}
+    if { $entity != "" } { wokcd -Tlibdir $entity } {wokcd -Tlibdir}
 }
 
 proc wbin {{entity ""}} {
-    if { $entity != "" } { wokcd -Texecutable $entity } {wokcd -Texecutable}
+    if { $entity != "" } { wokcd -Tbindir } {wokcd -Tbindir}
 }
 proc wobj {{entity ""}} {
-    if { $entity != "" } { wokcd -Tobject $entity } {wokcd -Tobject}
+    if { $entity != "" } { wokcd -Tobjdir } {wokcd -Tobjdir}
 }
 proc winc {{entity ""}} {
-    if { $entity != "" } { wokcd -Tpubinclude $entity } {wokcd -Tpubinclude}
+    if { $entity != "" } { wokcd -Tpubincdir $entity } {wokcd -Tpubincdir}
 }
 proc wadm {{entity ""}} {
     if { $entity != "" } { wokcd -Tadmfile $entity } {wokcd -Tadmfile}
