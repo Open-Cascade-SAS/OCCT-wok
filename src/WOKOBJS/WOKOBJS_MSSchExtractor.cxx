@@ -50,7 +50,8 @@ WOKOBJS_MSSchExtractor::WOKOBJS_MSSchExtractor(const WOKUtils_Param& params)
 //function : GetTypeDepList
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKOBJS_MSSchExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& atype) const
+//Handle(TColStd_HSequenceOfHAsciiString) WOKOBJS_MSSchExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& atype) const
+Handle(TColStd_HSequenceOfHAsciiString) WOKOBJS_MSSchExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& ) const
 {
   return new TColStd_HSequenceOfHAsciiString;
 }
@@ -60,7 +61,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKOBJS_MSSchExtractor::GetTypeDepList(c
 //function : GetTypeMDate
 //purpose  : 
 //=======================================================================
-WOKUtils_TimeStat WOKOBJS_MSSchExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& atype) const
+//WOKUtils_TimeStat WOKOBJS_MSSchExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& atype) const
+WOKUtils_TimeStat WOKOBJS_MSSchExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& ) const
 {
   WOKUtils_TimeStat atruc = 0;
 
@@ -82,7 +84,8 @@ WOKBuilder_MSActionType WOKOBJS_MSSchExtractor::ExtractorID() const
 //function : ExtractionStatus
 //purpose  : 
 //=======================================================================
-WOKBuilder_MSActionStatus WOKOBJS_MSSchExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& anaction) 
+//WOKBuilder_MSActionStatus WOKOBJS_MSSchExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& anaction) 
+WOKBuilder_MSActionStatus WOKOBJS_MSSchExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& ) 
 {
   return WOKBuilder_OutOfDate;
 }
