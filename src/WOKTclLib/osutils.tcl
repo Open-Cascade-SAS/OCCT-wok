@@ -479,6 +479,7 @@ proc osutils:mkdsp { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	append files "# Begin Group \"${xlo}\"" "\n"        
 	set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
 	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
         set needparam ""
         foreach partopt $fxloparam {
 	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
