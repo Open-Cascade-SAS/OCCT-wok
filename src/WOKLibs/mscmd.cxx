@@ -54,15 +54,8 @@ int Ms_Init(WOKTclTools_PInterp interp)
 	}
     }
 
-#if defined( WNT )
-  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.6");
-#elif defined( LIN )
-  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "8.0");
-#elif defined( AIX )
-  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "8.1");
-#else
-  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.5");
-#endif
+  WOKTclTools_Package tcl(CurrentInterp, "Tcl", TCL_VERSION );
+
   tcl.Require();
 			 
   // MetaSchema Commands
