@@ -46,7 +46,7 @@ $%CODEGEN_FlexBisHome/bin/bison -d -b <Module> -p <Module> <YaccFile>
 
 @template CODEGEN_YACC_CmdLine ( %CODEGEN_FlexBisHome, %Source, %BaseName, %OutputDir ) is
 $cd %OutputDir
-$%CODEGEN_FlexBisHome/bin/bison -d -b %BaseName -p %BaseName %Source
+$%CODEGEN_FlexBisHome/bin/bison -d -b %BaseName -p %BaseName %Source -o %BaseName.tab.c
 @end;
 @else
 
@@ -77,7 +77,7 @@ $%CODEGEN_YACC_CmdPath -d -b <Module> -p <Module> <YaccFile>
 
 @template CODEGEN_YACC_CmdLine (%CODEGEN_YACC_CmdPath, %Source, %BaseName, %OutputDir ) is
 $cd %OutputDir;
-$%CODEGEN_YACC_CmdPath -d -b %BaseName -p %BaseName %Source
+$%CODEGEN_YACC_CmdPath -d -b %BaseName -p %BaseName %Source -o %BaseName.tab.c
 @end;
 
 @endif;
