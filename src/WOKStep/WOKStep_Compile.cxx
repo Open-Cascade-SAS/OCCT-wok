@@ -317,6 +317,14 @@ _TEST_BREAK();
  if (  g_fCompOrLnk && !str -> IsEmpty ()  ) {
 
   Handle( TCollection_HAsciiString ) s = new TCollection_HAsciiString (  Unit () -> Name ()  );
+
+  if (  !SubCode ().IsNull ()  ) {
+
+   s -> AssignCat ( "_"          );
+   s -> AssignCat (  SubCode ()  );
+
+  }  // end if
+
   s -> AssignCat ( ".comp" );
   Handle( WOKernel_File ) stadm = new WOKernel_File (
                                        s, Unit (), Unit () ->

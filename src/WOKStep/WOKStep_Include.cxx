@@ -6,8 +6,8 @@
 #ifdef WNT
 # include <io.h>
 #else
-#endif  // WNT
 #include <unistd.h>
+#endif  // WNT
 
 #include <WOKTools_Messages.hxx>
 
