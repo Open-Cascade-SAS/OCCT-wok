@@ -8,7 +8,7 @@
 #endif
 
 #include <tcl.h>
-#ifndef HAVE_STRSTREAM_H
+#ifdef HAVE_STRSTREAM_H
 # include <strstream.h>
 #endif
 
