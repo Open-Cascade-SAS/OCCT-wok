@@ -150,7 +150,7 @@ proc wokPROP:Queue { adr nb page location} {
 		foreach j [wokIntegre:Journal:List] {
 		    $text insert end "[format "%15s %-9d" [file tail $j] [file size $j]]\n"
 		}
-		set t [fmtclock [file mtime $journal]]
+		set t [clock format [file mtime $journal]]
 		set str [format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
 		$text insert end "$str\n\n"
 		set scoop [wokIntegre:Scoop:Read]
@@ -391,9 +391,9 @@ proc  wokPROP:pth:Browse { lab dirima filima tree hlist dir } {
 		    [list Size        "$tt(size) (bytes)"]\
 		    [list Type        $tt(type)]\
 		    [list separator   1]\
-		    [list Created     [string range [fmtclock $tt(ctime)] 4 18]]\
-		    [list Modified    [string range [fmtclock $tt(mtime)] 4 18]]\
-		    [list Accessed    [string range [fmtclock $tt(atime)] 4 18]]\
+		    [list Created     [string range [clock format $tt(ctime)] 4 18]]\
+		    [list Modified    [string range [clock format $tt(mtime)] 4 18]]\
+		    [list Accessed    [string range [clock format $tt(atime)] 4 18]]\
 		    [list separator   1]\
 		    [list Readable    $rea]\
 		    [list Writable    $wrt]\
@@ -530,9 +530,9 @@ proc wokPROP:EDL:Browse { btn att tree hlist dir  } {
 		    [list Size        "$tt(size) (bytes)"]\
 		    [list Type        $tt(type)]\
 		    [list separator   1]\
-		    [list Created     [string range [fmtclock $tt(ctime)] 4 18]]\
-		    [list Modified    [string range [fmtclock $tt(mtime)] 4 18]]\
-		    [list Accessed    [string range [fmtclock $tt(atime)] 4 18]]\
+		    [list Created     [string range [clock format $tt(ctime)] 4 18]]\
+		    [list Modified    [string range [clock format $tt(mtime)] 4 18]]\
+		    [list Accessed    [string range [clock format $tt(atime)] 4 18]]\
 		    [list separator   1]\
 		    [list Readable    $rea]\
 		    [list Writable    $wrt]\
@@ -796,7 +796,7 @@ proc wokPROP:workbenchqq  { adr nb page location} {
 		foreach j [wokIntegre:Journal:List] {
 		    $text insert end "[format "%15s %-9d" [file tail $j] [file size $j]]\n"
 		}
-		set t [fmtclock [file mtime $journal]]
+		set t [clock format [file mtime $journal]]
 		set str [format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
 		$text insert end "$str\n\n"
 		set scoop [wokIntegre:Scoop:Read]
@@ -886,9 +886,9 @@ proc wokPROP:terminal { adr nb page location} {
 	    [list Size        "$tt(size) (bytes)"]\
 	    [list Type        $tt(type)]\
 	    [list separator   1]\
-	    [list Created     [string range [fmtclock $tt(ctime)] 4 18]]\
-	    [list Modified    [string range [fmtclock $tt(mtime)] 4 18]]\
-	    [list Accessed    [string range [fmtclock $tt(atime)] 4 18]]\
+	    [list Created     [string range [clock format $tt(ctime)] 4 18]]\
+	    [list Modified    [string range [clock format $tt(mtime)] 4 18]]\
+	    [list Accessed    [string range [clock format $tt(atime)] 4 18]]\
 	    [list separator   1]\
 	    [list Readable    $rea]\
 	    [list Writable    $wrt]\

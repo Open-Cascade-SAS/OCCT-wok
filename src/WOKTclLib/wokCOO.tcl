@@ -98,12 +98,14 @@ proc WOKCOOK { opt args } {
 
     set H $IWOK_GLOBALS(CookHlist)
 
+
     switch $opt {
 	
 	files {
+	    ;#puts "WOKCOOK(files) : $args "
 	    set e  [lindex $args 2]
-	    set d1 [lindex $args 3]
-	    set udname $IWOK_GLOBALS(CookHlist,Unit)
+	    set d1 [lindex $args 3]                   ;# directory of son workbench
+	    set udname $IWOK_GLOBALS(CookHlist,Unit)  ;# father directory in [lindex $args 4]
 	    set key ${e}:$IWOK_GLOBALS(CookHlist,Key)
 	    set suspect [info exists IWOK_GLOBALS(CookHlist,dupl,list,$key)]
 	    switch -- [lindex $args 0] {
@@ -149,8 +151,13 @@ proc WOKCOOK { opt args } {
 				-data [list 1 $IWOK_GLOBALS(CookHlist,dupl,list,$key)] -itemtype text \
 				-style $IWOK_GLOBALS(CookHlist,dupl,style)
 		    } else {
-			$H add ${udname}^[list # $e $d1 [lindex $args 4]] -text [format "# %-30s" $e] \
-				-data [list 0 {}] -itemtype text
+			if { [file mtime  [file join [lindex $args 4] $e]] > [file mtime [file join $d1 $e]] } {
+			    $H add ${udname}^[list # $e $d1 [lindex $args 4]] -text [format "# %-30s" $e] \
+				    -data [list 0 {}] -itemtype text -style $IWOK_GLOBALS(CookHlist,obsol,style)
+			} else {
+			    $H add ${udname}^[list # $e $d1 [lindex $args 4]] -text [format "# %-30s" $e] \
+				    -data [list 0 {}] -itemtype text
+			}
 		    }
 		}
 	    }
@@ -607,6 +614,7 @@ proc wokRunPrepar { w } {
     set IWOK_GLOBALS(CookHlist,dupl,suspect) 0
     set IWOK_GLOBALS(CookHlist,dupl,show)    0
     set IWOK_GLOBALS(CookHlist,dupl,style)   [tixDisplayStyle text -fg orange -font $IWOK_GLOBALS(boldfont)]
+    set IWOK_GLOBALS(CookHlist,obsol,style)   [tixDisplayStyle text -fg red -font $IWOK_GLOBALS(boldfont)]
     set IWOK_GLOBALS(CookHlist,dupl,ustyle)  [tixDisplayStyle imagetext -font $IWOK_GLOBALS(boldfont)]
 
     set IWOK_GLOBALS(comment,entered) 0
@@ -754,7 +762,7 @@ proc wokStoreThat { w option } {
 	    }
 	    set e [lindex [split $f ^] 1]
 	    set fl [lindex $e 2]/[lindex $e 1]
-	    set dat [fmtclock [file mtime $fl] "%d/%m/%y %R"]
+	    set dat [clock format [file mtime $fl] -format "%d/%m/%y %R"]
 	    eval wokPrepare:Report:Output files [linsert $e 1 $dat]
 	}
     }

@@ -334,7 +334,7 @@ proc wokPRM:ShowModif { } {
 
     append IWOK_GLOBALS(PRM,Modify,edlbuf) "-- File:	${clas}.edl" \n
     append IWOK_GLOBALS(PRM,Modify,edlbuf) "-- Author: 	[id user]" \n
-    append IWOK_GLOBALS(PRM,Modify,edlbuf) "-- History:	[fmtclock [getclock]]" \n \n
+    append IWOK_GLOBALS(PRM,Modify,edlbuf) "-- History:	[clock format [getclock]]" \n \n
 
     if { $IWOK_GLOBALS(PRM,Modify,verbose) == 1 } {
 	append IWOK_GLOBALS(PRM,Modify,edlbuf) "@verboseon;" \n

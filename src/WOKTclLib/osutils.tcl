@@ -16,17 +16,13 @@ proc osutils:dsp:readtemplate { } {
     puts stderr "Info : readtemplate : Template for MS project from [set loc /adv_20/KAS/C40/ros/src/OS/template.dsp]"
     return [wokUtils:FILES:FileToString $loc]
 }
-proc osutils:dsp:readtemplatex { } {
-    puts stderr "Info : readtemplate : Template for MS project from [set loc /adv_20/KAS/C40/ros/src/OS/template.dspx]"
-    return [wokUtils:FILES:FileToString $loc]
-}
 proc osutils:am:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for Makefile.am from [set loc /adv_20/KAS/C40/ros/src/WOKTclLib/template.mam]"
+    puts stderr "Info : readtemplate : Template for Makefile.am from [set loc /adv_21/KAS/C40/yan/src/WOKTclLib/template.mam]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:in:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc /adv_20/KAS/C40/ros/src/WOKTclLib/template.min]"
+    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc /adv_21/KAS/C40/yan/src/WOKTclLib/template.min]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
@@ -102,15 +98,9 @@ proc osutils:dsw:footer { } {
     return $var
 }
 ;#
-;# An item for compiling a c++ class
+;#
 ;#
 proc osutils:dsp:fmtcpp { } {
-    return {# ADD CPP /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
-}
-;#
-;# An item for compiling a c++ main
-;#
-proc osutils:dsp:fmtcppx { } {
     return {# ADD CPP /I ..\..\inc /I ..\..\drv\%s /I ..\..\src\%s /D "__%s_DLL"}
 }
 ;#
@@ -219,7 +209,7 @@ proc osutils:tk:units { tkloc {typed 0} } {
 	}
     }
     if { $l == {} } {
-	;#puts stderr "Warning. No devunit included in $tkloc"
+	puts stderr "Error. No devunit for $tkloc"
     }
     return $l
 }
@@ -250,18 +240,15 @@ proc osutils:tk:loadunit { loc map {local 0}} {
     return
 }
 ;#
-;# Returns the list of all compilable files name in a toolkit, or devunit of any type
+;# Returns the list of all compilable files name in a toolkit,
 ;# Call unit filter on units name to accept or reject a unit
-;# Tfiles lists for each unit the type of file that can be compiled.
 ;#
 proc osutils:tk:files { tkloc  {l_compilable {} } {justail 1} {unitfilter {}} } {
     set Tfiles(source,package)       {source derivated privinclude pubinclude drvfile}
     set Tfiles(source,nocdlpack)     {source pubinclude drvfile}
     set Tfiles(source,schema)        {source derivated privinclude pubinclude drvfile}
     set Tfiles(source,toolkit)       {}
-    set Tfiles(source,executable)    {source pubinclude drvfile}
     set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
-    ;#puts " listloc = $listloc"
     if { $l_compilable == {} } {
 	set l_comp [list .c .cxx .cpp]
     } else {
@@ -325,94 +312,64 @@ proc osutils:tk:hascsf { EXTERNLIB } {
     return $lret
 }
 ;#
-;# Create file tkloc.dsp for a shareable library (dll).
-;# in dir return the full path of the created file
+;# Create file tkloc.dsp in dir return the full path of the created file
 ;#
-proc osutils:mkdsp { dir tkloc {tmplat {} } {fmtcpp {} } } {
+proc osutils:mkdsp { dir tkloc {tmplat {} } {fmtcpp {} } {doinsert 1} } {
+    set Tfiles(source,package)       {source derivated privinclude pubinclude drvfile}
+    set Tfiles(source,nocdlpack)     {source pubinclude drvfile}
+    set Tfiles(source,schema)        {source derivated privinclude pubinclude drvfile}
+    set Tfiles(source,toolkit)       {}
     if { $tmplat == {} } {set tmplat [osutils:dsp:readtemplate]}
     if { $fmtcpp == {} } {set fmtcpp [osutils:dsp:fmtcpp]}
     set fp [open [set fdsp [file join $dir ${tkloc}.dsp]] w]
     fconfigure $fp -translation crlf
     set l_compilable [osutils:dsp:compilable]
-    regsub -all -- {__TKNAM__} $tmplat $tkloc  temp0
-    set tkused ""
-    foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
-	append tkused "${tkx}.lib "
-    }
-    puts "$tkloc requires  $tkused"
-    regsub -all -- {__TKDEP__} $temp0  $tkused temp1
-    set files ""
-    ;#set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
-    set listloc [osutils:tk:units [woklocate -u $tkloc]]
-    set resultloc [osutils:justwnt $listloc]
-    ;#puts "result = $resultloc"
-    ;#set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justwnt]]
-    if [array exists written] { unset written }
-    foreach fxlo $resultloc {
-	set xlo [wokinfo -n $fxlo]
-	set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
-	foreach f $lsrc {
-	    ;#puts " f = $f"
-	    if { ![info exists written([file tail $f])] } {
-		set written([file tail $f]) 1
-		append files "# Begin Source File" "\n"
-		append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
-		append files [format $fmtcpp $xlo $xlo $xlo] "\n"
-		append files "# End Source File" "\n"
-	    } else {
-		puts "Warning : in dsp more than one occurences for [file tail $f]"
+    if { $doinsert } {
+	regsub -all -- {__TKNAM__} $tmplat $tkloc  temp0
+	set tkused ""
+	foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
+	    append tkused "${tkx}.lib "
+	}
+	puts "$tkloc requires  $tkused"
+	regsub -all -- {__TKDEP__} $temp0  $tkused temp1
+	set files ""
+	lappend lret $fdsp
+	set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
+	set resultloc [osutils:justwnt $listloc]
+	foreach loc $resultloc {
+	    set utyp [uinfo -t $loc]
+	    if [array exists map] { unset map }		
+	    osutils:tk:loadunit $loc map
+	    ;#puts " loc = $loc === > [array names map]"
+	    set LType $Tfiles(source,${utyp})
+	    foreach typ [array names map] {
+		if { [lsearch $LType $typ] == -1 } {
+		    unset map($typ)
+		}
+	    }
+	    set xlo [wokinfo -n $loc]
+	    if [array exists written] { unset written }				
+	    foreach type [array names map] {
+		foreach f $map($type) {
+		    if { [lsearch $l_compilable [file extension $f]] != -1 } {
+			if { ![info exists written([file tail $f])] } {
+			    set written([file tail $f]) 1
+			    append files "# Begin Source File" "\n"
+			    append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
+			    append files [format $fmtcpp $xlo $xlo $xlo] "\n"
+			    append files "# End Source File" "\n"
+			} else {
+			    puts "Warning : in dsp more than one occurences for [file tail $f]"
+			}
+		    }
+		}
 	    }
 	}
+	regsub -all -- {__FILES__} $temp1 $files temp2
+	puts $fp $temp2
+    } else {
+	puts $fp $tmplat
     }
-    
-    regsub -all -- {__FILES__} $temp1 $files temp2
-    puts $fp $temp2
-    close $fp
-    return $fdsp
-}
-;#
-;# Create file tkloc.dsp for a executable "console" application
-;# in dir return the full path of the created file
-;#
-proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
-    if { $tmplat == {} } {set tmplat [osutils:dsp:readtemplatex]}
-    if { $fmtcpp == {} } {set fmtcpp [osutils:dsp:fmtcppx]}
-    set fp [open [set fdsp [file join $dir ${tkloc}.dsp]] w]
-    fconfigure $fp -translation crlf
-    set l_compilable [osutils:dsp:compilable]
-    regsub -all -- {__XQTNAM__} $tmplat $tkloc  temp0
-    set tkused ""
-    foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
-	append tkused "${tkx}.lib "
-    }
-    puts "$tkloc requires  $tkused"
-    regsub -all -- {__TKDEP__} $temp0  $tkused temp1
-    set files ""
-    ;#set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
-    ;#set listloc [osutils:tk:units [woklocate -u $tkloc]]
-    ;#set resultloc [osutils:justwnt $listloc]
-    ;#puts "result = $resultloc"
-    ;#set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justwnt]]
-    ;#if [array exists written] { unset written }
-    ;#foreach fxlo $resultloc {
-	;#set tkloc [set xlo [wokinfo -n $fxlo]]
-	set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
-	foreach f $lsrc {
-	    ;#puts " f = $f"
-	    if { ![info exists written([file tail $f])] } {
-		set written([file tail $f]) 1
-		append files "# Begin Source File" "\n"
-		append files "SOURCE=..\\..\\" [wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]] "\n"
-		append files [format $fmtcpp $tkloc $tkloc $tkloc] "\n"
-		append files "# End Source File" "\n"
-	    } else {
-		puts "Warning : in dsp more than one occurences for [file tail $f]"
-	    }
-	}
-    ;#}
-    
-    regsub -all -- {__FILES__} $temp1 $files temp2
-    puts $fp $temp2
     close $fp
     return $fdsp
 }

@@ -236,7 +236,7 @@ proc wokEDF:Shareable { file args} {
 	set IWOK_WINDOWS($w,listo) [wokUtils:FILES:FileToList $objlist]
 	wokEDF:Shareable:Disp $w
 	set solen [llength $IWOK_WINDOWS($w,listo)]
-	set sodat [string range [fmtclock [file mtime $file]] 4 18]
+	set sodat [string range [clock format [file mtime $file]] 4 18]
 	$w.lab configure -text "$solen objects."
 	update
     }
@@ -277,7 +277,7 @@ proc wokEDF:Shareable:Disp { w } {
     set l3 {}
     foreach e $l2 {
 	set str [lindex $e 0]
-	set dat [string range [fmtclock [lindex $e 1]] 4 18]
+	set dat [string range [clock format [lindex $e 1]] 4 18]
 	set siz [lindex $e 2]
 	lappend l3 [format "%15s %-10s %s" $dat $siz $str]
     }

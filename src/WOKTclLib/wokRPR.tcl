@@ -416,7 +416,7 @@ proc wokSetCanv { w } {
     $text delete 0.0 end
     wokReadString $text [wokIntegre:BASE:cat $sfile last]
     set vrs [wokIntegre:BASE:vrs $sfile]
-    set dta [fmtclock [file mtime $sfile] "%d %h %y %R" ]
+    set dta [clock format [file mtime $sfile] -format "%d %h %y %R" ]
     set item [wokIntegre:BASE:stof [file tail $sfile] {}]
     set fmt [format "FILE: %--30s Version: %--10s Last registered: %--15s" $item $vrs $dta]
     $lab configure -text $fmt -font $IWOK_GLOBALS(font)
@@ -463,7 +463,7 @@ proc wokSetCanv { w } {
 	    wokReadList $IWOK_WINDOWS($w,text) \
 		    [wokIntegre:Mark:GetComment $IWOK_WINDOWS($w,journal) [lindex $info 1]]
 	    $IWOK_WINDOWS($w,label) configure \
-		    -text "Mark to integration [lindex $info 2]. Placed on [fmtclock [lindex $info 3]]"
+		    -text "Mark to integration [lindex $info 2]. Placed on [clock format [lindex $info 3]]"
 	}
 
     }

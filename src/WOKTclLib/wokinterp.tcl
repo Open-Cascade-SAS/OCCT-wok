@@ -97,13 +97,7 @@ proc woksh_usage {} {
 
 proc @@ {args} {
     
-    global env;
-
-#    if [info exists env(EMACS)] {
-#	woksh_emacs [list $args]
-#    } {
-	woksh_csh [list $args]
-#    }
+    puts stderr " This service is no longer supported."
 }
 proc woksh {args} {
     
@@ -274,8 +268,8 @@ proc woksh_emacs {args} {
 		    }
 		    
 		    while { [string length $theline] > 100} {
-			exp_send_user  -- "[crange $theline 0 100]\\\n"
-			set theline [crange $theline 101 [string length $theline]]
+			exp_send_user  -- "[string range $theline 0 100]\\\n"
+			set theline [string range $theline 101 [string length $theline]]
 		    }
 		    
 		    exp_send_user -- "$theline\n" 

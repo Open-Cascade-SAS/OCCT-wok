@@ -199,7 +199,7 @@ proc wnews { args } {
     if [info exists tabarg(-ls)] {
 	foreach x [wokIntegre:Mark:Dump $journal [info exists tabarg(-bydate)]] {
 	    if [regexp {([-A-Za-z][-A-Za-z0-9]*) ([0-9]+),([0-9]+)} $x all mark index date] {
-		puts stdout [format "%10s = %-3d  (placed at %s)"  $mark $index [fmtclock $date] ]
+		puts stdout [format "%10s = %-3d  (placed at %s)"  $mark $index [clock format $date] ]
 	    }
 	}
 	return
@@ -218,7 +218,7 @@ proc wnews { args } {
 	foreach j [wokIntegre:Journal:List] {
 	    puts stdout [format "%15s %-9d" [file tail $j] [file size $j]]
 	}
-	set t [fmtclock [file mtime $journal]]
+	set t [clock format [file mtime $journal]]
 	puts stdout \
 		[format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
 
@@ -355,7 +355,7 @@ proc wokIntegre:Journal:UnMark { string } {
 #;<
 proc wokIntegre:Journal:WriteHeader { rep num wb station {jnlid stdout}} {
     set report_out [format "%s_%s" $num $rep]
-    set today   [fmtclock [getclock] "%d/%m/%y %R"]
+    set today   [clock format [getclock] -format "%d/%m/%y %R"]
     puts $jnlid [format "\n\nReport %s - %s from workbench %s (%s)" $report_out $today $wb $station]
     puts $jnlid [format "------------"]
     return
@@ -373,28 +373,7 @@ proc wokIntegre:Journal:WriteNotes { Notes {jnlid stdout }} {
 # retourne le bout du journal contenant les reports dont la date est superieure a celle donnee.
 #;<
 proc wokIntegre:Journal:Since { file date1 date2 } {
-    if [ catch { set fileid [open $file r] } ] {
-	return {}
-    }
-    set ret {}
-    set fillnow 0
-    while {[gets $fileid line] >= 0} {
-	if {[regexp {^Report [0-9]*_rep - ([0-9]*/[0-9]*/[0-9]* [0-9]*:[0-9]*)} $line all datrep] } {
-	    set cdat [wokUtils:TIME:dpe $datrep]
-	    if { $cdat >= $date1 && $cdat <= $date2 } {
-		append ret $line \n
-		set fillnow 1
-	    } elseif { $cdat > $date2 } {
-		break
-	    }
-	} else {
-	    if { $fillnow } {
-		append ret $line \n
-	    }
-	}
-    }
-    close $fileid
-    return $ret
+    return {}
 }
 #;>
 # Ecrit dans table, le contenu d'un report file (full path). 

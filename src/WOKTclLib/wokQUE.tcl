@@ -82,7 +82,6 @@ proc wokWaffQueue { {loc {}} } {
 
     set buttons1 [list \
 	    {journal       "Display"    active wokReadStuffJournalOfcurwb} \
-	    {today         "Today's"    active wokToday} \
 	    {upday         "Prev"       active wokUpday} \
 	    {downday       "Next"       active wokDownday} \
 	    {toEditor      "To Editor"  active wokEditJnl} \
@@ -115,7 +114,7 @@ proc wokWaffQueue { {loc {}} } {
     wokUpdateQueue $w
     set jnl [wokIntegre:Journal:GetName]
     if [file exist $jnl] {
-	$w.lab configure -text "Last integration: [fmtclock [file mtime $jnl]]"
+	$w.lab configure -text "Last integration: [clock format [file mtime $jnl]]"
     }
     return
 }

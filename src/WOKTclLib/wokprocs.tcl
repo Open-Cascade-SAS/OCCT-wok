@@ -205,7 +205,7 @@ proc wok_setenv_proc {var value} {
 		set debut 0
 
 		set i $limit
-		set sub [crange $value $debut $i]
+		set sub [string range $value $debut $i]
 		set command  [lindex [wok_setenv_cmd csh $var $value] 0]
 		exp_send -i $IWOK_GLOBALS(term,term_spawn_id) $command;
 		sleep .1
@@ -218,7 +218,7 @@ proc wok_setenv_proc {var value} {
 		    set debut $i
 		    set i [expr $i + $limit]
 		    
-		    set sub [crange $value $debut $i]
+		    set sub [string range $value $debut $i]
 		    exp_send -i $IWOK_GLOBALS(term,term_spawn_id) "setenv $var \"\${$var}$sub\"\n"
 		    sleep .1
 		    incr i

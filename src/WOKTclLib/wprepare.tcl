@@ -86,7 +86,7 @@ proc wprepare { args } {
 	    puts $wokfileid "  Study/CSR     : "
 	    puts $wokfileid "  Debug         : "
 	    puts $wokfileid "  Improvements  : "
-	    puts $wokfileid "  News          : Files modified since [fmtclock $date]"
+	    puts $wokfileid "  News          : "
 	    puts $wokfileid "  Deletions     : "
 	    puts $wokfileid "  Impact        : "
 	    puts $wokfileid "  Comments      : "
@@ -129,7 +129,7 @@ proc wokPrepare:Unit:Since { Fout Wb Uliste date } {
 	foreach f [lsort [uinfo -pl -Tsource ${Wb}:${e}]]  {
 	    set mti [file mtime $f]
 	    if { $mti > $date } {
-		$Fout files # [fmtclock [file mtime $f] "%d/%m/%y %R"] [file tail $f] [file dirname $f]
+		$Fout files # [clock  format [file mtime $f] -format "%d/%m/%y %R"] [file tail $f] [file dirname $f]
 	    }
 	}
     }
@@ -145,7 +145,7 @@ proc wokPrepare:Unit:Ref { Fout Wb Uliste } {
 	set t [uinfo -t ${Wb}:${e}]
 	$Fout uheader "$e.$t"
 	foreach f [lsort [uinfo -pl -Tsource ${Wb}:${e}]]  {
-	    $Fout files + [fmtclock [file mtime $f] "%d/%m/%y %R"] [file tail $f] [file dirname $f]
+	    $Fout files + [clock  format [file mtime $f] -format "%d/%m/%y %R"] [file tail $f] [file dirname $f]
 	}
     }
     return
@@ -155,42 +155,17 @@ proc wokPrepare:Unit:Ref { Fout Wb Uliste } {
 # Boucle sur une liste  {type name}, ecrit dans table le resultat de la comparaison
 # wokPrepare:Unit:Loop Mytable DEMO:Demo:Kernel DEMO:Demo:FK  {NTD AccesServer}
 # Pere = FACT:SHOP:WBPERE , Fils: FACT:SHOP:WBFILS
-# Pour chacune des Uds il faut chercher dans quel workbench elle se trouve au dessus.
-# si elle n'existe pas =. on met {}. 
-#
 #;<
 proc wokPrepare:Unit:Loop { Fout Pere Fils Uliste } {
-    wokPrepare:Unit:ouestu ${Pere} $Uliste map
+    set lupere [w_info -l $Pere]
     foreach e $Uliste {
 	set t [uinfo -t ${Fils}:${e}]
 	$Fout uheader "$e.$t"
 	set loc [uinfo -fl -Tsource ${Fils}:$e]
-	
-	if { $map($e) != {} } {
-	    set ances $map($e)
-	    wokPrepare:Unit:Diff $Fout [uinfo -fp -Tsource $ances:$e] [uinfo -fp -Tsource ${Fils}:$e] $loc
+	if { [lsearch $lupere $e] != -1 } {
+	    wokPrepare:Unit:Diff $Fout [uinfo -fp -Tsource ${Pere}:$e] [uinfo -fp -Tsource ${Fils}:$e] $loc
 	} else {
 	    wokPrepare:Unit:Diff $Fout {} [uinfo -fp -Tsource ${Fils}:$e] $loc
-	}
-    }
-}
-
-#;>
-# retourne le nom du workbench ou se trouve u
-# dans l'ascendance de wb, (wb inclus)
-# wb est un full path
-#;<
-proc wokPrepare:Unit:ouestu { wb lu map} {
-    upvar $map TLOC
-    set pfx [wokinfo -s $wb]
-    set ancestors [w_info -A $wb]
-    foreach u $lu {
-	foreach w $ancestors {
-	    set TLOC($u) {}
-	    if { [wokinfo -x ${pfx}:${w}:$u] } {
-		set TLOC($u) ${pfx}:$w
-		break
-	    }
 	}
     }
 }
@@ -231,7 +206,7 @@ proc wokPrepare:Unit:Diff { Fout l1 l2 local } {
 	    - {
 		set file  [lindex $wokM($e) 1]
 		if [file exists $file] {
-		    $Fout files - [fmtclock [file mtime $file] "%d/%m/%y %R"] $e [file dirname $file]
+		    $Fout files - [clock  format [file mtime $file] -format "%d/%m/%y %R"] $e [file dirname $file]
 		} else {
 		    ;#msgprint -w "Unit files list should be recomputed. (umake -o src)"
 		}
@@ -240,7 +215,7 @@ proc wokPrepare:Unit:Diff { Fout l1 l2 local } {
 	    + {
 		set file  [lindex $wokM($e) 1]
 		if [file exists $file] {
-		    $Fout files + [fmtclock [file mtime $file] "%d/%m/%y %R"] $e [file dirname $file]
+		    $Fout files + [clock  format [file mtime $file] -format "%d/%m/%y %R"] $e [file dirname $file]
 		} else {
 		    ;#msgprint -w "Unit files list should be recomputed. (umake -o src)"
 		}
@@ -249,7 +224,7 @@ proc wokPrepare:Unit:Diff { Fout l1 l2 local } {
 	    # {
 		if { [lsearch $local $e] != -1 } {
 		    set fpere [lindex $wokM($e) 1] ; set ffils [lindex $wokM($e) 2]
-		    set date [fmtclock [file mtime $ffils] "%d/%m/%y %R"]
+		    set date [clock  format [file mtime $ffils] -format "%d/%m/%y %R"]
 		    if { [file isfile $fpere] && [file isfile $ffils] } {
 			if { [wokUtils:FILES:AreSame $fpere $ffils] } {
 			    $Fout files = $date $e [file dirname $ffils] [file dirname $fpere]

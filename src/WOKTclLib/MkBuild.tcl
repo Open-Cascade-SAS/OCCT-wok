@@ -74,8 +74,7 @@ proc wokBuild { {fast 0} } {
 
     set arr [$w.l subwidget arrow] ; tixBalloon $arr.bal ; $arr.bal bind $arr -msg "Last spots"
 
-    ;#button $w.mdtv -image [tix getimage MatraDatavision] -command wokSeeLayout
-    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/MdtvLogo33x120b.gif] -command wokSeeLayout
+    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/opencascade.gif] -command wokSeeLayout
     tixBalloon $w.mdtv.bal
     $w.mdtv.bal bind $w.mdtv -msg "See Layout"
 
@@ -1291,7 +1290,7 @@ proc wokGetworkbenchdate { ll last } {
 	    set str [string range [lindex $e 3] 0 $nb]..
 	}
 	set x [split [lindex $e 5] ,]
-	set dat [string range [fmtclock [lindex $x 0]] 4 18]
+	set dat [string range [clock format [lindex $x 0]] 4 18]
 	set siz [lindex $x 1]
 	lappend l [lreplace $e 3 3 [format "%-${fm}s %9s %14s" $str $siz $dat]]
     }
@@ -1328,7 +1327,7 @@ proc wokGetdevunitdate { ll last } {
 	    set str [string range [lindex $e 3] 0 $nb]..
 	}
 	set x [split [lindex $e 5] ,]
-	set dat [string range [fmtclock [lindex $x 0]] 4 18]
+	set dat [string range [clock format [lindex $x 0]] 4 18]
 	set siz [lindex $x 1]
 	lappend l [lreplace $e 3 3 [format "%-${fm}s %9s %14s" $str $siz $dat]]
     }
@@ -1377,7 +1376,7 @@ proc wokGetdevunitstuffdate { ll last } {
 	    set str [string range [lindex $e 3] 0 $nb]..
 	}
 	set x [split [lindex $e 5] ,]
-	set dat [string range [fmtclock [lindex $x 0]] 4 18]
+	set dat [string range [clock format [lindex $x 0]] 4 18]
 	set siz [lindex $x 1]
 	lappend l [lreplace $e 3 3 [format "%-${fm}s %9s %14s" $str $siz $dat]]
     }
