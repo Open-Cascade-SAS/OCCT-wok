@@ -78,8 +78,8 @@
  @endif;
 
  @if( %Station == "lin" ) then
-  @template LDEXE_Header ( %Target ) is
-   $/usr/bin/g++ -o %Target \
+  @template LDEXE_Header ( %Target , %STLPortLib ) is
+   $/usr/bin/g++ -o %Target %STLPortLib \
   @end;
  @endif;
 

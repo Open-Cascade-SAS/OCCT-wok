@@ -116,7 +116,7 @@
       -->> END TODO
       @set %STLPortHome = "/dn01/KAS/STLport-4.5.3";
       @if ( %STLPortHome != "") then
-        @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+        @string %STLPortInclude = "-I" %STLPortHome "/stlport ";
 	@string %STLPortLib = "-L" %STLPortHome "/lib -lstlport_gcc";
       @else
         @set %STLPortInclude = "";
@@ -264,10 +264,10 @@
       --<< TODO : If applicable , modify the root location where C++ compiler is installed.
       @set %CSF_CXX_COMPILER = "D:/DevTools/VStudio/VC98/bin/cl ";
       -->> END TODO
-      @set %STLPortHome = "/dn01/KAS/STLport-4.5.3";
+      @set %STLPortHome = "F:/KAS/BAG/STLport-4.5.3";
       @if ( %STLPortHome != "") then
-        @string %STLPortInclude = "-I" %STLPortHome "/stlport";
-	@string %STLPortLib = "-L" %STLPortHome "/lib/stlport_vc6.lib";
+        @string %STLPortInclude = "-I" %STLPortHome "/stlport ";
+	@string %STLPortLib = %STLPortHome "/lib/stlport_vc6.lib";
       @else
         @set %STLPortInclude = "";
 	@set %STLPortLib = "";
