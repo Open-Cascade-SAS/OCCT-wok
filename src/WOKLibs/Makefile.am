@@ -29,10 +29,6 @@ libwoktoolscmd_la_LIBADD =../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
 libwokutilscmd_la_LIBADD =../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
-woksh_LDADD =../TKWOKTcl/libTKWOKTcl.la ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-
-wokprocess_LDADD =../TKWOKTcl/libTKWOKTcl.la ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
-
 libmscmd_la_LIBADD =../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
 
 libwokdeliverysteps_la_SOURCES = wokdeliverysteps.cxx
