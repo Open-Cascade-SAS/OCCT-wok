@@ -7,7 +7,7 @@
 @set %COMMAND_EDL = ""; 
 
 @if ( %Station != "wnt" ) then
-@if ( %Station != "hp" ) then
+@if ( %Station != "hp" && %Station != "lin") then
   @set %COMMAND_CPCmd = "/usr/bin/cp";
   @set %COMMAND_CHMODCmd = "/usr/bin/chmod";
   @set %COMMAND_MVCmd = "/usr/bin/mv";

@@ -110,5 +110,13 @@ $ %ExternRef \
 
 @endif;
 
+-- Definition du Linux
+
+@if ( %Station == "lin" ) then
+ @template LD_Footer ( %Station ) is
+ $ ;
+ @end;
+@endif;
+
 @endif;
 

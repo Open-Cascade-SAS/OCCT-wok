@@ -121,5 +121,31 @@ $ -all %LibDir/lib%LibName.a -none \
 
 @endif;
 
+@if ( %Station == "lin" ) then
+ @set %LDSHR_Footer          = "LDSHR_Footer";
+ @set %LDSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
+
+ @template LDSHR_ArchiveFullPath ( %LibDir, %LibName ) is
+  $\^
+ @end;
+
+ @template LDSHR_Header ( %Target, %LDSHR_DBMSOpt ) is
+  $/usr/bin/g++ -shared %LDSHR_DBMSOpt -o %Target \
+ @end;
+
+ @template LDSHR_Footer ( ) is
+  $ ;
+ @end;
+
+ @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+  $/usr/bin/g++ -nostartfiles %LDSHR_DBMSOpt -o %Target \
+ @end;
+
+ @template LDSHR_CheckUndefFooter ( ) is
+  $ ;
+ @end;
+
+@endif;
+
 @endif;
 

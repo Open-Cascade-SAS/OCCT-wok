@@ -57,5 +57,11 @@ $ /usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -call_shared -o %Target \
 
 @endif;
 
+@if( %Station == "lin" ) then
+ @template LDEXE_Header ( %Target ) is
+ $/usr/bin/g++ -o %Target \
+ @end;
+@endif;
+
 @endif;
 

@@ -15,7 +15,12 @@
 @set %CODEGEN_YACC_Extensions = "toto.yacc";
 
 @if ( %Station != "wnt" ) then
-@set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125";
+
+ @if ( %Station != "lin" ) then
+  @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125";
+ @else
+  @set %CODEGEN_FlexBisHome = "/usr";
+ @endif;
 
 @template CODEGEN_LEX_Production ( %BaseName ) is
 $lex.%BaseName.c

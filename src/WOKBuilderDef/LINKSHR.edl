@@ -111,5 +111,30 @@ $ -all %LibDir/lib%LibName.a -none \
 
 @endif;
 
+@if ( %Station == "lin" ) then
+ @set %LINKSHR_Footer          = "LINKSHR_Footer";
+ @set %LINKSHR_ArchiveFullPath = "LINKSHR_ArchiveFullPath";
+
+ @template LINKSHR_ArchiveFullPath ( ) is
+  $\^
+ @end;
+
+ @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ) is
+  $/usr/bin/g++ -shared %LINKSHR_DBMSOpt -o %Target \
+ @end;
+
+ @template LINKSHR_Footer ( ) is
+  $ ;
+ @end;
+
+ @template LINKSHR_CheckUndefHeader ( %Target, %LINKSHR_DBMSOpt ) is
+  $/usr/bin/g++ -nostartfiles %LINKSHR_DBMSOpt -o /dev/null \
+ @end;
+
+ @template LINKSHR_CheckUndefFooter ( ) is
+  $ ;
+ @end;
+
+@endif;
 @endif;
 
