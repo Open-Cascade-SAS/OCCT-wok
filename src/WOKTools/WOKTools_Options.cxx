@@ -14,7 +14,9 @@
 
 #include <TCollection_AsciiString.hxx>
 
-#ifndef WNT
+#if defined( LIN )
+# include <getopt.h>
+#elif !defined( WNT )
 extern char *optarg;
 extern int  optind;
 #else
@@ -41,7 +43,7 @@ WOKTools_Options::WOKTools_Options(const Standard_Integer argc,
   mydefines = new WOKTools_HSequenceOfDefine;
   myargs    = new TColStd_HSequenceOfHAsciiString;
   myerrflg  = Standard_False;
-#ifndef WNT
+#if !defined( WNT ) && !defined( LIN )
   optind    = 1;
 #else
   optind    = 0;

@@ -11,7 +11,7 @@
 
 // Node definition and nodes storage management
 
-#if (defined IRIX || defined WNT)
+#if (defined IRIX || defined WNT || defined LIN)
 
 template <class Key, class Item> class IndexedDataMapNode : public WOKTools_MapNode {
   public :

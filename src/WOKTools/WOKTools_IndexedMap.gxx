@@ -10,7 +10,7 @@
 #include <WOKTools_BasicMapIterator.hxx>
 
 // Node definition and nodes storage management
-#if (defined IRIX || defined WNT)
+#if (defined IRIX || defined WNT || defined LIN)
 
 template <class Key> class IndexedMapNode : public WOKTools_MapNode {
   public :

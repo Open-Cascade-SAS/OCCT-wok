@@ -17,6 +17,10 @@ static const char* sccsid = "@(#)WOKTools_BasicMap.cxx	3.2 95/01/10"; // Do not 
 
 #include <malloc.h>
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKTools_BasicMap
 //purpose  : 
