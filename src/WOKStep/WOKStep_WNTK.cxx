@@ -99,7 +99,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
    
    Handle(TColStd_HSequenceOfHAsciiString) unitSeq = aFile.Read();
    
-//HP   Unit()->Params().Set("%DebugMode",Unit()->Session()->DebugMode() ? "True" : "False");
+//HP   Unit()->Params().Set("%DebugMode",(char*)Unit()->Session()->DebugMode() ? "True" : "False"));
    const char *TrFa = Unit()->Session()->DebugMode() ? "True" : "False" ;
    Unit()->Params().Set("%DebugMode",(char *) TrFa);
 
