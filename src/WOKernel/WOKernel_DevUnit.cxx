@@ -1,6 +1,9 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#ifndef WNT
-#include <strstream.h>
+#ifdef HAVE_STRSTREAM_H
+# include <strstream.h>
 #endif
 
 #include <fstream.h>
@@ -44,9 +47,9 @@
 #define WOK_DEPCOMPAT 1
 #endif
 
-#ifdef LIN
+#ifdef HAVE_IOMANIP_H
 # include <iomanip.h>
-#endif  // LIN
+#endif
 
 //=======================================================================
 //function : WOKernel_DevUnit

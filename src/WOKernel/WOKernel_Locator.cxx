@@ -3,8 +3,8 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#ifndef WNT
-#include <unistd.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
 
 #include <WOKTools_Messages.hxx>
@@ -21,7 +21,11 @@
 #include <WOKernel_Locator.ixx>
 
 #ifdef WNT
-#include <windows.h>
+# include <windows.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 //---> EUG4JR

@@ -4,6 +4,9 @@
 //		<jga@cobrax>
 
 #include <fstream.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <Standard_ProgramError.hxx>
 
@@ -24,9 +27,9 @@
 
 #include <WOKernel_Parcel.ixx>
 
-#ifdef LIN
+#ifdef HAVE_IOMANIP_H
 # include <iomanip.h>
-#endif  // LIN
+#endif
 
 //=======================================================================
 //function : WOKernel_Parcel
