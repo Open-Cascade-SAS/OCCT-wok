@@ -1,9 +1,3 @@
--- File:	CPPJini_Template.edl
--- Author:	Kernel (CLE)
--- History:	Tue Dec 19 08:22:43 1995	Kernel	Creation
--- Copyright:	 Matra Datavision 1995
-
-
 @template TransientRootClientJAVA(%Interface) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
@@ -190,11 +184,11 @@ $ }
 $            
 $%Methods
 $
-$//native static void FinalizeValue(long anHID);
-$//
-$//public void finalize() {
-$//	FinalizeValue(HID);
-$//}
+$native static void FinalizeValue(long anHID);
+$
+$public void finalize() {
+$       FinalizeValue(HID);
+$}
 $
 $}
 @end;
@@ -385,7 +379,7 @@ $Standard_Integer the_%ArgName = jcas_GetInteger(env,%ArgName);
 @end;
 
 @template IntegerGetEnumValue(%ArgName,%EnumName) is
-$%EnumName the_%ArgName = ( %EnumName )jcas_GetInteger ( env, %ArgName );
+$%EnumName the_%ArgName = (%EnumName)jcas_GetInteger (env,%ArgName );
 @end;
 
 @template ExtCharacterGetValue(%ArgName) is
@@ -415,11 +409,12 @@ $%ClassName* the_this = (%ClassName*) jcas_GetHandle(env,theobj);
 
 -- out argument
 
-@template TransientSetValue(%ClassName,%ArgName,%FromInterface) is
-$if ( !%ArgName ) %ArgName = jcas_CreateObject (
-$                             env, "%FromInterface/%ClassName", %ArgName
-$                            );
-$jcas_SetHandle(env,%ArgName,the_%ArgName);
+@template TransientSetValue(%ClassName,%ArgName) is
+$Handle(%ClassName)* theprevious_%ArgName = (Handle(%ClassName)*) jcas_GetHandle(env,%ArgName);
+$if (theprevious_%ArgName) delete theprevious_%ArgName;
+$Handle(%ClassName)* thenew_%ArgName = new Handle(%ClassName);
+$(*thenew_%ArgName) = the_%ArgName;
+$jcas_SetHandle(env,%ArgName,thenew_%ArgName);
 @end;
 
 @template CStringSetValue(%ArgName) is
@@ -532,7 +527,7 @@ $jstring thejret = jcas_ConvertTojstring(env,sret);
 
 @template FinalizeForValue(%Class,%MethodName) is
 $
-$#if 0
+$
 $JNIEXPORT void JNICALL %MethodName(JNIEnv *, jclass, jlong theid)
 ${
 $if (theid) {
@@ -540,6 +535,5 @@ $  %Class* theobj = (%Class*) theid;
 $  delete theobj;
 $}
 $}
-$#endif
+$
 @end;
-
