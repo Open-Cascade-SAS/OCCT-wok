@@ -1,8 +1,10 @@
 
+//#include <Standard_Macro.hxx>
 
 #include <WOKernel_FileTypeKeyWords.hxx>
 
-#define IMPLEMENT_WOK_STATIC(Name,Value) extern Standard_EXPORT const char Name [] = Value;
+//#define IMPLEMENT_WOK_STATIC(Name,Value) extern Standard_EXPORT const char Name [] = Value;
+#define IMPLEMENT_WOK_STATIC(Name,Value) Standard_EXPORT const char *Name = Value;
 
 IMPLEMENT_WOK_STATIC(WOKENTITY,"WOKEntity")
 IMPLEMENT_WOK_STATIC(WOKENTITYFILELIST,"%WOKEntity_FileList")
