@@ -75,7 +75,7 @@ ${
 $  char* ErrMsg = "Error: We have found a method but we can't execute it:";
 $                                                                            
 $                                                                            
-$  static k_init = 0;
+$  static int k_init = 0;
 $  if (!k_init) {
 $     k_init =1;
 $
@@ -103,7 +103,7 @@ $                                                      const Standard_Address  t
 ${                                                                           
 $  char* ErrMsg = "Error: We have found a method but we can't execute it:";
 $                                                                            
-$  static k_init = 0;
+$  static int k_init = 0;
 $  if (!k_init) {
 $     k_init =1;
 $
