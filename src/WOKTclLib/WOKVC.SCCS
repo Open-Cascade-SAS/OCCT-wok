@@ -106,7 +106,7 @@ proc wokIntegre:BASE:List { Bname vrs } {
     set diradm [glob -nocomplain [wokIntegre:BASE:GetRootName]/${Bname}.?]
     if [file exists $diradm] {
 	set l {}
-	foreach Sfile [lsort [readdir $diradm]] {
+	foreach Sfile [lsort [wokUtils:FILES:readdir $diradm]] {
 	    set s [string range $Sfile 0 1]
 	    if { $s == "s." } {
 		lappend l [string range $Sfile 2 end]

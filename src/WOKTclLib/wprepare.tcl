@@ -11,10 +11,6 @@ proc wokPrepareUsage { } {
     puts stderr { Usage: wprepare  [-ref] [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]}
     puts stderr {        Note: If your specify more than one unit, separate names with a comma.}
     puts stderr {                                                                              }
-    puts stderr {        The following options allows you to select files based on date/time.  }
-    puts stderr {                                                                              }
-    puts stderr {        wprepare -since date  [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]        }
-    puts stderr {        Format for date is :                                                  }
     return
 }
 #
@@ -82,7 +78,7 @@ proc wprepare { args } {
 	    wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBPere] [wokinfo -n $WBFils] 
 	    wokPrepare:Unit:Since wokPrepare:Report:Output ${WBFils} $LUnits $date
 	    puts $wokfileid "is"
-	    puts $wokfileid "  Author        : [id user]"
+	    puts $wokfileid "  Author        : "
 	    puts $wokfileid "  Study/CSR     : "
 	    puts $wokfileid "  Debug         : "
 	    puts $wokfileid "  Improvements  : "

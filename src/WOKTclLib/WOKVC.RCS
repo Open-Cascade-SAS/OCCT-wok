@@ -11,18 +11,13 @@
 #               prefixe le nom avec x 
 #;<
 proc wokIntegre:BASE:ftos { file vrs } {
-    if { [string first : $vrs] == -1 } {
-	set l [lindex [split $vrs .] 0]
-	return ${l},${file},v
-    } else {
-	return [lindex [split $vrs :] 1],${file},v
-    }
-}
+    return ${file},v
+}	
 #;>
 # retourne le nom du fichier a partir du nom du fichier de travail  (basename) 
 #;<
 proc wokIntegre:BASE:stof { file vrs } {
-    return [lindex [split $file ,] 1]
+    return [lindex [split $file ,] 0]
 }
 
 #;>
@@ -43,7 +38,7 @@ proc wokIntegre:BASE:InitFile { infile vrs cmt Sfile {fileid stdout} } {
     ;#puts stderr "Appel a InitFile [file tail $infile] vrs = $vrs "
     set bna  [file tail $infile] 
     set bnas [file tail $Sfile] 
-    set pfx ${vrs},${bna}
+    set pfx ${bna}
     puts $fileid [format "echo Init for file %s" $bna ]
     puts $fileid [format "echo Init > /tmp/%s" $bna.desc]
     puts $fileid [format "rcs -q -i -U -t/tmp/%s %s" $bna.desc $pfx]
@@ -60,7 +55,7 @@ proc wokIntegre:BASE:ReInitFile { Sfile vrs cmt infile {fileid stdout} } {
     ;#puts stderr "Appel a UpdateFile  [file tail $Sfile] vrs = $vrs "
     set bna [file tail $infile] 
     set bnas [file tail $Sfile]
-    set pfx ${vrs},${bna}
+    set pfx ${bna}
     puts $fileid [format "echo Updating file %s" [file tail $infile]]
     puts $fileid [format "cp %s ." $Sfile]
     puts $fileid [format "co ./%s" $bnas]
@@ -77,7 +72,7 @@ proc wokIntegre:BASE:UpdateFile { Sfile vrs cmt infile {fileid stdout} } {
     ;#puts stderr "Appel a UpdateFile  [file tail $Sfile] vrs = $vrs "
     set bna [file tail $infile] 
     set bnas [file tail $Sfile]
-    set pfx ${vrs},${bna}
+    set pfx ${bna}
     puts $fileid [format "echo Updating file %s" [file tail $infile]]
     puts $fileid [format "cp %s ." $Sfile]
     puts $fileid [format "co ./%s" $bnas]
@@ -103,8 +98,7 @@ proc wokIntegre:BASE:GetFile { Sfile invrs {fileid stdout} } {
     ;#puts "GET: invrs = $invrs -----  Sfile = $Sfile "
     puts $fileid [format "echo Checkout file %s" $Sfile]
     set lx [split [file tail $Sfile] ,]
-    set wfil [lindex $lx 0],[lindex $lx 1]
-    set file [lindex $lx 1]
+    set file [lindex $lx 0]
     if { [regexp {(.*):(.*)} $invrs ignore key vrs] } {
 	if { [string compare $key last] == 0 } {
 	    puts $fileid [format "co -u %s" $Sfile]
@@ -118,7 +112,6 @@ proc wokIntegre:BASE:GetFile { Sfile invrs {fileid stdout} } {
 	    puts $fileid [format "co -u -r%s %s" $invrs $Sfile]
 	}
     }
-    puts $fileid [format "mv $wfil $file"]
     puts $fileid [format "chmod 644 $file"]
     return
 }
@@ -129,14 +122,14 @@ proc wokIntegre:BASE:GetFile { Sfile invrs {fileid stdout} } {
 #;>
 # retourne la liste des sfile dans une base
 #;<
-proc wokIntegre:BASE:List { fshop Bname vrs } {
-    set diradm [glob -nocomplain [wokIntegre:BASE:GetRootName $fshop]/${Bname}.?]
+proc wokIntegre:BASE:List { Bname vrs } {
+    set diradm [glob -nocomplain [wokIntegre:BASE:GetRootName]/${Bname}.?]
     if [file exists $diradm] {
 	set l {}	
-	foreach Sfile [readdir $diradm] {
+	foreach Sfile [wokUtils:EASY:readdir $diradm] {
 	    set x [split $Sfile ,]
-	    if { [lindex $x 0] == $vrs } {
-		lappend l [lindex $x 1]
+	    if { "[lindex $x 1]" == "v" } {
+		lappend l [lindex $x 0]
 	    }
 	}
 	return $l
@@ -316,34 +309,4 @@ proc wokIntegre:BASE:tree { infile fils} {
 
     set lab [lindex [lindex $listlab 0] 0]
     return [list $lab 1] 
-}
-#
-#  ((((((((((((((((VERSION))))))))))))))))
-#
-#;>
-# Verifie que l'on peu plugger shop avec le numero ver retourne ver si OK
-#;<
-proc wokIntegre:Version:Check { fshop ver } {
-    set f [wokIntegre:Version:GetTableName $fshop 1]
-    set l [wokUtils:FILES:FileToList $f]
-    set str [wokinfo -n [wokinfo -s $fshop]]
-    foreach e $l {
-	if { [lindex $e 0] == $str } {
-	    if { [lindex $e 1] != $ver } {
-		msgprint -c WOKVC -e "The shop $str is already registered with number [lindex $e 1]"
-		return {}
-	    } else {
-		return $ver
-	    }
-	}
-    }
-
-    foreach e $l {
-	set n [lindex $e 1]
-	if {$ver == $n } {
-	    msgprint -c WOKVC -e "The version $ver is already assigned to the shop [lindex $e 0]"
-	    return {}
-	}
-    }
-    return $ver
 }

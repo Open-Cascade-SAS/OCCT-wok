@@ -288,14 +288,14 @@ proc wcompare { args } {
 
 	foreach dir [lsort [lindex $lcom 0]] {
 	    puts $fileid "\n-- Directory  $d1$dir\n"
-	    foreach f [readdir $d1$dir] {
+	    foreach f [wokUtisl:EASY:readdir $d1$dir] {
 		puts $fileid [format "    - %-30s %s %s" $f $d1$dir $pnts]  
 	    }
 	}
 	
 	foreach dir [lsort [lindex $lcom 2]] {
 	    puts $fileid "\n++ Directory  $d2$dir\n"
-	    foreach f [readdir $d2$dir] {
+	    foreach f [wokUtisl:EASY:readdir $d2$dir] {
 		puts $fileid [format "    + %-30s %s %s" $f $pnts $d2$dir]
 	    }   
 	}
@@ -333,14 +333,14 @@ proc wcompare:ExampleDo { type flag f1 f2 f} {
 	    - {
 		puts  "\n-- Directory  $f1\n"
 		set pnts "                                        "
-		foreach f [readdir $f1] {
+		foreach f [wokUtisl:EASY:readdir $f1] {
 		    puts [format "    + %-30s %s %s" $f $f1 $pnts]
 		}
 	    }
 	    + {
 		puts "\n++ Directory  $f2\n"
 		set pnts "                                        "
-		foreach f [readdir $f2] {
+		foreach f [wokUtisl:EASY:readdir $f2] {
 		    puts [format "    + %-30s %s %s" $f $pnts $f2]
 		}
 	    }

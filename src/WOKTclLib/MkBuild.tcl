@@ -95,7 +95,7 @@ proc wokBuild { {fast 0} } {
     ;#
     ;# Go from current location. 
     
-    wokNAV:Tree:UpdateSession $IWOK_GLOBALS(toplevel) [id user]
+    wokNAV:Tree:UpdateSession $IWOK_GLOBALS(toplevel) you
     if { $fast == 0 } {
 	tixBusy $IWOK_GLOBALS(toplevel) on
 	update
