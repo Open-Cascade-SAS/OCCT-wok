@@ -3,24 +3,35 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #ifndef DONT_COMPENSATE
 
 #include <stdio.h>
+
 #ifdef WNT
-#include <io.h>
-#else
-#include <unistd.h>
+# include <io.h>
+#endif  // WNT
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
-#include <sys/types.h>
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
+
+#if defined(HAVE_TIME_H) || defined(WNT)
+# include <time.h>
+#endif
 
 #include <iostream.h>
-
-#endif
+#endif // DONT_COMPENSATE
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 

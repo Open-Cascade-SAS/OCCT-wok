@@ -3,22 +3,37 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #ifndef DONT_COMPENSATE
 
 #include <stdio.h>
+
 #ifdef WNT
-#include <io.h>
-#else
-#include <unistd.h>
+# include <io.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#if defined(HAVE_SYS_TYPES_H) || defined(WNT)
+# include <sys/types.h>
+#endif
+
+#if defined(HAVE_SYS_STAT_H) || defined(WNT)
+# include <sys/stat.h>
+#endif
+
 #include <fcntl.h>
-#include <time.h>
+
+#if defined(HAVE_TIME_H) || defined(WNT)
+# include <time.h>
+#endif
 
 #include <iostream.h>
-
 #endif
 
 #include <WOKTools_Messages.hxx>
