@@ -67,6 +67,16 @@
     @set %DebugMode = "False";
  @endif;
 
+
+--- for JAVA : 
+ @set %CMPLRS_CXX_JAVA = "" ;
+ @ifdefined ( %UnitType ) then
+    @if (%UnitType == "jini") then
+       @uses "JAVA.edl" ;
+       @string %CMPLRS_CXX_JAVA = %CXX_JAVA ;
+    @endif;
+ @endif;
+
  @if ( %Station == "wnt" ) then
 
     --WARNING : For WNT, it is necessary to have $set symbol_name=%symbol_value%
@@ -435,6 +445,7 @@
                                                 %CMPLRS_CXX_Options ,
                                                 %CMPLRS_CXX_ModeOpt , %CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
+						%CMPLRS_CXX_JAVA ,
 						%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
@@ -446,6 +457,7 @@
     $CMPLRS_CXX_ModeOpt       = %CMPLRS_CXX_ModeOpt
     $CMPLRS_CXX_DBMSOpt       = %CMPLRS_CXX_DBMSOpt
     $CMPLRS_CXX_INCLUDE       = %CMPLRS_CXX_INCLUDE
+    $CMPLRS_CXX_JAVA          = %CMPLRS_CXX_JAVA
     $CMPLRS_CXX_WOKDirectives = %CMPLRS_CXX_WOKDirectives
     $Dynamic include directives are :
     $%IncDirectives
@@ -457,6 +469,7 @@
                                                 %CMPLRS_CXX_ModeOpt , 
 						%CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
+						%CMPLRS_CXX_JAVA ,
 						%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
@@ -465,7 +478,7 @@
                                                 %OutputDir ,
                                                 %TmpFile , %Entity ) is
      $cd %OutputDir
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
+     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
       $set stat = $status
       $if ( $stat == 0 ) then
       $  if ( -e %OutputDir/%BaseName.d ) then
@@ -608,6 +621,7 @@
     $CMPLRS_CXX_ModeOpt       = %CMPLRS_CXX_ModeOpt
     $CMPLRS_CXX_DBMSOpt       = %CMPLRS_CXX_DBMSOpt
     $CMPLRS_CXX_INCLUDE       = %CMPLRS_CXX_INCLUDE
+    $CMPLRS_CXX_JAVA          = %CMPLRS_CXX_JAVA
     $CMPLRS_CXX_WOKDirectives = %CMPLRS_CXX_WOKDirectives
     $Dynamic include directives are :
     $%IncDirectives
@@ -619,16 +633,17 @@
                                                 %CMPLRS_CXX_ModeOpt , 
                                                 %CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
-      						%CMPLRS_CXX_WOKDirectives ,
+      						%CMPLRS_CXX_JAVA ,
+					        %CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
                                                 %Source,
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile , %Entity) is
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options         %CMPLRS_CXX_INCLUDE  %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
+     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options         %CMPLRS_CXX_INCLUDE  %CMPLRS_CXX_JAVA  %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
      $set stat = $status
-     $echo '$CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options $INCDIRS %CMPLRS_CXX_INCLUDE  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt -c $SOURCE -o $OBJECT' > %OutputDir/../%Entity/.adm/cxx.compile
+     $echo '$CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options $INCDIRS %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt -c $SOURCE -o $OBJECT' > %OutputDir/../%Entity/.adm/cxx.compile
      $if ( $stat == 0 ) then
      $  sed -e 's/	//g' -e '/Compilation failed/d' -e '/:/d' -e 's%/\./%/%g'  -e 's%//%/%g' %TmpFile \^
      $| grep -v 'detected.$' | sort -u  > %OutputDir/%BaseName.m
@@ -718,6 +733,7 @@
                                                 %CMPLRS_CXX_ModeOpt , 
                                                 %CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
+						%CMPLRS_CXX_JAVA ,
 						%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
@@ -730,6 +746,7 @@
     $CMPLRS_CXX_ModeOpt       = %CMPLRS_CXX_ModeOpt
     $CMPLRS_CXX_DBMSOpt       = %CMPLRS_CXX_DBMSOpt
     $CMPLRS_CXX_INCLUDE       = %CMPLRS_CXX_INCLUDE
+    $CMPLRS_CXX_JAVA          = %CMPLRS_CXX_JAVA
     $CMPLRS_CXX_WOKDirectives = %CMPLRS_CXX_WOKDirectives
     $Dynamic include directives are :
     $%IncDirectives
@@ -741,15 +758,16 @@
 				 %CMPLRS_CXX_SysOptions, 
 				 %CMPLRS_CXX_Options, 
 				 %CMPLRS_CXX_ModeOpt,
-                                 %CMPLRS_CXX_DBMSOpt ,
+				 %CMPLRS_CXX_JAVA ,	
 			         %IncDirectives, 
 				 %PDBName, 
 				 %Source,
 			         %BaseName, 
 				 %OutputDir, 
-				 %CMPLRS_ExportBehaviour  ) is
+				 %CMPLRS_ExportBehaviour
+            ) is
   $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
-  $  %IncDirectives %CMPLRS_CXX_ModeOpt  %CMPLRS_CXX_DBMSOpt  \^
+  $  %IncDirectives %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_JAVA \^
   $ -Fd%PDBName -c -Tp %Source -Fo%OutputDir%BaseName.obj;
   $set cmplrs_status=%status%;
   $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
@@ -758,14 +776,14 @@
   @end;
 
   @template CMPLRS_C_OptLine (%CMPLRS_C_COMPILER ,
-                              %CMPLRS_C_SysOptions ,
-                              %CMPLRS_C_Options ,
-                              %CMPLRS_C_ModeOpt ,
-                              %IncDirectives ,
-                              %CMPLRS_Unit_C_Options ,
-                              %CMPLRS_C_WOKDirectives ,
-                              %CMPLRS_ExportBehaviour ,
-                              %Entity ) is
+                                            %CMPLRS_C_SysOptions ,
+                                            %CMPLRS_C_Options ,
+                                            %CMPLRS_C_ModeOpt ,
+                                            %IncDirectives ,
+                                            %CMPLRS_Unit_C_Options ,
+                                            %CMPLRS_C_WOKDirectives ,
+                                            %CMPLRS_ExportBehaviour ,
+                                            %Entity ) is
   $Following parameters make up C compilation command in this order:
   $CMPLRS_C_COMPILER      = %CMPLRS_C_COMPILER 
   $CMPLRS_C_SysOptions    = %CMPLRS_C_SysOptions
@@ -896,7 +914,8 @@
                                                 %CMPLRS_CXX_ModeOpt , 
                                                 %CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
-						%CMPLRS_CXX_WOKDirectives ,
+						%CMPLRS_CXX_JAVA ,	
+			         		%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
                                                 %Entity ) is
@@ -907,6 +926,7 @@
     $CMPLRS_CXX_ModeOpt       = %CMPLRS_CXX_ModeOpt
     $CMPLRS_CXX_DBMSOpt       = %CMPLRS_CXX_DBMSOpt
     $CMPLRS_CXX_INCLUDE       = %CMPLRS_CXX_INCLUDE
+    $CMPLRS_CXX_JAVA          = %CMPLRS_CXX_JAVA
     $CMPLRS_CXX_WOKDirectives = %CMPLRS_CXX_WOKDirectives
     $Dynamic include directives are :
     $%IncDirectives
@@ -918,19 +938,20 @@
                                                 %CMPLRS_CXX_ModeOpt , 
                                                 %CMPLRS_CXX_DBMSOpt ,
 						%CMPLRS_CXX_INCLUDE ,
-						%CMPLRS_CXX_WOKDirectives ,
+						%CMPLRS_CXX_JAVA ,	
+			         		%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
                                                 %Source,
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile, %Entity ) is
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE  %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives %TmpFile -c %Source  -o %OutputDir/%BaseName.o  
+     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives %TmpFile -c %Source  -o %OutputDir/%BaseName.o  
      $set stat = $status
      $echo '$CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options $INCDIRS %CMPLRS_CXX_INCLUDE  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt -c $SOURCE -o $OBJECT' > %OutputDir/../%Entity/.adm/cxx.compile
      $if ( $stat == 0 ) then
      $ if ( -e %TmpFile ) then
-     $  sed  -e '1d' -e 's%/./%/%g' %TmpFile | grep -v '^#'|  tr ' ' '\012' | sort -u > %OutputDir/%BaseName.m
+     $  cat %TmpFile  | tr ' ' '\012' | sed  -e '1d' -e 's%/./%/%g' | grep -v '^#'| sort -u > %OutputDir/%BaseName.m
      $ else
      $  touch %OutputDir/%BaseName.m
      $ endif
@@ -1024,14 +1045,15 @@
                                                 %CMPLRS_CXX_Options ,
                                                 %CMPLRS_CXX_ModeOpt , %CMPLRS_CXX_DBMSOpt ,
 						%CSF_CXX_INCLUDE ,
-						%CMPLRS_CXX_WOKDirectives ,
+						%CMPLRS_CXX_JAVA ,	
+			         		%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
                                                 %Source,
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile ) is
-     $%CSF_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CSF_CXX_INCLUDE  %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
+     $%CSF_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CSF_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
      $set stat = $status
      $if ( $stat == 0 ) then
      $ /opt/aCC/bin/aCC -I/opt/aCC/include -I/opt/aCC/include/iostream %IncDirectives -E %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %Source | egrep -e '^#' | awk '{print $3}' \
@@ -1119,14 +1141,15 @@
                                                 %CMPLRS_CXX_Options ,
                                                 %CMPLRS_CXX_ModeOpt , %CMPLRS_CXX_DBMSOpt ,
 						%CSF_CXX_INCLUDE ,
-						%CMPLRS_CXX_WOKDirectives ,
+						%CMPLRS_CXX_JAVA ,	
+			         		%CMPLRS_CXX_WOKDirectives ,
                                                 %IncDirectives ,
                                                 %DBDirectives ,
                                                 %Source,
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile ) is
-     $%CSF_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CSF_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
+     $%CSF_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CSF_CXX_INCLUDE %CMPLRS_CXX_JAVA %CMPLRS_CXX_DBMSOpt  %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source  -o %OutputDir/%BaseName.o  >& %TmpFile
      $set stat = $status
       $if ( $stat == 0 ) then
      $ sed -e 's/ //g' -e '/:/d' %TmpFile | sort -u > %OutputDir/%BaseName.m
