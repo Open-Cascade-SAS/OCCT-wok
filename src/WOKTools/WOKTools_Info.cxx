@@ -1,5 +1,7 @@
 
+#ifndef WNT
 #include <stream.h>
+#endif
 
 #include <WOKTools_Info.ixx>
 

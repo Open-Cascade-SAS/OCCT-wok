@@ -3,8 +3,12 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef WNT
+#include <io.h>
+#else
 #include <stream.h>
 #include <unistd.h>
+#endif
 
 #include <WOKTools_Verbose.ixx>
 

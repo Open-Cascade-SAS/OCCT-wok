@@ -47,8 +47,8 @@ private:
   Standard_Integer myargc;
   WOKTools_ArgTable myargv;
   Handle_WOKTools_HSequenceOfDefine mydefines;
+  Standard_Byte mycuropt;
   Standard_Boolean mymore;
-  Standard_Character mycuropt;
   Handle_TCollection_HAsciiString mycurarg;
   Handle_TColStd_HSequenceOfHAsciiString mycurlistarg;
   Handle_TColStd_HSequenceOfHAsciiString myargs;

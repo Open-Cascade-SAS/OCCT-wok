@@ -61,7 +61,7 @@ fields
     myargv       : ArgTable                from WOKTools;
     mydefines    : HSequenceOfDefine       from WOKTools;
     mymore       : Boolean                 from Standard;
-    mycuropt     : Character               from Standard;
+    mycuropt     : Byte                    from Standard;
     mycurarg     : HAsciiString            from TCollection;
     mycurlistarg : HSequenceOfHAsciiString from TColStd;
     myargs       : HSequenceOfHAsciiString from TColStd;

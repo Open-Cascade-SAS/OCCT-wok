@@ -55,7 +55,7 @@ WOKTools_Options::WOKTools_Options(const Standard_Integer argc,
   Next();
 
   // s'il il n'y a qu'une option
-  if(mycuropt == EOF) 
+  if(mycuropt == (Standard_Byte ) EOF) 
       mymore  = Standard_False;
 }
 
@@ -69,7 +69,7 @@ void WOKTools_Options::Next()
 
   mycuropt = getopt(myargc, myargv, myoptions->ToCString());
 
-  if(mycuropt == EOF)
+  if(mycuropt == (Standard_Byte ) EOF)
     {
       for( ; (optind < myargc) && (myargv[optind][0] != '-'); optind++)
 	{
@@ -186,8 +186,9 @@ void WOKTools_Options::Next()
   
   if (myerrflg) // vider 
     {
-      Standard_Character acuropt = '\0';
-      while(acuropt != EOF)
+//      Standard_Character acuropt = '\0';
+      Standard_Byte acuropt = 0;
+      while(acuropt != (Standard_Byte ) EOF)
 	  acuropt = getopt(myargc, myargv, myoptions->ToCString());
     }
 
