@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_RemoteShell.cxx
 // Created:	Mon Nov  6 14:55:55 1995
 // Author:	Jean GAUTIER
@@ -164,3 +165,4 @@ Handle(TCollection_HAsciiString) WOKUnix_RemoteShell::Password() const
 
 
 
+#endif

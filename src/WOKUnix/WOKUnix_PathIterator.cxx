@@ -1,3 +1,4 @@
+#ifndef WNT
 
 
 #include <WOKUnix_PathIterator.ixx>
@@ -185,3 +186,4 @@ void WOKUnix_PathIterator::Destroy()
 
 
 
+#endif

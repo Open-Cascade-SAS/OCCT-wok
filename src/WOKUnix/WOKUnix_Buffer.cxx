@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_Buffer.ixx>
 
@@ -179,3 +180,4 @@ void WOKUnix_Buffer::Close()
 {
   if(myfd.FileNo() >= 0) myfd.Close();
 }
+#endif

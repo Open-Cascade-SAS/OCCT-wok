@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_Path.lxx
 // Created:	Thu Jul 27 19:46:43 1995
 // Author:	Jean GAUTIER
@@ -43,3 +44,4 @@ inline void WOKUnix_Path::ResetMDate()
 {
   mystats.st_mtime = -1;
 }
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <fstream.h>
 
@@ -101,3 +102,4 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKUnix_AdmFile::Read()
   return aresult;
 }
 
+#endif

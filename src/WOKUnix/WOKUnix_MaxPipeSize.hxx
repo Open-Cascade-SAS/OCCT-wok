@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_MaxPipeSize.hxx
 // Created:	Fri May 12 10:09:01 1995
 // Author:	Jean GAUTIER
@@ -30,4 +31,5 @@
 #endif
 
 
+#endif
 #endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_Signal.ixx>
 
@@ -130,3 +131,4 @@ int WOKUnix_Signal::GetSig(const WOKUnix_Signals asig)
     }
  return 0;
 }
+#endif

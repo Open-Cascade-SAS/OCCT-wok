@@ -1,4 +1,4 @@
-
+#ifndef WNT
 
 #include <WOKUnix.ixx>
 
@@ -24,3 +24,4 @@ Standard_CString WOKUnix::LastSystemMessage()
   return strerror(SystemLastError());
 }
 
+#endif

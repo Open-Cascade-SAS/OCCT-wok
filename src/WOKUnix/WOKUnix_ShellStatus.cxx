@@ -1,3 +1,4 @@
+#ifndef WNT
 #include <stdio.h>
 
 #include <WOKUnix_ShellStatus.ixx>
@@ -130,3 +131,4 @@ void WOKUnix_ShellStatus::Destroy()
 
 
 
+#endif

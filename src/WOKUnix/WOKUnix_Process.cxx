@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #ifdef IRIX
 #include <unistd.h>
@@ -358,3 +359,4 @@ void WOKUnix_Process::Destroy()
  Kill();
  delete myargv;
 }
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #ifdef IRIX
 #include <unistd.h>
@@ -444,3 +445,4 @@ Handle(TCollection_HAsciiString) WOKUnix_Shell::Host() const
 }
 
 
+#endif

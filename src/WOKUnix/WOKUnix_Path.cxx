@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_Path.cxx
 // Created:	Tue May 30 09:17:00 1995
 // Author:	Jean GAUTIER
@@ -768,3 +769,4 @@ Handle(TCollection_HAsciiString) WOKUnix_Path::FileName() const
   return retVal;
 }
 
+#endif

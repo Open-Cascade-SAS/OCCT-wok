@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_DumbOutput.ixx>
 
@@ -60,3 +61,4 @@ void WOKUnix_DumbOutput::Close()
 {
 }
 
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 #include <WOKUnix_NoBuffer.ixx>
 
  WOKUnix_NoBuffer::WOKUnix_NoBuffer(const WOKUnix_FDescr& afd, const WOKUnix_BufferIs astd) : WOKUnix_Buffer(afd, astd)
@@ -42,3 +43,4 @@ void WOKUnix_NoBuffer::Close()
 {
   
 }
+#endif

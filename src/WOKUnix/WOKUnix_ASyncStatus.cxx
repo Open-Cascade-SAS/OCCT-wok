@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKTools_Messages.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -84,3 +85,4 @@ void WOKUnix_ASyncStatus::Reset(const Handle(WOKUnix_Shell)& ashell)
    return;
 }
 
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -435,3 +436,4 @@ static FILE* _wokunix_fdopen ( int fd ) {
 }  // end _wokunix_fdopen
 #endif  // LIN
 
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_RegExp.ixx>
 
@@ -158,3 +159,4 @@ Standard_Integer WOKUnix_RegExp :: Match (
 
 }  // end WOKUnix_RegExp :: Match
 
+#endif

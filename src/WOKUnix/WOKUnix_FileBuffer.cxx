@@ -1,3 +1,4 @@
+#ifndef WNT
 
 
 #include <OSD_Environment.hxx>
@@ -155,3 +156,4 @@ void WOKUnix_FileBuffer::Close()
   if( apath.Name().IsEmpty() != Standard_True && mybuffer.FileNo() >= 0) mybuffer.Close();
   WOKUnix_Buffer::Close();
 }
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_SigHandler.hxx
 // Created:	Wed May 24 18:35:36 1995
 // Author:	Jean GAUTIER
@@ -36,4 +37,5 @@ extern "C" {int ieee_handler(char *,char *, sigfpe_handler_type&);}
 
 typedef void (* WOKUnix_SigHandler) (int);
 
+#endif
 #endif

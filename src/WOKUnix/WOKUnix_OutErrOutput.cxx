@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_OutErrOutput.ixx>
 #include <WOKUnix_FileBuffer.hxx>
@@ -110,3 +111,4 @@ void WOKUnix_OutErrOutput::Close()
   myerr->Close();
 }
 
+#endif

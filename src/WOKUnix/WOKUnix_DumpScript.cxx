@@ -1,3 +1,4 @@
+#ifndef WNT
 #include <TCollection_AsciiString.hxx>
 #include <WOKUnix_DumpScript.ixx>
 
@@ -51,3 +52,4 @@ Standard_Integer WOKUnix_DumpScript::Get()
   return 0;
 }
 
+#endif

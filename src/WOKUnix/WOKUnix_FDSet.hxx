@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_FDSet.hxx
 // Created:	Tue May  9 15:25:38 1995
 // Author:	Jean GAUTIER
@@ -23,3 +24,4 @@ typedef fd_set WOKUnix_FDSet;
 
 #endif
 
+#endif

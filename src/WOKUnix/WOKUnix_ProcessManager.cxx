@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <sys/wait.h>
 
@@ -195,3 +196,4 @@ void WOKUnix_ProcessManager::WaitProcess(const Handle(WOKUnix_Process)& aprocess
   WOKUnix_Signal::Arm(WOKUnix_SIGCHILD, (WOKUnix_SigHandler) WOKUnix_ProcessManager::ChildDeathHandler);
   return;
 }
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_ShellManager.cxx
 // Created:	Thu Apr  4 23:21:02 1996
 // Author:	Jean GAUTIER
@@ -98,3 +99,4 @@ Handle(WOKUnix_RemoteShell) WOKUnix_ShellManager::GetRemoteShell(const Handle(TC
 
 
 
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 #include <WOKUnix_MixedOutput.ixx>
 
@@ -84,3 +85,4 @@ void WOKUnix_MixedOutput::Close()
   myout->Close();
 }
 
+#endif

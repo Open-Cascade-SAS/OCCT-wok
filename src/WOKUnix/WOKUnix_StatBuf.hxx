@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_StatBuf.hxx
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
@@ -19,4 +20,5 @@ typedef struct stat WOKUnix_StatBuf;
 
 #endif
 
+#endif
 #endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 
 #include <WOKUnix_CantBlockBuffer.ixx>
@@ -44,3 +45,4 @@ void WOKUnix_CantBlockBuffer::Close()
   if(mybuffer.FileNo() >= 0) mybuffer.Close();
   WOKUnix_Buffer::Close();
 }
+#endif

@@ -1,3 +1,4 @@
+#ifndef WNT
 
 
 #include <WOKTools_Messages.hxx>
@@ -65,3 +66,4 @@ void WOKUnix_SyncStatus::Reset(const Handle(WOKUnix_Shell)& )
 {
 }
 
+#endif

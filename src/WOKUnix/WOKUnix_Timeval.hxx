@@ -1,3 +1,4 @@
+#ifndef WNT
 // File:	WOKUnix_Timeval.hxx
 // Created:	Tue May  9 15:24:00 1995
 // Author:	Jean GAUTIER
@@ -11,4 +12,5 @@
 
 typedef struct timeval WOKUnix_Timeval ;
 
+#endif
 #endif
