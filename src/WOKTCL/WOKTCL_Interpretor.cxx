@@ -2,12 +2,14 @@
 // Created:	Mon Apr  1 19:26:43 1996
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <tcl.h>
 
-
-#ifndef WNT
-#include <strstream.h>
+#ifdef HAVE_STRSTREAM_H
+# include <strstream.h>
 #endif
 
 #include <WOKTools_StringValue.hxx>
