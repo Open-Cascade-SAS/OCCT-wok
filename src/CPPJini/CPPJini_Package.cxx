@@ -49,7 +49,8 @@ void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 			       const Handle(TColStd_HSequenceOfHAsciiString)& List,
 			       const Handle(TColStd_HSequenceOfHAsciiString)& Incp);
 
-void CPPJini_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+//void CPPJini_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+void CPPJini_PackageDerivated(const Handle(MS_MetaSchema)& ,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Package)& aPackage,			    
 			    const Handle(TColStd_HSequenceOfHAsciiString)& outfile,

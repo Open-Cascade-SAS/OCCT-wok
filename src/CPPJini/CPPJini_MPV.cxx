@@ -82,7 +82,8 @@ void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 
 // Extraction of .cxx for handled object
 //
-void CPPJini_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
+//void CPPJini_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
+void CPPJini_MPVDerivated(const Handle(MS_MetaSchema)& ,
 				  const Handle(EDL_API)& api,
 				  const Handle(MS_Class)& aClass,			    
 				  const Handle(TColStd_HSequenceOfHAsciiString)& outfile,

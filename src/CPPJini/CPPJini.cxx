@@ -331,11 +331,13 @@ void CPPJini_WriteFile(const Handle(EDL_API)& api,
 
 // we test the type and dispatch it in the different lists
 //
-void CPPJini_DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+//void CPPJini_DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+void CPPJini_DispatchUsedType(const Handle(MS_MetaSchema)& ,
 				const Handle(MS_Type)& thetype,
 				const Handle(TColStd_HSequenceOfHAsciiString)& List,
 				const Handle(TColStd_HSequenceOfHAsciiString)& Incp,
-				const Standard_Boolean notusedwithref)
+//				const Standard_Boolean notusedwithref)
+				const Standard_Boolean )
 {
   MS::AddOnce(List,thetype->FullName());
   MS::AddOnce(Incp,thetype->FullName());
@@ -365,8 +367,10 @@ Handle(TCollection_HAsciiString) CPPJini_UnderScoreReplace(const Handle(TCollect
 }
 
 
-Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& aMeta,
-					      const Handle(TCollection_HAsciiString)& aClass,
+//Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& aMeta,
+Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& ,
+//					      const Handle(TCollection_HAsciiString)& aClass,
+					      const Handle(TCollection_HAsciiString)& ,
 					      const Handle(MS_HSequenceOfMemberMet)& methods)
 {
   if (methods.IsNull()) return Standard_False;
@@ -1040,7 +1044,8 @@ Handle(TCollection_HAsciiString) CPPJini_ConvertToJavaType(const Handle(MS_MetaS
 
 void   CPPJini_ArgumentBuilder(const Handle(MS_MetaSchema)& aMeta, 
 			       const Handle(EDL_API)& api, 
-			       const Handle(TCollection_HAsciiString)& className,
+//			       const Handle(TCollection_HAsciiString)& className,
+			       const Handle(TCollection_HAsciiString)& ,
 			       const Handle(MS_Method)& m,
 			       Handle(TCollection_HAsciiString)& ArgsInDecl,
 			       Handle(TCollection_HAsciiString)& ArgsRetrieve,
@@ -1296,7 +1301,8 @@ Standard_Boolean CPPJini_HasEmptyConstructor(const Handle(MS_Type)& atyp)
 
 void   CPPJini_ReturnBuilder(const Handle(MS_MetaSchema)& aMeta, 
 			     const Handle(EDL_API)& api, 
-			     const Handle(TCollection_HAsciiString)& className,
+//			     const Handle(TCollection_HAsciiString)& className,
+			     const Handle(TCollection_HAsciiString)& ,
 			     const Handle(MS_Method)& m,
 			     const Handle(TCollection_HAsciiString)& MethodCall,
 			     Handle(TCollection_HAsciiString)& RetInDecl,
