@@ -4,6 +4,7 @@
 //		<jga@hourax.paris1.matra-dtv.fr>
 
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Macro.hxx>
 
 #include <MMgt_StorageManager.hxx>
 
@@ -228,10 +229,10 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	  }
 	else
 	  {
-	    strstream astream;
+	    Standard_SStream astream;
 	     astream << E << ends;
 	    
-	    ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << astream.str() << endm;
+	    ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << GetSString(astream) << endm;
 	  }	
       }
       
