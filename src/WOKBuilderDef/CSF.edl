@@ -122,7 +122,7 @@
         @set %STLPortInclude = "";
 	@set %STLPortLib = "";
       @endif;
-      @set %CSF_CXX_SysOptions  = "-fPIC -funsigned-char -Wall ";
+      @set %CSF_CXX_SysOptions  = "-fPIC -funsigned-char -Wall -fmessage-length=0";
       @string %CSF_CXX_Options  = "-DLIN -DLININTEL -DNO_CXX_EXCEPTION " %STLPortInclude;
 
       --<< TODO : If applicable , modify the location of the c compiler. 
@@ -196,7 +196,7 @@
         @set %STLPortInclude = "";
 	@set %STLPortLib = "";
       @endif;
-      @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun " ;
+      @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun -instances=static" ;
       @string %CSF_CXX_Options  = "-DSOLARIS -DNO_CXX_EXCEPTION "%STLPortInclude ;
       --yan @string %CSF_CXX_INCLUDE += " -I/opt/DEV5_1/SUNWspro/SC4.2/include/CC ";
       @string %CSF_CXX_INCLUDE +=  " -I" %CSF_CXX_COMPILER "/../../SC4.2/include/CC ";
@@ -266,7 +266,7 @@
       -->> END TODO
       @set %STLPortHome = "";
       @if ( %STLPortHome != "") then
-        @string %STLPortInclude = "-I" %STLPortHome "/stlport ";
+        @string %STLPortInclude = "-I" %STLPortHome "/stlport";
 	@string %STLPortLib = %STLPortHome "/lib/stlport_vc6.lib";
       @else
         @set %STLPortInclude = "";
@@ -289,7 +289,7 @@
 
       @set %CSF_F77_SysOptions  = "-nologo -libs:dll -Zi ";
 
-      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link ";
+      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link";
       @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER ;
       @set %CSF_VirtualDevice = "Q:";
       @set %CSF_LINKER_DBMSOpt = "";
@@ -304,17 +304,18 @@
       @set %CSF_LibraryHeaderOpt = "-nologo ";
 
       --<< TODO : If applicable , modify the root location where Java is installed.
-      @string %CSF_JavaHome     = "D:/AppTools/jdk1.2.2";
+      @string %CSF_JavaHome     = "D:/jdk1.3.1";
       -->> END TODO
 
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/win32 ";
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
 
-      @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
+      @set %CSF_TCL_HOME = "D:/DevTools/Tcltk/tcl83.lib";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
-      @string %CSF_TclLibs = %CSF_TCL_HOME "/lib/tcl76i.lib";
-      @string %CSF_TclTkLibs = %CSF_TCL_HOME "/lib/tcl42i.lib";
+      @string %CSF_TclLibs = %CSF_TCL_HOME "/lib/tcl83.lib";
+      @string %CSF_TclTkLibs = %CSF_TCL_HOME "/lib/tk83.lib";
+      @string %CSF_TclTlxLibs = %CSF_TCL_HOME "/lib/tkx83.lib";
 
       @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib" ;
 
@@ -324,7 +325,7 @@
       @set %CSF_glu32 = "glu32.lib" ;
       @set %CSF_opengl32 = "opengl32.lib" ;
       @set %CSF_wsock32 = "wsock32.lib" ;
-
+      @set %CSF_netapi32 = "netapi32.lib" ;
 
    @endif;
 
@@ -387,7 +388,7 @@
 	@set %STLPortLib = "";
       @endif;
 
-      @set %CSF_CXX_SysOptions = " -signed -n32 -mips3 -no_prelink -woff 3115 -woff 3273 -woff 1021 -woff 1188 ";
+      @set %CSF_CXX_SysOptions = " -signed -n32 -mips3 -no_prelink -woff 3115 -woff 3273 -woff 1021 -woff 1188 -woff 1460 -woff 3303";
       @string %CSF_CXX_Options  = "-DIRIX -DNO_CXX_EXCEPTION " %STLPortInclude;
 
 
