@@ -6,64 +6,18 @@
 @ifnotdefined ( %WOKSteps_Del_EDL) then
 @set %WOKSteps_Del_EDL = "";
 
-@if ( %Station != "wnt" ) then
-	@template WOKSteps_Remove_File   ( %FilePath ) is
-	 $ /bin/rm -f %FilePath
-	@end;
-@else
-	@template WOKSteps_Remove_File   ( %FilePath ) is
-	$ wokRM -f %FilePath
-	@end;
-@endif;
+@template WOKSteps_Remove_File   ( %FilePath ) is
+ $ rm -f %FilePath
+@end;
 
-@ifdefined (%UnitType) then
-@if (%UnitType != "delivery") then
+@template WOKSteps_Dummy_Include ( %FilePath ) is
+$ rm -f %FilePath
+-- $ echo #error %FilePath has disappeared > %FilePath
+@end;
 
-@if ( %Station != "wnt" ) then
-	@template WOKSteps_Dummy_Include ( %FilePath ) is
-	 $ /bin/rm -f %FilePath
----##POP	 $ echo '#error %FilePath has disappeared' > %FilePath
-	@end;
-
-	@template WOKSteps_Save_File     ( %FilePath ) is
-	 $ 
-	@end;
-@else
-	@template WOKSteps_Dummy_Include ( %FilePath ) is
-	 $ wokRM -f %FilePath;
-	 $ echo #error %FilePath has disappeared > %FilePath
-	@end;
-
-	@template WOKSteps_Save_File     ( %FilePath ) is
-	 $ 
-	@end;
-@endif;
-
-@endif;
-
-@if (%UnitType == "delivery") then
-
-@if ( %Station != "wnt" ) then
-	@template WOKSteps_Dummy_Include ( %FilePath ) is
-	 $ /bin/rm -f %FilePath
-	@end;
-
-	@template WOKSteps_Save_File     ( %FilePath ) is
-	 $ /bin/rm -f %FilePath
-	@end;
-@else
-	@template WOKSteps_Dummy_Include ( %FilePath ) is
-	 $ wokRM -f %FilePath
-	@end;
-
-	@template WOKSteps_Save_File     ( %FilePath ) is
-	 $ wokRM -f %FilePath
-	@end;
-@endif;
-
-@endif;
-
-@endif;
+@template WOKSteps_Save_File     ( %FilePath ) is
+ $ 
+@end;
 
 @template WOKSteps_Dummy_Action  ( %FilePath ) is
  $ set status = 0
