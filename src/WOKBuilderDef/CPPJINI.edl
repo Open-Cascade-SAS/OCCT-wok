@@ -1,0 +1,35 @@
+-- File:	CPPJINI.edl
+-- Author:	Jean GAUTIER
+-- History:	Wed Apr 10 17:44:37 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %CPPJINI_EDL) then
+@set %CPPJINI_EDL = "";
+
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @set %CPPJINI_SHARED   = "libCPPJini.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPJINI_SHARED   = "libCPPJini.sl";
+@endif;
+
+--@set %CPPCLIENT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPClient/src";
+@set %CPPJINI_NAME     = "CPPJini";
+
+@if ( %LocalArch != "hp" ) then
+  @set %CPPJINI_Shared   = "libCPPJini.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPJINI_Shared   = "libCPPJini.sl";
+@endif;
+
+@else
+  @set %CPPJINI_Shared   = "CPPJini.dll";
+@endif;
+
+@set %CPPJINI_Name   = "CPPJini";
+
+@endif;

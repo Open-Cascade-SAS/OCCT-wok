@@ -1,0 +1,20 @@
+@ifnotdefined(%JAVA_EDL) then
+
+@set %JAVA_EDL = "";
+
+@set %JAVA_Home = "/PRODUCTS/java/jdk1.2";
+@string %JAVA_Command = %JAVA_Home "/bin/javac";
+@string %JAVA_HeaderCommand = %JAVA_Home "/bin/javah";
+@set %JAVA_Options = "";
+@set %JAVA_HeaderOptions = "";
+
+@template JAVA_Compiler(%JAVA_Command,%JAVA_Options,%IncludeDir,%Source,%OutDir) is
+$%JAVA_Command %JAVA_Options -classpath %IncludeDir -d %OutDir %Source 
+@end;
+
+@template JAVA_Header(%JAVA_HeaderCommand,%JAVA_HeaderOptions,%IncludeDir,%Class,%OutFile) is
+$%JAVA_HeaderCommand %JAVA_HeaderOptions -classpath %IncludeDir -o %OutFile %Class
+@end;
+
+
+@endif;
