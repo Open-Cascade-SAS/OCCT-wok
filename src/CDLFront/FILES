@@ -9,3 +9,4 @@ CDLFront_LDSHR.edl
 CDLFront_Replace.tcl
 CDLFront_WOKSteps.edl
 CDL.tab.c
+CDL.tab.h

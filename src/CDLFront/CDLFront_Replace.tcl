@@ -13,6 +13,7 @@ proc CDLFront_Replace:HandleInputFile { ID } {
     
     switch $name {
          CDL.tab.c  {return 1;} 
+         CDL.tab.h  {return 1;} 
 	default {
 	    return 0;
 	}
@@ -37,21 +38,38 @@ proc CDLFront_Replace:Execute { unit args } {
 	set replstr "\\\\\\\\"
     }
     
+    ## traiting CDL.tab.c
 
-	set sourcename CDL.tab.c
-	set name       CDL.tab.c
+    set sourcename CDL.tab.c
+    set name       CDL.tab.c
 
-	set source    [woklocate -p CDLFront:source:$sourcename     [wokinfo -N $unit]]
-	set vistarget [woklocate -p CDLFront:privinclude:$name [wokinfo -N $unit]]
+    set source    [woklocate -p CDLFront:source:$sourcename     [wokinfo -N $unit]]
+    set vistarget [woklocate -p CDLFront:privinclude:$name [wokinfo -N $unit]]
 #	set target    [wokinfo   -p CDLFront:privinclude:$name [wokinfo -N $unit]]
-msgprint -i -c "$source "
-	regsub -all "/" " $source $vistarget" $replstr  TheArgs
+    msgprint -i -c "$source "
+    regsub -all "/" " $source $vistarget" $replstr  TheArgs
 
-	msgprint -i -c "CDLFront_Replace::Execute" "Copy $source to $vistarget"
-	if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
-		eval exec "chmod u+w $vistarget"
-	}
-	eval exec "$copycmd $TheArgs"
+    msgprint -i -c "CDLFront_Replace::Execute" "Copy $source to $vistarget"
+    if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
+	eval exec "chmod u+w $vistarget"
+    }
+    eval exec "$copycmd $TheArgs"
+
+    ## traiting CDL.tab.h
+
+    set name       CDL.tab.h
+    set source    [woklocate -p CDLFront:source:$name     [wokinfo -N $unit]]
+    set vistarget [woklocate -p CDLFront:pubinclude:$name [wokinfo -N $unit]]
+    msgprint -i -c "$source "
+    regsub -all "/" " $source $vistarget" $replstr  TheArgs
+
+    msgprint -i -c "CDLFront_Replace::Execute" "Copy $source to $vistarget"
+    if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
+	eval exec "chmod u+w $vistarget"
+    }
+    eval exec "$copycmd $TheArgs"
+
+
 
     return 0;
 }
