@@ -56,7 +56,7 @@ extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *, 
 				Standard_Integer argc, char* argv[])
 {
-  Standard_Integer status;
+  volatile Standard_Integer status = 0;
 
   CData* C = (CData*) clientData;
   
