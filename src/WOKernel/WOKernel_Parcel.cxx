@@ -3,9 +3,14 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#include <fstream.h>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
 #endif
 
 #include <Standard_ProgramError.hxx>
@@ -27,7 +32,9 @@
 
 #include <WOKernel_Parcel.ixx>
 
-#ifdef HAVE_IOMANIP_H
+#ifdef HAVE_IOMANIP
+# include <iomanip>
+#elif defined (HAVE_IOMANIP_H)
 # include <iomanip.h>
 #endif
 

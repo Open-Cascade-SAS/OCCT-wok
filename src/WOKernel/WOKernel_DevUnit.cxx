@@ -6,7 +6,11 @@
 # include <strstream.h>
 #endif
 
-#include <fstream.h>
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
+#endif
 
 #include <Standard_ProgramError.hxx>
 #include <Standard_ErrorHandler.hxx>
