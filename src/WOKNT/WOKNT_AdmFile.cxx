@@ -47,6 +47,8 @@ Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_AdmFile :: Read () {
    if (  IsAtEnd () || Failed ()  ) break;
 
    str.LeftAdjust ();
+   str.RemoveAll ( '\r' );
+   str.RemoveAll ( '\n' );
 
    if (  !str.IsEmpty () && str.Value ( 1 ) != TEXT( '#' )  ) {
    
