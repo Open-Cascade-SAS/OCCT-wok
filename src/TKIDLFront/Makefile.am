@@ -19,7 +19,6 @@ libTKIDLFront_la_LIBADD = \
 
 libTKIDLFront_la_SOURCES = \
 IDL.tab.c \
-IDL.tab.c \
 IDLFront.cxx \
 lex.IDL.c
 
