@@ -4,7 +4,8 @@
 #include <WOKNT_MixedOutput.ixx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <OSD_WNT.h>
+#include <OSD_WNT.hxx>
+#include <OSD_WNT_1.hxx>
 
 #define MAX_LINE_LENGTH 2048
 

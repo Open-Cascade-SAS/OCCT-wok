@@ -5,7 +5,7 @@
 
 #include <WOKTools_Messages.hxx>
 
-#include <stream.h>
+#include <Standard_Stream.hxx>
 
 WOKNT_PathIterator::WOKNT_PathIterator(const Handle(WOKNT_Path)& apath, const Standard_Boolean abool, const Standard_CString amask) 
 : mypath(apath), myrecflag(abool), mymask(amask)

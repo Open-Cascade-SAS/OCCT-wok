@@ -3,7 +3,8 @@
 
 #include <WOKNT_OutErrOutput.ixx>
 
-#include <OSD_WNT.h>
+#include <OSD_WNT.hxx>
+#include <OSD_WNT_1.hxx>
 
 void                                      __fastcall _WOKNT_clear_pipe ( HANDLE );
 DWORD                                     __fastcall _WOKNT_nb_to_read ( HANDLE );

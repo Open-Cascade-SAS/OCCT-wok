@@ -2,7 +2,8 @@
 #include <iostream.h>
 #include <stdlib.h>
 
-#include <OSD_WNT.h>
+#include <OSD_WNT.hxx>
+#include <OSD_WNT_1.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>

@@ -10,7 +10,7 @@
 #include <OSD_Path.hxx>
 #include <OSD_SharedLibrary.hxx>
 
-#include <regexp.h>
+#include <Standard_regexp.h>
 #include <stdio.h>
 
 typedef int ( *EXT_FUNC ) ( int, TCHAR** );
