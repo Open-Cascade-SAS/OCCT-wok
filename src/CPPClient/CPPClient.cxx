@@ -1101,7 +1101,7 @@ void CPPClient_AsynchronousMethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 {
   Handle(TCollection_HAsciiString) metname = new TCollection_HAsciiString(CPPClient_InterfaceName);
   Handle(TCollection_HAsciiString) metbody = new TCollection_HAsciiString;
-  Standard_CString                 headerTemplate;
+  Standard_CString                 headerTemplate = NULL;
   
   metname->AssignCat("_");
   metname->AssignCat(className);
@@ -1209,7 +1209,7 @@ void CPPClient_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
   if (!IsAsynchrone) {
     Handle(TCollection_HAsciiString) metname = new TCollection_HAsciiString(CPPClient_InterfaceName);
     Handle(TCollection_HAsciiString) metbody = new TCollection_HAsciiString;
-    Standard_CString                 headerTemplate;
+    Standard_CString                 headerTemplate = NULL;
 
     metname->AssignCat("_");
     metname->AssignCat(className);
@@ -1585,7 +1585,7 @@ void CPPClient_Extract(const Handle(MS_MetaSchema)& aMeta,
 		       const Standard_CString Mode)
 {  
   if (aMeta->IsDefined(aTypeName) || aMeta->IsPackage(aTypeName)) {
-    ExtractionType theMode;
+    ExtractionType theMode = CPPClient_COMPLETE;
     
     if (strcmp(Mode,"CPPClient_COMPLETE") == 0)          {theMode = CPPClient_COMPLETE;}
     else if (strcmp(Mode,"CPPClient_INCOMPLETE") == 0)   {theMode = CPPClient_INCOMPLETE;}
