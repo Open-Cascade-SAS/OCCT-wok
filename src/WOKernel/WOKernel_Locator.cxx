@@ -3,7 +3,9 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifndef WNT
 #include <unistd.h>
+#endif
 
 #include <WOKTools_Messages.hxx>
 

@@ -1,4 +1,7 @@
+
+#ifndef WNT
 #include <strstream.h>
+#endif
 
 #include <fstream.h>
 
