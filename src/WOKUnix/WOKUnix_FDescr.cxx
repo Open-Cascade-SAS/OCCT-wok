@@ -37,7 +37,9 @@
 #include <OSD_OSDError.hxx>
 #include <Standard_ProgramError.hxx>
 
+//#ifndef DECOSF1
 extern "C" { extern int  mknod (const char *, mode_t , dev_t ); }
+//#endif
 
 extern int errno;
 
