@@ -6,15 +6,34 @@
 
 package CPPJini
 
-uses TCollection
+ uses
 
-is
+  MS,
+  WOKTools,
+  TCollection
+
+ is
+
+  private class ClientInfo;
+
+  private class SequenceOfClientInfo instantiates
+   Sequence from TCollection ( ClientInfo ); 
 
 
-    class DataMapOfAsciiStringInteger 
-    instantiates DataMap from TCollection(AsciiString from TCollection,
-    	    	    	    	    	  Integer,
-					  AsciiString from TCollection);
+  class DataMapOfAsciiStringInteger instantiates
+   DataMap from TCollection (
+                 AsciiString from TCollection,
+                 Integer     from Standard,
+                 AsciiString from TCollection
+                );
+
+  enumeration ExtractionType is
+
+   COMPLETE,
+   INCOMPLETE,
+   SEMICOMPLETE
+
+  end ExtractionType; 
 					  
 end CPPJini;
 

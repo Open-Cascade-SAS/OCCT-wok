@@ -190,11 +190,11 @@ $ }
 $            
 $%Methods
 $
-$native static void FinalizeValue(long anHID);
-$
-$public void finalize() {
-$	FinalizeValue(HID);
-$}
+$//native static void FinalizeValue(long anHID);
+$//
+$//public void finalize() {
+$//	FinalizeValue(HID);
+$//}
 $
 $}
 @end;
@@ -384,6 +384,10 @@ $Standard_Character the_%ArgName = jcas_GetCharacter(env,%ArgName);
 $Standard_Integer the_%ArgName = jcas_GetInteger(env,%ArgName);
 @end;
 
+@template IntegerGetEnumValue(%ArgName,%EnumName) is
+$%EnumName the_%ArgName = ( %EnumName )jcas_GetInteger ( env, %ArgName );
+@end;
+
 @template ExtCharacterGetValue(%ArgName) is
 $Standard_ExtCharacter the_%ArgName = jcas_GetExtCharacter(env,%ArgName);
 @end;
@@ -415,7 +419,7 @@ $%ClassName* the_this = (%ClassName*) jcas_GetHandle(env,theobj);
 $if ( !%ArgName ) %ArgName = jcas_CreateObject (
 $                             env, "%FromInterface/%ClassName", %ArgName
 $                            );
-$jcas_SetHandle(env,%ArgName,thenew_%ArgName);
+$jcas_SetHandle(env,%ArgName,the_%ArgName);
 @end;
 
 @template CStringSetValue(%ArgName) is
@@ -528,7 +532,7 @@ $jstring thejret = jcas_ConvertTojstring(env,sret);
 
 @template FinalizeForValue(%Class,%MethodName) is
 $
-$
+$#if 0
 $JNIEXPORT void JNICALL %MethodName(JNIEnv *, jclass, jlong theid)
 ${
 $if (theid) {
@@ -536,6 +540,6 @@ $  %Class* theobj = (%Class*) theid;
 $  delete theobj;
 $}
 $}
-$
+$#endif
 @end;
 

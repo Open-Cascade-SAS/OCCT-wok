@@ -94,5 +94,4 @@ Handle(TCollection_HAsciiString) CPPJini_UnderScoreReplace(const Handle(TCollect
 
 extern Handle(TCollection_HAsciiString) CPPJini_ErrorArgument;
 
-enum ExtractionType {CPPJini_COMPLETE,CPPJini_INCOMPLETE,CPPJini_SEMICOMPLETE};
 #endif

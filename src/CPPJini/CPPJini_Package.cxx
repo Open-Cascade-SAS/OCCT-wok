@@ -42,6 +42,7 @@
 #include <WOKTools_Messages.hxx>
 #include <CPPJini_DataMapOfAsciiStringInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <CPPJini_ExtractionType.hxx>
 
 void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 			       const Handle(MS_Method)& aMethod,
@@ -107,7 +108,7 @@ void CPPJini_Package(const Handle(MS_MetaSchema)& aMeta,
 		       const Handle(EDL_API)& api,
 		       const Handle(MS_Package)& aPackage,
 		       const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
-		       const ExtractionType mustBeComplete,
+		       const CPPJini_ExtractionType mustBeComplete,
 		       const Handle(MS_HSequenceOfExternMet)& theMetSeq)
 {
   if (!aPackage.IsNull()) {

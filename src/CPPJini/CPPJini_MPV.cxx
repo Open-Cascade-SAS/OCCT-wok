@@ -45,6 +45,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 #include <WOKTools_Messages.hxx>
+#include <CPPJini_ExtractionType.hxx>
 
 extern Standard_Boolean CPPJini_HasComplete (
                          const Handle( TCollection_HAsciiString )&,
@@ -63,6 +64,12 @@ extern Standard_Boolean CPPJini_HasSemicomplete (
                          Handle( TCollection_HAsciiString       )&,
                          Standard_Boolean&
                         );
+
+extern Standard_Boolean CPPJini_Defined (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&
+                        );
+
 
 Handle(TCollection_HAsciiString)& CPPJini_MPVRootName();
 
@@ -132,7 +139,7 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 		      const Handle(EDL_API)& api,
 		      const Handle(MS_Class)& aClass,
 		      const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
-		      const ExtractionType MustBeComplete,
+		      const CPPJini_ExtractionType MustBeComplete,
 		      const Handle(MS_HSequenceOfMemberMet)& theMetSeq)
 {
   Handle(MS_StdClass) theClass = Handle(MS_StdClass)::DownCast(aClass);
@@ -236,19 +243,9 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 	  else {
 
             Handle( TCollection_HAsciiString ) aClt;
-            Standard_Boolean                   fDup;
             Standard_Boolean                   fPush = Standard_False;
 
-            if (  CPPJini_HasComplete (
-                   List -> Value ( i ), aClt, fDup
-                  ) ||
-                  CPPJini_HasIncomplete (
-                   List -> Value ( i ), aClt, fDup
-                  ) ||
-                  CPPJini_HasSemicomplete (
-                   List -> Value ( i ), aClt, fDup
-                  )
-            ) {
+            if (   CPPJini_Defined (  List -> Value ( i ), aClt  )   ) {
 
              fPush = Standard_True;
              api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
@@ -277,19 +274,9 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 	  }
 	  else {
             Handle( TCollection_HAsciiString ) aClt;
-            Standard_Boolean                   fDup;
             Standard_Boolean                   fPush = Standard_False;
 
-            if (  CPPJini_HasComplete (
-                   List -> Value ( i ), aClt, fDup
-                  ) ||
-                  CPPJini_HasIncomplete (
-                   List -> Value ( i ), aClt, fDup
-                  ) ||
-                  CPPJini_HasSemicomplete (
-                   List -> Value ( i ), aClt, fDup
-                  )
-            ) {
+            if (   CPPJini_Defined (  incp -> Value ( i ), aClt  )   ) {
 
              fPush = Standard_True;
              api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
@@ -315,21 +302,14 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     // we create the inheritance
     //
     Handle( TCollection_HAsciiString ) aClt;
-    Standard_Boolean                   fDup;
+    Handle( TCollection_HAsciiString ) name = theClass -> GetInheritsNames () -> Length ()   ?
+                                              theClass -> GetInheritsNames () -> Value ( 1 ) :
+                                              theClass -> FullName ();
 
-    if (  CPPJini_HasComplete (
-           theClass -> FullName (), aClt, fDup
-          ) ||
-          CPPJini_HasIncomplete (
-           theClass -> FullName (), aClt, fDup
-          ) ||
-          CPPJini_HasSemicomplete (
-           theClass -> FullName (), aClt, fDup
-          )
-    ) {
+    if (  CPPJini_Defined ( name, aClt )  ) {
 
      aClt -> AssignCat ( "." );
-     aClt -> AssignCat (  theClass -> FullName ()  );
+     aClt -> AssignCat ( name );
      api -> AddVariable (  "%Inherits", aClt -> ToCString ()  );
 
     } else {

@@ -40,6 +40,8 @@
 
 #include <Standard_NoSuchObject.hxx>
 
+#include <CPPJini_ExtractionType.hxx>
+
 extern "C" {
 
         Handle(TColStd_HSequenceOfHAsciiString) Standard_EXPORT CPPJini_TemplatesUsed();
@@ -59,8 +61,6 @@ extern "C" {
 			       const Standard_CString Mode);
       }
 
-enum ExtractionType {CPPJini_COMPLETE,CPPJini_INCOMPLETE,CPPJini_SEMICOMPLETE};
-
 void CPPJini_TransientHandle(const Handle(EDL_API)&,
 			 const Handle(TCollection_HAsciiString)&,
 			 const Handle(TCollection_HAsciiString)&,
@@ -71,14 +71,14 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)&,
 			      const Handle(EDL_API)&,
 			      const Handle(MS_Class)&,
 			      const Handle(TColStd_HSequenceOfHAsciiString)&,
-			      const ExtractionType,
+			      const CPPJini_ExtractionType,
 			      const Handle(MS_HSequenceOfMemberMet)&);
 
 void CPPJini_MPVClass(const Handle(MS_MetaSchema)&,
 			const Handle(EDL_API)&,
 			const Handle(MS_Class)&,
 			const Handle(TColStd_HSequenceOfHAsciiString)&,
-			const ExtractionType,
+			const CPPJini_ExtractionType,
 			const Handle(MS_HSequenceOfMemberMet)&);
 
 void CPPJini_Alias(const Handle(MS_MetaSchema)&,
@@ -90,7 +90,7 @@ void CPPJini_Package(const Handle(MS_MetaSchema)&,
 		       const Handle(EDL_API)&,
 		       const Handle(MS_Package)&,
 		       const Handle(TColStd_HSequenceOfHAsciiString)&,
-		       const ExtractionType,
+		       const CPPJini_ExtractionType,
 		       const Handle(MS_HSequenceOfExternMet)&);
 
 void CPPJini_BuildMethod(const Handle(MS_MetaSchema)& aMeta, 
