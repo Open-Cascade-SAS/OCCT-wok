@@ -1,14 +1,14 @@
 
-proc WOKStep_JavaHeader::AdmFileType {} {
+proc WOKStep_JavaHeader:AdmFileType {} {
     
     return dbadmfile;
 }
 
-proc WOKStep_JavaHeader::OutputDirTypeName {} {
+proc WOKStep_JavaHeader:OutputDirTypeName {} {
     return dbtmpdir;
 }
 
-proc WOKStep_JavaHeader::HandleInputFile { ID } {
+proc WOKStep_JavaHeader:HandleInputFile { ID } {
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     
@@ -18,7 +18,7 @@ proc WOKStep_JavaHeader::HandleInputFile { ID } {
     return 0;
 }
 
-proc WOKStep_JavaHeader::ComputeIncludeDir { unit } {
+proc WOKStep_JavaHeader:ComputeIncludeDir { unit } {
     
     set allwb [w_info -A $unit]
     set unitname [wokinfo -n $unit]
@@ -40,14 +40,14 @@ proc WOKStep_JavaHeader::ComputeIncludeDir { unit } {
     return $result
 }
 
-proc WOKStep_JavaHeader::Execute { theunit args } {
+proc WOKStep_JavaHeader:Execute { theunit args } {
 
     msgprint -i -c "WOKStep_JavaHeader::Execute" "Processing unit : $theunit"
     msgprint -i -c "WOKStep_JavaHeader::Execute"
 
     set unitname [wokinfo -n $theunit]
     set failed 0
-    set incdir [WOKStep_JavaHeader::ComputeIncludeDir $theunit]
+    set incdir [WOKStep_JavaHeader:ComputeIncludeDir $theunit]
     wokparam -s%IncludeDir=$incdir
 
     foreach ID $args {

@@ -1,14 +1,14 @@
 
-proc WOKStep_JavaCompile::AdmFileType {} {
+proc WOKStep_JavaCompile:AdmFileType {} {
     
     return dbadmfile;
 }
 
-proc WOKStep_JavaCompile::OutputDirTypeName {} {
+proc WOKStep_JavaCompile:OutputDirTypeName {} {
     return dbtmpdir;
 }
 
-proc WOKStep_JavaCompile::HandleInputFile { ID } {
+proc WOKStep_JavaCompile:HandleInputFile { ID } {
     
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     
@@ -18,7 +18,7 @@ proc WOKStep_JavaCompile::HandleInputFile { ID } {
     return 0;
 }
 
-proc WOKStep_JavaCompile::ComputeIncludeDir { unit } {
+proc WOKStep_JavaCompile:ComputeIncludeDir { unit } {
     
     set allwb [w_info -A $unit]
     set unitname [wokinfo -n $unit]
@@ -42,14 +42,14 @@ proc WOKStep_JavaCompile::ComputeIncludeDir { unit } {
     return $result
 }
 
-proc WOKStep_JavaCompile::Execute { theunit args } {
+proc WOKStep_JavaCompile:Execute { theunit args } {
     
     msgprint -i -c "WOKStep_JavaCompile::Execute" "Processing unit : $theunit"
     msgprint -i -c "WOKStep_JavaCompile::Execute"
     
     set unitname [wokinfo -n $theunit]
     set failed 0
-    set incdir [WOKStep_JavaCompile::ComputeIncludeDir $theunit]
+    set incdir [WOKStep_JavaCompile:ComputeIncludeDir $theunit]
     wokparam -s%IncludeDir=$incdir
     set outdir [wokinfo -p derivated:.. $theunit]
     wokparam -s%OutDir=$outdir
