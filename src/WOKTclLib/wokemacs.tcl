@@ -1,6 +1,6 @@
 
 set wokemacs_priv(SERVERPORT) 1563
-set wokemacs_priv(lispfile)   [file join $env(WOK_LIBRARY) wok-comm.el]
+set wokemacs_priv(lispfile)   $env(HOME)/wokemacs/wok-comm.el
 set wokemacs_priv(debug) 0
 set wokemacs_priv(timeout) 10000
 
@@ -152,8 +152,7 @@ proc wokemacs_accept {name address clientport} {
     global wokemacs_priv
 
     set newBody [info body wokemacs_read]
-
-
+    
     regsub -all NAME    $newBody $clientport newBody
 
     eval "proc wokemacs_read_$name \{\} \{$newBody\}"
@@ -178,6 +177,7 @@ proc wokemacs_accept {name address clientport} {
 proc wokemacs_create_server_sock { port } {
     
     global wokemacs_priv
+
     puts $port
     set wokemacs_priv(SERVERPORT) $port
     set wokemacs_priv(SERVERSOCK) [socket -server wokemacs_accept $port];
@@ -193,6 +193,8 @@ proc wokemacs_init { port } {
     set wokemacs_priv(SERVERSOCK) [socket -server wokemacs_accept $port];
     set wokemacs_priv(clients) "";
     set wokemacs_priv(initialized) 1;
+#JMB
+    vwait wokemacs_priv(clients);
 }    
 
 proc wokemacs_create {} {
@@ -288,6 +290,7 @@ proc wokemacs {args} {
 	}
 	{clients} {
 	    if { ! $wokemacs_priv(initialized) } {
+		error "wokemacs is not initialized"
 		return {}
 	    }
 	    return  $wokemacs_priv(clients)
