@@ -79,4 +79,4 @@ fields
     myoutdir     : Path                               from WOKUtils;
     mytools      : HSequenceOfToolInShell             from WOKBuilder;
     myproduction : HSequenceOfEntity                  from WOKBuilder is protected;
-end CompilerIterator;
+end ToolInShellIterator;
