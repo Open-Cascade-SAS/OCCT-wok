@@ -1,6 +1,7 @@
 
 %{
 #include <WOKDeliv_ParseDelivery.h>
+#include <stdlib.h>
 
 #define yyv DELIVERYv
 

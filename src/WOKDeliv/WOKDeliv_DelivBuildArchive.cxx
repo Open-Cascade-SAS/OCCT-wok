@@ -181,6 +181,7 @@ Standard_Boolean WOKDeliv_DelivBuildArchive::BuildArchive
       ErrorMsg << "WOKStep_ArchiveLibrary"
 	       << "Failed     : " <<   libpath->Name() << endm;           
       return Standard_False;
+     default: break;
     }
 
   return Standard_True;

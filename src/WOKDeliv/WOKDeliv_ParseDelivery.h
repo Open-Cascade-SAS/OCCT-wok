@@ -6,6 +6,8 @@ extern int DELIVERYlineno;
 extern char* TheText;
 extern int TheType;
 extern int TheAttrib;
+extern int DELIVERYlex   ();
+extern int DELIVERYerror ();
 int Traite_PutPath();
 int Traite_PutInclude();
 int Traite_PutLib();

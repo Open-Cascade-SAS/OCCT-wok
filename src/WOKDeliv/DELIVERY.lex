@@ -1,10 +1,16 @@
-%option never-interactive
-%option yylineno
 
 %{
+#define YY_NO_UNPUT
 #define yylval DELIVERYlval
 #include <DELIVERY.tab.h>
 #include <WOKDeliv_ParseDelivery.h>
+#ifdef WNT
+# include <io.h>
+#else
+# include <unistd.h>
+#endif  // WNT
+
+int DELIVERYlineno;
 
 void lookup(tok)
 int tok;

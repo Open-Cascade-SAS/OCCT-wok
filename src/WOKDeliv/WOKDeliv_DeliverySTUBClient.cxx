@@ -75,6 +75,7 @@ void WOKDeliv_DeliverySTUBClient::Execute(const Handle(WOKMake_HSequenceOfInputF
 		case WOKMake_Unprocessed:
 		  okexec = Standard_False;
 		  break;
+                 default: break;
 		}
 	      AddExecDepItem(infileCOMPONENTS,outfile, Standard_True);
 	    }

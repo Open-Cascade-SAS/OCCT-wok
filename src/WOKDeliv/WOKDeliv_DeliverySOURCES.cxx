@@ -93,6 +93,7 @@ Standard_Boolean WOKDeliv_DeliverySOURCES::ExecuteMetaStep()
 	case WOKMake_Unprocessed:
 	  okexec = Standard_False;
 	  break;
+        default: break;
 	}
       AddExecDepItem(GetInFileCOMPONENTS(),outfile, Standard_True);
     }

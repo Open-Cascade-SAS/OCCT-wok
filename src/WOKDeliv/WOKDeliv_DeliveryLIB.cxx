@@ -84,6 +84,7 @@ void WOKDeliv_DeliveryLIB::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 		case WOKMake_Unprocessed:
 		  okexec = Standard_False;
 		  break;
+                 default: break;
 		}
 	      AddExecDepItem(infileCOMPONENTS,outfile, Standard_True);
 	    }

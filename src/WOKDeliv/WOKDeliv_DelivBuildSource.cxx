@@ -51,7 +51,7 @@ void WOKDeliv_DelivBuildSource::Execute(const Handle(WOKMake_HSequenceOfInputFil
 							     thedestunit,
 							     thedestunit->GetFileType("source"));
 	  basefile->GetPath();
-	  Handle(TCollection_HAsciiString) cmdname = new TCollection_HAsciiString("WOKDeliv_DelivExecSource::Process");
+	  Handle(TCollection_HAsciiString) cmdname = new TCollection_HAsciiString("WOKDeliv_DelivExecSource:Process");
 	  WOKUtils_Trigger execute;
 	  Handle(TCollection_HAsciiString) tclfilename = new TCollection_HAsciiString("WOKDeliv_DelivExecSource.tcl");
 	  

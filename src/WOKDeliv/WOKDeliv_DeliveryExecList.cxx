@@ -354,6 +354,7 @@ Standard_Boolean WOKDeliv_DeliveryExecList::ExploreStep(const Handle(WOKMake_Ste
     case WOKMake_Unprocessed:
       okexec = Standard_False;
       break;
+    default: break;
     }
   AddExecDepItem(infileCOMPONENTS,outfile, Standard_True);
   return okexec;

@@ -408,6 +408,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 	    ashell->UnLock();
 	    
 	  }
+          default: break;
 	}
     }
   return Standard_False;
