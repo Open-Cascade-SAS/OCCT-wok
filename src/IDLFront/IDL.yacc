@@ -10,7 +10,7 @@
 #define yyv IDLv
 #if (defined(apollo) || defined(hpux)) && defined(__cplusplus)
 extern	"C" int IDLwrap();
-#endif	// (defined(apollo) || defined(hpux)) && defined(__cplusplus)
+#endif	
 
 
 extern void IDL_SetIdentifier            ( char* );
