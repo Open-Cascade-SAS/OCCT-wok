@@ -4,10 +4,10 @@
 //		<jga@cobrax>
 
 #ifdef WNT
-#include <io.h>
+# include <io.h>
 #else
-#include <unistd.h>
-#endif
+# include <unistd.h>
+#endif  // WNT
 
 #include <WOKTools_Messages.hxx>
 
@@ -34,9 +34,14 @@
 # include <tchar.h>
 # include <WOKNT_WNT_BREAK.hxx>
 
-extern "C" int __declspec( dllimport ) wokCP ( int, char** );
-extern "C" int __declspec( dllimport ) wokCMP ( int, char** );
+extern "C" __declspec( dllimport ) int wokCP  ( int, char** );
+extern "C" __declspec( dllimport ) int wokCMP ( int, char** );
 
+#else
+# define WOKStep_Include_SYMLINK 0
+# if !WOKStep_Include_SYMLINK
+#  include <OSD_File.hxx>
+# endif  // !WOKStep_Include_SYMLINK
 #endif  // WNT
 
 //=======================================================================
@@ -143,7 +148,34 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 	    }
 
 #ifndef WNT
+# if WOKStep_Include_SYMLINK
 	  symlink(infile->File()->Path()->Name()->ToCString(), pubincfile->Path()->Name()->ToCString());
+# else
+          if (  !pubincfile -> Path () -> Exists () ||
+                !pubincfile -> Path () -> IsSameFile (  infile -> File () -> Path ()  )
+          ) {
+
+           OSD_Path pSrc (  infile -> File () -> Path () -> Name () -> String ()  );
+           OSD_File fSrc (  pSrc                                                  );
+           OSD_Path pDst (  pubincfile -> Path () -> Name () -> String ()         );
+
+           fSrc.Copy ( pDst );
+
+           if (  fSrc.Failed ()  ) {
+
+            ErrorMsg << "WOKStep_Include :: Execute"
+                     << "failed to copy '" << infile -> File () -> Path () -> Name ()
+                     << "' to '"           << pubincfile        -> Path () -> Name ()
+                     << "'" << endm;
+
+            SetFailed ();
+
+            return;
+
+           }  // end if
+
+          }  // end if
+# endif  // WOKStep_Incluse_SYMLINK
 #else
 	  Standard_CString CmpArgs[4];
 
