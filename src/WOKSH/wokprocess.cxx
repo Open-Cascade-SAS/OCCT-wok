@@ -90,7 +90,11 @@ int main(int argc, char **argv)
 	}
     }
 
+#if defined( AIX )
+  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "8.1");
+#else
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.5");
+#endif
   
   tcl.Require();
   
