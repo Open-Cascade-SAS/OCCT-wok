@@ -156,6 +156,7 @@ proc wokIntegre:BASE:EOF { {fileid stdout} } {
 #    exp_internal -f file 1 : stdout et patterns dans file + pattern sur stderr
 #;<
 proc wokIntegre:BASE:Execute { VERBOSE command {fileid stdout} } {
+    package require Expect
     spawn -noecho sh $command
     set LOCID $spawn_id
     log_user 0
@@ -183,7 +184,7 @@ proc wokIntegre:BASE:Execute { VERBOSE command {fileid stdout} } {
 	-i $LOCID -indices -re "^Checkout file (\[^\r]*)\r\n(\[^\r]*)\r\n(\[^\r]*)\r\n(\[^\r]*)\r\n" {
 	    if { $expect_out(4,string) == "done" } {
 		set vrs [lindex [split $expect_out(3,string)] 1]
-		set nam [lindex [split [file tail $expect_out(1,string)] ,] 1 ]
+		set nam [lindex [split [file tail $expect_out(1,string)] ,] 0 ]
 		msgprint -c WOKVC -i "Checking out file $nam ( $vrs )"
 		exp_continue
 	    } else {

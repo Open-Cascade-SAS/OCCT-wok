@@ -355,7 +355,7 @@ proc wokIntegre:Journal:UnMark { string } {
 #;<
 proc wokIntegre:Journal:WriteHeader { rep num wb station {jnlid stdout}} {
     set report_out [format "%s_%s" $num $rep]
-    set today   [clock format [getclock] -format "%d/%m/%y %R"]
+    set today   [clock format [clock seconds] -format "%d/%m/%y %R"]
     puts $jnlid [format "\n\nReport %s - %s from workbench %s (%s)" $report_out $today $wb $station]
     puts $jnlid [format "------------"]
     return
@@ -747,7 +747,7 @@ proc wokIntegre:Mark:Set { journal mark index } {
     catch {unset tmark}
     set f [wokIntegre:Mark:GetTableName $journal]
     wokUtils:LIST:ListToMap tmark [wokUtils:FILES:FileToList $f]
-    set tmark($mark) ${index},[getclock]
+    set tmark($mark) ${index},[clock seconds]
     wokUtils:FILES:copy $f ${f}-previous
     wokUtils:FILES:ListToFile [wokUtils:LIST:MapToList tmark] $f
     return

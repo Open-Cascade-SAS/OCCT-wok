@@ -99,11 +99,13 @@ proc wprepare { args } {
     wokclose -a
 
     wokPrepare:Report:InitTypes
-    wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBPere] [wokinfo -n $WBFils] 
 
+    ; wokinfo -n "" => WOKSESSION..
     if { [info exists tabarg(-ref)] || [wokUtils:WB:IsRoot $WBFils] } {
+	wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBFils] [wokinfo -n $WBFils] 	
 	wokPrepare:Unit:Ref wokPrepare:Report:Output ${WBFils} $LUnits
     } else {
+	wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBPere] [wokinfo -n $WBFils] 
 	wokPrepare:Unit:Loop wokPrepare:Report:Output ${WBPere} ${WBFils} $LUnits
     }
 
