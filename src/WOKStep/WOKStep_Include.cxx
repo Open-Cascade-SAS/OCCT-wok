@@ -161,57 +161,61 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
                  !pubincfile -> Path () -> IsSameFile (  infile -> File () -> Path ()  )) &&
 	       ( infile -> File () -> Path ()  -> Exists () )
 	     ) {
-           OSD_Path pSrc (  infile -> File () -> Path () -> Name () -> String ()  );
-           OSD_File fSrc (  pSrc                                                  );
-           OSD_Path pDst (  pubincfile -> Path () -> Name () -> String ()         );
+	    OSD_Path pSrc (  infile -> File () -> Path () -> Name () -> String ()  );
+	    OSD_File fSrc (  pSrc                                                  );
+	    OSD_Path pDst (  pubincfile -> Path () -> Name () -> String ()         );
 
-           OSD_File fDst ( pDst ) ;
+	    OSD_File fDst ( pDst ) ;
 #ifdef DEB
-	   cout << " pubinclude publication : before Chmod  " << endl;
+	    cout << " pubinclude publication : before Chmod  " << endl;
 #endif
-	   if ( fDst.IsWriteable()) { 
-	     chmod (  pubincfile -> Path () -> Name () -> ToCString (), 00644  );
-	   }
+	    if ( fDst.IsReadable() &&  !fDst.IsWriteable()) { 
+	      if (  fDst.UserId() == fSrc.UserId() ) {
+	       chmod (  pubincfile -> Path () -> Name () -> ToCString (), 00644  );
+	      }
+	    }
 #ifdef DEB
-	   cout << " pubinclude publication : before copy  " << endl;
+	    cout << " pubinclude publication : before copy  " << endl;
 #endif
-           fSrc.Copy ( pDst );
+	    fSrc.Copy ( pDst );
 
-           if (  fSrc.Failed ()  ) {
+	    if (  fSrc.Failed ()  ) {
+	      
+	      ErrorMsg << "WOKStep_Include :: Execute"
+		       << "failed to copy '" << infile -> File () -> Path () -> Name ()
+		       << "' to '"           << pubincfile        -> Path () -> Name ()
+		       << "'" << endm;
+	      
+	      SetFailed ();
 
-            ErrorMsg << "WOKStep_Include :: Execute"
-                     << "failed to copy '" << infile -> File () -> Path () -> Name ()
-                     << "' to '"           << pubincfile        -> Path () -> Name ()
-                     << "'" << endm;
+	      return;
 
-            SetFailed ();
+	    } else {
 
-            return;
+	      InfoMsg << "WOKStep_Include :: Execute"
+		      << "Copied : '" << infile->File()->Path()->Name()
+		      << "' to '" << pubincfile->Path()->Name()
+		      << "'" << endm;
+	    }  // end if
+	    
+	    struct utimbuf times;
+	    struct stat    buf;
+	    
+	    stat (  infile -> File () -> Path () -> Name () -> ToCString (), &buf  );
+	    
+	    times.actime  = buf.st_atime;
+	    times.modtime = buf.st_mtime; 
+	    
+	    utime (  pubincfile -> Path () -> Name () -> ToCString (), &times  ); 
+	    
+	  } else {
 
-	   } else {
-
-            InfoMsg << "WOKStep_Include :: Execute"
-                     << "Copied : '" << infile->File()->Path()->Name()
-                     << "' to '" << pubincfile->Path()->Name()
-                     << "'" << endm;
-           }  // end if
-
-           struct utimbuf times;
-           struct stat    buf;
-
-           stat (  infile -> File () -> Path () -> Name () -> ToCString (), &buf  );
-
-           times.actime  = buf.st_atime;
-           times.modtime = buf.st_mtime; 
-
-           utime (  pubincfile -> Path () -> Name () -> ToCString (), &times  ); 
-
-	   } else {
-
-           InfoMsg << "WOKStep_Include :: Execute"
-                     << "failed to copy '" << infile -> File () -> Path () -> Name ()
-                     << "' to '"           << pubincfile        -> Path () -> Name ()
-                     << "'" << endm;
+	    if ( !(infile -> File () -> Path ()  -> Exists () )) {
+	      InfoMsg << "WOKStep_Include :: Execute"
+		<< "failed to copy '" << infile -> File () -> Path () -> Name ()
+		  << "' to '"           << pubincfile        -> Path () -> Name ()
+		    << "'" << endm;
+	    }
 
           }  // end if
 # endif  // WOKStep_Incluse_SYMLINK
