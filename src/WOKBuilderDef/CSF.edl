@@ -173,5 +173,24 @@
       @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0 -L/usr/X11R6/lib -lX11";
    @endif;
 
+  @if ( %Station == "aix" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = "";
+      @endif;
+
+      @set %CSF_SOCKETLibs = " " ;
+
+      @set %CSF_TCL_INCLUDE = "/usr/local/include ";
+
+      @set %X11_LIB = "/usr/lpp/X11/lib/R6";
+      @set %CSF_XwLibs = "-L/usr/lpp/X11/lib/R6 -lX11 -lXext -lXmu ";
+
+      @set %OPENGL_LIB = "/usr/lpp/OpenGL/lib";
+      @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
+
+      @set %CSF_TclLibs   = "-I/usr/local/lib/libtcl8.1.exp "; 
+      @set %CSF_TclTkLibs = "-I/usr/local/lib/libtk8.1.exp ";
+  @endif;
+
 
 @endif;

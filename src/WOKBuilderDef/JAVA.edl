@@ -1,12 +1,18 @@
 @ifnotdefined ( %JAVA_EDL ) then
  @set %JAVA_EDL = "";
 
+ @set %JAVA_Home = "/PRODUCTS/java/jdk1.2.2.2";
  @if ( %Station == "sun" ) then
+  @set %JAVA_Home = "/PRODUCTS/java/jdk1.2.2";
+ @endif;
+ @if ( %Station == "sil" ) then
   @set %JAVA_Home = "/PRODUCTS/java/jdk1.2";
- @else
-  @if ( %Station == "wnt" ) then
+ @endif;
+ @if ( %Station == "lin" ) then
+  @set %JAVA_Home = "/PRODUCTS/java/jdk1.2.2";
+ @endif;
+ @if ( %Station == "wnt" ) then
    @set %JAVA_Home = "D:/jdk1.2.2";
-  @endif;
  @endif;
 
  @string %JAVA_Command       = %JAVA_Home "/bin/javac";

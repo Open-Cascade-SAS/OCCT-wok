@@ -3,7 +3,7 @@
 -- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
 -- Copyright:	 Matra Datavision 1996
 
---@ifnotdefined ( %CMPLRS_EDL ) then
+@ifnotdefined ( %CMPLRS_EDL ) then
  @set %CMPLRS_EDL = "";
 
  @set %CMPLRS_C_Template     = "CmdLine";
@@ -433,7 +433,6 @@
              %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
              %CMPLRS_CXX_DBMSOpt, %IncDirectives, %Source, %BaseName, %OutputDir
             ) is
-  --$cd %OutputDir
   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives  \
   $  -c %Source -o %OutputDir/%BaseName.o
   $set stat = $status
@@ -626,6 +625,7 @@
             ) is
    $C++ compiler: \^
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+   $-I/PRODUCTS/java/jdk1.2.2/include/linux \
    $%IncDirectives %DBDirectives -H -c <Source.cxx> -o <Object.o> > &<tmp_file>
   @end;
 
@@ -635,7 +635,95 @@
              %BaseName, %OutputDir, %TmpFile
             ) is
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options \^
-   $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives -H \^
+   $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \^
+   $-I/PRODUCTS/java/jdk1.2.2/include/linux \^
+   $%IncDirectives %DBDirectives -H  \^
+   $-c %Source -o %OutputDir/%BaseName.o >& %TmpFile
+   $set stat = $status
+   $if ( $stat == 0 ) then
+   $ sed -e 's/ //g' -e '/:/d' %TmpFile | sort -u > %OutputDir/%BaseName.m
+   $endif
+   $if( -e %TmpFile ) grep ':' %TmpFile
+   $/bin/rm -f %TmpFile
+   $set status = $stat
+  @end;
+ @endif;
+
+--     #######   ###   #     #     --
+--     #     #    #     #   #      --
+--     #     #    #      # #       --
+--     #######    #       #        --
+--     #     #    #      # #       --
+--     #     #    #     #   #      --
+--     #     #   ###   #     #     --
+
+ @if ( %Station == "aix" ) then
+  @if ( %DebugMode == "True" ) then
+   @set %CMPLRS_CXX_ModeOpt = "-g0 -DDEB -D_DEBUG";
+   @set %CMPLRS_C_ModeOpt   = "-g0 -DDEB -D_DEBUG";
+   @set %CMPLRS_F77_ModeOpt = "-g  -DDEB -D_DEBUG";
+  @else
+   @set %CMPLRS_CXX_ModeOpt = "-O2 ";
+   @set %CMPLRS_C_ModeOpt   = "-O2 ";
+   @set %CMPLRS_F77_ModeOpt  = "-O2 ";
+  @endif;
+
+  @if ( %DBMS == "OBJS" ) then
+   @set %CMPLRS_CXX_DBMSOpt = "-DOBJS";
+  @endif;
+
+  @if ( %DBMS == "DFLT" ) then
+   @set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
+  @endif;
+
+  @set %CMPLRS_F77_Command = "/usr/bin/f77 ";
+  @set %CMPLRS_F77_Options = "-fPIC";
+
+  @set %CMPLRS_C_Command = "xlC_r";
+  @set %CMPLRS_C_Options = " -DAIX -DCSFDB ";
+
+  @template CMPLRS_C_OptLine (
+             %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives
+            ) is
+   $C compiler: \^
+   $%CMPLRS_C_Command %CMPLRS_C_Options %CMPLRS_C_ModeOpt \
+   $%IncDirectives  -c <Source.c> -o <Object.o> > &<tmp_file>
+  @end;
+
+  @template CMPLRS_C_CmdLine (
+             %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt,
+             %IncDirectives, %DBDirectives, %Source, %BaseName, %OutputDir, %TmpFile
+            ) is
+   $%CMPLRS_C_Command %CMPLRS_C_Options %DBDirectives %CMPLRS_C_ModeOpt %IncDirectives  -c %Source \^
+   $-o %OutputDir/%BaseName.o >& %TmpFile
+   $set stat = $status
+   $if ( $stat == 0 ) then
+   $ sed -e 's/ //g' -e '/:/d' %TmpFile | sort -u > %OutputDir/%BaseName.m
+   $endif
+   $if( -e %TmpFile ) grep ':' %TmpFile
+   $/bin/rm -f %TmpFile
+   $set status = $stat
+  @end;
+
+  @set %CMPLRS_CXX_Command = "xlC_r";
+  @set %CMPLRS_CXX_Options = " -DAIX  -DCSFDB ";
+
+  @template CMPLRS_CXX_OptLine (
+             %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
+             %CMPLRS_CXX_DBMSOpt, %IncDirectives,  %DBDirectives
+            ) is
+   $C++ compiler: \^
+   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+   $%IncDirectives %DBDirectives -c <Source.cxx> -o <Object.o> > &<tmp_file>
+  @end;
+
+  @template CMPLRS_CXX_CmdLine (
+             %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
+             %CMPLRS_CXX_DBMSOpt, %IncDirectives, %DBDirectives, %Source,
+             %BaseName, %OutputDir, %TmpFile
+            ) is
+   $%CMPLRS_CXX_Command %CMPLRS_CXX_Options \^
+   $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives  \^
    $-c %Source -o %OutputDir/%BaseName.o >& %TmpFile
    $set stat = $status
    $if ( $stat == 0 ) then
@@ -659,5 +747,5 @@
   @endif;
  @endif;
 
---@endif;
+@endif;
 
