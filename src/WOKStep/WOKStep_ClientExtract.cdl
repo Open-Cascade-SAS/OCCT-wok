@@ -28,7 +28,7 @@ is
     	   checked, hidden : Boolean  from Standard) 
     	returns mutable ClientExtract from WOKStep;
 
-    HandleInputFile(me; infile : InputFile from WOKMake)
+    HandleInputFile(me:mutable; infile : InputFile from WOKMake)
     	returns Boolean from Standard;
 
     Init(me:mutable)

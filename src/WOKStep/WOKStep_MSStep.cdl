@@ -14,6 +14,7 @@ uses
     DevUnit      from WOKernel,
     File         from WOKernel,
     Entity       from WOKBuilder,
+    Path         from WOKUtils,
     HAsciiString from TCollection
 
 is
@@ -28,5 +29,9 @@ is
     	is redefined protected;
     ---Purpose: Adds an entity to the known entity list
     --          (one more time)
+
+    BuilderEntity(me; apath : Path from WOKUtils)
+    	returns mutable Entity from WOKBuilder
+    	is redefined protected;
 
 end MSStep;

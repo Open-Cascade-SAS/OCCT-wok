@@ -138,7 +138,27 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 
   Handle(WOKUtils_Shell) ashell = Shell();
 
+//--> EUG4YAN
+  bidname = new TCollection_HAsciiString (  Unit () -> Name ()  );
+  bidname -> AssignCat ( ".lnk" );
+  
+  Handle( WOKernel_File ) lnkfile = new WOKernel_File (  bidname, Unit (), stadmtype  );
+  lnkfile -> GetPath ();
+
+  if (  lnkfile -> Path () -> Exists ()  ) lnkfile -> Path () -> RemoveFile ();
+
+  if (  !lnkfile -> Path () -> CreateFile ()  )
+
+   ErrorMsg << "WOKStep_Link::ExecuteLink" 
+            << "Unable to create link file '"
+            << lnkfile -> Path () -> Name () -> ToCString ()
+            << "'" << endm;
+//<-- EUG4YAN
+
   ashell->Lock();
+//--> EUG4YAN
+  ashell -> LogInFile (  lnkfile -> Path ()  );
+//<-- EUG4YAN
   ldshr->SetShell(ashell);
   
   ldshr->SetOutputDir(OutputDir());

@@ -28,8 +28,12 @@ is
     	   checked, hidden : Boolean  from Standard) 
     	returns mutable JiniExtract from WOKStep;
 
-    HandleInputFile(me; infile : InputFile from WOKMake)
-    	returns Boolean from Standard;
+    HandleInputFile(me:mutable; item : InputFile from WOKMake) 
+    	returns Boolean from Standard
+    	is redefined protected;
+
+    --HandleInputFile(me; infile : InputFile from WOKMake)
+    --	returns Boolean from Standard;
 
     Init(me:mutable)
     	is redefined protected;

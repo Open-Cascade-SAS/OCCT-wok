@@ -3,7 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-
+#include <Standard_NotImplemented.hxx>
 
 #include <WOKTools_Messages.hxx>
 
@@ -51,3 +51,9 @@ Handle(WOKBuilder_Entity) WOKStep_MSStep::BuilderEntity(const Handle(WOKernel_Fi
   return entity;
 }
 
+Handle_WOKBuilder_Entity WOKStep_MSStep::BuilderEntity(const Handle_WOKUtils_Path&) const
+{
+ Handle_WOKBuilder_Entity aHandle_WOKBuilder_Entity ;
+ Standard_NotImplemented::Raise("WOKStep_MSStep::BuilderEntity(const Handle_WOKUtils_Path&) not implemented") ;
+ return aHandle_WOKBuilder_Entity ;
+}

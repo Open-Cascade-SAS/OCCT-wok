@@ -4,6 +4,8 @@
 // Author:	Arnaud BOUZY
 //		<adn>
 
+#include <Standard_NotImplemented.hxx>
+
 #include <Standard_ProgramError.hxx>
 
 #include <WOKTools_Messages.hxx>
@@ -53,7 +55,7 @@ WOKStep_JiniExtract::WOKStep_JiniExtract(const Handle(WOKMake_BuildProcess)& abp
 //function : HandleInputFile
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKStep_JiniExtract::HandleInputFile(const Handle(WOKMake_InputFile)& infile) const
+Standard_Boolean WOKStep_JiniExtract::HandleInputFile(const Handle(WOKMake_InputFile)& infile)
 {
    if(!infile->IsPhysic())
     {
@@ -392,3 +394,4 @@ void WOKStep_JiniExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& to
   if(Status() == WOKMake_Unprocessed) SetSucceeded();
   return;
 }
+

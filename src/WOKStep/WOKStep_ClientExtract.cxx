@@ -3,6 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#include <Standard_NotImplemented.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -53,7 +54,7 @@ WOKStep_ClientExtract::WOKStep_ClientExtract(const Handle(WOKMake_BuildProcess)&
 //function : HandleInputFile
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKStep_ClientExtract::HandleInputFile(const Handle(WOKMake_InputFile)& infile) const
+Standard_Boolean WOKStep_ClientExtract::HandleInputFile(const Handle(WOKMake_InputFile)& infile)
 {
    if(!infile->IsPhysic())
     {
