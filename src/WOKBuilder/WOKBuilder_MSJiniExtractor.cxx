@@ -16,14 +16,14 @@
 
 #include <WOKBuilder_MSJiniExtractor.ixx>
 
-
-
 extern "C" {
 
 typedef void (*WOKBuilder_MSJiniExtractorInitPtr)(const Handle(MS_MetaSchema)& ,
 						  const Handle(TCollection_HAsciiString)& ,
 						  const Handle(MS_HSequenceOfExternMet)& ,
-						  const Handle(MS_HSequenceOfMemberMet)& );
+						  const Handle(MS_HSequenceOfMemberMet)&,
+                                                  const Handle(TColStd_HSequenceOfHAsciiString)&
+                                                 );
 }
 
 
@@ -71,7 +71,7 @@ void WOKBuilder_MSJiniExtractor::Init(const Handle(TCollection_HAsciiString)& an
 
       if(myinitfunc != NULL) 
 	{
-	  ((WOKBuilder_MSJiniExtractorInitPtr) myinitfunc) (ams->MetaSchema(),aname, myxmeth,mymmeth);
+	  ((WOKBuilder_MSJiniExtractorInitPtr) myinitfunc) (ams->MetaSchema(),aname, myxmeth,mymmeth,aclt->Uses());
 	}
     }
 
@@ -196,3 +196,4 @@ WOKBuilder_MSActionStatus WOKBuilder_MSJiniExtractor::ExtractionStatus(const Han
 
   return WOKBuilder_UpToDate;
 }
+

@@ -649,6 +649,13 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildClient(const Handle(WOKBuil
 	      MSchema()->ChangeAddAction(theid, afile);
 
 	      const Handle(MS_Client)& aclient = MSchema()->MetaSchema()->GetClient(anaction->Entity()->Name());
+
+              Handle( TColStd_HSequenceOfHAsciiString ) uses = aclient -> Uses ();
+
+              for (  i = 1; i <= uses -> Length (); ++i  )
+
+               AddAction (  anit, uses -> Value ( i ), WOKBuilder_Client  );
+
 	      Handle(TColStd_HSequenceOfHAsciiString) interfaces = aclient->Interfaces();
 	      for(i=1; i<=interfaces->Length(); i++)
 		AddAction(anit,interfaces->Value(i), WOKBuilder_Interface);
@@ -666,6 +673,12 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildClient(const Handle(WOKBuil
       {
 	const Handle(MS_Client)& aclient = MSchema()->MetaSchema()->GetClient(anaction->Entity()->Name());
 	
+        Handle( TColStd_HSequenceOfHAsciiString ) uses = aclient -> Uses ();
+
+        for (  i = 1; i <= uses -> Length (); ++i  )
+
+         AddAction (  anit, uses -> Value ( i ), WOKBuilder_Client  );
+
 	Handle(TColStd_HSequenceOfHAsciiString) interfaces = aclient->Interfaces();
 	for(i=1; i<=interfaces->Length(); i++)
 	  AddAction(anit,interfaces->Value(i), WOKBuilder_Interface);
