@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "..\..\win32\obj\__TKNAM__"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WNT" /D "CSFDB"/D "No_Exception" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "..\..\win32\objd\__TKNAM__"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /GX /Zi /Od /D "WIN32" /D "DEB" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /W3 /GX /Zi /Od /D "WIN32" /D "DEB" /D "_DEBUG" /D "_WINDOWS" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "DEB" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WNT" /D "CSFDB" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
