@@ -140,3 +140,8 @@ WOKBuilder_BuildStatus WOKBuilder_CompilerIterator::Execute(const Handle(WOKBuil
   return status;
 }
 
+const Handle( TCollection_HAsciiString )& WOKBuilder_CompilerIterator :: CmdLine () const {
+
+ return myCmdLine;
+
+}  // end 

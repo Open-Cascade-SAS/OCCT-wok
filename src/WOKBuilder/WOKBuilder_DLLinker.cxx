@@ -46,9 +46,6 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
   Handle(WOKBuilder_Entity)        outEnt[4];
   Handle(TCollection_HAsciiString) tmp;
   Handle(TCollection_HAsciiString) retVal = EvalToolParameter("LinkerOutput");
-  Standard_Boolean                 fDebug;
-
-  //fDebug = Params().Value("%DebugMode")->IsSameString(new TCollection_HAsciiString("True")) ? Standard_True : Standard_False;
  
   tmp = EvalToolTemplate("LinkerDLL");
 
@@ -65,13 +62,10 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
 
   outEnt[2] = new WOKBuilder_ExportLibrary(new WOKUtils_Path(EvalToolTemplate("LinkerEXP")));
 
-  //if (fDebug) {
-
   retVal -> AssignCat (  EvalToolParameter ( "LinkerPDBOption" )  );
   tmp = EvalToolTemplate ( "LinkerPDB" );
   retVal -> AssignCat ( tmp );
   outEnt[3] = new WOKBuilder_SharedLibrary(new WOKUtils_Path(tmp));
-  //} 
 
   SetProduction(new WOKBuilder_HSequenceOfEntity());
 
@@ -79,7 +73,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
   Produces()->Append(outEnt[1]);
   Produces()->Append(outEnt[2]);
 
-  //if( fDebug ) 
   Produces()->Append(outEnt[3]);
   return retVal;
 }
+

@@ -40,7 +40,7 @@ WOKBuilder_MSAction::WOKBuilder_MSAction(const Handle(WOKBuilder_MSAction)& anac
 //=======================================================================
 WOKBuilder_MSAction::WOKBuilder_MSAction(const Handle(WOKBuilder_MSEntity)& anentity, 
 					  const WOKBuilder_MSActionType atype)
-: myent(anentity), mytype(atype), mydate(-1), mystatus(WOKBuilder_NotDefined)
+: myent(anentity), mytype(atype), mystatus(WOKBuilder_NotDefined), mydate(-1)
 {
 }
 
@@ -50,7 +50,7 @@ WOKBuilder_MSAction::WOKBuilder_MSAction(const Handle(WOKBuilder_MSEntity)& anen
 //=======================================================================
 WOKBuilder_MSAction::WOKBuilder_MSAction(const Handle(TCollection_HAsciiString)& aname, 
 					  const WOKBuilder_MSActionType atype)
-: mytype(atype), mydate(-1), mystatus(WOKBuilder_NotDefined)
+: mytype(atype), mystatus(WOKBuilder_NotDefined), mydate(-1)
 {
   myent = new WOKBuilder_MSEntity(aname);
 }

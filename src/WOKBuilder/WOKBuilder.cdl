@@ -117,7 +117,8 @@ is
 	    	class MSServerExtractor;
 	    	class MSClientExtractor;
 	    	class MSEngineExtractor;
-		    
+                class MSJiniExtractor;		    
+
 	class MSExtractorIterator;
 	    
     	deferred class ToolInShell;

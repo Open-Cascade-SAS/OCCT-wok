@@ -49,7 +49,7 @@ WOKBuilder_ToolInShellIterator::WOKBuilder_ToolInShellIterator(const Handle(TCol
 							       const Handle(WOKUtils_Shell)& ashell,
 							       const Handle(WOKUtils_Path)& apath,
 							       const WOKUtils_Param& params)
-  : mygroup(agroup), myshell(ashell), myoutdir(apath), myparams(params)
+  : mygroup(agroup), myparams(params), myshell(ashell), myoutdir(apath)
 {
   
 }

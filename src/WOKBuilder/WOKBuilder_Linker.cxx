@@ -461,25 +461,40 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 #ifndef LIN
   Shell()->Execute(EvalFooter());
 #else
-  static Handle( TCollection_HAsciiString ) skipStr =
-   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start; defaulting to " );
+  Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 0 );
+
   Shell () -> Send (  EvalFooter ()  );
 
-  Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
-  Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
+  static Handle( TCollection_HAsciiString ) skipStr =
+   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
 
-  if (  !paramH.IsNull     () && !paramF.IsNull     () &&
-        !paramH -> IsEmpty () && !paramF -> IsEmpty ()
+  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
+
+  if (  !uType.IsNull () &&
+        (   !strcmp (  uType -> ToCString (), "toolkit"     ) ||
+            !strcmp (  uType -> ToCString (), "executable"  )
+        )
   ) {
 
-   Shell () -> Send ( paramH );
-   Shell () -> Send ( EvalLibSearchDirectives ()  );
-   Shell () -> Send ( EvalDatabaseDirectives  ()  );
-   Shell () -> Send (  EvalObjectList  ()  );
-   Shell () -> Send (  EvalLibraryList ()  );
-   Shell () -> Execute ( paramF );
+   Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
+   Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
 
-  } else Shell () -> Execute (  new TCollection_HAsciiString ( "\n" )  );
+   if (  !paramH.IsNull     () && !paramF.IsNull     () &&
+         !paramH -> IsEmpty () && !paramF -> IsEmpty ()
+   ) {
+
+    Shell () -> Send ( paramH );
+    Shell () -> Send ( EvalLibSearchDirectives ()  );
+    Shell () -> Send ( EvalDatabaseDirectives  ()  );
+    Shell () -> Send ( target );
+    Shell () -> Send (  EvalLibraryList ()  );
+    Shell () -> Send ( paramF );
+
+   }  // end if
+
+  }  // end if
+
+  Shell () -> Execute (  new TCollection_HAsciiString ( "\n" )  );
 #endif  // LIN
 
   if(Shell()->Status())

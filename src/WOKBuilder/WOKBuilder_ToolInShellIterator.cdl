@@ -35,6 +35,9 @@ is
     	   Param    : Param        from WOKUtils)
     	returns ToolInShellIterator from WOKBuilder;
 
+    Destroy ( me : out );
+    ---C++: alias "Standard_EXPORT virtual ~WOKBuilder_ToolInShellIterator () {}"
+
     Init(me:out; ashell    : Shell        from WOKUtils; 
 	    	 adir      : Path         from WOKUtils)
     	is virtual;
