@@ -1,6 +1,5 @@
-TOOLKITS
+EXTERNLIB
 WOKLibs_CMPLRS.edl
-WOKLibs_WOKSteps.edl
 pkgIndex.tcl
 pkgIndex.tcl-hp
 pkgIndex.tcl-wnt
