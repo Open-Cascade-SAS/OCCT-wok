@@ -221,7 +221,7 @@ proc wokIntegrebase  { } {
             wokIntegre:RefCopy:GetPathes  table $curwb
             set dirtmpu /tmp/wintegrecreateunits[pid]
             catch {
-                rmdir -nocomplain $dirtmpu 
+                wokUtils:FILES:rmdir $dirtmpu 
                 wokUtils:FILES:mkdir $dirtmpu
             }
             set chkout $dirtmpu/checkout.cmd
@@ -891,7 +891,7 @@ proc wokGetbase { } {
         }
         
         wokUtils:FILES:delete $chkout
-        rmdir -nocomplain $dirtmp
+        wokUtils:FILES:rmdir  $dirtmp
         return $statx
     }
 }

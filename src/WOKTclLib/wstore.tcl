@@ -710,7 +710,7 @@ proc wokStore:Report:GetUniqueName { name } {
 #;<
 proc wokStore:Report:GetPrettyName { Uniquename } {
     set l [split $Uniquename ,]
-    return [list [lindex $l 1] [fmtclock [lindex $l 0]] ]
+    return [list [lindex $l 1] [clock format [lindex $l 0]] ]
 }
 
 #;>

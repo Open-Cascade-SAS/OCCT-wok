@@ -385,6 +385,7 @@ proc wokIntegre:Journal:Since { file date1 date2 } {
 proc wokIntegre:Journal:PickReport { file table notes ReportNum {action fill } } {
     upvar $table TLOC $notes NLOC
 
+
     if [ catch { set fileid [open $file r] } ] {
 	return {}
     }
@@ -395,38 +396,33 @@ proc wokIntegre:Journal:PickReport { file table notes ReportNum {action fill } }
     set U_begrgx {^  ([^ ]*) ([^ ]*) :}
     set F_begrgx {^    ([^ ]*)[ ]*:  ([^ ]*) ([^ ]*)}
 
-    set R_begheader [scancontext create]
-
-    ;# Pointe sur le header du report demande
-    ;#
-    set NLOC {}
     set REPORT {}
     set TEXTE {}
-    scanmatch  $R_begheader $R_begrgx {
-	set REPORT $matchInfo(line)
-	while {[gets $fileid line] >= 0} {
-	    if { [string compare $action fill] == 0 } {
-		if { [regexp $U_begrgx $line ignore UD status ] } {
-		    set  TLOC($UD) {}
-		} elseif {[regexp $F_begrgx $line ignore status name version ] } {
-		    set l $TLOC($UD)
-		    set TLOC($UD) [lappend l [list $name $version]]
-		} elseif {[regexp {^Report [0-9]*_.*} $line] } {
-		    break
-		}
-
-	    } else {
-		if {[regexp {^Report [0-9]*_.*} $line] } {
-		    break 
+    
+    while {[gets $fileid strin]>= 0} {
+	if [regexp $R_begrgx $strin MATCHREPORT] {
+	    set REPORT $strin
+	    while {[gets $fileid line] >= 0} {
+		if { [string compare $action fill] == 0 } {
+		    if { [regexp $U_begrgx $line ignore UD status ] } {
+			set  TLOC($UD) {}
+		    } elseif {[regexp $F_begrgx $line ignore status name version ] } {
+			set l $TLOC($UD)
+			set TLOC($UD) [lappend l [list $name $version]]
+		    } elseif {[regexp {^Report [0-9]*_.*} $line] } {
+			break
+		    }
 		} else {
-		    lappend TEXTE $line
+		    if {[regexp {^Report [0-9]*_.*} $line] } {
+			break 
+		    } else {
+			lappend TEXTE $line
+		    }
 		}
 	    }
 	}
     }
 
-    scanfile $R_begheader $fileid
-    scancontext delete $R_begheader
     close $fileid
     if {[string compare $action fill] == 0} {
 	return $REPORT
@@ -509,43 +505,21 @@ proc wokIntegre:Journal:Slice { journal n1 n2 function args } {
 #;<
 proc wokIntegre:Journal:ListReport { file } {
     ;#Report 6_rep - 13/03/96 14:25 from workbench Yan (yfokon)
-
-    if [ catch { set fileid [open $file r] } ] {
-	return {}
-    }
-
-    set R_begrgx {^Report ([0-9]+)_.* - ([0-9]+/[0-9]+/[0-9]+ [0-9]+:[0-9]+) from workbench ([^ ]*) ([^ ]*)} 
-    set R_begheader [scancontext create]
+    set str [wokUtils:FILES:FileToString $file]
     set lret {}
-    scanmatch $R_begheader $R_begrgx {
-	lappend lret [list $matchInfo(submatch0) $matchInfo(submatch1) $matchInfo(submatch2) $matchInfo(submatch3)               ]
+    set R_begrgx {^Report ([0-9]+)_.* - ([0-9]+/[0-9]+/[0-9]+ [0-9]+:[0-9]+) from workbench ([^ ]*) ([^ ]*)}     
+    foreach w [split $str "\n"] {
+	if [regexp -- $R_begrgx $w all num dte wb mach] {
+	    lappend lret [list $num $dte $wb $mach]
+	}
     }
-    scanfile $R_begheader $fileid
-    scancontext delete $R_begheader
-    close $fileid
     return $lret
 }
 ;#
 ;# retourne la date du report num sous forme comparable.
 ;#
 proc wokIntegre:Journal:ReportDate { file num} {
-    ;#Report 6_rep - 13/03/96 14:25 from workbench Yan (yfokon)
-
-    if [ catch { set fileid [open $file r] } ] {
-	return {}
-    }
-
-    set R_begrgx "^Report ${num}_rep - (\[0-9\]+/\[0-9\]+/\[0-9\]+ \[0-9\]+:\[0-9\]+) from workbench (\[^ \]*) (\[^ \]*)"
-    set R_begheader [scancontext create]
-    set dret {}
-    scanmatch $R_begheader $R_begrgx {
-	set dret $matchInfo(submatch0)
-	set dret [wokUtils:TIME:dpe $matchInfo(submatch0)]
-    }
-    scanfile $R_begheader $fileid
-    scancontext delete $R_begheader
-    close $fileid
-    return $dret
+    return {}
 }
 
 #;>
