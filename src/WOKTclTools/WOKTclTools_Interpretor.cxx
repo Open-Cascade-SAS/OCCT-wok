@@ -13,6 +13,8 @@
 #include <WOKTools_HSequenceOfReturnValue.hxx>
 #include <WOKTools_Messages.hxx>
 
+#include <tcl.h>
+
 #ifdef WNT
 #include <WOKUtils_ShellManager.hxx>
 #define WOKUtils_ProcessManager WOKUtils_ShellManager
@@ -30,20 +32,10 @@ void Free ( void* );
 #include <Standard_ErrorHandler.hxx>
 
 #ifdef WNT
-# ifdef TCL_VERSION_75
-#  pragma comment( lib, "tcl75.lib" )
-#  pragma message( "Information: tcl75.lib is using as TCL library" )
-#  include <tcl75.h>
-# elif defined( TCL_VERSION_76 )
-#  pragma comment( lib, "tcl76.lib" )
-#  pragma message( "Information: tcl76.lib is using as TCL library" )
-# else
-#  pragma comment( lib, "tcl76i.lib" )
-#  pragma message( "Information: tcl76i.lib is using as TCL library" )
-# endif  // TCL75
+#  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
 #endif  // WNT
 
-#include <tcl.h>
+
 
 //
 // Call backs for TCL
