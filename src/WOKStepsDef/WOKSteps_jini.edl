@@ -26,11 +26,10 @@
    @set %WOKSteps_exec_tks   = "*WOKStep_TransitiveTKReplace(exec.list)";
    @set %WOKSteps_exec_link  = "*WOKStep_LibLink(exec.tks)";
   @else
-   @set %WOKSteps_ExecGroup  = " exec.jlib exec.list exec.tks exec.link ";
-   @set %WOKSteps_exec_jlib  = "WOKStep_JLibAdd(obj.idep)";
-   @set %WOKSteps_exec_list  = "*WOKStep_DirectLinkList(obj.comp,obj.idep)";
-   @set %WOKSteps_exec_tks   = "*WOKStep_DirectTKReplace(exec.list)";
-   @set %WOKSteps_exec_link  = "*WOKStep_DLLink(exec.jlib,exec.tks)";
+   @set %WOKSteps_ExecGroup  = " exec.libs exec.tks exec.link ";
+   @set %WOKSteps_exec_libs  = "*WOKStep_DirectLinkList(obj.comp,obj.idep)";
+   @set %WOKSteps_exec_tks   = "*WOKStep_DirectTKReplace(exec.libs)";
+   @set %WOKSteps_exec_link  = "*WOKStep_DLLink(exec.tks)";
   @endif;
 
   @set %WOKSteps_jini_LinksWith   = "";
