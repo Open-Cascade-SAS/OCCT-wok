@@ -7,5 +7,7 @@ srcinc:::INSTALL
 srcinc:::wok.csh
 srcinc:::wok.bat
 srcinc:::wokinit.bat
-srcinc:::cmd-input.tcl
+srcinc:::interp.tcl
 srcinc:::wokinit.csh
+srcinc:::.tclshrc
+srcinc:::tclshrc.tcl

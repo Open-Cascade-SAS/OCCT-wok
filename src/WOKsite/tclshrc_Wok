@@ -167,8 +167,5 @@ set env(WOK_SESSIONID)  $env(HOME)/.wok
 set tcl_prompt1 {if {[info commands wokcd] != ""}  then \
 	{puts -nonewline stdout "[wokcd]> "} else \
 	{puts -nonewline stdout "tclsh> "}}
-if { "$tcl_platform(platform)" == "windows" } {
-   source $env(WOKHOME)/site/cmd-input.tcl
-}
 cd $env(WOK_ROOTADMDIR)
 wokclose -a
