@@ -2,7 +2,11 @@
  @set %WOKSH_LINKSHR_EDL = "";
  @if ( %Station == "sun" ) then
   @template LINKSHR_Footer () is
-  $ -lC -lc;
+    $ -lC -lc;
+    $ set ld_status=$status;
+    $ if ( $?LD_LIBRARY_PATH ) then
+    $  set ld_library_path=$LD_LIBRARY_PATH
+    $ endif
   @end;
  @endif;
 @endif;
