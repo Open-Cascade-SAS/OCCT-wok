@@ -8,7 +8,7 @@ VPATH = @srcdir@ : \
 @top_srcdir@/drv/WOKTCL : @top_srcdir@/src/WOKTCL
 
 
-INCLUDES =  \
+INCLUDES = $(CSF_TclLibs_INCLUDES) $(CSF_TclTkLibs_INCLUDES) \
 -I@top_srcdir@/inc \
 -I@top_srcdir@/drv/WOKTclUtils \
 -I@top_srcdir@/drv/WOKTclTools \
@@ -20,8 +20,8 @@ lib_LTLIBRARIES=libTKWOKTcl.la
 
 libTKWOKTcl_la_LIBADD = \
 ../TKWOK/libTKWOK.la \
-../TKernel/libTKernel.la
-
+../TKernel/libTKernel.la \
+$(CSF_TclLibs_LIB) $(CSF_TclTkLibs_LIB) 
 
 libTKWOKTcl_la_SOURCES = \
 MSAPI_Class.cxx \
