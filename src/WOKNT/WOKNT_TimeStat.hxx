@@ -1,6 +1,8 @@
 #ifndef __WOKNT_FILETIME_HXX
 # define __WOKNT_FILETIME_HXX
 
+#ifdef WNT
+
 # ifndef STRICT
 #  define STRICT
 # endif  // STRICT
@@ -12,3 +14,5 @@
 typedef time_t WOKNT_TimeStat;
 
 #endif  // __WOKNT_FILETIME_HXX
+
+#endif
