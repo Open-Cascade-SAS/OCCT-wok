@@ -41,6 +41,10 @@
 #define WOK_DEPCOMPAT 1
 #endif
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKernel_DevUnit
 //purpose  : 

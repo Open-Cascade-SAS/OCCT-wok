@@ -20,6 +20,10 @@
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKernel_Factory
 //purpose  : Factory constructor

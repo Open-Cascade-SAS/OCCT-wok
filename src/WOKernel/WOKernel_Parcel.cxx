@@ -24,6 +24,10 @@
 
 #include <WOKernel_Parcel.ixx>
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKernel_Parcel
 //purpose  : instantiates a parcel

@@ -33,6 +33,10 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKernel_Session
 //purpose  : 
@@ -192,6 +196,9 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
       break;
     case OSD_PC:
       thestation = WOKernel_WNT;
+      break;
+    case OSD_LIN:
+      thestation = WOKernel_LIN;
       break;
     default:
       ErrorMsg << "WOKernel_Session::Open" << "Unrecognized Type of host " << ahost.HostName().ToCString() << endm;

@@ -4,7 +4,7 @@
 //		<jga@cobrax>
 
 #include <fstream.h>
-
+ 
 #include <WOKernel_Workbench.ixx>
 
 #include <WOKernel_Session.hxx>
@@ -22,6 +22,10 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
+
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
 
 //=======================================================================
 //function : WOKernel_Workbench
