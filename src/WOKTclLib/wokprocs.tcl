@@ -201,7 +201,7 @@ proc wok_setenv_proc {var value} {
 	    if { $IWOK_GLOBALS(term,started) } {
 
 		# First Initialize Variable
-		set len [clength $value]
+		set len [string length $value]
 		set debut 0
 
 		set i $limit
