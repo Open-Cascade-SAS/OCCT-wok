@@ -12,8 +12,8 @@
 #include <WOKTclTools_MsgAPI.hxx>
 #include <WOKTclTools_Package.hxx>
 
-extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-//Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
+//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
+Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 
 #ifdef WNT
 # ifdef _DEBUG
