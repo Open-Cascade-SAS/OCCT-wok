@@ -1,0 +1,57 @@
+-- File:	WOKSteps_schema.edl
+-- Author:	Jean GAUTIER
+-- History:	Wed Mar 12 15:12:27 1997	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1997
+
+@ifnotdefined ( %WOKSteps_schema_EDL) then
+@set %WOKSteps_schema_EDL = "";
+
+
+ @set %WOKSteps_SrcGroup  = "src ";
+ @set %WOKSteps_src       = "*WOKStep_CDLUnitSource";
+
+ @set %WOKSteps_XcppGroup = " xcpp.fill ";
+ @set %WOKSteps_xcpp_fill = "WOKStep_MSFill(src)";
+
+ @set %WOKSteps_ObjGroup  = " obj.comp obj.idep ";
+ @set %WOKSteps_obj_comp  = "WOKStep_Compile(src)";
+ 
+ @set %WOKSteps_DepGroup  = " obj.idep ";
+ @set %WOKSteps_obj_idep  = "WOKStep_ImplementationDep(obj.comp)";
+
+-- @ifnotdefined ( %WOKSteps_LinkShr ) then
+   @string %WOKSteps_LibGroup   = " obj.lib ";
+   @set    %WOKSteps_obj_lib    = "WOKStep_DynamicLibrary(obj.comp,src)";
+-- @else
+--   @string %WOKSteps_LibGroup   = " obj.libs obj.tks obj.lib ";
+--  	
+--   @set %WOKSteps_obj_libs = "WOKStep_DirectLinkList(obj.comp,obj.idep)";
+--   @set %WOKSteps_obj_tks  = "WOKStep_DirectTKReplace(obj.list)";
+--   @set %WOKSteps_obj_lib  = "WOKStep_LibLink(obj.tks)";
+-- @endif;
+
+
+ @set %WOKSteps_executable_LinksWith   = " obj.lib ";
+ @set %WOKSteps_engine_LinksWith       = " obj.lib ";
+ @set %WOKSteps_interface_LinksWith    = " obj.lib ";
+ @set %WOKSteps_toolkit_LinksWith      = " obj.lib ";
+
+	
+  @set %WOKSteps_delivery_cdl_list_steps = "src";
+  @set %WOKSteps_delivery_cdl_list_extensions = ".cdl";
+  @set %WOKSteps_delivery_inc_list_steps = "xcpp.sch";
+  @set %WOKSteps_delivery_inc_list_types = "pubinclude";
+
+  @set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep obj.lib";
+  @if (%Station == "hp") then 
+  @set %WOKSteps_delivery_lib_shared_list_extensions = ".sl .ImplDep";
+  @else 
+    @if (%Station == "wnt") then
+  	@set %WOKSteps_delivery_lib_shared_list_extensions = ".DLL .LIB .PDB .ImplDep";
+        @string %WOKSteps_delivery_lib_shared_list_steps     += " obj.implib ";
+    @else
+        @set %WOKSteps_delivery_lib_shared_list_extensions = ".so .ImplDep";
+    @endif;
+  @endif;
+
+@endif;

@@ -1,0 +1,25 @@
+-- File:	WOKStepsOBJS.edl
+-- Author:	Jean GAUTIER
+-- History:	Mon Feb 24 20:36:58 1997	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1997
+
+@ifnotdefined ( %WOKStepsOBJS_EDL) then
+@set %WOKStepsOBJS_EDL = "";
+
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @set %WOKStepsOBJS_LibPath = "libwokobjssteps.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %WOKStepsOBJS_LibPath = "libwokobjssteps.sl";
+@endif;
+@else
+	@set %WOKStepsOBJS_LibPath = "wokobjssteps.dll";
+@endif;
+
+@set %WOKStepsOBJS_DefinedSteps = " WOKOBJS_SchExtract WOKOBJS_SchGen WOKOBJS_EngLinkList ";
+
+
+
+@endif;
