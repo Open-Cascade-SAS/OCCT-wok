@@ -19,7 +19,7 @@
 #define WOKUnix_FDSet_CAST fd_set *
 #endif
 
-typedef struct fd_set WOKUnix_FDSet;
+typedef fd_set WOKUnix_FDSet;
 
 #endif
 
