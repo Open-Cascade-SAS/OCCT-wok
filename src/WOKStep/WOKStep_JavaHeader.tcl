@@ -29,24 +29,25 @@ proc WOKStep_JavaHeader:ComputeIncludeDir { unit } {
  global env
  global tcl_platform
 
- set fJava [info exists env(WOK_USE_JAVA_DIRECTORY)]
-
  if { $tcl_platform(platform) == "windows" } {
   set ps "\\;"
  } else {
   set ps ":"
  }
 
- set allwb    [w_info -A $unit]
- set unitname [wokinfo -n $unit]
- set result   ""
- set themax   [llength $allwb]
+ set fJava [info exists env(WOK_USE_JAVA_DIRECTORY)]
     
- for {set i $themax} {[expr $i != 0]} {incr i -1} {
+ set allwb [w_info -A $unit]
+ set unitname [wokinfo -n $unit]
+ set result ""
+    
+ set themax [llength $allwb]
+    
+ for { set i $themax } { [expr $i != 0] } { incr i -1 } {
 
   set awb [lindex $allwb [expr $i - 1]]
 
-  if { $fJava != 0 } {
+  if { $fJava } {
    set addinc [UNC [wokparam -e WOKEntity_javadir ${awb}]]
   } else {
    set addinc [UNC [wokparam -e WOKEntity_drvdir ${awb}]]
@@ -56,7 +57,9 @@ proc WOKStep_JavaHeader:ComputeIncludeDir { unit } {
 
  }
 
- return $env(WOKHOME)$ps$result
+ set result $env(WOKHOME)$ps$result
+
+ return $result
 
 }
 
@@ -87,8 +90,7 @@ proc WOKStep_JavaHeader:Execute { theunit args } {
   set nameid ${unitname}
   regsub -all "\\." $nameid "_" nameid
   set outfileid ${nameid}_${outfileid}.h
-
-  set outfile [UNC [wokinfo -p pubinclude:$outfileid $theunit]]
+  set outfile [UNC [wokinfo -p privinclude:$outfileid $theunit]]
   wokparam -s%OutFile=$outfile
 
   set thecommand [wokparam -e JAVA_Header]
@@ -102,8 +104,8 @@ proc WOKStep_JavaHeader:Execute { theunit args } {
 
   } else {
 
-   stepoutputadd $unitname:pubinclude:$outfileid
-   stepaddexecdepitem $ID $unitname:pubinclude:$outfileid
+   stepoutputadd $unitname:privinclude:$outfileid
+   stepaddexecdepitem $ID $unitname:privinclude:$outfileid
 
   }
 

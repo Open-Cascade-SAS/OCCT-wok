@@ -59,7 +59,11 @@ proc WOKStep_JavaCompile:ComputeIncludeDir { unit } {
 
  set result $env(WOKHOME)$ps$result
 
- return /usr/java/jre/lib/rt.jar$ps$result
+ # if { [wokparam -t %CSF_JavaHome] } {
+ #     set result [wokparam -e %CSF_JavaHome]/jre/lib/rt.jar$ps$result
+ # }
+
+ return $result
 
 }
 
@@ -88,6 +92,18 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
 
 
  set sources {}
+ set sourceslen 0
+ set MaxLength 32000
+ set tocompile 0
+
+ # For faster compilation all sources are collected and passed to the compiler
+ # at once. But for better dependency tracking, .class files are then explicitly
+ # "linked" to the .java ones. This will allow to remove orphan .class if there
+ # are no their original .java anymore.
+ # Building a command line with all file names has a strong limitation - length
+ # of the line (e.g. on Windows NT: 32Kb of symbols). So this limitation will
+ # affect on large Interface(s) included into Jni. To overcome this, the line
+ # is built unless it exceeds its limit, then it is compiled.
 
  foreach ID $args {
      
@@ -98,43 +114,61 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
 	 regsub -all "/" $infile "\\\\\\" infile
      }
      lappend sources $infile
- 
-#     wokparam -s%Source=$infile
+     set sourceslen [expr $sourceslen + [string length $infile]]
+     set tocompile 1
 
-     ##set outfileid [file rootname $name]
-     ##set outfileid ${outfileid}.class
-     
-#     msgprint -i -c "WOKStep_JavaCompile:Execute" "Compiling $name"
-#      msgprint -i -c "WOKStep_JavaCompile:Execute" [lindex $thecommand 0]
-     
-#      if { [catch {eval exec [lindex $thecommand 0]} res] } {
+     if { $sourceslen >= $MaxLength } {
+	 # Command line is close to its maximum, let's compile it
+	 wokparam -s%Source=$sources
+	 set thecommand [wokparam -e JAVA_Compiler]
+	 msgprint -i -c "WOKStep_JavaCompile:Execute" [lindex $thecommand 0]
+	 if { [catch {eval exec [lindex $thecommand 0]} res] } {
 	 
-# 	 msgprint -e -c "WOKStep_JavaCompile:Execute" $res
-# 	 set failed 1
-	 
-#      } else {
-	 
-# 	 if { $fJava } {
-# 	     ##stepoutputadd $unitname:javafile:$outfileid
-# 	     ##stepaddexecdepitem $ID $unitname:javafile:$outfileid
-# 	 } else {
-# 	     ##stepoutputadd $unitname:derivated:$outfileid
-# 	     ##stepaddexecdepitem $ID $unitname:derivated:$outfileid
-# 	 }
-	 
- #}
-     
- }
+	     msgprint -e -c "WOKStep_JavaCompile:Execute" $res
+	     set failed 1
+	     return $failed
+	 }
+
+	 # reset again
+	 set sources {}
+	 set sourceslen 0
+	 set tocompile 0
+     }
+ } 
  
- wokparam -s%Source=$sources
- set thecommand [wokparam -e JAVA_Compiler]
- msgprint -i -c "WOKStep_JavaCompile:Execute" [lindex $thecommand 0]
- if { [catch {eval exec [lindex $thecommand 0]} res] } {
+ if { $tocompile } {
+     wokparam -s%Source=$sources
+     set thecommand [wokparam -e JAVA_Compiler]
+     msgprint -i -c "WOKStep_JavaCompile:Execute" [lindex $thecommand 0]
+     if { [catch {eval exec [lindex $thecommand 0]} res] } {
 	 
-     msgprint -e -c "WOKStep_JavaCompile:Execute" $res
-     set failed 1
+	 msgprint -e -c "WOKStep_JavaCompile:Execute" $res
+	 set failed 1
+	 return $failed
+     }
  }
-	 
+
+ # Compilation was successful. Now declare a dependency chain. The same loop as above.
+ foreach ID $args {
+     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
+     set infile [UNC [woklocate -p $ID]]
+     
+     if { $tcl_platform(platform) == "windows" } {
+	 regsub -all "/" $infile "\\\\\\" infile
+     }
+     set outfileid [file rootname $name].class
+     
+     if { $fJava } {
+	 stepoutputadd $unitname:javafile:$outfileid
+	 stepaddexecdepitem $ID $unitname:javafile:$outfileid
+     } else {
+	 stepoutputadd $unitname:derivated:$outfileid
+	 stepaddexecdepitem $ID $unitname:derivated:$outfileid
+     }
+     
+ }
+     
+
  return $failed
 
 }
