@@ -13,8 +13,7 @@
 ;# Should be overwritten
 ;#
 proc osutils:dsp:readtemplate { } {
-    set loc [wokinfo -p source:template.dsp KAS:dev:ros:WOKTclLib]
-    puts stderr "Info : readtemplate : Template for MS project from $loc"
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [wokinfo -p source:template.dsp KAS:dev:ros:WOKTclLib]]"
     return [wokUtils:FILES:FileToString $loc]
 }
 proc osutils:dsp:readtemplatex { } {
@@ -23,21 +22,24 @@ proc osutils:dsp:readtemplatex { } {
 }
 proc osutils:am:readtemplate { } {
     puts stderr "Info : readtemplate : Template for Makefile.am from [set loc [wokinfo -p source:template.mam KAS:dev:ros:WOKTclLib]]"
+    #puts stderr "Info : readtemplate : Template for Makefile.am from [set loc /dn02/users_SUN/cascade/template.mam]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:am:readtemplatex { } {
-    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc [wokinfo -p source:template.mamx KAS:dev:ros:WOKTclLib]]"
+#    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc [wokinfo -p source:template.mamx KAS:dev:ros:WOKTclLib]]"
+    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc /dn02/users_SUN/cascade/template.mamx]"
+
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:in:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc [wokinfo -p source:template.min KAS:dev:ros:WOKTclLib]]"
+    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc /dn01/KAS/dev/ros/src/WOKTclLib/template.min]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:in:readtemplatex { } {
-    puts stderr "Info : readtemplatex : Template for Makefile.in from [set loc [wokinfo -p source:template.minx KAS:dev:ros:WOKTclLib]]"
+    puts stderr "Info : readtemplatex : Template for Makefile.in from [set loc /dn01/KAS/dev/ros/src/WOKTclLib/template.minx]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
@@ -513,8 +515,9 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
     if { $tmplat == {} } {set tmplat [osutils:dsp:readtemplatex]}
     if { $fmtcpp == {} } {set fmtcpp [osutils:dsp:fmtcppx]}
     foreach f [osutils:tk:files $tkloc osutils:am:compilable 0] {
-        set tf [file rootname [file tail $f]]  
+        set tf [file rootname [file tail $f]]   
         set fp [open [set fdsp [file join $dir ${tf}.dsp]] w]
+        puts $fdsp
         fconfigure $fp -translation crlf
         set l_compilable [osutils:dsp:compilable]
         regsub -all -- {__XQTNAM__} $tmplat $tf  temp0
@@ -541,14 +544,16 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	    }
 	 }
        }
-       if {[wokparam -v %WOKSteps_exec_link $tkloc] == "#WOKStep_DLLink(exec.tks)"} {
-	   set tkused [concat $tkused "\/dll"]  
-           regsub -all -- {__DEST__} $temp0 "dll" temp1 
+       if {[wokparam -v %WOKSteps_exec_link $tkloc] == "#WOKStep_DLLink(exec.tks)"} { 
+           set tkused [concat $tkused "\/dll"]
+           regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
+           regsub -all -- {__COMPOPTD__} $temp1 "/\MDd" temp2 
        } else {
-	   regsub -all -- {__DEST__} $temp0 "bin" temp1
+	   regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
+	   regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
        }
        puts "$tf requires  $tkused"
-       regsub -all -- {__TKDEP__} $temp1  $tkused temp2
+       regsub -all -- {__TKDEP__} $temp2  $tkused temp3
        set files ""
        ;#set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
        ;#foreach f $lsrc {
@@ -565,8 +570,8 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	}
 	;#}
     
-   regsub -all -- {__FILES__} $temp2 $files temp3
-    puts $fp $temp3
+   regsub -all -- {__FILES__} $temp3 $files temp4
+    puts $fp $temp4
     close $fp
 	set fout [lappend fout $fdsp]
     }
@@ -584,6 +589,7 @@ proc osutils:tk:mkam { dir tkloc } {
 	puts stderr "osutils:tk:mkam : Error. File PACKAGES not found for toolkit $tkloc."
 	return {}
     }
+
     set tmplat [osutils:am:readtemplate]
     set lpkgs  [osutils:justunix [wokUtils:FILES:FileToList $pkgs]]
     set close  [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
@@ -628,28 +634,28 @@ proc osutils:tk:mkam { dir tkloc } {
 
     catch { unset temp0 temp1 temp2 temp3 temp4 temp5 temp6 temp7}
 
-    #set tmplat [osutils:in:readtemplate]
+    set tmplat [osutils:in:readtemplate]
     
-    #regsub -all -- {__TKNAM__} "$tmplat" "$tkloc"   temp0
-    #if { $close != {} } {
-	#set dpncies  [osutils:in:__DEPENDENCIES__ $close]
-    #} else {
+    regsub -all -- {__TKNAM__} "$tmplat" "$tkloc"   temp0
+    if { $close != {} } {
+	set dpncies  [osutils:in:__DEPENDENCIES__ $close]
+    } else {
 	set dpncies ""
-    #}
-    #regsub -all -- {__DEPENDENCIES__} "$temp0" "$dpncies" temp1
+    }
+    regsub -all -- {__DEPENDENCIES__} "$temp0" "$dpncies" temp1
 
-    #set objects  [osutils:in:__OBJECTS__ $lobj]
-    #regsub -all -- {__OBJECTS__} "$temp1" "$objects" temp2
-    #set amdep    [osutils:in:__AMPDEP__ $lobj]
-    #regsub -all -- {__AMPDEP__} "$temp2" "$amdep" temp3
-    #set amdeptrue [osutils:in:__AMDEPTRUE__ $lobj]
-    #regsub -all -- {__AMDEPTRUE__} "$temp3" "$amdeptrue" temp4
+    set objects  [osutils:in:__OBJECTS__ $lobj]
+    regsub -all -- {__OBJECTS__} "$temp1" "$objects" temp2
+    set amdep    [osutils:in:__AMPDEP__ $lobj]
+    regsub -all -- {__AMPDEP__} "$temp2" "$amdep" temp3
+    set amdeptrue [osutils:in:__AMDEPTRUE__ $lobj]
+    regsub -all -- {__AMDEPTRUE__} "$temp3" "$amdeptrue" temp4
 ;#  so easy..    
-    #regsub -all -- {__MAKEFILEIN__} "$temp4" "$MakeFile_am" MakeFile_in
+    regsub -all -- {__MAKEFILEIN__} "$temp4" "$MakeFile_am" MakeFile_in
 
-    #wokUtils:FILES:StringToFile "$MakeFile_in" [set fmin [file join $dir Makefile.in]]
-    return [list $fmam]
-    #return [list $fmam $fmin]
+    wokUtils:FILES:StringToFile "$MakeFile_in" [set fmin [file join $dir Makefile.in]]
+
+    return [list $fmam $fmin]
 }
 ;#
 ;# Create in dir the Makefile.am associated with toolkit tkloc.
@@ -987,12 +993,12 @@ proc TESTAM { {root /dn04/OS/OCC/RELEASE/ros/adm/make} } {
 	puts " toolkit: $tkloc ==> [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]"
 	wokUtils:FILES:mkdir $root/$tkloc
 	osutils:tk:mkam $root/$tkloc $tkloc 
-	#osutils:mkdsp $root/$tkloc $tkloc 
+	#osutils:mkdsp $root $tkloc 
     }
     set ltk [w_info  -T executable OS:OCC:RELEASE]
     foreach tkloc $ltk {
 	wokUtils:FILES:mkdir $root/$tkloc
 	osutils:tk:mkamx $root/$tkloc $tkloc 
-#	osutils:mkdspx $root/$tkloc $tkloc 
+	#osutils:mkdspx $root $tkloc 
     }
 }
