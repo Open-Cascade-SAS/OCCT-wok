@@ -1,0 +1,43 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.2.5-15 i686) [Netscape]">
+</head>
+<body>
+&nbsp;
+<br><u>1.2 How to install WOK on Unix/Linux platform?</u>
+<p>WOK is available as a download archive&nbsp; &lt;here> which contains
+run time for SunOS, IRIX, Linux,AIX,HP-UX platform.
+<p>a) Download the archive.
+<p>b) Restore the files (say in your directory /home/me) :
+<br>&nbsp;&nbsp;&nbsp; % gzip -d WOKxxx.tar.gz | tar xf -
+<br>&nbsp;&nbsp;&nbsp; This will create a directory tree rooted at /home/me/wok-K4-5
+<p>c) Configure WOK so that its administration files will be located in
+&lt;/home/me/wokentities>.
+<br>&nbsp;&nbsp;&nbsp; % cd /home/me/wok-K4-5
+<br>&nbsp;&nbsp;&nbsp; % wokcfg configure&nbsp; /home/me/wokentities ~/wok
+<p>&nbsp;&nbsp; This will create the directory /home/me/entities if it
+does not exist, then create
+<br>&nbsp;&nbsp;&nbsp; a c-shell executable file named~/wok. This file
+will be your wok launcher.
+<p>&nbsp;d) Insert in your ~/.tclshrc the lines listed in the file /home/me/wok-C40/site/tclshrc_Wok.
+<br>&nbsp;&nbsp;&nbsp; This file is sourced by the tclsh shell at the beginning
+of a session.
+<br>&nbsp;&nbsp;&nbsp; (See tcl documentation for more information about
+the .tclshrc file.)
+<p>&nbsp;e) Once configured, you need to create minimal entities and tell
+WOK where to
+<br>&nbsp;&nbsp;&nbsp; physically create them. The following command setup
+WOK environment so that they will be
+<br>&nbsp;&nbsp;&nbsp; implemented under the directory /home/me/workarea.
+These entities are a factory
+<br>&nbsp;&nbsp;&nbsp; (named&nbsp; KAS below), a workshop ( C40 ), and
+a workbench (ref).
+<p>&nbsp;&nbsp;&nbsp; % mkdir /home/me/workarea
+<br>&nbsp;&nbsp;&nbsp; % cd ~
+<br>&nbsp;&nbsp;&nbsp; % ./wok setup&nbsp; /home/me/workarea KAS C40 ref
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

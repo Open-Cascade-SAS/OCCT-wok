@@ -1,0 +1,106 @@
+
+ Section A) of this paper is the Unix guidelines for installing 
+ WOK on  SunOS, Linux, HP-UX and IRIX systems.
+
+ 
+
+
+PRE-REQUISITES:
+---------------
+
+ On SunOS and IRIX WOK requires at least Tcl 7.5, Tclx 7.5.1 and Tk 4.1.
+ On Linux you can use Tcl 8.0 or later.
+ We suppose that on SunOS and IRIX, tcltk is installed in /usr/tcltk, and in /usr on Linux
+ If it is not the case, modify the TCLHOME variable in the file /home/me/wok-C40/site/wokcfg.
+ (We suppose you have downloaded this tarball in /home/me)
+
+A) INSTALLATION on Unix like systems.
+-------------------------------------
+
+ This section assumes that you have never installed WOK on your system. Performing the
+ four following steps will install WOK and create a minimal environment for working.
+
+ 1. From the current directory where this README is located, move to the sub-directory
+    site. 
+    % cd /home/me/wok-C40/site
+
+ 2. Configure WOK so that its administration files will be located in 
+    </home/me/wokentities>. You do this by typing:
+
+    % ./wokcfg configure /home/me/wokentities ~/wok
+
+    This will create the directory /home/me/entities if it does not exist, then create
+    a c-shell executable file ~/wok. This file will be your wok launcher. This file is 
+    used in the next step.
+
+ 3. Insert in your ~/.tclshrc the lines listed in the file /home/me/wok-C40/site/tclshrc_Wok.
+    This file is sourced by the tclsh shell at the beginning of a session.
+    (See tclsh documentation for more information about the .tclshrc file.)
+
+    At this point either you want to create WOK entitites or import files from a previously Cascade 
+    source download. To create new entities from scratch execute step 4., to import files execute 
+    step 5.
+
+ 4. Once configured, you can create minimal entities and tell WOK where to
+    physically create them. The following command setup WOK environment so that they will be 
+    implemented under the directory /home/me/workarea. These entities are a factory 
+    (named  KAS below), a workshop ( say C40 ), and a workbench (ref).
+	
+    % mkdir /home/me/workarea
+    % cd ~
+    % ./wok setup /home/me/workarea KAS C40 ref
+
+
+ 5. You perform this step if you want to use WOK on a previously Cascade source download. 
+
+    % mkdir /home/me/workarea
+    % cd ~
+    % ./wok import /home/me/workarea KAS C40 ref /somewhere/source/downloaded/CAS3.0
+        or if you have the variable CASROOT already pointing to this location :
+    % ./wok import /home/me/workarea KAS C40 ref $CASROOT
+	
+    This will create and populate the workbench KAS:C40:ref with all development units downloaded in
+    directory /somewhere/source/downloaded/CAS3.0. You can build them using the WOK commands umake 
+    and wprocess. See documentation for details.
+
+
+ 6. Then running wok and accessing previously created entities looks like this:
+
+    % ~/wok
+    tclsh> wokcd KAS:C40:ref
+    KAS:C40:ref>
+
+    At this point, you run wok by using the above created command ~/wok. No additional 
+    operation is required.
+    Note that the wok procedure can be placed in any directory listed in your path. 
+    It can also be published to a set of developers by placing it in a shared location.
+
+
+B) INSTALLATION on WindowsNT.
+-----------------------------
+
+ We suppose that you have doanloaded the zip archive for WOK in directory W:\wok-C31
+
+    1. Open a MS-DOS command console and set the current directory as follow
+    
+      W:> cd wok-C31\site
+
+    2. Configure WOK so that its administration files will be located 
+       in directory W:/home/me/wokentities. (IMPORTANT : You must create the 
+       directories W:/home/me/entities using the explorer or the command mkdir)
+       You can now issue the following command (Note precise usage of / instead of \ below):
+
+       W:\site> wokcfg.bat configure W:/wok-C31 W:/home/me/wokentities w:/home/me/wok.bat
+
+       This will create the file w:/home/me/wok, your wok launcher.
+
+    3. Tell WOK where to physically create entities. The following command setup WOK so that they will be 
+       implemented under the directory W:/home/me/wokarea 
+       (IMPORTANT : Create directory W:/home/me/wokarea before)
+
+       W:\site> wokcfg.bat setup W:/wok-C31 W:/home/me/wokarea
+
+    4. You can now use the wok.bat launcher to create entities.
+       W:\home\me\wok.bat
+       tclsh> source $env(WOKHOME)/site/CreateFactory.tcl
+       tclsh> CreateFactory W:/home/me/wokarea KAS C30 ref /dev/null

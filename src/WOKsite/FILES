@@ -1,0 +1,15 @@
+srcinc:::CreateFactory.tcl
+srcinc:::WOKSESSION.edl
+srcinc:::DEFAULT.edl
+srcinc:::FILES
+srcinc:::InstallJava.csh
+srcinc:::InstallMesa.csh
+srcinc:::InstallTcl.csh
+srcinc:::examples.bck.Z
+srcinc:::tclshrc_Wok
+srcinc:::wokcfg.bat
+srcinc:::wokcfg
+srcinc:::INSTALL
+srcinc:::wokfac1.html
+srcinc:::wokfac2.html
+srcinc:::wokfac3.html
