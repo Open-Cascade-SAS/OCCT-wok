@@ -43,6 +43,4 @@ is
     Stdout(myclass) returns FDescr from WOKUnix;
     Stderr(myclass) returns FDescr from WOKUnix;
     
-fields 
-    myFILE : Address from Standard;
 end;

@@ -21,6 +21,9 @@
 #elif SOLARIS
 #include <sys/param.h>
 #define MAX_PIPE_SIZE PIPE_MAX
+#elif defined(LIN)
+#include <limits.h>
+#define MAX_PIPE_SIZE PIPE_BUF
 #endif
 
 

@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#ifndef HPUX
+#ifdef LIN
+#include <bits/sigset.h>
+#include <signal.h>
+#elif !defined(HPUX)
 #include <siginfo.h>
 #endif
 
@@ -79,6 +82,9 @@ void WOKUnix_Signal::Arm(const WOKUnix_SigHandler& ahandler)
   act.sa_mask.__sigbits[2]      = 0;
   act.sa_mask.__sigbits[3]      = 0;
   act.sa_flags             = 0;
+#elif defined(LIN)
+  sigemptyset(&act.sa_mask) ;
+  act.sa_flags   = 0;
 #else
   act.sa_mask    = 0;
   act.sa_flags   = 0;

@@ -26,6 +26,10 @@ extern int errno;
 
 const OSD_WhoAmI Iam = OSD_WFile;
 
+#ifdef LIN
+static FILE* _wokunix_fdopen ( int );
+#endif  // LIN
+
 //=======================================================================
 //function : WOKUnix_FDescr
 //purpose  : 
@@ -39,7 +43,14 @@ WOKUnix_FDescr::WOKUnix_FDescr()
 //function : WOKUnix_FDescr
 //purpose  : 
 //=======================================================================
-WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd) {myFileChannel = afd;myFILE = fdopen(afd, "r");}
+WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd) {
+ myFileChannel = afd;
+#ifndef LIN
+ myFILE = fdopen(afd, "r");
+#else
+ myFILE = _wokunix_fdopen ( afd );
+#endif  // LIN
+}
 
 //=======================================================================
 //function : WOKUnix_FDescr
@@ -48,8 +59,12 @@ WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd) {myFileChannel = afd;
 WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd, const Handle(TCollection_HAsciiString)& apath)
 {
   myFileChannel = afd;
+#ifndef LIN
   myFILE = fdopen(afd, "r");
-  SetPath(apath->String());
+#else
+  myFILE = _wokunix_fdopen ( afd );
+#endif  // LIN
+ SetPath(apath->String());
 }
 
 //=======================================================================
@@ -389,8 +404,40 @@ WOKUnix_FDescr WOKUnix_FDescr::Stderr()
   return StderrFD;
 }
 
+#ifdef LIN
+static FILE* _wokunix_fdopen ( int fd ) {
 
+ char* fdMode;
+ int   mode = fcntl ( fd, F_GETFL );
 
+ switch ( mode & O_ACCMODE ) {
 
+  case O_RDONLY:
 
+   fdMode = "r";
+
+  break;
+
+  case O_WRONLY:
+
+   fdMode = "w";
+
+  break;
+
+  case O_RDWR:
+
+   fdMode = "r+";
+
+  break;
+
+ }  // end switch
+
+ FILE* retVal = fdopen ( fd, fdMode );
+
+ if ( retVal == NULL ) perror ( "fdopen" );
+
+ return retVal;
+
+}  // end _wokunix_fdopen
+#endif  // LIN
 
