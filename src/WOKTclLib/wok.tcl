@@ -41,7 +41,12 @@ proc iwok { args } {
     set IWOK_GLOBALS(canvas,height) 1200
     set IWOK_GLOBALS(order) 1
     set IWOK_GLOBALS(term,started) 0
-    tix addbitmapdir [set IWOK_GLOBALS(maps) $env(WOK_LIBRARY)]
+    if [file exists [file join $env(WOK_LIBRARY) images]] {
+	tix addbitmapdir [set IWOK_GLOBALS(maps) [file join $env(WOK_LIBRARY) images]]
+    } else {
+	tix addbitmapdir [set IWOK_GLOBALS(maps) $env(WOK_LIBRARY)]
+    }
+    
     set IWOK_GLOBALS(layout) 0
     set IWOK_GLOBALS(layout,update) 1
     set IWOK_GLOBALS(font)     [tix option get fixed_font]
