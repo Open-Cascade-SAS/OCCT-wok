@@ -67,7 +67,7 @@ $ %ExternRef \
 @if( %Station == "sun" ) then 
 
   @template LD_Footer (  ) is
-      $ -lC -lthread -lc ;
+      $ -lC -lc ;
   @end;
 
 @endif;

@@ -57,7 +57,7 @@ $ -all %LibDir/lib%LibName.a -none \
   @end;
 
   @template LINKSHR_Footer ( ) is
-    $ -lC -lthread -lc ;
+    $ -lC -lc ;
   @end;
 
 @endif;

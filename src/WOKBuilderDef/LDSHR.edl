@@ -62,7 +62,7 @@ $ -all %LibDir/lib%LibName.a -none \
   @end;
 
   @template LDSHR_Footer ( ) is
-    $ -lC -lthread -lc ;
+    $ -lC -lc ;
   @end;
 
 @endif;
