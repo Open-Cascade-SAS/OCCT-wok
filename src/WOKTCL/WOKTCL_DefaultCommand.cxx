@@ -4,22 +4,11 @@
 //		<jga@cobrax.paris1.matra-dtv.fr>
 
 
+#include <tcl.h>
 
 #ifdef WNT
-# ifdef TCL_VERSION_75
-#  pragma comment( lib, "tcl75.lib" )
-#  pragma message( "Information: tcl75.lib is using as TCL library" )
-#  include <tcl75.h>
-# elif defined( TCL_VERSION_76 )
-#  pragma comment( lib, "tcl76.lib" )
-#  pragma message( "Information: tcl76.lib is using as TCL library" )
-# else
-#  pragma comment( lib, "tcl76i.lib" )
-#  pragma message( "Information: tcl76i.lib is using as TCL library" )
-# endif  // TCL75
+#  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
 #endif  // WNT
-
-#include <tcl.h>
 
 #ifndef WNT
 #include <strstream.h>

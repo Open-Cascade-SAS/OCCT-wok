@@ -15,10 +15,6 @@
 
 #include <WOKTclTools_Interpretor.hxx>
 
-#if defined( WNT ) && defined( TCL_VERSION_75 )
-# include <tcl75.h>
-#endif // WNT
-
 #include <tcl.h>
 
 //extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;

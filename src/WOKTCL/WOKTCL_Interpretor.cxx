@@ -3,11 +3,9 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#if defined( WNT ) && defined( TCL_VERSION_75 )
-# include <tcl75.h>
-#endif // WNT
-
 #include <tcl.h>
+
+
 #ifndef WNT
 #include <strstream.h>
 #endif
