@@ -16,6 +16,10 @@
 #include <sys/time.h>
 #endif
 
+#ifdef AIX
+#include <strings.h>
+#endif
+
 #include <stdio.h>
  
 #include <Standard_ProgramError.hxx>

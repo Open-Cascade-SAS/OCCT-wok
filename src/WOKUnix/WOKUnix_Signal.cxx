@@ -9,7 +9,7 @@
 #ifdef LIN
 #include <bits/sigset.h>
 #include <signal.h>
-#elif !defined(HPUX)
+#elif !defined(HPUX)  && !defined(AIX)
 #include <siginfo.h>
 #endif
 
@@ -86,7 +86,11 @@ void WOKUnix_Signal::Arm(const WOKUnix_SigHandler& ahandler)
 #elif defined(LIN)
   sigemptyset(&act.sa_mask) ;
   act.sa_flags   = 0;
-#else
+#elif defined(AIX)
+  act.sa_mask.losigs   = 0;
+  act.sa_mask.hisigs   = 0;
+  act.sa_flags                = 0;
+ #else
   act.sa_mask    = 0;
   act.sa_flags   = 0;
 #endif

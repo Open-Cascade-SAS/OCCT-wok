@@ -24,6 +24,9 @@
 #elif defined(LIN)
 #include <limits.h>
 #define MAX_PIPE_SIZE PIPE_BUF
+#elif defined(AIX)
+#include <limits.h>
+#define MAX_PIPE_SIZE PIPE_BUF
 #endif
 
 

@@ -12,6 +12,10 @@
 #include <sys/time.h>
 #endif
 
+#ifdef AIX
+#include <strings.h>
+#endif
+
 #include <fstream.h>
 #include <stdio.h>
 

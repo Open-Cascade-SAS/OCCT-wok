@@ -27,7 +27,7 @@
 
 /* JGA : to compile on Solaris */
 
-#if !defined(HPUX) && !defined (WNT)
+#if !defined(HPUX) && !defined (WNT) && !defined (AIX)
 #include <alloca.h>
 
 #else
@@ -1094,7 +1094,7 @@ int re_search_2 (
        pbufp -> can_be_null == 0
   ) return -1;
 
-  val = re_match_2 ( pbufp, string1, size1, string2, size2, startpos, regs, mstop );
+  val = re_match_2 ( pbufp,(_TUCHAR*)  string1, size1,(_TUCHAR*)  string2, size2, startpos, regs, mstop );
 
   /* Propagate error indication if worse than mere failure.  */
   if ( val == -2 ) return -2;
@@ -1127,7 +1127,7 @@ int re_match (
      PRE_REGISTERS regs
     ) {
 
- return re_match_2 ( pbufp, NULL, 0, string, size, pos, regs, size );
+ return re_match_2 ( pbufp, NULL, 0,(_TUCHAR*) string, size, pos, regs, size );
 
 }  /* end re_match */
 /***/
