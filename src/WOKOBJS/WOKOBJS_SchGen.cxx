@@ -322,6 +322,7 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 	  ErrorMsg << "WOKOBJS_SchGen::Execute" << "Failed    : " << Unit()->Name() << endm;          
 	  SetFailed();
 	  break;
+         default: break;
 	}
     }
   ashell->UnLock();
