@@ -61,8 +61,8 @@
    $%CSF_CXX_COMPILER  %LDSHR_Opt   %LINKSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LINKSHR_Footer () is
-    $ -lC -lc ;
+  @template LINKSHR_Footer (%STLPortLib) is
+    $ -lC -lc %STLPortLib;
     $ set ld_status=$status
     $ if ( $?LD_LIBRARY_PATH ) then
     $  set ld_library_path=$LD_LIBRARY_PATH
@@ -118,8 +118,8 @@
    $  -all -objectlist %LD_ObjList -none \
   @end;
 
-  @template LINKSHR_Footer ( %Station ) is
-    $-lm ;
+  @template LINKSHR_Footer ( %Station, %STLPortLib) is
+    $-lm %STLPortLib;
     $ set ld_status=$status
     --$ /usr/bin/rm -f so_locations
     --$ if ( $?LD_LIBRARY_PATH ) then
@@ -166,8 +166,8 @@
    $-Wl,-c%LD_ObjList.o \
   @end;
 
-  @template LINKSHR_Footer ( %Station ) is
-   $-L/usr/lib/aCC -ldld -L/usr/lib -lM -lstd -lCsup -lstream -lcl -lc -lm \
+  @template LINKSHR_Footer ( %Station, %STLPortLib ) is
+   $-L/usr/lib/aCC -ldld -L/usr/lib -lM -lstd -lCsup -lstream -lcl -lc -lm %STLPortLib\
    $;
    $ set ld_status=${status}
    --$ if ( $?SHLIB_PATH ) then
@@ -219,8 +219,8 @@
    $/usr/bin/g++ %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LINKSHR_Footer () is
-   $ -lc;
+  @template LINKSHR_Footer (%STLPortLib) is
+   $ -lc -lpthread %STLPortLib ;
    $ set ld_status=$status
    $ if ( $?LD_LIBRARY_PATH ) then
    $  set ld_library_path=$LD_LIBRARY_PATH
@@ -296,9 +296,9 @@
    $ -p 0 \
   @end;
 
-  @template LINKSHR_Footer ( %Target, %LibName) is
+  @template LINKSHR_Footer ( %Target, %LibName, %STLPortLib ) is
     $ -e${allLibPath}/lib%LibName.imp \
-    $ -bnoentry ;
+    $ -bnoentry %STLPortLib;
 ---    $ set ld_status=${status}
 --    $ echo "#\!lib%LibName"               > ${allLibPath}/lib%LibName.exp
 --    $ cat ${allLibPath}/lib%LibName.imp  >> ${allLibPath}/lib%LibName.exp
