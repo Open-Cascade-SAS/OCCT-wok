@@ -24,7 +24,9 @@
 #endif //WNT
 
 static void FASTCALL _print_output ( Standard_CString, WOKBuilder_Tool* );
+#ifdef DEB
 static void FASTCALL _delete_file  (  const Handle( TCollection_HAsciiString )&  );
+#endif
 //---> EUG4YAN
 Standard_IMPORT Standard_Boolean g_fCompOrLnk;
 //<--- EUG4YAN
