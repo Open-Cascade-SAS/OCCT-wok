@@ -8,7 +8,7 @@
 # include <io.h>
 #else
 # include <unistd.h>
-#endif  // WNT
+#endif 
 
 int DELIVERYlineno;
 
