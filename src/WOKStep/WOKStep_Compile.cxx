@@ -3,7 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#include <unistd.h>
 #include <fstream.h>
 
 #include <TCollection_HAsciiString.hxx>

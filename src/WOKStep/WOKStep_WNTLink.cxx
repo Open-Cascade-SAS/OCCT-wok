@@ -266,7 +266,10 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
 	  stubName = Unit()->Params().Eval(WOKernel_IsToolkit(Unit()) ? "%STUBS_tkMain" : "%STUBS_uMain");
 	  dwLen    = ExpandEnvironmentStrings(stubName->ToCString(), NULL, 0);
 
-	  char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
+//POP
+	  char* buffer = (char *) Standard::Allocate(dwLen+1);
+//	  char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
+//POP
 	  memset(buffer, 0, dwLen+1);
 	  
 	  ExpandEnvironmentStrings(stubName->ToCString(), buffer, dwLen);
@@ -278,7 +281,10 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
 
 	  buff     = new TCollection_HAsciiString(buffer);
 
-	  aStorageManager.Free((void*&)buffer,dwLen+1);
+//POP
+	  Standard::Free((void*&)buffer,dwLen+1);
+//	  aStorageManager.Free((void*&)buffer,dwLen+1);
+//POP
 	  seq->Append(buff);
 
 	}
@@ -287,7 +293,11 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
       
       dwLen = ExpandEnvironmentStrings(stubName->ToCString(), NULL, 0);
 
-      char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
+//POP 
+      char* buffer = (char *) Standard::Allocate(dwLen+1);
+//      char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
+//POP
+
 	  memset(buffer, 0, dwLen+1);
 	  
       ExpandEnvironmentStrings(stubName->ToCString(), buffer, dwLen);
@@ -297,7 +307,10 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
        buffer[ 0 ] = buffer[ 1 ] = '\\';
 
 	  buff  = new TCollection_HAsciiString(buffer);
-	  aStorageManager.Free((void*&)buffer,dwLen+1);
+//POP
+	  Standard::Free((void*&)buffer,dwLen+1);
+//	  aStorageManager.Free((void*&)buffer,dwLen+1);
+//POP
 	  seq->Append(buff);
       
 
