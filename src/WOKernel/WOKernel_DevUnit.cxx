@@ -733,7 +733,8 @@ Handle(WOKernel_File) WOKernel_DevUnit::ImplDepFile(const Handle(WOKernel_Locato
 //=======================================================================
 Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ReadImplDepFile(const Handle(WOKUtils_Path)& afile,
 									  const Handle(WOKernel_Locator)& alocator,
-									  const Standard_Boolean oldWokFile) const
+//									  const Standard_Boolean oldWokFile) const
+									  const Standard_Boolean ) const
 {
   Handle(TColStd_HSequenceOfHAsciiString) result = new TColStd_HSequenceOfHAsciiString;
   Handle(TCollection_HAsciiString)        astr;
