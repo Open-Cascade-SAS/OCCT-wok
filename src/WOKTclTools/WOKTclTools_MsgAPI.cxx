@@ -40,7 +40,6 @@ Standard_Integer WOKTclTools_MsgAPI::Set(const Standard_Integer argc, const WOKT
   Standard_Boolean error     = Standard_False;
   Standard_Boolean verbose   = Standard_False;
   Standard_Boolean Verbose   = Standard_False;
-  Standard_Boolean LogToFile = Standard_False;
   Handle(TCollection_HAsciiString) logfile;
   Handle(TCollection_HAsciiString) VClass;
 

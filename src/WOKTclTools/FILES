@@ -11,4 +11,3 @@ WOKTclTools_WOKSteps.edl
 WOKTclTools_Replace.tcl
 WOKTclTools_Interpretor_proto.hxx
 ENV.edl
-EXTERNLIB

@@ -664,7 +664,7 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 					   const Standard_CString astr) const
 {
   Tcl_CmdInfo infoPtr;
-  Standard_Integer status;
+  Standard_Integer status = 0;
 
   if(EndMessageProc() != NULL)
     {

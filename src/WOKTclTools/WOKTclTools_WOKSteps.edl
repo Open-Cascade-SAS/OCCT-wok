@@ -1,8 +1,6 @@
-
-@ifnotdefined ( %WOKTclTools_WOKUMake_EDL) then
-@set %WOKTclTools_WOKUMake_EDL = "";
-
-@string %WOKSteps_XcppGroup += " xcpp.repl ";
-@set %WOKSteps_xcpp_repl = "*WOKTclTools_Replace(xcpp.header)";
-
+@ifnotdefined ( %MS_WOKSteps_EDL ) then
+ @set %MS_WOKSteps_EDL        = "";
+ @string %WOKSteps_XcppGroup += " xcpp.repl ";
+ @set %WOKSteps_xcpp_repl     = "*WOKTclTools_Replace(xcpp.header)";
 @endif;
+
