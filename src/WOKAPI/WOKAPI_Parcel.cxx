@@ -110,7 +110,7 @@ Standard_Boolean WOKAPI_Parcel::Declare(const WOKAPI_Session& ,
 					const Handle(WOKTools_HSequenceOfDefine)& defines,
 					const Standard_Boolean usedefaults)
 {
-  if(!myEntity->IsOpened()) myEntity->Open();
+  if(!myEntity.IsNull() && !myEntity->IsOpened()) myEntity->Open();
 
 
   Handle(WOKernel_Warehouse) theWarehouse = Handle(WOKernel_Warehouse)::DownCast(anesting.Entity());
