@@ -82,12 +82,18 @@ void WOKNT_PathIterator::Push(const WOKNT_FindData& data, const WOKNT_Handle& ha
 	  if(!myStack.IsEmpty())
 	    {
 	      if(myStack.Top() == INVALID_HANDLE_VALUE ) 
-		mymore = Standard_False;
+                {
+                  Pop();
+		  mymore = Standard_False;
+	        }
 	      else
 		mymore = Standard_True;
 	    }
 	  else
-	    mymore = Standard_False;
+            {
+              Pop();
+	      mymore = Standard_False;
+            }
 	}
     }
   else
@@ -130,7 +136,8 @@ void WOKNT_PathIterator::Next()
   if(myStack.Top()!=INVALID_HANDLE_VALUE && mymore) 
     {
       if(!IsDots(mydata.cFileName) && mydata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && myrecflag) 
-	Push(mydata, myStack.Top());
+        Push(mydata, myStack.Top());
+        if (!mymore) Pop(); 
       else
 	{
 	  if(!FindNextFile(myStack.Top(), &mydata))
