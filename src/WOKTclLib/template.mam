@@ -4,6 +4,10 @@ srcdir = @srcdir@
 VPATH = @srcdir@ : \
 __VPATH__
 
+AM_CXXGLAG = __CXXFLAG__
+
+AM_CFLAG = __CFLAG__
+
 INCLUDES = __EXTERNINC__ \
 -I@top_srcdir@/inc \
 __INCLUDES__

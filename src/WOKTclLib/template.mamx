@@ -8,9 +8,3 @@ INCLUDES =__EXTERNINC__ \
 -I@top_srcdir@/inc \
 -I@top_srcdir@/src/__XQTNAM__
 
-bin_PROGRAMS = __XQTNAM__
-
-__XQTNAM___SOURCES=__SOURCES__
-
-__XQTNAM___LDADD = \
-__LIBADD____EXTERNLIB__
