@@ -8,7 +8,9 @@
 #endif // WNT
 
 #include <tcl.h>
+#ifndef WNT
 #include <strstream.h>
+#endif
 
 #include <WOKTools_StringValue.hxx>
 #include <WOKTools_EnvValue.hxx>
