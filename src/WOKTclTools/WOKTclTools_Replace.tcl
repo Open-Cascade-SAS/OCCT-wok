@@ -49,20 +49,12 @@ proc WOKTclTools_Replace:Execute { unit args } {
 
 	regsub -all "/" " $source $target" $replstr  TheArgs
 
-        if { [file exist $target] } {
-	  set A [catch {eval "wokcmp $TheArgs"} result ]
-        } else {
-          set result 0 }
-	
-	if { ! $result } {
-	    msgprint -i -c "WOKTclTools_Replace::Execute" "Copy $source to $target"
-	    if { [file exist $target] && [wokparam -e %Station $unit] != "wnt" } {
+	 msgprint -i -c "WOKTclTools_Replace::Execute" "Copy $source to $target"
+	if { [file exist $target] && [wokparam -e %Station $unit] != "wnt" } {
 		eval exec "chmod u+w $target"
-	    }
-	    eval exec "$copycmd $TheArgs"
-	} else {
-	    msgprint -i -c "WOKTclTools_Replace::Execute" "No change in $source"
 	}
+	eval exec "$copycmd $TheArgs"
+
     }
     return 0;
 }
