@@ -49,7 +49,8 @@ WOKDFLT_MSDFLTExtractor::WOKDFLT_MSDFLTExtractor(const WOKUtils_Param& params)
 //function : GetTypeDepList
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKDFLT_MSDFLTExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& aname) const
+//Handle(TColStd_HSequenceOfHAsciiString) WOKDFLT_MSDFLTExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& aname) const
+Handle(TColStd_HSequenceOfHAsciiString) WOKDFLT_MSDFLTExtractor::GetTypeDepList(const Handle(TCollection_HAsciiString)& ) const
 {
   return new TColStd_HSequenceOfHAsciiString;
 }
@@ -59,7 +60,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKDFLT_MSDFLTExtractor::GetTypeDepList(
 //function : GetTypeMDate
 //purpose  : 
 //=======================================================================
-WOKUtils_TimeStat WOKDFLT_MSDFLTExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& aname) const
+//WOKUtils_TimeStat WOKDFLT_MSDFLTExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& aname) const
+WOKUtils_TimeStat WOKDFLT_MSDFLTExtractor::GetTypeMDate(const Handle(TCollection_HAsciiString)& ) const
 {
   WOKUtils_TimeStat atruc;
 
@@ -72,7 +74,8 @@ WOKUtils_TimeStat WOKDFLT_MSDFLTExtractor::GetTypeMDate(const Handle(TCollection
 //function : ExtractionStatus
 //purpose  : 
 //=======================================================================
-WOKBuilder_MSActionStatus WOKDFLT_MSDFLTExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& anaction)
+//WOKBuilder_MSActionStatus WOKDFLT_MSDFLTExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& anaction)
+WOKBuilder_MSActionStatus WOKDFLT_MSDFLTExtractor::ExtractionStatus(const Handle(WOKBuilder_MSAction)& )
 {
   return WOKBuilder_OutOfDate;
 }
