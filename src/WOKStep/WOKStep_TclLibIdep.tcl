@@ -30,7 +30,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
     scan $file "%\[^:\]:%\[^:\]:%\[^:\]"  Unit type name
     set packfile [woklocate -p $file $unit]
     
-    if {[clength $packfile] == 0} {
+    if {[string length $packfile] == 0} {
 	msgprint -e -c "WOKStep_TclLibIdep:Execute" "Could not locate PACKAGES for unit $unit"
 	return 1;
     } else {
@@ -39,7 +39,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
 	    if {$curud != ""} {	
 		set alluds($curud) 1
 		set impin [woklocate -p ${curud}:stadmfile:${curud}.ImplDep]
-		if {[clength $impin] == 0} {
+		if {[string length $impin] == 0} {
 		    msgprint -i "No ImplDep file for unit $curud"
 		} else {
 		    for_file adep $impin {

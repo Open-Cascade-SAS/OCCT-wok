@@ -165,7 +165,8 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 	      return;
 	    }
 	  
-	  for(Standard_Integer j=1; j<=udsoftk->Length(); j++)
+	  Standard_Integer j;
+	  for(j=1; j<=udsoftk->Length(); j++)
 	    {
 	      
 	      const Handle(WOKernel_DevUnit)& aunit = Locator()->LocateDevUnit(udsoftk->Value(j));

@@ -148,9 +148,10 @@ void WOKStep_TKReplace::LoadTKDefs()
 
   if(toolkits.IsNull())
     {
-      for(Standard_Integer i=1; i<=aseq->Length() && toolkits.IsNull(); i++)
+
+      for(i=1; i<=aseq->Length() && toolkits.IsNull(); i++)
 	{
-	  Handle(WOKernel_Workbench) abench = Unit()->Session()->GetWorkbench(aseq->Value(i));
+	  abench = Unit()->Session()->GetWorkbench(aseq->Value(i));
 	  
 	  if(!abench.IsNull())
 	    {

@@ -122,10 +122,10 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
   Handle(WOKMake_InputFile) InFile, InternFile;
   Handle(WOKMake_HSequenceOfInputFile) InFiles = new WOKMake_HSequenceOfInputFile;
 
-  for(Standard_Integer i=1; i<=execlist->Length(); i++)
+  Standard_Integer i;
+  for(i=1; i<=execlist->Length(); i++)
     {
       const Handle(WOKMake_InputFile)& infile = execlist->Value(i);
-
       if(!strcmp(infile->File()->Path()->ExtensionName()->ToCString(), ".In"))
 	{
 	  InFiles->Append(infile);
@@ -178,6 +178,7 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
 
     
   // le ImplDep
+
   Handle(TCollection_HAsciiString) aname  =  new TCollection_HAsciiString(Unit()->Name());
   if(!SubCode().IsNull())
     {
@@ -198,9 +199,11 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
   outidep->SetLocateFlag(Standard_True);
 
 
-  if(InternFile.IsNull() && InFiles->Length())
+
+  if(InternFile.IsNull() && (InFiles->Length()>0))
     { 
-      for(Standard_Integer i=1; i<=InFiles->Length(); i++)
+      Standard_Integer i;
+      for( i=1; i<=InFiles->Length(); i++)
 	{
 	  const Handle(WOKMake_InputFile)& InFile = InFiles->Value(i);
 
@@ -208,7 +211,8 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	  
 	  WOKMake_InputFile::ReadFile(InFile->File()->Path(), InLocator(), inmap);
 	  
-	  for(Standard_Integer j=1; j<=inmap.Extent(); j++)
+          Standard_Integer j;
+	  for(j=1; j<=inmap.Extent(); j++)
 	    {
 	      const Handle(WOKMake_InputFile)& depfile = inmap(j);
 	  
@@ -216,19 +220,24 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
 		{
 		  const Handle(WOKernel_File)& file = depfile->File();		  
 		  const Handle(TCollection_HAsciiString)& uname = Unit()->Session()->GetEntity(file->Nesting())->Name();
-		  
-		  if(!inresult.Contains(uname)) inresult.Add(uname);
+		  Standard_Boolean contains = inresult.Contains(uname);
+		  if(!contains) { 
+		    inresult.Add(uname);
+		  }
+
 		}
 	    }
 	  AddExecDepItem(InFile, outidep, Standard_True);
 	}
 
-      WOKTools_MapIteratorOfMapOfHAsciiString anit(inresult);
+      WOKTools_MapIteratorOfMapOfHAsciiString anit;
+      anit.Initialize(inresult);
       
       ofstream stream(idep->Path()->Name()->ToCString());
 
       while(anit.More())
 	{
+
 	  stream << anit.Key()->ToCString() << endl;
 	  anit.Next();
 	}
@@ -244,7 +253,8 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
       if(!internresult.IsNull())
 	{
 	  ofstream stream(idep->Path()->Name()->ToCString());
-	  for(Standard_Integer i=1; i<=internresult->Length(); i++)
+	  Standard_Integer i;
+	  for(i=1; i<=internresult->Length(); i++)
 	    {
 	      stream << internresult->Value(i)->ToCString() << endl;
 	    }

@@ -225,11 +225,13 @@ _TEST_BREAK();
 	      {
 		VerboseMsg << "WOKStep_Compile::Execute" 
 			   << compilable->Path()->Name() << " produces : " << endm;
-		for(i=1; i<=myiterator.Produces()->Length(); i++)
-		  {
-		    VerboseMsg << "WOKStep_Compile::Execute"
-			       << "\t\t" << myiterator.Produces()->Value(i)->Path()->Name() << endm;
-		  }
+		if (!myiterator.Produces().IsNull()) {
+		  for(i=1; i<=myiterator.Produces()->Length(); i++)
+		    {
+		      VerboseMsg << "WOKStep_Compile::Execute"
+			<< "\t\t" << myiterator.Produces()->Value(i)->Path()->Name() << endm;
+		    }
+		}
 	      }
 	  }
 
@@ -274,6 +276,8 @@ _TEST_BREAK();
            }  // end if
           
           }  // end if
+
+
 //---> EUG4YAN
  if ( !g_fCompOrLnk ) {
 //<--- EUG4YAN

@@ -17,12 +17,12 @@ proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
 
     set pk [wokinfo -n $unit]
     set nameFROMFRONT [woklocate -p ${pk}:source:FROM_FRONTAL]
-    if {[clength $nameFROMFRONT] == 0} {
+    if {[string length $nameFROMFRONT] == 0} {
 	msgprint -e "Unable to locate file FROM_FRONTAL"
 	return 1
     }
     set nameCOMP [woklocate -p ${pk}:source:COMPONENTS]
-    if {[clength $nameCOMP] == 0} {
+    if {[string length $nameCOMP] == 0} {
 	msgprint -e "Unable to locate file COMPONENTS"
 	return 1
     }
@@ -176,12 +176,12 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 
     set pk [wokinfo -n $unit]
     set nameFROMFRONT [woklocate -p ${pk}:source:FROM_FRONTAL]
-    if {[clength $nameFROMFRONT] == 0} {
+    if {[string length $nameFROMFRONT] == 0} {
 	msgprint -e "Unable to locate file FROM_FRONTAL"
 	return 1
     }
     set nameCOMP [woklocate -p ${pk}:source:COMPONENTS]
-    if {[clength $nameCOMP] == 0} {
+    if {[string length $nameCOMP] == 0} {
 	msgprint -e "Unable to locate file COMPONENTS"
 	return 1
     }
@@ -303,7 +303,7 @@ proc WOKStep_frontal:ExecuteMessages { unit args } {
 
     set hasmess 1
 
-    if {[clength $nameMESS] == 0} {
+    if {[string length $nameMESS] == 0} {
 	msgprint -i "Unable to locate file MESSAGES"
 	msgprint -i "No messages compilation done"
 	msgprint -i "Catenate message files"
@@ -419,7 +419,7 @@ proc WOKStep_frontal:ExecuteMessages { unit args } {
 	wokUtils:FILES:copy $fileoutmsg $fileoutmess
 	set torecompute 1
     }
-    if {[clength [woklocate -p ${pk}:cmpmsgfile:${pk}_Cmp.us]] == 0} {
+    if {[string length [woklocate -p ${pk}:cmpmsgfile:${pk}_Cmp.us]] == 0} {
 	set torecompute 1
     }
     if {$hasmess} {
