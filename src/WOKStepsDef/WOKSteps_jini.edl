@@ -1,0 +1,34 @@
+
+
+@ifnotdefined (%WOKSteps_jini_EDL) then
+
+  @set %WOKSteps_jini_EDL = "";
+
+  @set %WOKSteps_SrcGroup = " src ";
+
+  @set %WOKSteps_src      = "*WOKStep_CDLUnitSource";
+
+
+  @set %WOKSteps_XcppGroup   = " xcpp.fill xcpp.client xcpp.javac xcpp.javah ";
+  @set %WOKSteps_xcpp_fill   = "WOKStep_MSFill(src)";
+  @set %WOKSteps_xcpp_client = "WOKStep_JiniExtract(xcpp.fill)";
+  @set %WOKSteps_xcpp_javac  = "WOKStep_JavaCompile(xcpp.client)";
+  @set %WOKSteps_xcpp_javah  = "WOKStep_JavaHeader(xcpp.client)";
+
+
+  @set %WOKSteps_ObjGroup = " obj.comp ";
+  @set %WOKSteps_obj_comp  = "WOKStep_Compile(xcpp.client)";
+
+  @set %WOKSteps_DepGroup  = "obj.idep";
+  @set %WOKSteps_obj_idep  = "WOKStep_ImplementationDep(obj.comp)";
+
+  @set %WOKSteps_ExecGroup = " exec.list exec.tks exec.link ";
+
+  @set %WOKSteps_exec_list = "*WOKStep_TransitiveLinkList(obj.comp,obj.idep)";
+  @set %WOKSteps_exec_tks  = "*WOKStep_TransitiveTKReplace(exec.list)";
+  @set %WOKSteps_exec_link = "*WOKStep_LibLink(exec.tks)";
+
+  @set %WOKSteps_jini_LinksWith = "";
+
+@endif;
+
