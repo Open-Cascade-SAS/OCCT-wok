@@ -1,15 +1,15 @@
 
 
-proc WOKTclTools_Replace::AdmFileType {} {
+proc WOKTclTools_Replace:AdmFileType {} {
     return "dbadmfile";
 }
 
-proc WOKTclTools_Replace::OutputDirTypeName {} {
+proc WOKTclTools_Replace:OutputDirTypeName {} {
     return "dbtmpfile";
 }
 
 
-proc WOKTclTools_Replace::HandleInputFile { ID } { 
+proc WOKTclTools_Replace:HandleInputFile { ID } { 
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
 
@@ -21,7 +21,7 @@ proc WOKTclTools_Replace::HandleInputFile { ID } {
     }
 }
 
-proc WOKTclTools_Replace::Execute { unit args } {
+proc WOKTclTools_Replace:Execute { unit args } {
     
     global tcl_interactive
 
@@ -50,13 +50,10 @@ proc WOKTclTools_Replace::Execute { unit args } {
 	regsub -all "/" " $source $target" $replstr  TheArgs
 
         if { [file exist $target] } {
-	  set A [catch {eval exec "wokcmp $TheArgs"} result ]
-	  if { $result != "" } {
-	    set result 0
-	  } else { set result 1 }
+	  set A [catch {eval "wokcmp $TheArgs"} result ]
         } else {
           set result 0 }
-
+	
 	if { ! $result } {
 	    msgprint -i -c "WOKTclTools_Replace::Execute" "Copy $source to $target"
 	    if { [file exist $target] && [wokparam -e %Station $unit] != "wnt" } {
