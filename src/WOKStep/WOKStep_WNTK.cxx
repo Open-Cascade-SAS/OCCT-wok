@@ -99,7 +99,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
    
    Handle(TColStd_HSequenceOfHAsciiString) unitSeq = aFile.Read();
    
-   Unit()->Params().Set("%DebugMode",Unit()->Session()->DebugMode() ? "True" : "False");
+   Unit()->Params().Set("%DebugMode",(char*)(Unit()->Session()->DebugMode() ? "True" : "False"));
 
    Handle(WOKernel_File) stubFile = new WOKernel_File(new TCollection_HAsciiString("__stub.c"), Unit(),
 						      Unit()->GetFileType("object"));
