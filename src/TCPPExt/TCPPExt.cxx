@@ -23,7 +23,8 @@ Handle(TColStd_HSequenceOfHAsciiString) TCPP_TemplatesUsed()
 }
 
 Handle(EDL_API)&  TCPP_LoadTemplate(const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,
-				    const Handle(TCollection_HAsciiString)& outdir)
+//				    const Handle(TCollection_HAsciiString)& outdir)
+				    const Handle(TCollection_HAsciiString)& )
 {
   static Handle(EDL_API)  api = new EDL_API;
   static Standard_Boolean alreadyLoaded = Standard_False;
