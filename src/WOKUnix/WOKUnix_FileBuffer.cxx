@@ -129,6 +129,8 @@ void WOKUnix_FileBuffer::Dump()
       
       if(mybuffer.Size() >= maxsize)
 	{
+          cout << "WOKUnix_FileBuffer::Dump : mybuffer.Size() "
+               << mybuffer.Size() << " >= maxsize " << maxsize << endl ;
 	  WOKUnix_BufferOverflow::Raise("WOKUnix_FileBuffer::Dump : Buffer Overflow");
 	}
     }
