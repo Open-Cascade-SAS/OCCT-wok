@@ -107,7 +107,8 @@ void WOKStep_WNTCollect::CompleteExecList(const Handle(WOKMake_HSequenceOfInputF
 //function : HandleOutputFile
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKStep_WNTCollect::HandleOutputFile(const Handle(WOKMake_OutputFile)& aFile)
+//Standard_Boolean WOKStep_WNTCollect::HandleOutputFile(const Handle(WOKMake_OutputFile)& aFile)
+Standard_Boolean WOKStep_WNTCollect::HandleOutputFile(const Handle(WOKMake_OutputFile)& )
 {
   return Standard_False;
 }

@@ -105,7 +105,8 @@ void WOKStep_EngLinkList::ComputeInterface(const Handle(WOKernel_DevUnit)& aunit
 //function : ComputeSchema
 //purpose  : 
 //=======================================================================
-void WOKStep_EngLinkList::ComputeSchema(const Handle(WOKernel_DevUnit)& aunit, const Handle(WOKMake_InputFile)& infile)
+//void WOKStep_EngLinkList::ComputeSchema(const Handle(WOKernel_DevUnit)& aunit, const Handle(WOKMake_InputFile)& infile)
+void WOKStep_EngLinkList::ComputeSchema(const Handle(WOKernel_DevUnit)& , const Handle(WOKMake_InputFile)& )
 {
   return;
 }

@@ -137,8 +137,11 @@ Handle(TCollection_HAsciiString) WOKStep_TKList::GetUnitContributionCodes(const 
 //function : ComputeDependency
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKStep_TKList::ComputeDependency(const Handle(TCollection_HAsciiString)& acode, 
-									       const Handle(TColStd_HSequenceOfHAsciiString)& directlist) const
+Handle(TColStd_HSequenceOfHAsciiString) WOKStep_TKList::ComputeDependency(
+//       const Handle(TCollection_HAsciiString)& acode,
+       const Handle(TCollection_HAsciiString)& ,
+//       const Handle(TColStd_HSequenceOfHAsciiString)& directlist) const
+       const Handle(TColStd_HSequenceOfHAsciiString)& ) const
 {
   Handle(TColStd_HSequenceOfHAsciiString) SHOULDNOTBECALLED;
   return SHOULDNOTBECALLED;

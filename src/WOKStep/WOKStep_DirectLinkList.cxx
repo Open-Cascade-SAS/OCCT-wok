@@ -24,7 +24,8 @@
 //function : ComputeDependency
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKStep_DirectLinkList::ComputeDependency(const Handle(TCollection_HAsciiString)& acode, 
+//Handle(TColStd_HSequenceOfHAsciiString) WOKStep_DirectLinkList::ComputeDependency(const Handle(TCollection_HAsciiString)& acode, 
+Handle(TColStd_HSequenceOfHAsciiString) WOKStep_DirectLinkList::ComputeDependency(const Handle(TCollection_HAsciiString)& , 
 										  const Handle(TColStd_HSequenceOfHAsciiString)& directlist) const
 {
   return  directlist;

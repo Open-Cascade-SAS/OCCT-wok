@@ -155,7 +155,12 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKStep_WNTLink::ComputeExternals(const 
 //function : Execute
 //purpose  : 
 //=======================================================================
-void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecList)
+//void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecList)
+void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
+#ifdef WNT
+                              anExecList
+#endif
+                             )
 {
 #ifdef WNT
   

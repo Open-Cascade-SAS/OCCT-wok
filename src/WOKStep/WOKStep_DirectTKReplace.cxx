@@ -24,8 +24,11 @@
 //function : ComputeDependency
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HSequenceOfHAsciiString) WOKStep_DirectTKReplace::ComputeDependency(const Handle(TCollection_HAsciiString)& acode, 
-										  const Handle(TColStd_HSequenceOfHAsciiString)& directlist) const
+Handle(TColStd_HSequenceOfHAsciiString) WOKStep_DirectTKReplace::ComputeDependency(
+//    const Handle(TCollection_HAsciiString)& acode,
+    const Handle(TCollection_HAsciiString)& ,
+//    const Handle(TColStd_HSequenceOfHAsciiString)& directlist) const
+    const Handle(TColStd_HSequenceOfHAsciiString)& ) const
 {
   Handle(TColStd_HSequenceOfHAsciiString) ret = new TColStd_HSequenceOfHAsciiString();
   return  ret;
