@@ -233,7 +233,6 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalHeader()
   templ = EvalToolParameter("Header");
 
   if(templ.IsNull()) return line;
-
  
   Params().Set("%Target", TargetName()->ToCString());
 
@@ -403,8 +402,6 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalFooter()
       return line;
     }
   
-  Params().Set("%Target", TargetName()->ToCString());
-
   line->AssignCat(Params().Eval(templ->ToCString()));
   return line;
 }
@@ -433,7 +430,6 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   if(!IsLoaded()) Load();
 
   Shell()->ClearOutput();
-  
   // 
   //// Calcul de la liste des objets
   //
@@ -460,10 +456,10 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   objstream.close();
 
   Params().Set("%LD_ObjList", objlistpath->Name()->ToCString()); 
-#ifndef LIN
-  Handle( TCollection_HAsciiString ) args[  4 ];
+#if defined( LIN ) || defined( SOLARIS )
+  Handle( TCollection_HAsciiString ) args[ 10 ];
 #else
-  Handle( TCollection_HAsciiString ) args[ 11 ];
+  Handle( TCollection_HAsciiString ) args[  4 ];
 #endif  // LIN
 
   args[ 0 ] = EvalHeader      ();
@@ -476,7 +472,7 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   Shell () -> Send ( args[ 0 ] );
   Shell () -> Send ( args[ 1 ] );
   Shell () -> Send ( args[ 2 ] );
-#ifndef LIN
+#if !defined( LIN ) && !defined( SOLARIS )
   Shell () -> Execute ( args[ 3 ] );
 
  } else {
@@ -485,11 +481,16 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 
  }  // end if
 
- Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 0 );
-
+ Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 1 );
+#if defined( LIN )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
-
+#elif defined ( SOLARIS )
+ static Handle( TCollection_HAsciiString ) skipStr =
+  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
+ static Handle( TCollection_HAsciiString ) skipStr1 =
+  new TCollection_HAsciiString ( "/crt1.o" );
+#endif  // LIN || SOLARIS
  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
 
  if (  !uType.IsNull () &&
@@ -497,6 +498,23 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
            !strcmp (  uType -> ToCString (), "executable"  )
        )
  ) {
+
+  static Handle( TCollection_HAsciiString ) colon =
+   new TCollection_HAsciiString ( ":" );
+
+  Handle( TCollection_HAsciiString ) ld_path =
+   new TCollection_HAsciiString ();
+
+  for (  i = 1; i <= mylibpathes -> Length (); ++i  ) {
+
+   ld_path -> AssignCat (
+               mylibpathes -> Value ( i ) -> Name () -> ToCString ()
+              );
+   ld_path -> AssignCat ( colon );
+
+  }  // end for
+
+  Params ().Set (  "%LD_LIBRARY_PATH", ld_path -> ToCString ()  );
 
   Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
   Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
@@ -506,11 +524,10 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   ) {
 
    args[ 4 ] = paramH;
-   args[ 5 ] = EvalLibSearchDirectives ();
-   args[ 6 ] = EvalDatabaseDirectives  ();
-   args[ 7 ] = target;
-   args[ 8 ] = EvalLibraryList         ();
-   args[ 9 ] = paramF;
+   args[ 5 ] = EvalDatabaseDirectives  ();
+   args[ 6 ] = target;
+   args[ 7 ] = EvalLibraryList         ();
+   args[ 8 ] = paramF;
 
    if ( !g_fCompOrLnk ) {
 
@@ -519,7 +536,6 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
     Shell () -> Send ( args[ 6 ] );
     Shell () -> Send ( args[ 7 ] );
     Shell () -> Send ( args[ 8 ] );
-    Shell () -> Send ( args[ 9 ] );
 
    }  // end if
 
@@ -527,33 +543,33 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 
  }  // end if
 
- args[ 10 ] = new TCollection_HAsciiString ( "\n" );
+ args[ 9 ] = new TCollection_HAsciiString ( "\n" );
 
  if ( !g_fCompOrLnk )
 
-  Shell () -> Execute ( args[ 10 ] );
+  Shell () -> Execute ( args[ 9 ] );
 
  else {
-#endif  // LIN
+#endif  // LIN || SOLARIS
 
-//  OSD_File f (   OSD_Path (  Params ().Value ( "%LnkFileName" ) -> String ()  )   );
-  OSD_Path aPath = OSD_Path (  Params ().Value ( "%LnkFileName" ) -> String () ) ;
-  OSD_File f ( aPath );
+  OSD_Path p = OSD_Path (  Params ().Value ( "%LnkFileName" ) -> String ()  );
+  OSD_File f ( p );
 
   f.Build (  OSD_WriteOnly, OSD_Protection ()  );
 
   if (  !f.Failed ()  ) {
-#ifndef LIN
+#if !defined( LIN ) && !defined( SOLARIS )
    for ( i = 0; i < 4; ++i ) {
 #else
-   for ( i = 0; i < 11; ++i ) {
-#endif  // LIN
-    if (  !args[ i ].IsNull ()  )
+//   for ( i = 0; i < 11; ++i ) { JR :
+   for ( i = 0; i < 10; ++i ) {
+#endif  // LIN || SOLARIS
+    if (  !args[ i ].IsNull () && !args[ i ] -> String ().IsEmpty ()  )
 
      f.Write (  args[ i ] -> String (), args[ i ] -> Length ()  );
 
    }  // end for
-#ifndef LIN
+#if !defined( LIN ) && !defined( SOLARIS )
    f.Write ( "\n", 1 );
 #endif  // LIN
    f.Close ();
@@ -574,9 +590,14 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       ErrorMsg.DontPrintHeader();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-#ifdef LIN
+#if defined( LIN ) || defined( SOLARIS )
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
-#endif  // LIN
+#endif  // LIN || SOLARIS
+#ifdef SOLARIS
+          if (  errmsgs -> Value ( i ) -> Search ( skipStr1 ) ==
+                errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
+          ) continue;
+#endif  // SOLARIS
 	  ErrorMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
       if(ph) ErrorMsg.DoPrintHeader();
@@ -587,11 +608,23 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       Standard_Boolean ph = InfoMsg.PrintHeader();
       InfoMsg.DontPrintHeader();
       errmsgs = Shell()->Errors();
+#ifdef SOLARIS
+      if (   !(  errmsgs -> Length () == 4 &&
+                 errmsgs -> Value ( 3 ) -> Search ( skipStr1 ) ==
+                 errmsgs -> Value ( 3 ) -> Length () - skipStr1 -> Length () + 1
+              )
+      )
+#endif  // SOLARIS
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
-#ifdef LIN
+#if defined( LIN ) || defined( SOLARIS )
           if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
-#endif  // LIN
+#endif  // LIN || SOLARIS
+#ifdef SOLARIS
+          if (  errmsgs -> Value ( i ) -> Search ( skipStr1 ) ==
+                errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
+          ) continue;
+#endif  // SOLARIS
 	  InfoMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
       if(ph) InfoMsg.DoPrintHeader();
