@@ -11,6 +11,7 @@
 #include <EDL_API.hxx>
 #include <EDL_Template.hxx>
 #include <EDL_HSequenceOfVariable.hxx>
+#include <EDL_Variable.hxx>
 
 #include <WOKTools_Messages.hxx>
 
@@ -52,52 +53,93 @@ WOKernel_FileType::WOKernel_FileType(const Handle(TCollection_HAsciiString)& ana
 //function : ComputePath
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) WOKernel_FileType::ComputePath(const WOKUtils_Param& params,
-								const Handle(TCollection_HAsciiString)& afilename) 
-{
-  Handle(TCollection_HAsciiString) result;
-  Handle(EDL_HSequenceOfVariable)  vars = new EDL_HSequenceOfVariable;
+Handle( TCollection_HAsciiString )
+ WOKernel_FileType :: ComputePath (
+                       const WOKUtils_Param&                     params,
+                       const Handle( TCollection_HAsciiString )& afilename
+                      ) {
 
-  if(IsFileDependent() && !afilename.IsNull())
-    params.Set((Standard_CString) FILEVAR, afilename->ToCString());
+ static Handle( TCollection_HAsciiString ) javafile =
+  new TCollection_HAsciiString ( "javafile" );
 
-  Handle(TColStd_HSequenceOfHAsciiString) needed = mytemplate.GetVariableList();
+ Standard_Boolean                   fJava = Standard_False;
+ Standard_CString                   s;
+ Handle( TCollection_HAsciiString ) result;
+ Handle( EDL_HSequenceOfVariable  ) vars = new EDL_HSequenceOfVariable ();
 
-  for(Standard_Integer i=1; i<=needed->Length(); i++)
-    {
-      const Standard_CString name = needed->Value(i)->ToCString();
-      if(params.myapi->IsDefined(name))
-	{
-	  vars->Append(params.myapi->GetVariable(name));
-	}
-      else
-	{
-	  ErrorMsg << "WOKernel_FileType::ComputePath"
-	           << "Needed argument " << name << " for type " << Name() << " is not setted" << endm;
-	  return result;
-	}
-    }
+ if (  IsFileDependent () && !afilename.IsNull ()  )
 
-  mytemplate.Eval(vars);
+  params.Set (  ( Standard_CString )FILEVAR, afilename -> ToCString ()  );
 
-  Handle(TColStd_HSequenceOfAsciiString) resseq = mytemplate.GetEval();
+ Handle( TColStd_HSequenceOfHAsciiString ) needed = mytemplate.GetVariableList ();
 
-  if(resseq.IsNull())
-    {
-      ErrorMsg << "WOKernel_FileType::ComputePath"
-	       << "Type " << Name() << " could not be evaluated" << endm;
-    }
-  else
-    {
-      if(resseq->Length() != 1)
-	{
-	  WarningMsg << "WOKernel_FileType::ComputePath"
-	    << "Type " << Name() << " evaluates to more than one line : ignoring others" << endm;
-	}
-      result=new TCollection_HAsciiString(resseq->Value(1));
-    }
-  return result;
-}
+ for (  Standard_Integer i = 1; i <= needed -> Length (); ++i  ) {
+
+  const Standard_CString name = needed -> Value ( i ) -> ToCString ();
+
+  if (  params.myapi -> IsDefined ( name )  ) {
+
+   if (  myname -> IsSameString ( javafile ) &&
+         !strcmp ( name, ENTITYVAR )
+   ) {
+
+    EDL_Variable     v = params.myapi -> GetVariable ( name );
+    Standard_CString p = s = v.GetValue ();
+
+    while ( *p ) { if ( *p == '.' ) *p = '/'; ++p; }
+
+    vars -> Append ( v );
+    fJava = Standard_True;
+
+   } else vars -> Append (  params.myapi -> GetVariable ( name )  );
+
+  } else {
+
+   ErrorMsg << "WOKernel_FileType::ComputePath"
+            << "Needed argument "
+            << name
+            << " for type "
+            << Name ()
+            << " is not setted"
+            << endm;
+
+   return result;
+
+  }  // end else
+
+ }  // end for
+
+ mytemplate.Eval ( vars );
+
+ Handle( TColStd_HSequenceOfAsciiString ) resseq = mytemplate.GetEval ();
+
+ if (  resseq.IsNull ()  )
+
+  ErrorMsg << "WOKernel_FileType::ComputePath"
+           << "Type "
+           << Name ()
+           << " could not be evaluated"
+           << endm;
+
+ else {
+
+  if (  resseq -> Length () != 1  )
+
+   WarningMsg << "WOKernel_FileType::ComputePath"
+              << "Type "
+              << Name ()
+              << " evaluates to more than one line : ignoring others"
+              << endm;
+
+  result = new TCollection_HAsciiString (  resseq -> Value ( 1 )  );
+
+ }  // end else
+
+ if ( fJava ) while ( *s ) { if ( *s == '/' ) *s = '.'; ++s; }
+
+ return result;
+
+}  // WOKernel_FileType :: ComputePath
 
 //=======================================================================
 //function : GetDefinition

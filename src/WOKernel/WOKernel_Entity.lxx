@@ -19,7 +19,7 @@ inline WOKUtils_Param& WOKernel_Entity::ChangeParams()
 //function : IsOpened
 //purpose  : is the entity opened ?
 //=======================================================================
-Standard_Boolean WOKernel_Entity::IsOpened() const 
+inline Standard_Boolean WOKernel_Entity::IsOpened() const 
 {
   return myopenstatus;
 }

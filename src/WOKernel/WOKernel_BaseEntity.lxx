@@ -8,7 +8,7 @@
 //function : Name
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Name() const 
+inline const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Name() const 
 {
   return myname;
 }
@@ -18,7 +18,7 @@ const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Name() const
 //function : FullName
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::FullName() const 
+inline const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::FullName() const 
 {
   return myfullname;
 }
@@ -28,7 +28,7 @@ const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::FullName() const
 //function : UserPathName
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::UserPathName() const 
+inline const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::UserPathName() const 
 {
   return myfullname;
 }
@@ -38,7 +38,7 @@ const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::UserPathName() cons
 //function : Nesting
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Nesting() const 
+inline const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Nesting() const 
 {
   return mynestingentity;
 }
@@ -48,7 +48,7 @@ const Handle(TCollection_HAsciiString)& WOKernel_BaseEntity::Nesting() const
 //function : Session
 //purpose  : 
 //=======================================================================
-Handle(WOKernel_Session) WOKernel_BaseEntity::Session() const 
+inline Handle(WOKernel_Session) WOKernel_BaseEntity::Session() const 
 {
   return mysession;
 }

@@ -11,7 +11,7 @@
 //function : Path
 //purpose  : 
 //=======================================================================
-const Handle(WOKUtils_Path)& WOKernel_File::Path() const
+inline const Handle(WOKUtils_Path)& WOKernel_File::Path() const
 {
   return mypath;
 }
@@ -21,7 +21,7 @@ const Handle(WOKUtils_Path)& WOKernel_File::Path() const
 //function : Type
 //purpose  : 
 //=======================================================================
-const Handle(WOKernel_FileType)& WOKernel_File::Type() const
+inline const Handle(WOKernel_FileType)& WOKernel_File::Type() const
 {
   return mytype;
 }
@@ -30,7 +30,7 @@ const Handle(WOKernel_FileType)& WOKernel_File::Type() const
 //function : TypeName
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_File::TypeName() const
+inline const Handle(TCollection_HAsciiString)& WOKernel_File::TypeName() const
 {
   return mytype->Name();
 }

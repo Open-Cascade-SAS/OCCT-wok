@@ -8,7 +8,7 @@
 //function : Name
 //purpose  : 
 //=======================================================================
-const Handle(TCollection_HAsciiString)& WOKernel_FileType::Name() const
+inline const Handle(TCollection_HAsciiString)& WOKernel_FileType::Name() const
 {
   return myname;
 }
@@ -17,43 +17,43 @@ const Handle(TCollection_HAsciiString)& WOKernel_FileType::Name() const
 //function : Template
 //purpose  : gives the format for workbench path solver
 //=======================================================================
-const EDL_Template& WOKernel_FileType::Template() const 
+inline const EDL_Template& WOKernel_FileType::Template() const 
 {
   return mytemplate;
 }
 
 
-Standard_Boolean WOKernel_FileType::IsStationDependent() const 
+inline Standard_Boolean WOKernel_FileType::IsStationDependent() const 
 {
   return mystationdep;
 }
 
-Standard_Boolean WOKernel_FileType::IsDBMSDependent() const 
+inline Standard_Boolean WOKernel_FileType::IsDBMSDependent() const 
 {
   return mydbmsdep;
 }
 
-Standard_Boolean WOKernel_FileType::IsEntityDependent() const 
+inline Standard_Boolean WOKernel_FileType::IsEntityDependent() const 
 {
   return myentitydep;
 }
 
-Standard_Boolean WOKernel_FileType::IsNestingDependent() const 
+inline Standard_Boolean WOKernel_FileType::IsNestingDependent() const 
 {
   return mynestingdep;
 }
 
-Standard_Boolean WOKernel_FileType::IsFileDependent() const 
+inline Standard_Boolean WOKernel_FileType::IsFileDependent() const 
 {
   return myfiledep;
 }
 
-Standard_Boolean WOKernel_FileType::IsDirectory() const
+inline Standard_Boolean WOKernel_FileType::IsDirectory() const
 {
   return myisrep;
 }
 
-Standard_Boolean WOKernel_FileType::IsFile() const
+inline Standard_Boolean WOKernel_FileType::IsFile() const
 {
   return !myisrep;
 }
