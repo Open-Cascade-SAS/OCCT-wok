@@ -3,10 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#if defined( WNT ) && defined( TCL_VERSION_75 )
-# include <tcl75.h>
-#endif // WNT
-
 #include <tcl.h>
 
 #include <WOKTclTools_Messages.hxx>

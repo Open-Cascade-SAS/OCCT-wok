@@ -7,10 +7,6 @@
 #ifndef WOKTclTools_ExitHandler_HeaderFile
 #define WOKTclTools_ExitHandler_HeaderFile
 
-#if defined( WNT ) && defined( TCL_VERSION_75 )
-# include <tcl75.h>
-#endif // WNT
-
 #include <tcl.h>
 
 typedef  Tcl_ExitProc* WOKTclTools_ExitHandler;

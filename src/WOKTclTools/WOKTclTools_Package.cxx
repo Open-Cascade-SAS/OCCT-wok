@@ -3,9 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax.paris1.matra-dtv.fr>
 
-#if defined( WNT ) && defined( TCL_VERSION_75 )
-# include <tcl75.h>
-#endif // WNT
 
 #include <tcl.h>
 
