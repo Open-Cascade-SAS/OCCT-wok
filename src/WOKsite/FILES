@@ -8,4 +8,5 @@ srcinc:::wokcfg
 srcinc:::INSTALL
 srcinc:::wok.csh
 srcinc:::wok.bat
-
+srcinc:::wokinit.bat
+srcinc:::cmd-input.tcl

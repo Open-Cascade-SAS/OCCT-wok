@@ -42,12 +42,13 @@
 ;# choose.
 ;#
 global env tcl_platform
+set env(PATH) $env(Path)
 if { "$tcl_platform(platform)" == "unix" && ![info exists env(LD_LIBRARY_PATH)] } {
     puts stderr "You must set LD_LIBRARY_PATH to point where you have installed Wok"
     exit
 }
 
-if { "$tcl_platform(platform)" == "windows" && ![info exists env(PATH)] } {
+if { "$tcl_platform(platform)" == "windows" && ![info exists env(Path)] } {
     puts stderr "You must set PATH to point where you have installed Wok"
     exit
 }
@@ -64,7 +65,7 @@ if { "$tcl_platform(platform)" == "unix" } {
 if { "$tcl_platform(platform)" == "windows" } {
     set sprtor ";"
     set fmtshr "%s.dll"
-    set wrk [split $env(PATH) $sprtor]
+    set wrk [split $env(Path) $sprtor]
     set msgnotfound "Please check your variable PATH"
 }
 ;#
@@ -91,6 +92,10 @@ set wok_ptfm    [file tail    $wokfound]
 lappend auto_path $wok_library 
 package require Wok
 package require Ms
+package require Tclx
+if { "$tcl_platform(os)" == "SunOS" } {
+   package require Expect
+}
 ;#
 ;# Where tcl and edl file of wok reside.
 ;#
@@ -120,14 +125,14 @@ if {![info exists env(WOK_ROOTADMDIR)] } {
 	    return
 	}
     } else {
-	puts stderr "Using $env(WOKHOME)/wok_entities for working entities."
+	#puts stderr "Using $env(WOKHOME)/wok_entities for working entities."
     }
 } else {
     if ![file exists $env(WOK_ROOTADMDIR)] {
 	puts stderr "The directory $env(WOK_ROOTADMDIR) can not be found"
 	return
     }
-    puts stderr "Using variable WOK_ROOTADMDIR = $env(WOK_ROOTADMDIR) for working entities."    
+    #puts stderr "Using variable WOK_ROOTADMDIR = $env(WOK_ROOTADMDIR) for working entities."    
 }
 
 ;#
@@ -162,3 +167,8 @@ set env(WOK_SESSIONID)  $env(HOME)/.wok
 set tcl_prompt1 {if {[info commands wokcd] != ""}  then \
 	{puts -nonewline stdout "[wokcd]> "} else \
 	{puts -nonewline stdout "tclsh> "}}
+if { "$tcl_platform(platform)" == "windows" } {
+   source $env(WOKHOME)/lib/cmd-input.tcl
+}
+cd $env(WOK_ROOTADMDIR)
+wokclose -a

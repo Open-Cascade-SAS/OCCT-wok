@@ -12,6 +12,7 @@
 ;# and WBNAM is created as empty workbench. To populate it with development units
 ;# please refer to the Wok documentation.
 ;#
+source $env(WOKHOME)/site/tclshrc_Wok
 proc FileToList { path {sort 0} {trim 0} {purge 0} {emptl 1} } {
     if ![ catch { set id [ open $path r ] } ] {
 	set l  {}
@@ -126,13 +127,13 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
 	puts "Creating the workbench : ${FNAM}:${WSNAM}:${WBNAM}"
 	wokcd ${FNAM}:${WSNAM}
 	set WBROOT $HOME_ENTITIES/${FNAM}/${WSNAM}/${WBNAM}
-	if { "$IMPORT_DIR" != {} } {
-	    set WBROOT [file join [file dirname $IMPORT_DIR] ${WBNAM}]
-	    puts "Renaming $IMPORT_DIR to $WBROOT"
-	    frename $IMPORT_DIR $WBROOT
-	    puts " the Home directory of your ${WBNAM} WorkBench is now : ${WBROOT}"
-	}
-	if [ catch {wcreate -DHome=$WBROOT -d ${WBNAM} } astatus] {
+	#if { "$IMPORT_DIR" != {} } {
+	    #set WBROOT [file join [file dirname $IMPORT_DIR] ${WBNAM}]
+	    #puts "Renaming $IMPORT_DIR to $WBROOT"
+	    #frename $IMPORT_DIR $WBROOT
+	    #puts " the Home directory of your ${WBNAM} WorkBench is now : ${WBROOT}"
+	#}
+	if [ catch {wcreate -DHome=$IMPORT_DIR -d ${WBNAM} } astatus] {
 	    puts $astatus
 	    cd $savpwd
 	    exit
@@ -154,13 +155,14 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
     cd $savpwd
 }
 
-set HOME_ENTITIES [lindex $argv 0]
-set FNAM          [lindex $argv 1]
-set WSNAM         [lindex $argv 2]
-set WBNAM         [lindex $argv 3]
-set IMPORT_DIR    [lindex $argv 4]
+#set HOME_ENTITIES [lindex $argv 0]
+#set FNAM          [lindex $argv 1]
+#set WSNAM         [lindex $argv 2]
+#set WBNAM         [lindex $argv 3]
+#set IMPORT_DIR    [lindex $argv 4]
+set CASHOME [file dirname $env(CASROOT)/.]
 
-CreateFactory $HOME_ENTITIES $FNAM $WSNAM $WBNAM $IMPORT_DIR
+CreateFactory $env(WOK_ROOTADMDIR) OS OCC51 ros $CASHOME
 
-exit
+#exit
 
