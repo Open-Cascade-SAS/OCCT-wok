@@ -381,37 +381,58 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_Workshop::ParcelsInUse() const
 //function : DumpWorkbenchList
 //purpose  : Updates Workbench list
 //=======================================================================
-void WOKernel_Workshop::DumpWorkbenchList() const 
-{
-  Standard_Integer i;
-  Handle(WOKernel_File) wblistfile;
+void WOKernel_Workshop :: DumpWorkbenchList () const {
 
-  wblistfile = new WOKernel_File(this, GetFileType("WorkbenchListFile"));
-  wblistfile->GetPath();
+ Standard_Integer                 i;
+ Handle( WOKernel_File ) wblistfile;
 
-  ofstream astream(wblistfile->Path()->Name()->ToCString(), ios::out);
+ wblistfile = new WOKernel_File (  this, GetFileType ( "WorkbenchListFile" )  );
+
+ wblistfile -> GetPath ();
+
+ Handle( TCollection_HAsciiString ) aNewPath  = new TCollection_HAsciiString (
+                                                     wblistfile -> Path () -> Name ()
+                                                    );
+ Handle( TCollection_HAsciiString ) anOldPath = new TCollection_HAsciiString ( aNewPath );
+
+ aNewPath -> AssignCat ( ".bak" );
+
+ wblistfile -> Path () -> MoveTo (
+                           new WOKUtils_Path ( aNewPath )
+                          );
+
+ ofstream astream (  anOldPath -> ToCString (), ios :: out  );
   
-  if(!astream)
-    {
-      ErrorMsg << "WOKernel_Workshop::AddWorkbench" << "Could not open " << wblistfile->Path()->Name() << endm;
-      Standard_ProgramError::Raise("WOKernel_Workshop::AddWorkbench");
-    }
+ if ( !astream ) {
+
+  ErrorMsg << "WOKernel_Workshop::AddWorkbench"
+           << "Could not open "
+           << wblistfile -> Path () -> Name ()
+           << endm;
+  Standard_ProgramError :: Raise ( "WOKernel_Workshop::AddWorkbench" );
+
+ }  // end if
   
-  for(i = 1 ; i <= myworkbenches->Length() ; i++)
-    {
-      Handle(WOKernel_Workbench) abench = Session()->GetWorkbench(myworkbenches->Value(i));
+ for (  i = 1; i <= myworkbenches -> Length (); ++i ) {
 
-      astream << abench->Name()->ToCString();
-      if(abench->Father().IsNull() == Standard_False)
-	{
-	  astream << " " << Session()->GetWorkbench(abench->Father())->Name()->ToCString();
-	}
-      astream << endl;
-    }
-  return;
-}
+  Handle( WOKernel_Workbench ) abench =
+   Session () -> GetWorkbench (  myworkbenches -> Value ( i )  );
 
+  astream << abench -> Name () -> ToCString ();
 
+  if (  !abench -> Father ().IsNull ()  ) {
+
+   Handle( WOKernel_Workbench ) aWb = Session () -> GetWorkbench (  abench -> Father ()  );
+
+   if (  !aWb.IsNull ()  ) astream << " " << aWb -> Name () -> ToCString ();
+
+  }  // end if
+
+  astream << endl;
+
+ }  // end for
+
+}  // end WOKernel_Workshop :: DumpWorkbenchList
 //=======================================================================
 //function : AddWorkbench
 //purpose  : Adds a wb to the workshop (i.e. updates WBLIST)
@@ -433,20 +454,47 @@ void WOKernel_Workshop::AddWorkbench(const Handle(WOKernel_Workbench)& aworkbenc
 //function : RemoveWorkbench
 //purpose  :
 //=======================================================================
-void WOKernel_Workshop::RemoveWorkbench(const Handle(WOKernel_Workbench)& aworkbench)
-{
-  Standard_Integer i;
+void WOKernel_Workshop :: RemoveWorkbench (
+                           const Handle( WOKernel_Workbench )& aworkbench
+                          ) {
+
+ Standard_Integer                   i, j = 0;
+ Handle( TCollection_HAsciiString ) kids = new TCollection_HAsciiString ();
   
-  for(i = 1 ; i <= myworkbenches->Length() ; i++)
-    {
-      if(myworkbenches->Value(i)->IsSameString(aworkbench->FullName()))
-	{
-	  myworkbenches->Remove(i);
-	  break;
-	}
-    }
+ for (  i = 1; i <= myworkbenches -> Length (); ++i  ) {
+
+  Handle( TCollection_HAsciiString ) aFather;
+  Handle( WOKernel_Workbench       ) aWb = Session () -> GetWorkbench (
+                                                          myworkbenches -> Value ( i )
+                                                         );
+
+  if (  !aWb.IsNull ()  ) aFather = aWb -> Father ();
+
+  if (   myworkbenches -> Value ( i ) -> IsSameString (  aworkbench -> FullName ()  )   )
+
+   j = i;
+
+  if (   !aFather.IsNull () && aFather -> IsSameString (  aworkbench -> FullName ()  )   ) {
+
+   kids -> AssignCat (  aWb -> FullName ()  );
+   kids -> AssignCat ( " "                  );
+
+  }  // end if
+
+ }  // end for
+
+ if (  !kids -> IsEmpty ()  )
+
+  WarningMsg << "WOKernel_Workshop :: RemoveWorkbench"
+             << "workbench '" << aworkbench -> FullName ()
+             << "' has ancestors ( "
+             << kids << ")"
+             << endm;
+
+ if ( j != 0 ) myworkbenches -> Remove ( j );
   
-  Session()->RemoveEntity(aworkbench);
-  DumpWorkbenchList();
-  return;
-}
+ Session () -> RemoveEntity ( aworkbench );
+
+ DumpWorkbenchList ();
+
+}  // end WOKernel_Workshop :: RemoveWorkbench

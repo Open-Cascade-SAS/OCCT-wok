@@ -163,31 +163,27 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_Workbench::GetUnitList()
 //function : Open
 //purpose  : opens a Wb
 //=======================================================================
-void WOKernel_Workbench::Open()
-{
-  if(IsOpened()) return;
-  {
+void WOKernel_Workbench :: Open () {
 
-    Handle(WOKernel_Workbench) afather;
+ if (  IsOpened ()  ) return;
 
+ Handle( WOKernel_Workbench ) afather;
 
-    // Ouverture des wb ancetres d'abord (recusivement)
-    if(!Father().IsNull()) 
-      {
-	afather= Session()->GetWorkbench(Father()); 
-	afather->Open();
+ if (  !Father ().IsNull ()  ) {
 
-      }
+  afather = Session () -> GetWorkbench (  Father ()  );
 
+  if (  !afather.IsNull ()  ) afather -> Open ();
+
+ }  //end if
     
-    GetParams();
+ GetParams ();
 
-    // Ouverture Nesting
-    WOKernel_UnitNesting::Open();
+ WOKernel_UnitNesting :: Open ();
 
-    SetOpened();
-  }
-}
+ SetOpened ();
+
+}  // end WOKernel_Workbench :: Open
 
 //=======================================================================
 //function : Close
