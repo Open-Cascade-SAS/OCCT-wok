@@ -5,7 +5,9 @@
 
 
 #include <tcl.h>
+#ifndef WNT
 #include <strstream.h>
+#endif
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
