@@ -25,17 +25,17 @@
   @set %WOKSteps_DepGroup      = " obj.idep ";
   @set %WOKSteps_obj_idep      = "WOKStep_ImplementationDep(obj.comp,src)";
 
-  @string %WOKSteps_LibGroup   = " obj.lib ";
+  --@string %WOKSteps_LibGroup   = " obj.lib ";
   @set    %WOKSteps_obj_lib    = "WOKStep_DynamicLibrary(obj.comp,src)";
 
 
   @set %WOKSteps_executable_LinksWith   = " obj.lib ";
-  @set %WOKSteps_package_LinksWith      = " obj.lib ";
+  --@set %WOKSteps_package_LinksWith      = " obj.lib ";
   @set %WOKSteps_engine_LinksWith       = " obj.lib ";
   @set %WOKSteps_interface_LinksWith    = " obj.lib ";
-  @set %WOKSteps_jini_LinksWith    = " obj.lib ";
+  @set %WOKSteps_jini_LinksWith         = " obj.lib ";
   @set %WOKSteps_toolkit_LinksWith      = " obj.lib ";
-  @set %WOKSteps_schema_LinksWith       = " obj.lib ";
+  --@set %WOKSteps_schema_LinksWith       = " obj.lib ";
 
   @set %WOKSteps_toolkit_ListWith       = " obj.comp ";
 
@@ -45,9 +45,10 @@
   @set %WOKSteps_delivery_inc_list_steps = "src xcpp.header obj.inc";
   @set %WOKSteps_delivery_inc_list_extensions = ".hxx .lxx .gxx .h"; 
 
-  @set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep obj.lib";
+  --@set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep obj.lib";
+  @set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep";
   @if (%Station == "hp") then 
-  @set %WOKSteps_delivery_lib_shared_list_extensions = ".sl .ImplDep";
+     @set %WOKSteps_delivery_lib_shared_list_extensions = ".sl .ImplDep";
   @else 
     @if (%Station == "wnt") then
   	@set %WOKSteps_delivery_lib_shared_list_extensions = ".DLL .LIB .PDB .ImplDep";
