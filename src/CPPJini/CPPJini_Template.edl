@@ -23,9 +23,9 @@ $
 $
 $package %Interface;
 $
-$import jcas.Object;
+$import jcas.Transient;
 $
-$public class Standard_Transient extends jcas.Object {
+$public class Standard_Transient extends jcas.Transient {
 $
 $ static {
 $    System.loadLibrary("%LibName");
@@ -363,8 +363,12 @@ $
 $%ClassName* the_%ArgName = (%ClassName*) jcas_GetHandle(env,%ArgName);
 $if ( the_%ArgName == NULL ) {
 $
-$ the_%ArgName = new %ClassName ();
-$ jcas_SetHandle ( env, %ArgName, the_%ArgName );
+$ // The following assumes availability of the default constructor (what may not
+$ // always be the case). Therefore explicit exception is thrown if the null
+$ // object has been passed.
+$ // the_%ArgName = new %ClassName ();
+$ // jcas_SetHandle ( env, %ArgName, the_%ArgName );
+$ jcas_ThrowException (env, "NULL object has been passed while expecting an object manipulated by value");
 $
 $}  // end if
 @end;
