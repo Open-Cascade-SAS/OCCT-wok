@@ -493,16 +493,10 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
  static Handle( TCollection_HAsciiString ) skipStr1 =
   new TCollection_HAsciiString ( "/crt1.o" );
-# elif defined ( IRIX )
+# else // not LIN || SOLARIS
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
-# elif defined ( HPUX )
- static Handle( TCollection_HAsciiString ) skipStr =
-  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
-# elif defined ( AIX )
- static Handle( TCollection_HAsciiString ) skipStr =
-  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
-# endif  // LIN || SOLARIS
+# endif
  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
 
  if (  !uType.IsNull () &&
