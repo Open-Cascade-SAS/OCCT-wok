@@ -18,3 +18,5 @@ CPPExt.hxx
 CPPExt_Define.hxx
 FILES
 CPPExt_Standard.edl
+CPPExt_LDSHR.edl
+
