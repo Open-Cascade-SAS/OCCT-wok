@@ -5,6 +5,7 @@
 
 
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Macro.hxx>
 
 #include <OSD_Environment.hxx>
 #include <OSD.hxx>
@@ -326,10 +327,10 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
   }
   catch(Standard_Failure)  {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
-    strstream astream;
+    Standard_SStream astream;
     astream << E << ends;
     ErrorMsg << "WOKAPI_Session::GeneralFailure" 
-	     << "Exception was raised : " << astream.str() << endm;
+	     << "Exception was raised : " << GetSString(astream) << endm;
     ErrorMsg << "WOKAPI_Session::GeneralFailure" 
 	     << "Could not recover session after Failure : Session is reinitialized" << endm;
     
