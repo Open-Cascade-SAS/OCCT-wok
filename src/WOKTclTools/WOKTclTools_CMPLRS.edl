@@ -6,19 +6,8 @@
 @ifnotdefined ( %WOKTclTools_CMPLRS_EDL) then
 @set %WOKTclTools_CMPLRS_EDL = "";
 
+ @uses "CSF.edl";
 
-@if ( (%Station != "wnt") && (%Station != "hp") ) then
-	@string %CMPLRS_CXX_Options = " -I/usr/tcltk/include -I/usr/tcltk/include/itcl -I/usr/include " %CMPLRS_CXX_Options;
-@endif;
-
-@if (%Station == "hp") then
-	@string %CMPLRS_CXX_Options = " -I/usr/tcltk/include -I/usr/tcltk/include/itcl " %CMPLRS_CXX_Options;
-@endif;
-
-@if ( %Station == "wnt" ) then
-	@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -ID:/DevTools/TclTk/include ";
---	@set %CMPLRS_CXX_Command = "%MSDevDir%/bin/cl -nologo  -MD -W3 -GX -Ob2 ";
-@endif;
-
+ @string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE %CMPLRS_CXX_Options ;
 
 @endif;
