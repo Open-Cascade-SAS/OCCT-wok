@@ -135,6 +135,7 @@ proc wokIntegre:BASE:EOF { {fileid stdout} } {
 #    exp_internal -f file 1 : stdout and patterns in file + pattern on stderr
 #;<
 proc wokIntegre:BASE:Execute { VERBOSE command {fileid stdout} } {
+    package require Expect
     spawn -noecho sh $command
     set LOCID $spawn_id
     log_user 0

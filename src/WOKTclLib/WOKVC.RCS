@@ -44,6 +44,7 @@ proc wokIntegre:BASE:InitFile { infile vrs cmt Sfile {fileid stdout} } {
     puts $fileid [format "rcs -q -i -U -t/tmp/%s %s" $bna.desc $pfx]
     puts $fileid [format "cp -p %s ./%s" $infile $pfx]
     puts $fileid [format "ci -u -f -r%s -m%s %s %s" $vrs $cmt $pfx $bnas]
+    puts $fileid [format "rm -f ./%s" $bna]
     puts $fileid [format "rm -f /tmp/%s " $bna.desc]
     return 
 }
@@ -112,7 +113,7 @@ proc wokIntegre:BASE:GetFile { Sfile invrs {fileid stdout} } {
 	    puts $fileid [format "co -u -r%s %s" $invrs $Sfile]
 	}
     }
-    puts $fileid [format "chmod 644 $file"]
+    ;#puts $fileid [format "chmod 644 $file"]
     return
 }
 ;#/home/wb/kl/KERNEL/SCCS//BASES/TSTPACK.p/4,f_UGSuppliers.c,v  -->  4,f_UGSuppliers.c
