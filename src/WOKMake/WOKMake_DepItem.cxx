@@ -2,17 +2,7 @@
 // Created:	Mon Nov 20 20:11:59 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
+#include <Standard_Stream.hxx>
 
 #include <Standard_ProgramError.hxx>
 
