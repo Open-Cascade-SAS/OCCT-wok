@@ -370,13 +370,11 @@ $}  // end if
 @end;
 
 @template CStringGetValue(%ArgName) is
-$TCollection_AsciiString theAscii_%ArgName = jcas_ConvertToCString(env,%ArgName);
-$Standard_CString the_%ArgName = theAscii_%ArgName.ToCString();
+$Standard_CString the_%ArgName = jcas_ConvertToCString(env,%ArgName);
 @end;
 
 @template StringGetValue(%ArgName) is
-$TCollection_ExtendedString theExt_%ArgName = jcas_ConvertToExtString(env,%ArgName);
-$Standard_ExtString the_%ArgName = theExt_%ArgName.ToExtString();
+$Standard_ExtString the_%ArgName = jcas_ConvertToExtString(env,%ArgName);
 @end;
 
 @template BooleanGetValue(%ArgName) is
@@ -412,8 +410,7 @@ $Standard_ShortReal the_%ArgName = jcas_GetShortReal(env,%ArgName);
 @end;
 
 @template StringBufferGetValue(%ArgName) is
-$TCollection_ExtendedString theExt_%ArgName = jcas_ConvertSBToExtString(env,%ArgName);
-$Standard_ExtString the_%ArgName = theExt_%ArgName.ToExtString();
+$Standard_ExtString the_%ArgName = jcas_ConvertSBToExtString(env,%ArgName);
 @end;
 
 @template ThisTransientGetValue(%ClassName) is
