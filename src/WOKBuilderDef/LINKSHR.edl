@@ -30,7 +30,7 @@
  @else
   @set %LINKSHR_DBMSOpt = "";
  @endif;
-@set %LINKSHR_DBMSOpt =  %CSF_LINKER_CheckOpt ;
+---@set %LINKSHR_DBMSOpt =  %CSF_LINKER_CheckOpt ;
 
 
  @if ( %Station != "hp" ) then
@@ -100,8 +100,8 @@
  @if( %Station == "ao1") then
   @set %LINKSHR_LibLimit = "300";
 
-  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName ) is 
-   $cxx -shared %LINKSHR_DBMSOpt -msym -o %Target -soname %LogicalName \
+  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %CSF_LINKER_SysShared ) is 
+   $cxx %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -msym -o %Target -soname %LogicalName \
   @end;
  @endif;
 
@@ -112,9 +112,9 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList ) is
-   --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -shared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink -shared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared ) is
+   --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
    $  -all -objectlist %LD_ObjList -none \
   @end;
 
@@ -215,8 +215,8 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ) is
-   $/usr/bin/g++ -shared %LINKSHR_DBMSOpt -o %Target \
+  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ,%CSF_LINKER_SysShared   ) is
+   $/usr/bin/g++ %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -o %Target \
   @end;
 
   @template LINKSHR_Footer () is
@@ -228,7 +228,7 @@
   @end;
 
   @template LINKSHR_CheckUndefHeader (
-             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH
+             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt 
             ) is 
    $if ( $?LD_LIBRARY_PATH ) then
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:${LD_LIBRARY_PATH}
@@ -236,7 +236,7 @@
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
    $endif
    $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-   $/usr/bin/ld -nostartfiles -o /dev/null \
+   $/usr/bin/ld %CSF_LINKER_CheckOpt -o /dev/null \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
