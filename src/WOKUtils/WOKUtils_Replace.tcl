@@ -62,12 +62,14 @@ proc WOKUtils_Replace::Execute { unit args } {
 
 	regsub -all "/" " $source $target" $replstr  TheArgs
 
-	set A [catch {eval exec "cmp $TheArgs"} result ]
-
-	if { $result != "" } {
+        if { [file exist $target] } {
+	  set A [catch {eval exec "cmp $TheArgs"} result ]
+	  if { $result != "" } {
 	    set result 0
-	} else { set result 1 }
-	
+	  } else { set result 1 }
+        } else {
+          set result 0 }
+
 	if { ! $result } {
 	    msgprint -i -c "WOKUtils_Replace::Execute" "Copy $source to $target"
 	    if { [file exist $target] && [wokparam -e %Station $unit] != "wnt" } {
