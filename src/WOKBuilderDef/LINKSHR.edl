@@ -26,7 +26,7 @@
  @set %LINKSHR_Use_Externlib   = %CSF_USE_EXTERNLIB;
  
  @if ( %Station == "sun" ) then
-  @set %LINKSHR_DBMSOpt = "-mt";
+  @set %LINKSHR_DBMSOpt = %CSF_LINKER_DBMSOpt;
  @else
   @set %LINKSHR_DBMSOpt = "";
  @endif;
@@ -57,12 +57,12 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %Target, %LDSHR_Opt  , %LINKSHR_DBMSOpt , %CSF_CXX_COMPILER ) is 
-   $%CSF_CXX_COMPILER  %LDSHR_Opt   %LINKSHR_DBMSOpt -o %Target \
+  @template LINKSHR_Header ( %Target, %LDSHR_Opt  , %LINKSHR_DBMSOpt , %CSF_CXX_COMPILERLINKER ) is 
+   $%CSF_CXX_COMPILERLINKER  %LDSHR_Opt   %LINKSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LINKSHR_Footer (%STLPortLib) is
-    $ -lC -lc %STLPortLib;
+  @template LINKSHR_Footer (%CSF_LINKER_SysLib) is
+    $ %CSF_LINKER_SysLib;
     $ set ld_status=$status
     $ if ( $?LD_LIBRARY_PATH ) then
     $  set ld_library_path=$LD_LIBRARY_PATH
@@ -70,7 +70,7 @@
   @end;
 
   @template LINKSHR_CheckUndefHeader (
-             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH
+             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH, %CSF_LINKER
             ) is 
    $if ( $?LD_LIBRARY_PATH ) then
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:${LD_LIBRARY_PATH}
@@ -78,7 +78,7 @@
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
    $endif
    $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-   $/usr/ccs/bin/ld -o /dev/null \
+   $%CSF_LINKER -o /dev/null \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
@@ -98,10 +98,10 @@
  @endif;
 
  @if( %Station == "ao1") then
-  @set %LINKSHR_LibLimit = "300";
+  --@set %LINKSHR_LibLimit = "300";
 
-  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %CSF_LINKER_SysShared ) is 
-   $cxx %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -msym -o %Target -soname %LogicalName \
+  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt, %CSF_CXX_COMPILERLINKER, %LogicalName, %CSF_LINKER_SysShared, %CSF_LINKER_SysOpt ) is 
+   $%CSF_CXX_COMPILERLINKER %CSF_LINKER_SysShared %LINKSHR_DBMSOpt %CSF_LINKER_SysOpt -o %Target -soname %LogicalName \
   @end;
  @endif;
 
@@ -112,9 +112,9 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared ) is
+  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt, %CSF_CXX_COMPILERLINKER, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_LINKER_SysOpt ) is
    --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+   $%CSF_CXX_COMPILERLINKER %CSF_LINKER_SysShared %CSF_LINKER_SysOpt %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
    $  -all -objectlist %LD_ObjList -none \
   @end;
 
@@ -127,7 +127,7 @@
     --$ endif
   @end;
 
-  @template LINKSHR_CheckUndefHeader ( %LD_LIBRARY_PATH ) is
+  @template LINKSHR_CheckUndefHeader (%CSF_LINKER, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt, %CSF_LINKER_CheckOut ) is
    --$if ( $?LD_LIBRARY_PATH ) then
    --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:$LD_LIBRARY_PATH
    --$else
@@ -135,7 +135,7 @@
    --$endif
    $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
    $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
-   $/usr/bin/ld -n32 -mips3 -mmap -multigot -no_unresolved -o /dev/null \
+   $%CSF_LINKER %CSF_LINKER_CheckOpt %CSF_LINKER_CheckOut \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
@@ -215,12 +215,12 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ,%CSF_LINKER_SysShared   ) is
-   $/usr/bin/g++ %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -o %Target \
+  @template LINKSHR_Header (%CSF_CXX_COMPILERLINKER, %Target, %LINKSHR_DBMSOpt, %CSF_LINKER_SysShared ) is
+   $%CSF_CXX_COMPILERLINKER %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -o %Target \
   @end;
 
-  @template LINKSHR_Footer (%STLPortLib) is
-   $ -lc -lpthread %STLPortLib ;
+  @template LINKSHR_Footer (%CSF_LINKER_SysLib) is
+   $ %CSF_LINKER_SysLib;
    $ set ld_status=$status
    $ if ( $?LD_LIBRARY_PATH ) then
    $  set ld_library_path=$LD_LIBRARY_PATH
@@ -228,15 +228,15 @@
   @end;
 
   @template LINKSHR_CheckUndefHeader (
-             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt 
-            ) is 
+             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt, %CSF_LINKER_CheckOut, %CSF_LINKER
+       ) is 
    $if ( $?LD_LIBRARY_PATH ) then
    $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:${LD_LIBRARY_PATH}
    $else
-   $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
+   $ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH 
    $endif
    $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-   $/usr/bin/ld %CSF_LINKER_CheckOpt -o /dev/null \
+   $%CSF_LINKER %CSF_LINKER_CheckOpt %CSF_LINKER_CheckOut \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is

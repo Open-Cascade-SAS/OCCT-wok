@@ -11,7 +11,7 @@
 @ifnotdefined ( %CSF_EDL ) then
    @set %CSF_EDL = "";
 
-   @set %CSF_SYMBOLS = "C_COMPILER C_SysOptions C_Options CXX_COMPILER CXX_SysOptions CXX_Options F77_COMPILER F77_SysOptions F77_Options CSF_LINKER CXX_COMPILERLINKER CSF_VirtualDevice LINKER_DBMSOpt LINKER_SysShared LINKER_SysExeC LINKER_SysExeW LINKER_SysOpt LINKER_SysLib LINKER_CheckOpt LINKER_CheckOut LibraryHeaderLib LibraryHeaderOpt JavaHome JavaLibs C_INCLUDE CXX_INCLUDE TCL_INCLUDE JAVA_COMPILER JAVA_JNI JAVA_INCLUDE X11_INCLUDE XMU_INCLUDE MOTIF_INCLUDE OPENGL_INCLUDE SOCKETLibs FPELibs advapi32 gdi32 user32 glu32 opengl32 wsock32 dpsLibs XwLibs OpenGlLibs MotifLibs TclLibs TclTkLibs" ;
+   @set %CSF_SYMBOLS = "C_COMPILER C_SysOptions C_Options CXX_COMPILER CXX_SysOptions CXX_Options F77_COMPILER F77_SysOptions F77_Options CSF_LINKER CXX_COMPILERLINKER CSF_VirtualDevice CSF_LINKER_CheckOpt CSF_LINKER_CheckOut LINKER_DBMSOpt LINKER_SysShared LINKER_SysExeC LINKER_SysExeW LINKER_SysOpt LINKER_SysLib LINKER_CheckOpt LINKER_CheckOut LibraryHeaderLib LibraryHeaderOpt JavaHome JavaLibs C_INCLUDE CXX_INCLUDE TCL_INCLUDE JAVA_COMPILER JAVA_JNI JAVA_INCLUDE X11_INCLUDE XMU_INCLUDE MOTIF_INCLUDE OPENGL_INCLUDE SOCKETLibs FPELibs advapi32 gdi32 user32 glu32 opengl32 wsock32 dpsLibs XwLibs OpenGlLibs MotifLibs TclLibs TclTkLibs" ;
 
   @set %CSF_CREATECOMP_DEP = "Yes" ;
   @set %CSF_USE_EXTERNLIB  = "Yes" ;
@@ -127,6 +127,7 @@
 
       --<< TODO : If applicable , modify the location of the c compiler. 
       @set %CSF_C_COMPILER = "/usr/bin/gcc ";
+      @string %CSF_C_INCLUDE +=  "";
       -->> END TODO
 
       @set %CSF_C_SysOptions  = "-fPIC -funsigned-char -Wall";
@@ -138,15 +139,15 @@
 
       @set %CSF_F77_SysOptions  = "-fPIC ";
 
-      @string %CSF_LINKER = "/usr/bin/ld " %STLPortLib;
+      @set %CSF_LINKER = "/usr/bin/ld";
       @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER ;
       @set %CSF_LINKER_DBMSOpt = "";
       @set %CSF_LINKER_SysShared = "-shared ";
       @set %CSF_LINKER_SysExe = "";
       @set %CSF_LINKER_SysOpt = "";
       @set %CSF_LINKER_SysLib = "-ldl -lc ";
-      @set %CSF_LINKER_CheckOpt = "-nostartfiles ";
-      @set %CSF_LINKER_CheckOut = "-o /dev/null ";
+      @set %CSF_LINKER_CheckOpt = " -nostartfiles ";
+      @set %CSF_LINKER_CheckOut = " -o /dev/null ";
       @set %CSF_SOCKETLibs = " -ldl" ;
 
       --<< TODO : If applicable , modify the root location where TCL is installed.
@@ -203,6 +204,7 @@
 
       --<< TODO : If applicable , modify the location of the c compiler. 
       @set %CSF_C_COMPILER   = "/opt/DEV5_1/SUNWspro/bin/cc ";
+      @string %CSF_C_INCLUDE +=  "";
       -->> END TODO
 
       @set %CSF_C_SysOptions    = "-K PIC -Usun ";
@@ -219,7 +221,7 @@
       @set %CSF_LINKER_SysShared = "-G ";
       @set %CSF_LINKER_SysExe = "";
       @set %CSF_LINKER_SysOpt = "-xchip=ultra -xarch=v8 ";
-      @set %CSF_LINKER_SysLib = "";
+      @set %CSF_LINKER_SysLib = " -lC -lc ";
       @set %CSF_LINKER_CheckOpt = "";
       @set %CSF_LINKER_CheckOut = "-o /dev/null ";
 
@@ -266,7 +268,7 @@
       -->> END TODO
       @set %STLPortHome = "";
       @if ( %STLPortHome != "") then
-        @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+        @string %STLPortInclude = "-I" %STLPortHome "/stlport ";
 	@string %STLPortLib = %STLPortHome "/lib/stlport_vc6.lib";
       @else
         @set %STLPortInclude = "";
@@ -278,6 +280,7 @@
 
       --<< TODO : If applicable , modify the root location where c compiler is installed (same as above).
       @set %CSF_C_COMPILER   = "D:/DevTools/VStudio/VC98/bin/cl ";
+      @string %CSF_C_INCLUDE +=  "";
       -->> END TODO
 
       @set %CSF_C_SysOptions    = "-nologo -MD -W3 -GX -Ob1 -Zi ";
@@ -289,7 +292,7 @@
 
       @set %CSF_F77_SysOptions  = "-nologo -libs:dll -Zi ";
 
-      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link";
+      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link ";
       @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER ;
       @set %CSF_VirtualDevice = "Q:";
       @set %CSF_LINKER_DBMSOpt = "";
@@ -304,14 +307,14 @@
       @set %CSF_LibraryHeaderOpt = "-nologo ";
 
       --<< TODO : If applicable , modify the root location where Java is installed.
-      @string %CSF_JavaHome     = "D:/jdk1.3.1";
+      @string %CSF_JavaHome     = "D:/AppTools/jdk1.2.2";
       -->> END TODO
 
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/win32 ";
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
 
-      @set %CSF_TCL_HOME = "D:/DevTools/Tcltk/tcl83.lib";
+      @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
       @string %CSF_TclLibs = %CSF_TCL_HOME "/lib/tcl83.lib";
       @string %CSF_TclTkLibs = %CSF_TCL_HOME "/lib/tk83.lib";
@@ -327,6 +330,7 @@
       @set %CSF_wsock32 = "wsock32.lib" ;
       @set %CSF_netapi32 = "netapi32.lib" ;
 
+
    @endif;
 
    --
@@ -338,6 +342,7 @@
       @endif;
 
       @set %CSF_C_COMPILER   = "cc ";
+      @string %CSF_C_INCLUDE +=  "";
       @set %CSF_CXX_COMPILER = "/usr/bin/cxx ";
       @set %CSF_F77_COMPILER = "";
 
@@ -349,7 +354,13 @@
         @set %STLPortInclude = "";
 	@set %STLPortLib = "";
       @endif;
-
+      @set %CSF_LINKER = "";
+      @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER;
+      @set %CSF_LINKER_SysShared = "";
+      @set %CSF_LINKER_SysExe = "";
+      @set %CSF_LINKER_SysOpt = "-msym ";
+      @set %CSF_LINKER_SysLib = "";
+      
       @set %CSF_TCL_HOME = "/usr/tcltk";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
@@ -375,6 +386,7 @@
       @endif;
 
       @set %CSF_C_COMPILER   = "cc ";
+      @string %CSF_C_INCLUDE +=  "";
       @set %CSF_C_SysOptions = " -signed -n32 -mips3 ";
       @set %CSF_C_Options    = "-DIRIX ";
 
@@ -393,7 +405,16 @@
 
 
       @set %CSF_F77_COMPILER = "f77 ";
+
+      @set %CSF_LINKER = "/usr/bin/ld";
+      @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER ;
       @set %CSF_LINKER_SysShared = " -shared ";
+      @set %CSF_LINKER_SysExe = "";
+      @set %CSF_LINKER_SysOpt = " -n32 -mips3 -Wl,-mmap -multigot -no_prelink ";
+      @set %CSF_LINKER_SysLib = "";
+      @set %CSF_LINKER_CheckOpt = " -n32 -mips3 -mmap -multigot -no_unresolved ";
+      @set %CSF_LINKER_CheckOut = " -o /dev/null";
+
 
       @set %CSF_FPELibs = "-L/usr/lib32 -lfpe" ;
 
@@ -429,6 +450,7 @@
       @endif;
 
       @set %CSF_C_COMPILER   = "cc ";
+      @string %CSF_C_INCLUDE +=  "";
       @set %CSF_CXX_COMPILER = "/opt/aCC/bin/aCC ";
       @set %CSF_F77_COMPILER = "f77 ";
       @set %STLPortHome = "";
@@ -483,6 +505,7 @@
       @endif;
 
       @set %CSF_C_COMPILER   = "xlC_r ";
+      @string %CSF_C_INCLUDE +=  "";
       @set %CSF_CXX_COMPILER = "xlC_r ";
       @set %CSF_F77_COMPILER = "/usr/bin/f77 ";
 
