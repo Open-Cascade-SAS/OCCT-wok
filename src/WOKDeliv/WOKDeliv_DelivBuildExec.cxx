@@ -86,7 +86,8 @@ Standard_Boolean WOKDeliv_DelivBuildExec::HandleInputFile(const Handle(WOKMake_I
 
 
 Standard_Boolean WOKDeliv_DelivBuildExec::MakeldFile
-(const Handle(WOKernel_Parcel)& theParcel,
+//(const Handle(WOKernel_Parcel)& theParcel,
+(const Handle(WOKernel_Parcel)& ,
  const Handle(WOKernel_DevUnit)& thesourceunit, 
  const Handle(WOKernel_DevUnit)& thedestunit, 
  const Handle(TCollection_HAsciiString)& nameexec,

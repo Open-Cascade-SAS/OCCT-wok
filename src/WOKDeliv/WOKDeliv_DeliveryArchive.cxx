@@ -34,8 +34,10 @@ Standard_Boolean WOKDeliv_DeliveryArchive::NeedsObjects() const
 }
 
 
-void WOKDeliv_DeliveryArchive::ComputeOutputLIB(const Handle(WOKernel_DevUnit)& thesourceunit,
-					       const Handle(WOKMake_InputFile)& inCOMP)
+//void WOKDeliv_DeliveryArchive::ComputeOutputLIB(const Handle(WOKernel_DevUnit)& thesourceunit,
+//					       const Handle(WOKMake_InputFile)& inCOMP)
+void WOKDeliv_DeliveryArchive::ComputeOutputLIB(const Handle(WOKernel_DevUnit)& ,
+					       const Handle(WOKMake_InputFile)& )
 {
 }
 
