@@ -1,10 +1,10 @@
 #ifdef WNT
 #define EXPORT
-#include <iostream.h>
 #include <stdlib.h>
 #include <io.h>
 #include <sys/stat.h>
 
+#include <Standard_Stream.hxx>
 #include <OSD_WNT.hxx>
 #include <OSD_WNT_1.hxx>
 #include <OSD_File.hxx>

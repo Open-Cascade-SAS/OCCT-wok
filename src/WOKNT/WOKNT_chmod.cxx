@@ -1,6 +1,6 @@
 #ifdef WNT
 #define EXPORT
-#include <iostream.h>
+#include <Standard_Stream.hxx>
 #include <stdlib.h>
 
 #include <OSD_WNT.hxx>

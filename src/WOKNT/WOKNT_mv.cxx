@@ -2,8 +2,7 @@
 #define EXPORT
 #define STRICT
 #include <windows.h>
-#include <iostream.h>
-
+#include <Standard_Stream.hxx>
 extern "C" __declspec( dllexport ) int wokMV ( int, char** );
 
 int wokMV ( int argc, char** argv ) {
