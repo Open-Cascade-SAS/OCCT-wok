@@ -2372,4 +2372,55 @@ proc wokUtils:EASY:FmtFmtString2 { fmt1 fmt2 l {yes_for_last 0} {edit_last {}} }
     }
     return $str
 }
+;#
+;# keys.. provided by Tclx
+;#
+proc wokUtils:key:lset { listvar key value } {
+    upvar $listvar VLOC
+    set lret {}
+    if [info exists VLOC] {
+	set l2 {}
+	foreach x $VLOC {
+	    lappend l2 [lindex $x 0]
+	    lappend l2 [lindex $x 1]
+	}
+	array set MM $l2
+	set MM($key) $value
+	foreach f [array names MM] {
+	    lappend lret [list $f $MM($f)]
+	}
+    } else {
+	lappend lret [list $key $value]
+    }
+    set VLOC $lret
+    return
+}
+proc wokUtils:key:lkeys { listvar } {
+    upvar   $listvar VLOC
+    set lret {}
+    foreach x $VLOC {
+	lappend lret [lindex $x 0]
+    }
+    return $lret
+}
+proc wokUtils:key:lget { listvar indx } {
+    upvar $listvar VLOC
+    foreach x $VLOC {
+	if { [string compare [lindex $x 0] $indx] == 0 } {
+	    return [lindex $x 1]
+	}
+    }
+    return {}
+}
 
+proc wokUtils:key:ldel { listvar indx } {
+    upvar $listvar VLOC
+    set lret {}
+    foreach x $VLOC {
+	if { [string compare [lindex $x 0] $indx] != 0 } {
+	    lappend lret $x
+	} 
+    }
+    set VLOC $lret
+    return
+}

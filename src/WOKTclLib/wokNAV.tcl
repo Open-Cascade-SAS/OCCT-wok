@@ -180,10 +180,12 @@ proc wokNAV:Tree:Updatefactory  { w loc dir } {
     set image $IWOK_GLOBALS(factory,image)
 
     foreach name [lsort [Sinfo -F]] {
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}$name \
-		-itemtype imagetext -text $name \
-		-image $image \
-		-data  [list $name factory $name $image $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}$name] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}$name \
+		    -itemtype imagetext -text $name \
+		    -image $image \
+		    -data  [list $name factory $name $image $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}$name open
     }
     wokNAV:tlist:Set $w $loc $dir 
@@ -202,17 +204,21 @@ proc wokNAV:Tree:Updateworkshop { w loc dir } {
     set image $IWOK_GLOBALS(workshop,image)
 
     set name [finfo -W $loc]
-    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^$name \
-	    -itemtype imagetext -text $name \
-	    -image [tix getimage warehouse] \
-	    -data  [list ${loc}:${name} warehouse $name [tix getimage warehouse] $fdate $disp]
+    if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^$name] {
+	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^$name \
+		-itemtype imagetext -text $name \
+		-image [tix getimage warehouse] \
+		-data  [list ${loc}:${name} warehouse $name [tix getimage warehouse] $fdate $disp]
+    }
     $IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^$name open
 
     foreach name [lsort [finfo -s $loc]] {
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} \
-		-itemtype imagetext -text $name \
-		-image $image \
-		-data  [list ${loc}:${name} workshop $name $image $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^$name] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} \
+		    -itemtype imagetext -text $name \
+		    -image $image \
+		    -data  [list ${loc}:${name} workshop $name $image $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
     }
     wokNAV:tlist:Set $w $loc $dir 
@@ -235,10 +241,11 @@ proc wokNAV:Tree:Updateworkbench { w loc dir } {
 	} else {
 	    set image $IWOK_GLOBALS(workbench,image)	    
 	}
-
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -text $name -itemtype imagetext  \
-		-image $image \
-		-data  [list ${loc}:${name} workbench $name $image $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -text $name -itemtype imagetext  \
+		    -image $image \
+		    -data  [list ${loc}:${name} workbench $name $image $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
     }
     wokNAV:tlist:Set $w $loc $dir 
@@ -279,10 +286,11 @@ proc wokNAV:Tree:Updatedevunit { w loc dir } {
 	set disp  $IWOK_GLOBALS($type,disp)
 	set fdate $IWOK_GLOBALS($type,fdate)
 	set image $IWOK_GLOBALS($type,image)
-
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
-		-text $name -image $image \
-		-data [list ${loc}:${name} devunit_$type $name $image $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
+		    -text $name -image $image \
+		    -data [list ${loc}:${name} devunit_$type $name $image $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
     }
     wokNAV:tlist:Set $w $loc $dir
@@ -323,18 +331,22 @@ proc wokNAV:Tree:Updatedevunitstuff { w loc dir } {
     
     if [info exists TLOC(source)] {
 	set name source
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
-		-text $name -image $IWOK_GLOBALS(devunitstuff,source) \
-		-data [list ${loc}:${name} stuff_$name $name  $IWOK_GLOBALS(devunitstuff,source) $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
+		    -text $name -image $IWOK_GLOBALS(devunitstuff,source) \
+		    -data [list ${loc}:${name} stuff_$name $name  $IWOK_GLOBALS(devunitstuff,source) $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
 	set IWOK_WINDOWS($w,NAV,tree,uinfo,${loc}:${name},$name) $TLOC($name)
     }
     
     foreach name [array names TLOC]  {
 	if { "$name" != "source" } { 
-	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
-		    -text $name -image $IWOK_GLOBALS(devunitstuff,cell) \
-		    -data [list ${loc}:${name} stuff_$name $name $IWOK_GLOBALS(devunitstuff,cell) $fdate $disp]
+	    if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}] {
+		$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
+			-text $name -image $IWOK_GLOBALS(devunitstuff,cell) \
+			-data [list ${loc}:${name} stuff_$name $name $IWOK_GLOBALS(devunitstuff,cell) $fdate $disp]
+	    }
 	    $IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
 	    set IWOK_WINDOWS($w,NAV,tree,uinfo,${loc}:${name},$name) $TLOC($name)
 	}
@@ -354,9 +366,10 @@ proc  wokNAV:Tree:Updatestufflist { w loc dir stuff_type } {
    
     foreach name [lsort -command wokSortPath $IWOK_WINDOWS($w,NAV,tree,uinfo,$loc,$type)] { 
 	set text [file tail $name]
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${text} -itemtype imagetext -text $text \
-		-image $image \
-		-data [list $loc trig_terminal $text $image $name] 
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${text}] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${text} -itemtype imagetext -text $text \
+		    -image $image -data [list $loc trig_terminal $text $image $name] 
+	}
     }
     wokNAV:tlist:Set $w ${loc} $dir
     return
@@ -399,9 +412,11 @@ proc wokNAV:Tree:Updateparcel { w loc dir } {
     foreach unit [pinfo -a ${loc}] {
 	set type [lindex $unit 0]
 	set name [lindex $unit 1]
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
-		-text $name -image [tix getimage $type] \
-		-data [list ${loc}:${name} parcel_$type ${name} [tix getimage $type] $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}] {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
+		    -text $name -image [tix getimage $type] \
+		    -data [list ${loc}:${name} parcel_$type ${name} [tix getimage $type] $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
     }
     wokNAV:tlist:Set $w $loc $dir
@@ -436,9 +451,11 @@ proc wokNAV:Tree:Updateparcelstufflist { w loc dir stuff_type } {
     foreach name [array names TLOC]  {
 	set image $icell
 	if { "$name" == "source" } { set image $isource }
-	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
-		-text $name -image $image \
-		-data [list ${loc}:${name} parcelstuff_$name $name $image $fdate $disp]
+	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^${name}]  {
+	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -itemtype imagetext \
+		    -text $name -image $image \
+		    -data [list ${loc}:${name} parcelstuff_$name $name $image $fdate $disp]
+	}
 	$IWOK_WINDOWS($w,NAV,tree) setmode ${dir}^${name} open
 	set IWOK_WINDOWS($w,NAV,tree,uinfo,${loc}:${name},$name) $TLOC($name)
     }

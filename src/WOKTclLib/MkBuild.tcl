@@ -74,9 +74,9 @@ proc wokBuild { {fast 0} } {
 
     set arr [$w.l subwidget arrow] ; tixBalloon $arr.bal ; $arr.bal bind $arr -msg "Last spots"
 
-    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/opencascade.gif] -command wokSeeLayout
-    tixBalloon $w.mdtv.bal
-    $w.mdtv.bal bind $w.mdtv -msg "See Layout"
+    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/opencascade.gif] ;#command wokSeeLayout
+    ;#tixBalloon $w.mdtv.bal
+    ;#$w.mdtv.bal bind $w.mdtv -msg "See Layout"
 
     tixForm $dis -left $lastbut  -bottom $top -top $w.mnu
 
@@ -103,6 +103,7 @@ proc wokBuild { {fast 0} } {
     }
    
     wokCWD disable
+    wokSeeLayout
 
     $IWOK_GLOBALS(canvas) bind current <Button-1> {
 	wokNAV:Tree:Focus [winfo toplevel %W] [lindex [%W gettags current] 0]
@@ -218,28 +219,28 @@ proc wokButton { option {w nil} } {
     switch -glob -- $option  {
 
 	initialize {
-	    keylset IWOK_GLOBALS(blist) prepare   [list z wokPrepare {wprepare}]
-	    keylset IWOK_GLOBALS(blist) wbuild    [list w winbuild {umake}]
-	    keylset IWOK_GLOBALS(blist) browser   [list b wokbrowser {CDL Browser}]
-	    keylset IWOK_GLOBALS(blist) params    [list p wokPRMAff  {Parameters}]
+	    wokUtils:key:lset IWOK_GLOBALS(blist) prepare   [list z wokPrepare {wprepare}]
+	    wokUtils:key:lset IWOK_GLOBALS(blist) wbuild    [list w winbuild {umake}]
+	    wokUtils:key:lset IWOK_GLOBALS(blist) browser   [list b wokbrowser {CDL Browser}]
+	    wokUtils:key:lset IWOK_GLOBALS(blist) params    [list p wokPRMAff  {Parameters}]
 	}
 
 	create { 
 	    set blist $IWOK_GLOBALS(blist)
-	    foreach i [keylkeys blist] {
-		set v [keylget blist $i]
+
+	    foreach i [wokUtils:key:lkeys blist] {
+		set v [wokUtils:key:lget blist $i]
 		set m [lindex $v 0]
 		set f [lindex $v 1]
 		lappend v [button $w.$m -height 32 -width 32 -image [tix getimage $i] -command $f]
-		keylset blist $i $v
+		wokUtils:key:lset blist $i $v
 		set IWOK_GLOBALS(buttons,state,$i) {}
 	    }
 
 	    set prev {}
 	    set curr {}
-
-	    foreach i [keylkeys blist] {
-		set v [keylget blist $i]
+	    foreach i [wokUtils:key:lkeys blist] {
+		set v [wokUtils:key:lget blist $i]
 		set curr [lindex $v 0]
 		if { $prev == {} } {
 		    tixForm $w.$curr -top $w.mnu
@@ -263,14 +264,14 @@ proc wokButton { option {w nil} } {
 
 	disable {
 	    foreach bt $w {
-		[lindex [keylget IWOK_GLOBALS(buttons) $bt] end] configure -state disabled 
+		[lindex [wokUtils:key:lget IWOK_GLOBALS(buttons) $bt] end] configure -state disabled 
 	    }
 	    
 	}
 
 	activate {
 	    foreach bt $w {
-		[lindex [keylget IWOK_GLOBALS(buttons) $bt] end] configure -state normal
+		[lindex [wokUtils:key:lget IWOK_GLOBALS(buttons) $bt] end] configure -state normal
 	    }
 	 }
 

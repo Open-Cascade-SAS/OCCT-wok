@@ -47,9 +47,6 @@ proc iwok { args } {
     set IWOK_GLOBALS(font)     [tix option get fixed_font]
     set IWOK_GLOBALS(boldfont) [tix option get bold_font]
 
-    ;#tix addbitmapdir /adv_23/WOK/k3dev/ref/src/WOKTclLib   ;# THUY EM
-    ;#tix addbitmapdir /adv_23/WOK/k3dev/iwok/src/WOKTclLib  ;# THUY EM
-
     ;# ucreate -P dans factory/workshop/ => erreur ?!!!
     set IWOK_GLOBALS(ucreate-P) [list {j jini} {p package} {s schema} {i interface} {C client} {e engine} {x executable} {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal} {d delivery} {I idl} {S server}  {m module}]
 
@@ -64,8 +61,8 @@ proc iwok { args } {
     wm withdraw .
     toplevel $IWOK_GLOBALS(toplevel)
     wm title $IWOK_GLOBALS(toplevel) "WOK ( [id user] ) on host [id host]"
-    wm geometry $IWOK_GLOBALS(toplevel) $IWOK_GLOBALS(toplevel,geometry)
-
+    ;#wm geometry $IWOK_GLOBALS(toplevel) $IWOK_GLOBALS(toplevel,geometry)
+    wm geometry $IWOK_GLOBALS(toplevel) 1200x80+10+30
     ;#wokInitPalette black white orange blue
     wokInitPalette
     
