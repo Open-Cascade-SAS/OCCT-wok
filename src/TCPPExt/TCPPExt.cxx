@@ -292,7 +292,7 @@ void TCPP_Extract(const Handle(MS_MetaSchema)& aMeta,
   Handle(MS_HSequenceOfMemberMet) aSeqMemMet;
   Handle(MS_HSequenceOfExternMet) aSeqExtMet;
   Standard_Integer                i,
-  seqLen;
+  seqLen = 0;
   
   if (!srcClass.IsNull()) {
     aSeqMemMet = srcClass->GetMethods();
