@@ -723,7 +723,7 @@ void CSFDBSchema_BuildCodeBody(const Handle(MS_MetaSchema)& aMeta,
   Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString;
   Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString(api->GetVariableValue("%FullPath"));
   Handle(TCollection_HAsciiString) proto  = new TCollection_HAsciiString;
-  Standard_Integer                 i,fileNum = 0,j;
+  Standard_Integer                 i,j;
   Handle(MS_StdClass)              c;
   Handle(MS_Type)                  tmpType;
   
