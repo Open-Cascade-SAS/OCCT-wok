@@ -1,0 +1,17 @@
+-- File:	WOKSH_CMPLRS.edl
+-- Author:	Stagiaire Pascal BABIN
+-- History:	Tue Jul  9 13:39:27 1996	Stagiaire Pascal BABIN	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %WOKSH_CMPLRS_EDL) then
+@set %WOKSH_CMPLRS_EDL = "";
+
+@if ( %Station != "wnt" ) then
+	@string %CMPLRS_CXX_Options = "  -I/usr/tcltk/include -I/usr/tcltk/include/itcl -I/usr/include " %CMPLRS_CXX_Options;
+@endif;
+
+@if ( %Station == "wnt" ) then
+	@string %CMPLRS_CXX_Options = %CMPLRS_CXX_Options " -ID:/DevTools/TclTk/include ";
+@endif;
+
+@endif;
