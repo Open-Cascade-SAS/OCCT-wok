@@ -6,8 +6,8 @@
 #ifdef WNT
 # include <io.h>
 #else
-# include <unistd.h>
 #endif  // WNT
+#include <unistd.h>
 
 #include <WOKTools_Messages.hxx>
 
@@ -31,6 +31,8 @@
 #include <WOKStep_Include.ixx>
 
 #ifdef WNT
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
 # include <tchar.h>
 # include <WOKNT_WNT_BREAK.hxx>
 
@@ -41,6 +43,8 @@ extern "C" __declspec( dllimport ) int wokCMP ( int, char** );
 # define WOKStep_Include_SYMLINK 0
 # if !WOKStep_Include_SYMLINK
 #  include <OSD_File.hxx>
+#  include <sys/types.h>
+#  include <utime.h>
 # endif  // !WOKStep_Include_SYMLINK
 #endif  // WNT
 
@@ -128,7 +132,7 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
   Handle(WOKernel_FileType) pubinctype = Unit()->FileTypeBase()->Type("pubinclude");
 
   Handle(WOKMake_InputFile) infile;
-  
+
   for(i=1; i<=tobuild->Length(); i++)
     {
 #ifdef WNT
@@ -142,13 +146,12 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
-	  if(pubincfile->Path()->Exists())
-	    {
-	      pubincfile->Path()->RemoveFile();
-	    }
-
 #ifndef WNT
 # if WOKStep_Include_SYMLINK
+          if(pubincfile->Path()->Exists())
+            {
+              pubincfile->Path()->RemoveFile();
+            }
 	  symlink(infile->File()->Path()->Name()->ToCString(), pubincfile->Path()->Name()->ToCString());
 # else
           if (  !pubincfile -> Path () -> Exists () ||
@@ -158,6 +161,8 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
            OSD_Path pSrc (  infile -> File () -> Path () -> Name () -> String ()  );
            OSD_File fSrc (  pSrc                                                  );
            OSD_Path pDst (  pubincfile -> Path () -> Name () -> String ()         );
+
+           chmod (  pubincfile -> Path () -> Name () -> ToCString (), 00644  );
 
            fSrc.Copy ( pDst );
 
@@ -174,23 +179,55 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
            }  // end if
 
+           struct utimbuf times;
+           struct stat    buf;
+
+           stat (  infile -> File () -> Path () -> Name () -> ToCString (), &buf  );
+
+           times.actime  = buf.st_atime;
+           times.modtime = buf.st_mtime; 
+
+           utime (  pubincfile -> Path () -> Name () -> ToCString (), &times  ); 
+
           }  // end if
 # endif  // WOKStep_Incluse_SYMLINK
 #else
-	  Standard_CString CmpArgs[4];
+	  Standard_CString args[ 4 ];
 
- 	  CmpArgs[0] = "wokCMP";
-          CmpArgs[1] = infile->File()->Path()->Name()->ToCString();
-          CmpArgs[2] = pubincfile->Path()->Name()->ToCString();
-	  if(wokCMP(3, CmpArgs)) 
-	    {
-	      Standard_CString CpArgs[4];
-	      
-	      CpArgs[0] = "wokCP";
-	      CpArgs[1] = infile->File()->Path()->Name()->ToCString();
-	      CpArgs[2] = pubincfile->Path()->Name()->ToCString();
-	      wokCP(3, CpArgs);
-	    }
+      args[ 0 ] = "wokCMP";
+      args[ 1 ] = infile -> File () -> Path () -> Name () -> ToCString ();
+      args[ 2 ] = pubincfile        -> Path () -> Name () -> ToCString ();
+
+      if (  wokCMP ( 3, args )  ) {
+
+       HANDLE   hFile;
+       FILETIME cTime, aTime, wTime;
+
+       args[ 0 ] = "wokCP";
+       wokCP ( 3, args );
+
+       hFile = CreateFileA (
+                args[ 1 ], GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL
+               );
+
+       if ( hFile != INVALID_HANDLE_VALUE ) {
+
+        if (  GetFileTime ( hFile, &cTime, &aTime, &wTime )  ) {
+
+         CloseHandle ( hFile );
+         hFile = CreateFileA (
+                  args[ 2 ], GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL
+                 );
+
+         if ( hFile != INVALID_HANDLE_VALUE ) SetFileTime ( hFile, &cTime, &aTime, &wTime );
+
+        }  // end if
+
+        CloseHandle ( hFile );
+
+       }  // end if
+
+      }  // end if
 #endif
 	}
       else
