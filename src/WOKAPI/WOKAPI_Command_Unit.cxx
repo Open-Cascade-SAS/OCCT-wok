@@ -664,7 +664,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
   
   aprocess.SetForceFlag(force);
   
-  Standard_Integer status;
+  Standard_Integer status = 0;
   if(getsteps)
     {
       WOKAPI_SequenceOfMakeStep steps;

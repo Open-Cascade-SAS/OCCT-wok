@@ -36,6 +36,9 @@ is
     	returns Entity from WOKAPI;
 
 
+    Destructor ( me : out );
+    ---C++: alias "Standard_EXPORT virtual ~WOKAPI_Entity () {}"
+
     IsValid(me)
     	returns Boolean from Standard
 	is virtual;

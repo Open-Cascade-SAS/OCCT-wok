@@ -673,8 +673,9 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
 
   UnSelectAll();
   SetForceFlag(Standard_False);
+  Standard_Integer i;
 
-  for(Standard_Integer i=1; i<=defines->Length(); i++)
+  for(i=1; i<=defines->Length(); i++)
     {
       const WOKTools_Define& adefine = defines->Value(i);
       
@@ -795,7 +796,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
 	{
 	  WOKTools_MapOfHAsciiString typemap;
 
-	  for(Standard_Integer i=1; i<=types.Length(); i++)
+	  for(i=1; i<=types.Length(); i++)
 	    {
 	      const Handle(TCollection_HAsciiString)& atype = types.Value(i);
 	      if(!typemap.Contains(atype)) typemap.Add(atype);
@@ -816,7 +817,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
 	{
 	  WOKTools_MapOfHAsciiString typemap;
 
-	  for(Standard_Integer i=1; i<=types.Length(); i++)
+	  for(i=1; i<=types.Length(); i++)
 	    {
 	      const Handle(TCollection_HAsciiString)& atype = types.Value(i);
 	      if(!typemap.Contains(atype)) typemap.Add(atype);
@@ -839,7 +840,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
     {
       WOKAPI_SequenceOfUnit wbunits;
       mybench.Units(wbunits);
-      for(Standard_Integer i=1; i<=wbunits.Length(); i++)
+      for(i=1; i<=wbunits.Length(); i++)
 	{
 	  const WOKAPI_Unit& aunit =  wbunits.Value(i);
 	  const Handle(TCollection_HAsciiString)& aname = aunit.Name();
@@ -853,7 +854,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
       WOKAPI_SequenceOfUnit wbunits;  
       mybench.Units(wbunits);
 
-      for(Standard_Integer i=1; i<=wbunits.Length(); i++)
+      for(i=1; i<=wbunits.Length(); i++)
 	{
 	  const WOKAPI_Unit& aunit =  wbunits.Value(i);
 	  const Handle(TCollection_HAsciiString)& aname = aunit.Name();
@@ -992,8 +993,8 @@ void WOKAPI_BuildProcess::SelectedSteps(WOKAPI_SequenceOfMakeStep& aseq) const
 //=======================================================================
 void WOKAPI_BuildProcess::UnitSteps(const WOKAPI_Unit& aunit, WOKAPI_SequenceOfMakeStep& aseq) const
 {
-  const TColStd_SequenceOfHAsciiString& steps = myprocess->GetUnitSteps(aunit.Name());
   WOKAPI_MakeStep apistep;
+  const TColStd_SequenceOfHAsciiString& steps = myprocess->GetUnitSteps(aunit.Name());
 
   for(Standard_Integer i=1; i<=steps.Length(); i++)
     {

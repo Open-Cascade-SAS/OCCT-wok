@@ -81,8 +81,6 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
   static char WorkbenchStr[] = "Workbench";
 
   static char ModeStr[]      = "Mode";
-  static char DebugStr[]     = "Debug";
-  static char OptimiseStr[]  = "Optimise";
 
   static char DBMSStr[]      = "DBMS";
 
@@ -465,11 +463,6 @@ Standard_Boolean WOKAPI_Process::ExecuteBuild(const Handle(WOKTools_HSequenceOfD
 Standard_Boolean WOKAPI_Process::ExecuteFile(const Handle(TCollection_HAsciiString)& afile)
 {
   static char BuildStr[]     = ":Build";
-
-  static char ForceStr[]     = "Force";
-  static char YesStr[]       = "Yes";
-  static char NoStr[]        = "No";
-
   static char TclStr[]       = ":Tcl";
 
   Standard_Integer index;

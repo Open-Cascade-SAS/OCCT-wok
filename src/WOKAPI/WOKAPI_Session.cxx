@@ -289,7 +289,7 @@ void WOKAPI_Session::Close()
 void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
 {
   
-  static FailedInOpen;
+  static Standard_Boolean FailedInOpen;
   OSD::SetSignal();                  //==== ReArm the signals. =============
 #ifndef WNT
   WOKUtils_Signal::Arm(WOKUtils_SIGINT,    (WOKUtils_SigHandler) NULL);

@@ -1317,7 +1317,7 @@ void WOKAPI_Locate_Usage(char *cmd)
 //function : Locate
 //purpose  : 
 //=======================================================================
-WOKAPI_Command::Locate(const WOKAPI_Session& asession,
+Standard_Integer WOKAPI_Command::Locate(const WOKAPI_Session& asession,
 		       const Standard_Integer argc, const WOKTools_ArgTable& argv,
 		       WOKTools_Return& returns)
 {

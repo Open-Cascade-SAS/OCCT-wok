@@ -23,7 +23,11 @@ WOKAPI_MakeOption::WOKAPI_MakeOption()
 //purpose  : 
 //=======================================================================
 WOKAPI_MakeOption::WOKAPI_MakeOption(const WOKAPI_MakeOption& another)
-  : mycode(another.Code()), mytype(another.Type()), mytargets(another.Targets()), myforce(another.IsForced()), myplatforms(another.Platforms())
+  : mycode(another.Code()),
+    myforce(another.IsForced()),
+    mytype(another.Type()),
+    mytargets(another.Targets()),
+    myplatforms(another.Platforms())
 {
 }
 //=======================================================================
@@ -34,7 +38,7 @@ WOKAPI_MakeOption::WOKAPI_MakeOption(const Handle(TCollection_HAsciiString)& ast
 				     const WOKAPI_StepType atype,
 				     const Handle(TColStd_HSequenceOfHAsciiString)& targets,
 				     const Standard_Boolean forced)
-  : mycode(astr), mytype(atype), mytargets(targets), myforce(forced)
+  : mycode(astr), myforce(forced), mytype(atype), mytargets(targets)
 {
 }
 //=======================================================================
@@ -46,7 +50,7 @@ WOKAPI_MakeOption::WOKAPI_MakeOption(const Handle(TCollection_HAsciiString)& ast
 				     const Handle(TColStd_HSequenceOfHAsciiString)& targets,
 				     const Standard_Boolean forced,
 				     const Handle(TColStd_HSequenceOfHAsciiString) & platforms)
-  : mycode(astr), mytype(atype), mytargets(targets), myforce(forced),myplatforms(platforms)
+  : mycode(astr), myforce(forced), mytype(atype), mytargets(targets), myplatforms(platforms)
 {
 }
 
