@@ -1,0 +1,20 @@
+-- File:	CSFDBSCHEMA.edl
+-- Author:	Jean GAUTIER
+-- History:	Fri Jun  7 12:11:40 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %CSFDBSCHEMA_EDL) then
+@set %CSFDBSCHEMA_EDL = "";
+@if (%Station != "wnt") then
+    @if (%Station == "hp") then 
+        @set %CSFDBSCHEMA_Shared   = "libCSFDBSchema.sl";
+    @else
+        @set %CSFDBSCHEMA_Shared   = "libCSFDBSchema.so";
+    @endif;
+@else
+    @set %CSFDBSCHEMA_Shared   = "CSFDBSchema.dll";
+@endif;
+
+@set %CSFDBSCHEMA_Name     = "CSFDBSchema";
+
+@endif;
