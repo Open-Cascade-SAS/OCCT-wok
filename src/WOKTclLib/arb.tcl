@@ -97,7 +97,7 @@ proc DependenceTree_getunittk { pkname location } {
 	    if {![info exist arrayoftk($atk)]} {
 		set pkfile [woklocate -p ${atk}:PACKAGES: $location]
 		set arrayoftk($atk) 1
-		if {[clength $pkfile]} {
+		if {[string length $pkfile]} {
 		    set lst {}
 		    for_file udintk $pkfile {
 			set arrayoftk($udintk) $atk

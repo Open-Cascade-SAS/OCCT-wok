@@ -29,7 +29,7 @@ proc pinstall {args} {
     cd $theullibdir
     foreach atempld [glob *.ldt] {
 	source $atempld
-	set goodlen [expr [clength $atempld] - 2]
+	set goodlen [expr [string length $atempld] - 2]
 	set aldfile [crange $atempld 0 $goodlen]
 	set ldfileid [open $aldfile w]
 	puts $ldfileid [WOKDeliv_Makeld $thefact]

@@ -260,7 +260,7 @@ proc woksh_emacs {args} {
 		
 		set tooolong 0
 		
-		if { [clength $theline] > 100} {
+		if { [string length $theline] > 100} {
 		    set tooolong 1
 
 		    set thelongcmdfile "/tmp/wokenv_[id process]_${format}_long"
@@ -273,9 +273,9 @@ proc woksh_emacs {args} {
 			unlink $thelongcmdfile
 		    }
 		    
-		    while { [clength $theline] > 100} {
+		    while { [string length $theline] > 100} {
 			exp_send_user  -- "[crange $theline 0 100]\\\n"
-			set theline [crange $theline 101 [clength $theline]]
+			set theline [crange $theline 101 [string length $theline]]
 		    }
 		    
 		    exp_send_user -- "$theline\n" 
