@@ -933,7 +933,7 @@ proc wokStore:Report:CheckUnits { lwb table } {
     set lret {}
     foreach u [array names TLOC] {
 	regexp {(.*)\.(.*)} $u all udname type 
-	if { [lsearch $lwb $udname] != -1 } {
+	if { [lsearch $lwb $udname] == -1 } {
 	    lappend lret $type $udname
 	}
     }
