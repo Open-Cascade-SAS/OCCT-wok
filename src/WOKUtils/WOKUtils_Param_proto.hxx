@@ -39,6 +39,9 @@
 #ifndef _Handle_TColStd_HSequenceOfHAsciiString_HeaderFile
 #include <Handle_TColStd_HSequenceOfHAsciiString.hxx>
 #endif
+#ifndef _Handle_WOKUtils_SearchList_HeaderFile
+#include <Handle_WOKUtils_SearchList.hxx>
+#endif
 class EDL_API;
 class TColStd_HSequenceOfAsciiString;
 class Standard_ProgramError;
@@ -63,7 +66,9 @@ public:
  // 
 Standard_EXPORT WOKUtils_Param();
 Standard_EXPORT   void Clear() ;
+Standard_EXPORT   void SetBasicVariables ( void );
 Standard_EXPORT   void SetSearchDirectories(const Handle(TColStd_HSequenceOfAsciiString)& aseq) ;
+Standard_EXPORT   void SetSearchDirectories(const Handle(WOKUtils_SearchList)&);
 Standard_EXPORT   Handle_TColStd_HSequenceOfAsciiString SearchDirectories() const;
 Standard_EXPORT   Handle_WOKUtils_Path SearchFile(const Handle(TCollection_HAsciiString)& afilename) const;
 Standard_EXPORT   void SetSubClasses(const Handle(TColStd_HSequenceOfAsciiString)& aseq) ;
@@ -126,7 +131,7 @@ Handle_TColStd_HSequenceOfAsciiString mysubs;
 
 
 
-// other inline functions and methods (like "C++: function call" methods)
+// other Inline functions and methods (like "C++: function call" methods)
 //
 
 

@@ -14,6 +14,7 @@ uses
     HAsciiString            from TCollection,
     API                     from EDL,
     Path                    from WOKUtils,
+    SearchList              from WOKUtils,
     HSequenceOfParamItem    from WOKUtils,
     MapOfHAsciiString       from WOKTools,
     HSequenceOfAsciiString  from TColStd,
@@ -31,6 +32,10 @@ is
 
     SetSearchDirectories(me:out; aseq : HSequenceOfAsciiString from TColStd);
     SearchDirectories(me) returns HSequenceOfAsciiString from TColStd;
+
+    SetSearchDirectories(me:out; aseq : SearchList from WOKUtils);
+
+    SetBasicVariables ( me : out );
 
     SearchFile(me; afilename : HAsciiString from TCollection) 
     	returns Path from WOKUtils;

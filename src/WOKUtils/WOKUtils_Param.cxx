@@ -16,11 +16,12 @@
 
 #include <WOKTools_Messages.hxx>
 #include <WOKUtils_Path.hxx>
-
+#include <WOKUtils_HSequenceOfPath.hxx>
 
 #include <WOKUtils_ParamItem.hxx>
 #include <WOKUtils_HSequenceOfParamItem.hxx>
 
+#include <WOKUtils_SearchList.hxx>
 
 #include <WOKUtils_WOKVersion.hxx>
 
@@ -37,11 +38,25 @@
 //function : WOKUtils_Param
 //purpose  : Simply creates the param
 //=======================================================================
-WOKUtils_Param::WOKUtils_Param()
-{
-  myapi  = new EDL_API;
-  myapi->AddVariable("%WOK_VERSION", WOK_VERSION);
-}
+WOKUtils_Param :: WOKUtils_Param () {
+
+ myapi = new EDL_API ();
+ SetBasicVariables ();
+
+}  // end WOKUtils_Param :: WOKUtils_Param
+
+void WOKUtils_Param :: SetBasicVariables ( void ) {
+
+ myapi -> AddVariable ( "%WOK_VERSION", WOK_VERSION );
+#ifdef WNT
+ myapi -> AddVariable ( "%Station",     "wnt"       );
+#elif defined( SOLARIS )
+ myapi -> AddVariable ( "%Station",     "sun"       );
+#elif defined( LIN )
+ myapi -> AddVariable ( "%Station",     "lin"       );
+#endif  // WNT
+
+}  // end WOKUtils_Param :: SetBasicVariables
 
 //=======================================================================
 //function : Clear
@@ -49,8 +64,8 @@ WOKUtils_Param::WOKUtils_Param()
 //=======================================================================
 void WOKUtils_Param::Clear()
 {
-  myapi = new EDL_API;
-  myapi->AddVariable("%WOK_VERSION", WOK_VERSION);
+  myapi = new EDL_API ();
+  SetBasicVariables ();
   mysubs.Nullify();
 }
 
@@ -71,6 +86,21 @@ void WOKUtils_Param::SetSearchDirectories(const Handle(TColStd_HSequenceOfAsciiS
   
   return;
 }
+
+void WOKUtils_Param :: SetSearchDirectories (  const Handle( WOKUtils_SearchList )& aList  ) {
+
+ Standard_Integer                   i;
+ Handle( WOKUtils_HSequenceOfPath ) pathList = aList -> List ();
+
+ myapi -> ClearIncludes ();
+
+ for (  i = 1; i <= pathList -> Length (); ++i  )
+
+  myapi -> AddIncludeDirectory (
+            pathList -> Value ( i ) -> Name () -> ToCString ()
+           );
+
+}  // end WOKUtils_Param :: SetSearchDirectories
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
@@ -446,8 +476,8 @@ Standard_Boolean WOKUtils_Param::LoadFile(const Handle(TCollection_HAsciiString)
     case EDL_FILEOPENED:
     case EDL_FILENOTOPENED:
       if(filemaynotexist) return Standard_True;
-//      ErrorMsg << "WOKUtils_Param::LoadParamClass"
-//	       << "File " << afile << " could not be opened" << endm;
+      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+	       << "File " << afile << " could not be opened" << endm;
       break;
     case EDL_TOOMANYINCLUDELEVEL:
       ErrorMsg << "WOKUtils_Param::LoadParamClass"
