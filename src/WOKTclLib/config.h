@@ -20,16 +20,16 @@
 /* #undef CRAY_STACKSEG_END */
 
 /* Define if using `alloca.c'. */
-/* #undef C_ALLOCA */
+/*#define C_ALLOCA */
 
 /* define if the compiler allows redefinition of stream input and output */
-/* #undef DEF_IOS_OK */
+#undef DEF_IOS_OK 
 
 /* Define if you have `alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
 
 /* Define if you have <alloca.h> and it should be used (not on Ultrix). */
-#define HAVE_ALLOCA_H 1
+/*#define HAVE_ALLOCA_H 1 */
 
 /* Define if you have the <bits/sigset.h> header file. */
 #define HAVE_BITS_SIGSET_H 1
@@ -344,7 +344,7 @@
 /* #undef HAVE_ALLOCA */
 
 /* Define if you have <alloca.h> and it should be used (not on Ultrix). */
-/* #undef HAVE_ALLOCA_H */
+#define HAVE_ALLOCA_H 
 
 /* Define if you have the <bits/sigset.h> header file. */
 /* #undef HAVE_BITS_SIGSET_H */
@@ -625,6 +625,7 @@
 /* Define if your processor stores words with the most significant byte first
    (like Motorola and SPARC, unlike Intel and VAX). */
 #define WORDS_BIGENDIAN 1
+
 /* Define if on AIX 3.
    System headers sometimes define this.
    We just want to avoid a redefinition error message.  */
@@ -656,7 +657,7 @@
 /* #undef CRAY_STACKSEG_END */
 
 /* Define if using `alloca.c'. */
-#define C_ALLOCA 1
+/* #define C_ALLOCA 1 */
 
 /* define if the compiler allows redefinition of stream input and output */
 /* #undef DEF_IOS_OK */
@@ -665,7 +666,7 @@
 /* #undef HAVE_ALLOCA */
 
 /* Define if you have <alloca.h> and it should be used (not on Ultrix). */
-/* #undef HAVE_ALLOCA_H */
+/*#define HAVE_ALLOCA_H */
 
 /* Define if you have the <bits/sigset.h> header file. */
 /* #undef HAVE_BITS_SIGSET_H */
@@ -692,7 +693,7 @@
 #define HAVE_FINITE 
 
 /* Define if you have the <floatingpoint.h> header file. */
-/* #undef HAVE_FLOATINGPOINT_H 1 */
+#undef HAVE_FLOATINGPOINT_H 1
 
 /* Define if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
@@ -942,6 +943,9 @@
 
 /* Version number of package */
 #define VERSION "4.0DVP1"
+
+/*Define MemSpy*/
+#undef HAVE_MEMCPY
 
 /* Define if your processor stores words with the most significant byte first
    (like Motorola and SPARC, unlike Intel and VAX). */
