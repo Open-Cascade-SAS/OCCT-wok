@@ -3,15 +3,8 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <tcl.h>
-#ifdef HAVE_STRSTREAM_H
-# include <strstream.h>
-#endif
-
+#include <Standard_SStream.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
