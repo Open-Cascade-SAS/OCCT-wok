@@ -5,25 +5,18 @@ if { ! [info exists env(WOK_SESSIONID)] } {
  set env(WOK_SESSIONID) "$env(HOME)/.wok"
 }
 
-global tcl_platform
-
-if { "$tcl_platform(platform)"  == "WindowsNT" } {
-	wm withdraw .	
+if {  [info exists env(WOK_LIBRARY)] } {
+    lappend auto_path $env(WOK_LIBRARY)
+    package require Wok
+    package require Ms
+    set tcl_prompt1 {if {[info commands wokcd] != ""}  then \
+	    {puts -nonewline stdout "[wokcd]> "} else \
+	    {puts -nonewline stdout "tclsh> "}}
+} else {
+    puts stderr "Warning: The environment variable WOK_LIBRARY is mandatory to"
+    puts stderr "         load the package Wok."
+    puts stderr "        "
 }
 
-package require Wok
-package require Ms
 
-if [catch { package require Tclx } TclXHere] {
-    puts stderr "Warning : You'll need package TclX to correctly use WOK."
-    puts stderr "          Check for variable TCLLIBPATH"
-}
-if [catch { package require Expect } ExpectHere] {
-    puts stderr "Warning : You'll need package Expect to use WOK integration package.."
-    puts stderr "          Check for variable TCLLIBPATH"
-}
-
-set tcl_prompt1 {if {[info commands wokcd] != ""}  then \
- {puts -nonewline stdout "[wokcd]> "} else \
- {puts -nonewline stdout "tclsh> "}}
 

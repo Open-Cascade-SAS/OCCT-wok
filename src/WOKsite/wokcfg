@@ -123,7 +123,6 @@ switch ( `uname` )
 endsw
 
 setenv PATH            "${TCLHOME}/bin:${PATH}"
-setenv TCLLIBPATH      "${TCLHOME}/lib/itcl ${TCLHOME}/lib  $WOK_LIBRARY/${WOKSTATION}  $WOK_LIBRARY "
 setenv WOK_LIBPATH     ${WOK_LIBRARY}:${WOK_LIBRARY}/${WOKSTATION}
 setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${WOK_LIBRARY}/${WOKSTATION}
 if ( "`uname`" == "HP-UX" ) setenv SHLIB_PATH "${LD_LIBRARY_PATH}:${TCLHOME}/lib/"
@@ -132,7 +131,6 @@ if ( "`uname`" == "AIX" ) setenv LIBPATH "${LD_LIBRARY_PATH}:${TCLHOME}/lib/"
 if ( $justrun ) then
    echo "Now running tclsh using :"
    echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
-   echo "TCLLIBPATH      = $TCLLIBPATH"
    echo "WOKHOME         = $WOKHOME"
    echo "PATH            = $PATH"
    if ( $script ) then
