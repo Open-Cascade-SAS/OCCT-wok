@@ -1,0 +1,30 @@
+;#
+;# This proc is invoked by the command: wstore -trig <report>
+;# It should be placed in the Adm directory of the concerned shop,
+;# and the file should be named wstore_trigger.tcl
+;#
+proc wstore_trigger { {action put} report_path } {
+
+    set saved_wokcd [wokcd]
+
+    switch -- $action {
+
+	put {
+	    ;# in this case <report_path> is the full path of the report being processed.
+	    set saved_wokcd [wokcd]
+	    wokcd KERNEL:Ker6
+	    wstore $report_path
+	}
+
+	rm {
+	    ;# in this case <report_path> is a digit: The queue index of the report being deleted.
+	}
+
+	default {
+	}
+    }
+    
+    wokcd $saved_wokcd
+    wokclose -a
+    return 
+}
