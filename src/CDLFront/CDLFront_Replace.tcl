@@ -47,20 +47,11 @@ proc CDLFront_Replace:Execute { unit args } {
 msgprint -i -c "$source "
 	regsub -all "/" " $source $vistarget" $replstr  TheArgs
 
-        if { [file exist $vistarget] } {
-	  set A [catch {eval "wokcmp $TheArgs"} result ]
-        } else {
-          set result 0 }
-	
-	if { ! $result } {
-	    msgprint -i -c "CDLFront_Replace::Execute" "Copy $source to $vistarget"
-	    if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
+	msgprint -i -c "CDLFront_Replace::Execute" "Copy $source to $vistarget"
+	if { [file exist $vistarget] && [wokparam -e %Station ] != "wnt" } {
 		eval exec "chmod u+w $vistarget"
-	    }
-	    eval exec "$copycmd $TheArgs"
-	} else {
-	    msgprint -i -c "CDLFront_Replace::Execute" "No change in $source"
 	}
+	eval exec "$copycmd $TheArgs"
 
     return 0;
 }
