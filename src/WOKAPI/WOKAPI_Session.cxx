@@ -271,6 +271,12 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
   return 0; 
 }
 
+void WOKAPI_Session::Open(const WOKAPI_Session& aSession, 
+			  const Handle(TCollection_HAsciiString)& apath) 
+{
+ WOKAPI_Entity::Open( aSession , apath ) ;
+}
+
 //=======================================================================
 //function : Close
 //purpose  : 

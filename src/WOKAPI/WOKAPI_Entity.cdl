@@ -78,7 +78,8 @@ is
 	
     -- Vie de l'entite
     
-    Open(me:out;  aSession : Session from WOKAPI; aPath : HAsciiString from TCollection);
+    Open(me:out;  aSession : Session from WOKAPI; aPath : HAsciiString from TCollection)
+    	is virtual;
 
     Close(me:out)
     	is virtual;

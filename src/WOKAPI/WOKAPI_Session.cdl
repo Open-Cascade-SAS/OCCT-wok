@@ -49,6 +49,8 @@ is
     Open(me:out; alocation,astation : HAsciiString from TCollection = NULL) 
     	  returns Integer from Standard;
 
+    Open(me:out;  aSession : Session from WOKAPI; aPath : HAsciiString from TCollection)
+    	is redefined;
     Close(me:out)
     	is redefined;
 

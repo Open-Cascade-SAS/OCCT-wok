@@ -70,7 +70,8 @@ Handle(TCollection_HAsciiString) WOKAPI_MakeStep::UniqueName() const
 //function : Input
 //purpose  : 
 //=======================================================================
-Standard_Integer WOKAPI_MakeStep::Input(WOKAPI_SequenceOfFile& aseq) const
+//Standard_Integer WOKAPI_MakeStep::Input(WOKAPI_SequenceOfFile& aseq) const
+Standard_Integer WOKAPI_MakeStep::Input(WOKAPI_SequenceOfFile& ) const
 {
   if(mystep.IsNull()) return 1;
 

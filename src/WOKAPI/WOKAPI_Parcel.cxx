@@ -103,7 +103,8 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Parcel::BuildParameters(const WOKAP
 //function : Declare
 //purpose  : 
 //=======================================================================
-Standard_Boolean WOKAPI_Parcel::Declare(const WOKAPI_Session& asession,
+//Standard_Boolean WOKAPI_Parcel::Declare(const WOKAPI_Session& asession,
+Standard_Boolean WOKAPI_Parcel::Declare(const WOKAPI_Session& ,
 					const Handle(TCollection_HAsciiString)& name,
 					const WOKAPI_Entity& anesting,
 					const Handle(WOKTools_HSequenceOfDefine)& defines,

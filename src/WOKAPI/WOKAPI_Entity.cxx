@@ -1481,22 +1481,26 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 }
 
 
-Standard_Boolean WOKAPI_Entity::HomePage(const Standard_OStream& astream) const
+//Standard_Boolean WOKAPI_Entity::HomePage(const Standard_OStream& astream) const
+Standard_Boolean WOKAPI_Entity::HomePage(const Standard_OStream& ) const
 {
   return Standard_True;
 }
 
-Standard_Boolean WOKAPI_Entity::ItemHRef(const Standard_OStream& astream) const
+//Standard_Boolean WOKAPI_Entity::ItemHRef(const Standard_OStream& astream) const
+Standard_Boolean WOKAPI_Entity::ItemHRef(const Standard_OStream& ) const
 {
   return Standard_True;
 }
 
-Standard_Boolean WOKAPI_Entity::PageHeader(const Standard_OStream& astream) const
+//Standard_Boolean WOKAPI_Entity::PageHeader(const Standard_OStream& astream) const
+Standard_Boolean WOKAPI_Entity::PageHeader(const Standard_OStream& ) const
 {
   return Standard_True;
 }
 
-Standard_Boolean WOKAPI_Entity::PageFooter(const Standard_OStream& astream) const
+//Standard_Boolean WOKAPI_Entity::PageFooter(const Standard_OStream& astream) const
+Standard_Boolean WOKAPI_Entity::PageFooter(const Standard_OStream& ) const
 {
   return Standard_True;
 }
