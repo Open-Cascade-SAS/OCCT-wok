@@ -40,6 +40,8 @@
 
 #include <WOKTools_MapOfHAsciiString.hxx>
 
+#include <MS_HSequenceOfClass.hxx>
+
 #define CHECKERROR "Check"
 
 MS_MetaSchema::MS_MetaSchema()
@@ -1412,7 +1414,84 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
 
       locRes = CheckInstClass(anInstClass);
       result = locRes && result;
+
     }
+#if 1
+// ---> EUG 15-APR-2000
+      else {
+
+     int                                       i, j, k;
+     MS_MapOfMethod                            vMap;
+     Handle( MS_InstMet                      ) im;
+     Handle( TCollection_HAsciiString        ) mName;
+     Handle( TColStd_HSequenceOfHAsciiString ) parents = aStdClass -> GetFullInheritsNames ();
+
+     for ( i = 1; i <= parents -> Length (); ++i ) {
+
+      Handle( MS_Class ) aParent = Handle( MS_Class ) :: DownCast (
+                                                          GetType (  parents -> Value ( i )  )
+                                                         );
+
+      if (   !aParent.IsNull () && aParent -> IsKind (  STANDARD_TYPE( MS_StdClass )  )   ) {
+
+       Handle( MS_StdClass ) aStdClass = *(   (  Handle( MS_StdClass )*  )&aParent   );
+
+       if (  !aStdClass -> GetMyCreator ().IsNull () && !aStdClass -> IsGeneric ()  ) {
+       
+        aSeqM = aParent -> GetMethods ();
+
+        for ( j = 1; j <= aSeqM -> Length (); ++j )
+
+         if (   aSeqM -> Value ( j ) -> IsKind (  STANDARD_TYPE( MS_InstMet )  )   ) {
+
+          im    = *(   (  Handle( MS_InstMet )*  )&aSeqM -> Value ( j )   );
+          mName = im -> FullName () -> Token ( ":", 2 );
+
+          if (  !im -> IsStatic () && !vMap.IsBound ( mName )  ) vMap.Bind ( mName, im );
+
+         }  // end if
+
+       }  // end if
+
+      }  // end if
+
+     }  // end for
+
+     if (  !vMap.IsEmpty ()  ) {
+
+      aSeqM = aStdClass -> GetMethods ();
+
+      for ( i = 1; i <= aSeqM -> Length (); ++i ) {
+
+       mName = aSeqM -> Value ( i ) -> FullName () -> Token ( ":", 2 );
+
+       if (  vMap.IsBound ( mName )  ) {
+
+        Handle ( MS_InstMet ) imParent =
+         *(   (  Handle( MS_InstMet )*  )&vMap.Find ( mName )   );
+
+        im = *(   (  Handle( MS_InstMet )*  )&aSeqM -> Value ( i )   );
+
+        Handle( MS_HArray1OfParam ) pParent = imParent -> Params ();
+        Handle( MS_HArray1OfParam ) pClass  = im       -> Params ();
+ 
+        if (  !pParent.IsNull ()  )
+
+         for ( k = 1; k <= pParent -> Length (); ++k )
+
+          if (   pParent -> Value ( k ) -> IsItem () &&
+                !pClass  -> Value ( k ) -> IsItem ()
+          ) pClass -> Value ( k ) -> ItsItem ();
+
+       }  // end if
+
+      }  // end for
+
+     }  // end if
+
+    }  // end else
+// <--- EUG 15-APR-2000
+#endif
   }
 
   
