@@ -5,6 +5,7 @@ VPATH = @srcdir@ : \
 @top_srcdir@/src/WOKLibs
 
 INCLUDES =$(CSF_SOCKETLibs_INCLUDES) $(CSF_FPELibs_INCLUDES) $(CSF_advapi32_INCLUDES) $(CSF_gdi32_INCLUDES) $(CSF_user32_INCLUDES)  \
+$(CSF_TclLibs_INCLUDES) $(CSF_TclTkLibs_INCLUDES) \
 -I@top_srcdir@/inc \
 -I@top_srcdir@/src/WOKLibs
 
