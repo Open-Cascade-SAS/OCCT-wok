@@ -31,6 +31,7 @@ is
     Package(me)
     	returns mutable HAsciiString from TCollection;
 	
+    Raises(me: mutable; aExcept: HAsciiString) is redefined ;
     Raises(me: mutable; aExcept: HAsciiString; aPackage: HAsciiString);
 
 fields

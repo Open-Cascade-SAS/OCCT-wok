@@ -503,7 +503,8 @@ Handle(MS_Method) MS::GetMethodFromFriendName(const Handle(MS_MetaSchema)& aMeta
 }
 
 
-Standard_Boolean MS::IsExportedType(const Handle(MS_MetaSchema)& aMeta,const Handle(MS_Type)& aType)
+//Standard_Boolean MS::IsExportedType(const Handle(MS_MetaSchema)& aMeta,const Handle(MS_Type)& aType)
+Standard_Boolean MS::IsExportedType(const Handle(MS_MetaSchema)& ,const Handle(MS_Type)& aType)
 { 
   if (aType->IsKind(STANDARD_TYPE(MS_Imported)) || 
       aType->IsKind(STANDARD_TYPE(MS_GenType))  ||
@@ -597,7 +598,8 @@ void MS::AddOnce(const Handle(TColStd_HSequenceOfHAsciiString)& aSeq,
 
 // we test the type and dispatch it in the different lists
 //
-void MS::DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+//void MS::DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+void MS::DispatchUsedType(const Handle(MS_MetaSchema)& ,
 			  const Handle(MS_Type)& thetype,
 			  const Handle(TColStd_HSequenceOfHAsciiString)& List,
 			  const Handle(TColStd_HSequenceOfHAsciiString)& Incp,

@@ -83,7 +83,8 @@ Standard_Boolean MS_Class::Private() const
   return myPrivate;
 }
 
-void MS_Class::Check(const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPackage) const 
+//void MS_Class::Check(const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPackage) const 
+void MS_Class::Check(const Handle(TCollection_HAsciiString)& , const Handle(TCollection_HAsciiString)& ) const 
 {
 }
 

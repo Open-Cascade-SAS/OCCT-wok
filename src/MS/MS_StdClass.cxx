@@ -19,8 +19,10 @@ MS_StdClass::MS_StdClass(const Handle(TCollection_HAsciiString)& aName,
 {
 }
 
-void MS_StdClass::Validity(const Handle(TCollection_HAsciiString)& aName, 
-			   const Handle(TCollection_HAsciiString)& aPackage) const 
+//void MS_StdClass::Validity(const Handle(TCollection_HAsciiString)& aName, 
+//			   const Handle(TCollection_HAsciiString)& aPackage) const 
+void MS_StdClass::Validity(const Handle(TCollection_HAsciiString)& , 
+			   const Handle(TCollection_HAsciiString)& ) const 
 {
 }
 

@@ -1,3 +1,5 @@
+#include <Standard_NotImplemented.hxx>
+
 #include <MS_ExternMet.ixx>
 
 MS_ExternMet::MS_ExternMet(const Handle(TCollection_HAsciiString)& aName) : MS_Method(aName)
@@ -34,7 +36,14 @@ Handle(TCollection_HAsciiString) MS_ExternMet::Package() const
   return myPackage;
 }
 
-void MS_ExternMet::Raises(const Handle(TCollection_HAsciiString)& aExcept, const Handle(TCollection_HAsciiString)& aPackage)
+void MS_ExternMet::Raises(const Handle(TCollection_HAsciiString)& aExcept)
+{
+// Standard_NotImplemented::Raise("MS_ExternMet::Raises(const Handle(TCollection_HAsciiString)& aExcept) not implemented") ;
+ MS_Method::Raises( aExcept ) ;
+}
+
+//void MS_ExternMet::Raises(const Handle(TCollection_HAsciiString)& aExcept, const Handle(TCollection_HAsciiString)& aPackage)
+void MS_ExternMet::Raises(const Handle(TCollection_HAsciiString)& , const Handle(TCollection_HAsciiString)& )
 {
 }
 

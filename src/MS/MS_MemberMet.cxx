@@ -1,3 +1,6 @@
+
+#include <Standard_NotImplemented.hxx>
+
 #include <MS_MemberMet.ixx>
 #include <MS.hxx>
 
@@ -12,7 +15,8 @@ void MS_MemberMet::Class(const Handle(TCollection_HAsciiString)& aClass)
   myClass = aClass;
 }
 
-void MS_MemberMet::Class(const Handle(TCollection_HAsciiString)& aClass, const Handle(TCollection_HAsciiString)& aPackage)
+//void MS_MemberMet::Class(const Handle(TCollection_HAsciiString)& aClass, const Handle(TCollection_HAsciiString)& aPackage)
+void MS_MemberMet::Class(const Handle(TCollection_HAsciiString)& , const Handle(TCollection_HAsciiString)& )
 {
 }
 
@@ -45,10 +49,11 @@ Standard_Boolean MS_MemberMet::IsProtected() const
   return myProtected;
 }
 
-//void MS_MemberMet::Raises(const Handle(TCollection_HAsciiString)& aExcept)
-//{
-//  MS_Method::Raises(aExcept);
-//}
+void MS_MemberMet::Raises(const Handle(TCollection_HAsciiString)& aExcept)
+{
+// Standard_NotImplemented::Raise("MS_MemberMet::Raises(const Handle(TCollection_HAsciiString)& aExcept) not implemented") ;
+ MS_Method::Raises( aExcept ) ;
+}
 
 void MS_MemberMet::Raises(const Handle(TCollection_HAsciiString)& aExcept, const Handle(TCollection_HAsciiString)& aPackage)
 {

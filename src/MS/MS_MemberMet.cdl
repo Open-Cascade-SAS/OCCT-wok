@@ -29,7 +29,7 @@ is
     IsProtected(me)
     	returns Boolean;
 
-    -- Raises(me : mutable; aExcept: HAsciiString from TCollection);
+    Raises(me : mutable; aExcept: HAsciiString from TCollection) is redefined ;
     Raises(me: mutable; aExcept: HAsciiString from TCollection; aPackage: HAsciiString from TCollection);
 
 fields

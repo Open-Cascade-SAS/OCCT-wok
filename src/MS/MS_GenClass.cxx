@@ -90,7 +90,8 @@ Handle(TColStd_HSequenceOfHAsciiString) MS_GenClass::GetNestedName() const
   return myNested;
 }
 
-void MS_GenClass::Validity(const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPackage) const 
+//void MS_GenClass::Validity(const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPackage) const 
+void MS_GenClass::Validity(const Handle(TCollection_HAsciiString)& , const Handle(TCollection_HAsciiString)& ) const 
 {
 }
 

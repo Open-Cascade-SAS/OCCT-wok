@@ -38,7 +38,7 @@ is
     Returns(me)
     	returns mutable Param from MS;
 	
-    Raises(me: mutable; aExcept: HAsciiString from TCollection) is static;
+    Raises(me: mutable; aExcept: HAsciiString from TCollection) is virtual;
     GetRaisesName(me)
     	returns mutable HSequenceOfHAsciiString from TColStd;
 	

@@ -28,8 +28,10 @@ MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName,
 {
 }
 
-void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& aName, 
-			    const Handle(TCollection_HAsciiString)& aPackage) const 
+//void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& aName, 
+//			    const Handle(TCollection_HAsciiString)& aPackage) const 
+void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& , 
+			    const Handle(TCollection_HAsciiString)& ) const 
 {
   
 }
