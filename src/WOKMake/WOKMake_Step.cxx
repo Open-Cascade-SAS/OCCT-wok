@@ -53,6 +53,9 @@
 #include <WOKMake_StepBuilder.hxx>
 
 #include <WOKMake_Step.ixx>
+//---> EUG4YAN
+Standard_EXPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 
 //=======================================================================
 //function : WOKMake_Step
@@ -950,7 +953,7 @@ void WOKMake_Step::AcquitExecution(const Handle(WOKMake_HSequenceOfInputFile)& e
 
 	  inmap(index) = infile;
 	  
-	  if(infile->IsPhysic())
+	  if(infile->IsPhysic()&&!infile->LastPath().IsNull ()&&!oldfile->LastPath().IsNull ())
 	    {
 	      if(infile->LastPath()->Name()->IsSameString(oldfile->LastPath()->Name()))
 		infile->SetStatus(WOKMake_Same);
@@ -1307,7 +1310,9 @@ void WOKMake_Step::Init()
 //=======================================================================
 WOKMake_Status WOKMake_Step::Make()
 {
-
+//---> EUG4YAN
+ g_fCompOrLnk = Standard_False;
+//<--- EUG4YAN
   Init();
 
   if(CheckStatus("perform init of step")) {Terminate(); return Status();}
@@ -1320,6 +1325,8 @@ WOKMake_Status WOKMake_Step::Make()
       
       if(CheckStatus("getting input list")) {Terminate(); return Status();}
       
+      Handle( WOKMake_HSequenceOfInputFile ) flist = ForceBuild ();
+
       execlist = ExecutionInputList();
       
       if(CheckStatus("determine exec list")) {Terminate(); return Status();}
@@ -1334,7 +1341,24 @@ WOKMake_Status WOKMake_Step::Make()
 	{
 	  SetUptodate();
 	}
-      
+//---> EUG4YAN
+    Standard_CString aType = DynamicType () -> Name ();
+
+    if (  !strcmp ( aType, "WOKStep_Compile"        ) ||
+          !strcmp ( aType, "WOKStep_DynamicLibrary" ) ||
+          !strcmp ( aType, "WOKStep_DLLink"         ) ||
+          !strcmp ( aType, "WOKStep_ExecLink"       ) ||
+          !strcmp ( aType, "WOKStep_LibLink"        )
+    ) {
+
+     InfoMsg << "WOKMake_Step :: Make" << "Generating build file" << endm;
+
+     g_fCompOrLnk = Standard_True;
+
+     Execute ( flist );
+
+    }  // end if
+//<--- EUG4YAN     
       AcquitExecution(execlist);
       
       if(CheckStatus("acquit execution")) {Terminate(); return Status();}
