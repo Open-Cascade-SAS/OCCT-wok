@@ -474,6 +474,8 @@ Standard_Boolean WOKUtils_Param::LoadFile(const Handle(TCollection_HAsciiString)
 	       << "Function not found while loading file : " << afile << endm;
       break;
     case EDL_FILEOPENED:
+      if(filemaynotexist) return Standard_True;
+      break;
     case EDL_FILENOTOPENED:
       if(filemaynotexist) return Standard_True;
       ErrorMsg << "WOKUtils_Param::LoadParamClass"
