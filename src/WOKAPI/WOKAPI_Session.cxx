@@ -799,7 +799,8 @@ Handle(WOKernel_Workbench) WOKAPI_Session::GetWorkbench(const Handle(TCollection
 //=======================================================================
 Handle(WOKernel_DevUnit) WOKAPI_Session::GetDevUnit(const Handle(TCollection_HAsciiString)& apath, 
 				       const Standard_Boolean fatal,
-				       const Standard_Boolean getit) const 
+//				       const Standard_Boolean getit) const 
+				       const Standard_Boolean ) const 
 {
   Handle(WOKernel_DevUnit) NULLRESULT, result;
 
