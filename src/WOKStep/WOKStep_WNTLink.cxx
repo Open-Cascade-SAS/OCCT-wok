@@ -31,12 +31,15 @@
 #include <WOKStep_WNTLink.ixx>
 
 // ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
-//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
-//Standard_IMPORT MMgt_StorageManager aStorageManager;
+//extern MMgt_StorageManager aStorageManager;
 
 #ifdef WNT
 #include <windows.h>
 #endif // WNT
+
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 
 //=======================================================================
 //function : WOKStep_WNTLink
@@ -64,7 +67,7 @@ Standard_Boolean WOKStep_WNTLink::HandleInputFile(const Handle(WOKMake_InputFile
   if(!anItem->File().IsNull()) 
     {
       path = anItem->File()->Path();
-      
+doHandle:      
       switch(path->Extension()) 
 	{
 	case WOKUtils_RESFile:
@@ -100,6 +103,11 @@ Standard_Boolean WOKStep_WNTLink::HandleInputFile(const Handle(WOKMake_InputFile
     }
   else if (!anItem->IsPhysic())
     return Standard_True;
+  else {
+
+   path = new WOKUtils_Path (  anItem -> ID ()  );
+   goto doHandle;
+  }  // end else
  return Standard_False; 
                                     
 }
@@ -193,6 +201,18 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
       Unit()->Params().Set("%LinkSubsystem", exetype->ToCString());
     }
 
+
+  Handle( WOKernel_FileType        ) stadmtype = Unit () -> GetFileType ( "stadmfile" );
+  Handle( TCollection_HAsciiString ) name =
+   new TCollection_HAsciiString (  Unit () -> Name ()  );
+
+  name -> AssignCat (  tool -> EvalCFExt ()  );
+  
+  Handle( WOKernel_File ) cmdFile = new WOKernel_File (  name, Unit (), stadmtype  );
+
+  cmdFile -> GetPath ();
+  Unit () -> Params ().Set ( "%CmdFileName", cmdFile -> Path () -> Name () -> ToCString ()  );
+
   if(!tool->OpenCommandFile()) 
     {
       SetFailed();
@@ -246,13 +266,19 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
 	  stubName = Unit()->Params().Eval(WOKernel_IsToolkit(Unit()) ? "%STUBS_tkMain" : "%STUBS_uMain");
 	  dwLen    = ExpandEnvironmentStrings(stubName->ToCString(), NULL, 0);
 
-	  char* buffer = (char *) Standard::Allocate(dwLen+1);
+	  char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
 	  memset(buffer, 0, dwLen+1);
 	  
 	  ExpandEnvironmentStrings(stubName->ToCString(), buffer, dwLen);
+
+      if (  buffer[ 0 ] == '/' && buffer[ 1 ] == '/'  )
+
+       buffer[ 0 ] = buffer[ 1 ] = '\\';
+
+
 	  buff     = new TCollection_HAsciiString(buffer);
 
-	  Standard::Free((void*&)buffer,dwLen+1);
+	  aStorageManager.Free((void*&)buffer,dwLen+1);
 	  seq->Append(buff);
 
 	}
@@ -261,13 +287,17 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
       
       dwLen = ExpandEnvironmentStrings(stubName->ToCString(), NULL, 0);
 
-      char* buffer = (char *) Standard::Allocate(dwLen+1);
+      char* buffer = (char *) aStorageManager.Allocate(dwLen+1);
 	  memset(buffer, 0, dwLen+1);
 	  
       ExpandEnvironmentStrings(stubName->ToCString(), buffer, dwLen);
       
+      if (  buffer[ 0 ] == '/' && buffer[ 1 ] == '/'  )
+
+       buffer[ 0 ] = buffer[ 1 ] = '\\';
+
 	  buff  = new TCollection_HAsciiString(buffer);
-	  Standard::Free((void*&)buffer,dwLen+1);
+	  aStorageManager.Free((void*&)buffer,dwLen+1);
 	  seq->Append(buff);
       
 
@@ -303,6 +333,9 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExec
   switch(tool->Execute()) 
     {
     case WOKBuilder_Success:
+//---> EUG4YAN
+     if ( !g_fCompOrLnk )
+//<--- EUG4YAN
       {
 	Handle(WOKernel_File    ) libPath;
 	Handle(WOKBuilder_Entity) outEnt;
@@ -349,7 +382,9 @@ dummyStepFile:
       SetFailed();
       break;
     }
-
+//---> EUG4YAN
+     if ( !g_fCompOrLnk )
+//<--- EUG4YAN
   InfoMsg << "WOKStep_WNTLink::Execute"
 	  << "------------" << endm  << "" << endm;
   

@@ -23,7 +23,9 @@
 #include <WOKMake_HSequenceOfOutputFile.hxx>
 
 #include <WOKStep_LibLink.ixx>
-
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 //=======================================================================
 //function : WOKStep_LibLink
 //purpose  : 
@@ -111,7 +113,7 @@ void WOKStep_LibLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execli
   switch(status)
     {
     case WOKMake_Success:
-      if(!outfiles.IsNull())
+      if (  !g_fCompOrLnk && !outfiles.IsNull ()  )
 	{
 	  for(i=1; i<=execlist->Length(); i++)
 	    {

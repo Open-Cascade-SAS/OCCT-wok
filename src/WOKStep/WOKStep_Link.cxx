@@ -42,7 +42,9 @@
 #include <WOKMake_AdmFileTypes.hxx>
 
 #include <WOKStep_Link.ixx>
-
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 //=======================================================================
 //function : WOKStep_Link
 //purpose  : 
@@ -428,13 +430,14 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
   if(lnkfile->Path()->Exists()) lnkfile->Path()->RemoveFile();
   if (!lnkfile->Path()->CreateFile()) {
     ErrorMsg << "WOKStep_Link::ExecuteLink" 
-      << "Enable to create link file " << lnkfile->Path()->Name()->ToCString() << endm;
+      << "Unable to create link file " << lnkfile->Path()->Name()->ToCString() << endm;
   }
   Handle(WOKUtils_Shell) ashell = Shell();
 
   ashell->Lock();
   ashell->SetEcho();
-  ashell->LogInFile(lnkfile->Path());
+
+  Unit () -> Params ().Set (  "%LnkFileName", lnkfile -> Path() -> Name () -> ToCString ()  );
   
   if(!ashell->IsLaunched()) ashell->Launch();
 
@@ -443,6 +446,9 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
   switch(mylinker->Execute())
     {
     case WOKBuilder_Success:
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN
       {
 	Handle(WOKBuilder_Entity) outent;
 	for(i=1; i<=mylinker->Produces()->Length(); i++)
@@ -498,7 +504,6 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
     }
   
   ashell->UnsetEcho();
-  ashell->NoLog();
   ashell->UnLock();
 
   return Status();

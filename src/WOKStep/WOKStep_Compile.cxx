@@ -3,11 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#ifdef WNT
-#include <io.h>
-#else
 #include <unistd.h>
-#endif
 #include <fstream.h>
 
 #include <TCollection_HAsciiString.hxx>
@@ -58,6 +54,10 @@
 
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
+
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 
 //=======================================================================
 //function : WOKStep_Compile
@@ -206,7 +206,9 @@ _TEST_BREAK();
       infile = execlist->Value(j);
       
       Handle(WOKBuilder_Compilable) compilable = Handle(WOKBuilder_Compilable)::DownCast(infile->BuilderEntity());
-      
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
 	  InfoMsg << "WOKStep_Compile::Execute" << "-------> " << infile->File()->Name() << endm;
@@ -273,10 +275,15 @@ _TEST_BREAK();
            }  // end if
           
           }  // end if
-
+//---> EUG4YAN
+ if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN
 	  TreatOutput(infile,myiterator.Produces()); 
 
 	  succeeds->Append(infile);
+//---> EUG4YAN
+ }  // end if
+//<--- EUG4YAN
 	  break;
 	case WOKBuilder_Failed:
 	  fails->Append(infile);
@@ -308,7 +315,7 @@ _TEST_BREAK();
 	       << "-----------------------------------------------------------------" << endm;
     }
 
- if (  !str -> IsEmpty ()  ) {
+ if (  g_fCompOrLnk && !str -> IsEmpty ()  ) {
 
   Handle( TCollection_HAsciiString ) s = new TCollection_HAsciiString (  Unit () -> Name ()  );
   s -> AssignCat ( ".comp" );
@@ -345,6 +352,8 @@ _TEST_BREAK();
    f.Close ();
 
   }  // end if
+
+  return;
 
  }  // end if
 

@@ -69,6 +69,17 @@ void WOKStep_WNTLibrary::Execute (const Handle(WOKMake_HSequenceOfInputFile)& an
 
  tool->SetTargetName(target);
  
+ Handle( WOKernel_FileType        ) stadmtype = Unit () -> GetFileType ( "stadmfile" );
+ Handle( TCollection_HAsciiString ) name =
+  new TCollection_HAsciiString (  Unit () -> Name ()  );
+
+ name -> AssignCat (  tool -> EvalCFExt ()  );
+  
+ Handle( WOKernel_File ) cmdFile = new WOKernel_File (  name, Unit (), stadmtype  );
+
+ cmdFile -> GetPath ();
+ Unit () -> Params ().Set ( "%CmdFileName", cmdFile -> Path () -> Name () -> ToCString ()  );
+
  if(!tool->OpenCommandFile()) 
    {
      SetFailed ();

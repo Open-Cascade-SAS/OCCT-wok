@@ -31,7 +31,9 @@
 #include <WOKMake_HSequenceOfInputFile.hxx>
 
 #include <WOKStep_DynamicLibrary.ixx>
-
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 //=======================================================================
 //function : WOKStep_DynamicLibrary
 //purpose  : 
@@ -137,7 +139,6 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 								       Unit()->Params());
 
   Handle(WOKUtils_Shell) ashell = Shell();
-
 //--> EUG4YAN
   bidname = new TCollection_HAsciiString (  Unit () -> Name ()  );
   bidname -> AssignCat ( ".lnk" );
@@ -154,10 +155,9 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
             << lnkfile -> Path () -> Name () -> ToCString ()
             << "'" << endm;
 //<-- EUG4YAN
-
   ashell->Lock();
 //--> EUG4YAN
-  ashell -> LogInFile (  lnkfile -> Path ()  );
+  Unit () -> Params ().Set (  "%LnkFileName", lnkfile -> Path () -> Name () -> ToCString ()  );
 //<-- EUG4YAN
   ldshr->SetShell(ashell);
   
@@ -204,14 +204,18 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 
   // Externals is Empty in this Step
   ldshr->SetExternals(new TColStd_HSequenceOfHAsciiString);
-
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN
   InfoMsg << "WOKStep_DynamicLibrary::Execute"
 	  << "Creating   : " << libname << endm;
-
 
   switch(ldshr->Execute())
     {
     case WOKBuilder_Success:
+//---> EUG4YAN
+ if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN
       for(i=1; i<=ldshr->Produces()->Length(); i++)
 	{
 	  Handle(WOKBuilder_Entity)   outent = ldshr->Produces()->Value(i);
@@ -256,6 +260,9 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
       InfoMsg << "WOKStep_DynamicLibrary::Execute"
 	      << "Succeeded  : " << libname << endm;
       SetSucceeded();
+//---> EUG4YAN
+ }  // end if
+//<--- EUG4YAN
       break;
     case WOKBuilder_Failed:
       ErrorMsg << "WOKStep_DynamicLibrary::Execute" 
