@@ -1,4 +1,3 @@
-#ifndef WNT
 // File:	WOKUnix_Dir.hxx
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
@@ -9,15 +8,14 @@
 
 #ifndef WNT 
 
-#include <dirent.h>
+# include <dirent.h>
 
 typedef DIR* WOKUnix_Dir;
 
 #else
 
-#error "Type Dir does not exist on WNT"
+# error "Type Dir does not exist on WNT"
 
 #endif
 
-#endif
 #endif

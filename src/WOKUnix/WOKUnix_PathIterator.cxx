@@ -9,13 +9,8 @@
 
 #include <WOKTools_Messages.hxx>
 
-#include <stream.h>
-
 #include <stdio.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
 #include <dirent.h>
-
 
 WOKUnix_PathIterator::WOKUnix_PathIterator(const Handle(WOKUnix_Path)& apath, const Standard_Boolean abool, const Standard_CString amask) 
 : mymask(amask), mypath(apath), myrecflag(abool)

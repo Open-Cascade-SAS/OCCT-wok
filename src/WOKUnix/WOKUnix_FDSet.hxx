@@ -8,12 +8,12 @@
 #ifndef WOKUnix_FDSet_HeaderFile
 #define WOKUnix_FDSet_HeaderFile
 
-#ifndef HPUX
+#if (!defined(__hpux))  && (!defined(HPUX) )
 #include <sys/select.h>
 #define WOKUnix_FDSet_CAST fd_set *
 #endif
 
-#ifdef HPUX
+#if defined(__hpux)  || defined(HPUX) 
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/time.h>

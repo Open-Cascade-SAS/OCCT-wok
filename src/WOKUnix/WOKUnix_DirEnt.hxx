@@ -1,4 +1,3 @@
-#ifndef WNT
 // File:	WOKUnix_Dir.hxx
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
@@ -9,7 +8,7 @@
 
 #ifndef WNT 
 
-#include <dirent.h>
+# include <dirent.h>
 
 typedef struct dirent* WOKUnix_DirEnt;
 
@@ -19,5 +18,4 @@ typedef struct dirent* WOKUnix_DirEnt;
 
 #endif
 
-#endif
 #endif
