@@ -1,4 +1,4 @@
---@ifnotdefined ( %TKWOK_LINKSHR_EDL ) then
+@ifnotdefined ( %TKWOK_LINKSHR_EDL ) then
  @set %TKWOK_LINKSHR_EDL = "";
  @if ( %Station == "lin" ) then
   @template LINKSHR_Footer () is
@@ -10,12 +10,12 @@
   @end;
   @template LINKSHR_CheckUndefFooter () is
    $ ;
-   $ set status=$ld_status
    $ if ( $?ld_library_path ) then
    $  setenv LD_LIBRARY_PATH $ld_library_path
    $ else
    $  unsetenv LD_LIBRARY_PATH
    $ endif
+   $ set status=$ld_status
   @end;
  @else @if ( %Station == "sun" ) then
    @template LINKSHR_Footer () is
@@ -27,15 +27,15 @@
    @end;
   @template LINKSHR_CheckUndefFooter () is
    $ ;
-   $ set status=$ld_status
    $ if ( $?ld_library_path ) then
    $  setenv LD_LIBRARY_PATH $ld_library_path
    $ else
    $  unsetenv LD_LIBRARY_PATH
    $ endif
+   $ set status=$ld_status
   @end;
    @set %LINKSHR_DBMSOpt = "";
   @endif;
  @endif;
---@endif;
+@endif;
 
