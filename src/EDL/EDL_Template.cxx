@@ -95,59 +95,64 @@ void EDL_Template::ClearLines()
   myValue->Clear();
 }
 
-void EDL_Template::Eval(const Handle(EDL_HSequenceOfVariable)& aVar)
-{
-  Standard_Integer        nbVar  = aVar->Length(),
-                          nbLine = myValue->Length();
-  static char             newString[131072],
-                          result   [400000];
-  Standard_CString        vname, vvalue;
+void EDL_Template :: Eval (  const Handle( EDL_HSequenceOfVariable )& aVar  ) {
 
-  myEval->Clear();
+ Standard_Integer nbVar  = aVar    -> Length ();
+ Standard_Integer nbLine = myValue -> Length ();
 
-  newString[0] = '\0';
-  result[0]    = '\0';
+ static char      newString[ 262144 ], result[ 400000 ];
+ Standard_CString vname, vvalue;
 
-  for (Standard_Integer lineCount = 1; lineCount <= nbLine; lineCount++) {
-    Standard_Integer ipos,lenvname,rpos;
+ myEval -> Clear ();
 
-    memcpy(newString,myValue->Value(lineCount).ToCString(),myValue->Value(lineCount).Length()+1);
+ newString[ 0 ] = '\0';
+ result[    0 ] = '\0';
 
-    for (Standard_Integer varCount = 1; varCount <= nbVar; varCount++) {
-      vname  = aVar->Value(varCount).GetName();
-      vvalue = aVar->Value(varCount).GetValue();
-      lenvname = strlen(vname);
+ for ( Standard_Integer lineCount = 1; lineCount <= nbLine; ++lineCount ) {
 
-      for (rpos = ipos = 0; newString[ipos] && ipos < 131072; ipos++) {
-	if (newString[ipos] == '%') {
+  Standard_Integer ipos, lenvname, rpos;
 
-	  if (memcmp(&newString[ipos],vname,lenvname) == 0) {
-	    for (Standard_Integer vpos = 0; vvalue[vpos] != 0; vpos++) {
-	      result[rpos] = vvalue[vpos];
-	      rpos++;
-	    }
+  memcpy (
+   newString,
+   myValue -> Value ( lineCount ).ToCString (),
+   myValue -> Value ( lineCount ).Length () + 1
+  );
+
+  for ( Standard_Integer varCount = 1; varCount <= nbVar; ++varCount ) {
+
+   vname    = aVar -> Value ( varCount ).GetName  ();
+   vvalue   = aVar -> Value ( varCount ).GetValue ();
+   lenvname = strlen ( vname );
+
+   for ( rpos = ipos = 0; newString[ ipos ] && ipos < 262144; ++ipos ) {
+
+    if ( newString[ ipos ] == '%' ) {
+
+     if (  memcmp ( &newString[ ipos ], vname, lenvname ) == 0  ) {
+
+      for ( Standard_Integer vpos = 0; vvalue[ vpos ] != 0; ++vpos )
+
+       result[ rpos++ ] = vvalue[ vpos ];
 	    
-	    ipos += lenvname - 1;
-	  }
-	  else {
-	    result[rpos] = newString[ipos];
-	    rpos++;
-	  }
-	}
-	else {
-	  result[rpos] = newString[ipos];
-	  rpos++;
-	}
-      }
+	  ipos += lenvname - 1;
 
-      result[rpos] = '\0';
-      memcpy(newString,result,rpos+1);
-    }
+     } else result[ rpos++ ] = newString[ ipos ];
 
-    myEval->Append(TCollection_AsciiString());
-    myEval->ChangeValue(myEval->Length()).Copy(newString);
-  }
-}
+    } else result[ rpos++ ] = newString[ ipos ];
+
+   }  // end for
+
+   result[ rpos ] = '\0';
+   memcpy ( newString, result, rpos + 1 );
+
+  }  // end for
+
+  myEval -> Append (  TCollection_AsciiString ()  );
+  myEval -> ChangeValue (  myEval -> Length ()  ).Copy ( newString );
+
+ }  // end for
+
+}  // end EDL_Template :: Eval
 
 Handle(TColStd_HSequenceOfAsciiString) EDL_Template::GetEval() const 
 {
