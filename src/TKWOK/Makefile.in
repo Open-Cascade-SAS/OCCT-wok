@@ -1,0 +1,1067 @@
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# Makefile.am for Open Cascade toolkit TKWOK
+
+
+SHELL = @SHELL@
+top_srcdir = @top_srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+CC = @CC@
+CFLAGS_DEBUG = @CFLAGS_DEBUG@
+CFLAGS_OPTIMIZE = @CFLAGS_OPTIMIZE@
+CFLAGS_WARNING = @CFLAGS_WARNING@
+CPP = @CPP@
+CSF_FPELibs_LIB = @CSF_FPELibs_LIB@
+CSF_OpenGlLibs_LIB = @CSF_OpenGlLibs_LIB@
+CSF_SOCKETLibs_LIB = @CSF_SOCKETLibs_LIB@
+CSF_TclLibs_INCLUDES = @CSF_TclLibs_INCLUDES@
+CSF_TclLibs_LIB = @CSF_TclLibs_LIB@
+CSF_TclTkLibs_INCLUDES = @CSF_TclTkLibs_INCLUDES@
+CSF_TclTkLibs_LIB = @CSF_TclTkLibs_LIB@
+CSF_XwLibs_LIB = @CSF_XwLibs_LIB@
+CSF_advapi32_LIB = @CSF_advapi32_LIB@
+CSF_dpsLibs_LIB = @CSF_dpsLibs_LIB@
+CSF_gdi32_LIB = @CSF_gdi32_LIB@
+CSF_user32_LIB = @CSF_user32_LIB@
+CSF_wsock32_LIB = @CSF_wsock32_LIB@
+CSF_xmuLibs_INCLUDE = @CSF_xmuLibs_INCLUDE@
+CSF_xmuLibs_LIB = @CSF_xmuLibs_LIB@
+CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+DL_LIBS = @DL_LIBS@
+JAVA_INCLUDE = @JAVA_INCLUDE@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+TCL_BIN_DIR = @TCL_BIN_DIR@
+TCL_INCLUDE_FLAG = @TCL_INCLUDE_FLAG@
+TCL_LIB_FILE = @TCL_LIB_FILE@
+TCL_LIB_FLAG = @TCL_LIB_FLAG@
+TCL_LIB_SPEC = @TCL_LIB_SPEC@
+TCL_SRC_DIR = @TCL_SRC_DIR@
+TCL_VERSION = @TCL_VERSION@
+TK_BIN_DIR = @TK_BIN_DIR@
+TK_INCLUDE_FLAG = @TK_INCLUDE_FLAG@
+TK_LIB_FILE = @TK_LIB_FILE@
+TK_LIB_SPEC = @TK_LIB_SPEC@
+TK_SRC_DIR = @TK_SRC_DIR@
+TK_VERSION = @TK_VERSION@
+U = @U@
+VERSION = @VERSION@
+XMU_INCLUDE = @XMU_INCLUDE@
+X_INCLUDE = @X_INCLUDE@
+X_LIBS = @X_LIBS@
+YACC = @YACC@
+build_TKjcas = @build_TKjcas@
+
+srcdir = @srcdir@
+
+VPATH = @srcdir@ : @top_srcdir@/drv/EDL : @top_srcdir@/src/EDL: @top_srcdir@/drv/MS : @top_srcdir@/src/MS: @top_srcdir@/drv/WOKAPI : @top_srcdir@/src/WOKAPI: @top_srcdir@/drv/WOKBuilder : @top_srcdir@/src/WOKBuilder: @top_srcdir@/drv/WOKDFLT : @top_srcdir@/src/WOKDFLT: @top_srcdir@/drv/WOKDeliv : @top_srcdir@/src/WOKDeliv: @top_srcdir@/drv/WOKMake : @top_srcdir@/src/WOKMake: @top_srcdir@/drv/WOKOBJS : @top_srcdir@/src/WOKOBJS: @top_srcdir@/drv/WOKOrbix : @top_srcdir@/src/WOKOrbix: @top_srcdir@/drv/WOKStep : @top_srcdir@/src/WOKStep: @top_srcdir@/drv/WOKTools : @top_srcdir@/src/WOKTools: @top_srcdir@/drv/WOKUnix : @top_srcdir@/src/WOKUnix: @top_srcdir@/drv/WOKUtils : @top_srcdir@/src/WOKUtils: @top_srcdir@/drv/WOKernel : @top_srcdir@/src/WOKernel: @top_srcdir@/drv/WOKNT : @top_srcdir@/src/WOKNT
+
+
+INCLUDES =  -I@top_srcdir@/inc -I@top_srcdir@/drv/EDL -I@top_srcdir@/drv/MS -I@top_srcdir@/drv/WOKAPI -I@top_srcdir@/drv/WOKBuilder -I@top_srcdir@/drv/WOKDFLT -I@top_srcdir@/drv/WOKDeliv -I@top_srcdir@/drv/WOKMake -I@top_srcdir@/drv/WOKOBJS -I@top_srcdir@/drv/WOKOrbix -I@top_srcdir@/drv/WOKStep -I@top_srcdir@/drv/WOKTools -I@top_srcdir@/drv/WOKUnix -I@top_srcdir@/drv/WOKUtils -I@top_srcdir@/drv/WOKernel -I@top_srcdir@/drv/WOKNT
+
+
+lib_LTLIBRARIES = libTKWOK.la
+
+libTKWOK_la_LIBADD =  ../TKernel/libTKernel.la
+
+
+libTKWOK_la_SOURCES =  DELIVERY.tab.c EDL.cxx EDL.tab.c EDL.tab.c EDL_API.cxx EDL_DataMapIteratorOfMapOfFile_0.cxx EDL_DataMapIteratorOfMapOfLibrary_0.cxx EDL_DataMapIteratorOfMapOfTemplate_0.cxx EDL_DataMapIteratorOfMapOfVariable_0.cxx EDL_DataMapNodeOfMapOfFile_0.cxx EDL_DataMapNodeOfMapOfLibrary_0.cxx EDL_DataMapNodeOfMapOfTemplate_0.cxx EDL_DataMapNodeOfMapOfVariable_0.cxx EDL_File.cxx EDL_HSequenceOfVariable_0.cxx EDL_Interpretor.cxx EDL_Library.cxx EDL_MapOfFile_0.cxx EDL_MapOfLibrary_0.cxx EDL_MapOfTemplate_0.cxx EDL_MapOfVariable_0.cxx EDL_SequenceNodeOfSequenceOfVariable_0.cxx EDL_SequenceOfVariable_0.cxx EDL_StackIteratorOfStackOfBoolean_0.cxx EDL_StackNodeOfStackOfBoolean_0.cxx EDL_StackOfBoolean_0.cxx EDL_Template.cxx EDL_Variable.cxx MS.cxx MS_Alias.cxx MS_Array1OfParam_0.cxx MS_Class.cxx MS_ClassMet.cxx MS_Client.cxx MS_Common.cxx MS_Component.cxx MS_Construc.cxx MS_DataMapIteratorOfMapOfGlobalEntity_0.cxx MS_DataMapIteratorOfMapOfMethod_0.cxx MS_DataMapIteratorOfMapOfType_0.cxx MS_Engine.cxx MS_Enum.cxx MS_Error.cxx MS_Exec.cxx MS_ExecFile.cxx MS_ExecPart.cxx MS_Executable.cxx MS_ExternMet.cxx MS_Field.cxx MS_GenClass.cxx MS_GenType.cxx MS_GlobalEntity.cxx MS_HArray1OfParam_0.cxx MS_HSequenceOfClass_0.cxx MS_HSequenceOfComponent_0.cxx MS_HSequenceOfEngine_0.cxx MS_HSequenceOfError_0.cxx MS_HSequenceOfExecFile_0.cxx MS_HSequenceOfExecPart_0.cxx MS_HSequenceOfExecutable_0.cxx MS_HSequenceOfExternMet_0.cxx MS_HSequenceOfField_0.cxx MS_HSequenceOfGenClass_0.cxx MS_HSequenceOfGenType_0.cxx MS_HSequenceOfGlobalEntity_0.cxx MS_HSequenceOfInstClass_0.cxx MS_HSequenceOfInterface_0.cxx MS_HSequenceOfMemberMet_0.cxx MS_HSequenceOfMethod_0.cxx MS_HSequenceOfPackage_0.cxx MS_HSequenceOfParam_0.cxx MS_HSequenceOfSchema_0.cxx MS_HSequenceOfType_0.cxx MS_Imported.cxx MS_InstClass.cxx MS_InstMet.cxx MS_Interface.cxx MS_MapOfGlobalEntity_0.cxx MS_MapOfMethod_0.cxx MS_MapOfType_0.cxx MS_MemberMet.cxx MS_MetaSchema.cxx MS_Method.cxx MS_NatType.cxx MS_Package.cxx MS_Param.cxx MS_ParamWithValue.cxx MS_Pointer.cxx MS_PrimType.cxx MS_Schema.cxx MS_SequenceNodeOfSequenceOfClass_0.cxx MS_SequenceNodeOfSequenceOfComponent_0.cxx MS_SequenceNodeOfSequenceOfEngine_0.cxx MS_SequenceNodeOfSequenceOfError_0.cxx MS_SequenceNodeOfSequenceOfExecFile_0.cxx MS_SequenceNodeOfSequenceOfExecPart_0.cxx MS_SequenceNodeOfSequenceOfExecutable_0.cxx MS_SequenceNodeOfSequenceOfExternMet_0.cxx MS_SequenceNodeOfSequenceOfField_0.cxx MS_SequenceNodeOfSequenceOfGenClass_0.cxx MS_SequenceNodeOfSequenceOfGenType_0.cxx MS_SequenceNodeOfSequenceOfGlobalEntity_0.cxx MS_SequenceNodeOfSequenceOfInstClass_0.cxx MS_SequenceNodeOfSequenceOfInterface_0.cxx MS_SequenceNodeOfSequenceOfMemberMet_0.cxx MS_SequenceNodeOfSequenceOfMethod_0.cxx MS_SequenceNodeOfSequenceOfPackage_0.cxx MS_SequenceNodeOfSequenceOfParam_0.cxx MS_SequenceNodeOfSequenceOfSchema_0.cxx MS_SequenceNodeOfSequenceOfType_0.cxx MS_SequenceOfClass_0.cxx MS_SequenceOfComponent_0.cxx MS_SequenceOfEngine_0.cxx MS_SequenceOfError_0.cxx MS_SequenceOfExecFile_0.cxx MS_SequenceOfExecPart_0.cxx MS_SequenceOfExecutable_0.cxx MS_SequenceOfExternMet_0.cxx MS_SequenceOfField_0.cxx MS_SequenceOfGenClass_0.cxx MS_SequenceOfGenType_0.cxx MS_SequenceOfGlobalEntity_0.cxx MS_SequenceOfInstClass_0.cxx MS_SequenceOfInterface_0.cxx MS_SequenceOfMemberMet_0.cxx MS_SequenceOfMethod_0.cxx MS_SequenceOfPackage_0.cxx MS_SequenceOfParam_0.cxx MS_SequenceOfSchema_0.cxx MS_SequenceOfType_0.cxx MS_StdClass.cxx MS_TraductionError_0.cxx MS_Type.cxx WOKAPI_BuildProcess.cxx WOKAPI_Command.cxx WOKAPI_Command_Factory.cxx WOKAPI_Command_Parcel.cxx WOKAPI_Command_TriggeredMake.cxx WOKAPI_Command_Unit.cxx WOKAPI_Command_Warehouse.cxx WOKAPI_Command_Workbench.cxx WOKAPI_Command_Workshop.cxx WOKAPI_Entity.cxx WOKAPI_Factory.cxx WOKAPI_File.cxx WOKAPI_Locator.cxx WOKAPI_MakeOption.cxx WOKAPI_MakeStep.cxx WOKAPI_Parcel.cxx WOKAPI_Process.cxx WOKAPI_SequenceNodeOfSequenceOfEntity_0.cxx WOKAPI_SequenceNodeOfSequenceOfFactory_0.cxx WOKAPI_SequenceNodeOfSequenceOfFile_0.cxx WOKAPI_SequenceNodeOfSequenceOfMakeOption_0.cxx WOKAPI_SequenceNodeOfSequenceOfMakeStep_0.cxx WOKAPI_SequenceNodeOfSequenceOfParcel_0.cxx WOKAPI_SequenceNodeOfSequenceOfUnit_0.cxx WOKAPI_SequenceNodeOfSequenceOfWorkbench_0.cxx WOKAPI_SequenceNodeOfSequenceOfWorkshop_0.cxx WOKAPI_SequenceOfEntity_0.cxx WOKAPI_SequenceOfFactory_0.cxx WOKAPI_SequenceOfFile_0.cxx WOKAPI_SequenceOfMakeOption_0.cxx WOKAPI_SequenceOfMakeStep_0.cxx WOKAPI_SequenceOfParcel_0.cxx WOKAPI_SequenceOfUnit_0.cxx WOKAPI_SequenceOfWorkbench_0.cxx WOKAPI_SequenceOfWorkshop_0.cxx WOKAPI_Session.cxx WOKAPI_Unit.cxx WOKAPI_Warehouse.cxx WOKAPI_Workbench.cxx WOKAPI_Workshop.cxx WOKBuilder_ArchiveExtract.cxx WOKBuilder_ArchiveLibrary.cxx WOKBuilder_Archiver.cxx WOKBuilder_CDLFile.cxx WOKBuilder_CodeGenFile.cxx WOKBuilder_CodeGenerator.cxx WOKBuilder_CodeGeneratorIterator.cxx WOKBuilder_Command.cxx WOKBuilder_Compilable.cxx WOKBuilder_Compiler.cxx WOKBuilder_CompilerIterator.cxx WOKBuilder_CompressedFile.cxx WOKBuilder_DEFile.cxx WOKBuilder_DLLFile.cxx WOKBuilder_DLLinker.cxx WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfMSEntity_0.cxx WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfToolInShell_0.cxx WOKBuilder_DataMapIteratorOfDataMapOfMSActionIDOfMSAction_0.cxx WOKBuilder_DataMapOfHAsciiStringOfMSEntity_0.cxx WOKBuilder_DataMapOfHAsciiStringOfToolInShell_0.cxx WOKBuilder_DataMapOfMSActionIDOfMSAction_0.cxx WOKBuilder_EXEFile.cxx WOKBuilder_EXELinker.cxx WOKBuilder_Entity.cxx WOKBuilder_EntityHasher.cxx WOKBuilder_Executable.cxx WOKBuilder_ExecutableLinker.cxx WOKBuilder_ExportLibrary.cxx WOKBuilder_HSequenceOfEntity_0.cxx WOKBuilder_HSequenceOfExtension_0.cxx WOKBuilder_HSequenceOfLibrary_0.cxx WOKBuilder_HSequenceOfObjectFile_0.cxx WOKBuilder_HSequenceOfToolInShell_0.cxx WOKBuilder_ImportLibrarian.cxx WOKBuilder_ImportLibrary.cxx WOKBuilder_Include.cxx WOKBuilder_Library.cxx WOKBuilder_Linker.cxx WOKBuilder_MFile.cxx WOKBuilder_MSAction.cxx WOKBuilder_MSActionID.cxx WOKBuilder_MSClientExtractor.cxx WOKBuilder_MSEngineExtractor.cxx WOKBuilder_MSEntity.cxx WOKBuilder_MSEntityHasher.cxx WOKBuilder_MSExtractor.cxx WOKBuilder_MSExtractorIterator.cxx WOKBuilder_MSHeaderExtractor.cxx WOKBuilder_MSJiniExtractor.cxx WOKBuilder_MSServerExtractor.cxx WOKBuilder_MSTemplateExtractor.cxx WOKBuilder_MSTool.cxx WOKBuilder_MSTranslator.cxx WOKBuilder_MSTranslatorIterator.cxx WOKBuilder_MSchema.cxx WOKBuilder_MapIteratorOfMapOfMSAction_0.cxx WOKBuilder_MapOfMSAction_0.cxx WOKBuilder_Miscellaneous.cxx WOKBuilder_ObjectFile.cxx WOKBuilder_PDBFile.cxx WOKBuilder_QueueNodeOfQueueOfMSAction_0.cxx WOKBuilder_QueueOfMSAction_0.cxx WOKBuilder_SequenceNodeOfSequenceOfEntity_0.cxx WOKBuilder_SequenceNodeOfSequenceOfExtension_0.cxx WOKBuilder_SequenceNodeOfSequenceOfLibrary_0.cxx WOKBuilder_SequenceNodeOfSequenceOfObjectFile_0.cxx WOKBuilder_SequenceNodeOfSequenceOfToolInShell_0.cxx WOKBuilder_SequenceOfEntity_0.cxx WOKBuilder_SequenceOfExtension_0.cxx WOKBuilder_SequenceOfLibrary_0.cxx WOKBuilder_SequenceOfObjectFile_0.cxx WOKBuilder_SequenceOfToolInShell_0.cxx WOKBuilder_SharedLibrary.cxx WOKBuilder_SharedLinker.cxx WOKBuilder_Specification.cxx WOKBuilder_StaticLibrarian.cxx WOKBuilder_StaticLibrary.cxx WOKBuilder_TarFile.cxx WOKBuilder_Tool.cxx WOKBuilder_ToolInProcess.cxx WOKBuilder_ToolInShell.cxx WOKBuilder_ToolInShellIterator.cxx WOKBuilder_WNTCollector.cxx WOKBuilder_WNTLibrarian.cxx WOKBuilder_WNTLinker.cxx WOKDFLT_DFLTExtract.cxx WOKDFLT_MSDFLTExtractor.cxx WOKDeliv_DataMapIteratorOfDataMapOfFiles_0.cxx WOKDeliv_DataMapIteratorOfDataMapOfParcel_0.cxx WOKDeliv_DataMapOfFiles_0.cxx WOKDeliv_DataMapOfParcel_0.cxx WOKDeliv_DelivBuildArchive.cxx WOKDeliv_DelivBuildExec.cxx WOKDeliv_DelivBuildSource.cxx WOKDeliv_DeliveryArchive.cxx WOKDeliv_DeliveryBase.cxx WOKDeliv_DeliveryCopy.cxx WOKDeliv_DeliveryDATA.cxx WOKDeliv_DeliveryExecList.cxx WOKDeliv_DeliveryFiles.cxx WOKDeliv_DeliveryGET.cxx WOKDeliv_DeliveryLIB.cxx WOKDeliv_DeliveryList.cxx WOKDeliv_DeliveryListShared.cxx WOKDeliv_DeliveryMetaStep.cxx WOKDeliv_DeliveryOBJSSchema.cxx WOKDeliv_DeliverySOURCES.cxx WOKDeliv_DeliverySTUBClient.cxx WOKDeliv_DeliveryShared.cxx WOKDeliv_DeliverySource.cxx WOKDeliv_DeliveryStep.cxx WOKDeliv_DeliveryStepList.cxx WOKDeliv_ParseDelivery.cxx WOKMake_BuildProcess.cxx WOKMake_BuildProcessGroup.cxx WOKMake_BuildProcessIterator.cxx WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.cxx WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfSequenceOfHAsciiString_0.cxx WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStepBuilder_0.cxx WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStep_0.cxx WOKMake_DataMapOfHAsciiStringOfDevUnit_0.cxx WOKMake_DataMapOfHAsciiStringOfSequenceOfHAsciiString_0.cxx WOKMake_DataMapOfHAsciiStringOfStepBuilder_0.cxx WOKMake_DataMapOfHAsciiStringOfStep_0.cxx WOKMake_DepItem.cxx WOKMake_DepItemHasher.cxx WOKMake_HSequenceOfInputFile_0.cxx WOKMake_HSequenceOfOutputFile_0.cxx WOKMake_HSequenceOfStepOption_0.cxx WOKMake_IndexedDataMapOfBuildProcessGroup_0.cxx WOKMake_IndexedDataMapOfHAsciiStringOfInputFile_0.cxx WOKMake_IndexedDataMapOfHAsciiStringOfOutputFile_0.cxx WOKMake_IndexedMapOfDepItem_0.cxx WOKMake_InputFile.cxx WOKMake_MetaStep.cxx WOKMake_OutputFile.cxx WOKMake_SequenceNodeOfSequenceOfInputFile_0.cxx WOKMake_SequenceNodeOfSequenceOfOutputFile_0.cxx WOKMake_SequenceNodeOfSequenceOfStepOption_0.cxx WOKMake_SequenceOfInputFile_0.cxx WOKMake_SequenceOfOutputFile_0.cxx WOKMake_SequenceOfStepOption_0.cxx WOKMake_Step.cxx WOKMake_StepBuilder.cxx WOKMake_StepFile.cxx WOKMake_Step_1.cxx WOKMake_TriggerStep.cxx WOKNT.cxx WOKNT_AdmFile.cxx WOKNT_Array1OfRegExp_0.cxx WOKNT_Array1OfString_0.cxx WOKNT_CompareOfString.cxx WOKNT_CopyIfCh.c WOKNT_MixedOutput.cxx WOKNT_OutErrOutput.cxx WOKNT_Path.cxx WOKNT_PathIterator.cxx WOKNT_PrivCompareOfString_0.cxx WOKNT_QuickSortOfString_0.cxx WOKNT_RegExp.cxx WOKNT_ReplIfCh.c WOKNT_ReplIfChWith.c WOKNT_SequenceNodeOfSequenceOfShell_0.cxx WOKNT_SequenceOfShell_0.cxx WOKNT_Shell.cxx WOKNT_ShellManager.cxx WOKNT_ShellOutput.cxx WOKNT_Shell_1.cxx WOKNT_StackIteratorOfStackOfHandle_0.cxx WOKNT_StackNodeOfStackOfHandle_0.cxx WOKNT_StackOfHandle_0.cxx WOKNT_chmod.cxx WOKNT_cmp.c WOKNT_cp.cxx WOKNT_mv.cxx WOKNT_regexp_1.c WOKNT_rm.cxx WOKOBJS_AppSchCxxFile.cxx WOKOBJS_AppSchema.cxx WOKOBJS_EngLinkList.cxx WOKOBJS_LibSchema.cxx WOKOBJS_MSSchExtractor.cxx WOKOBJS_OSSG.cxx WOKOBJS_SchExtract.cxx WOKOBJS_SchGen.cxx WOKOrbix_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.cxx WOKOrbix_DataMapOfHAsciiStringOfHAsciiString_0.cxx WOKOrbix_ExtractServerList.cxx WOKOrbix_IDLCompile.cxx WOKOrbix_IDLCompiler.cxx WOKOrbix_IDLCompilerIterator.cxx WOKOrbix_IDLFile.cxx WOKOrbix_IDLFill.cxx WOKOrbix_IDLSource.cxx WOKOrbix_IDLSourceExtract.cxx WOKOrbix_IDLTranslator.cxx WOKOrbix_ServerSource.cxx WOKStep_ArchiveLibrary.cxx WOKStep_CDLUnitSource.cxx WOKStep_ClientExtract.cxx WOKStep_CodeGenerate.cxx WOKStep_Compile.cxx WOKStep_ComputeLinkList.cxx WOKStep_DLLink.cxx WOKStep_DirectLinkList.cxx WOKStep_DirectTKReplace.cxx WOKStep_DynamicLibrary.cxx WOKStep_EXELink.cxx WOKStep_EngDatFiles.cxx WOKStep_EngLDFile.cxx WOKStep_EngLinkList.cxx WOKStep_EngineExtract.cxx WOKStep_ExecLink.cxx WOKStep_ExecutableSource.cxx WOKStep_Extract.cxx WOKStep_ExtractExecList.cxx WOKStep_HeaderExtract.cxx WOKStep_ImplementationDep.cxx WOKStep_ImportLibrary.cxx WOKStep_Include.cxx WOKStep_JiniExtract.cxx WOKStep_LibExtract.cxx WOKStep_LibLimit.cxx WOKStep_LibLink.cxx WOKStep_LibUnCompress.cxx WOKStep_Library.cxx WOKStep_Link.cxx WOKStep_LinkList.cxx WOKStep_MSFill.cxx WOKStep_MSStep.cxx WOKStep_ProcessStep.cxx WOKStep_ResourceSource.cxx WOKStep_ServerExtract.cxx WOKStep_Source.cxx WOKStep_SourceExtract.cxx WOKStep_StaticLibrary.cxx WOKStep_TKList.cxx WOKStep_TKReplace.cxx WOKStep_TemplateExtract.cxx WOKStep_ToolkitSource.cxx WOKStep_TransitiveLinkList.cxx WOKStep_TransitiveTKReplace.cxx WOKStep_WNTCollect.cxx WOKStep_WNTK.cxx WOKStep_WNTLibrary.cxx WOKStep_WNTLink.cxx WOKTools_Array1OfHAsciiString_0.cxx WOKTools_AsciiStringHasher.cxx WOKTools_BasicMap.cxx WOKTools_BasicMapIterator.cxx WOKTools_CStringHasher.cxx WOKTools_ChDirValue.cxx WOKTools_CompareOfHAsciiString.cxx WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.cxx WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.cxx WOKTools_DataMapOfHAsciiStringOfHAsciiString_0.cxx WOKTools_DataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.cxx WOKTools_Define.cxx WOKTools_EnvValue.cxx WOKTools_Error.cxx WOKTools_HAsciiStringHasher.cxx WOKTools_HSequenceOfBoolean_0.cxx WOKTools_HSequenceOfDefine_0.cxx WOKTools_HSequenceOfReturnValue_0.cxx WOKTools_IndexedDataMapOfHAsciiString_0.cxx WOKTools_IndexedMapOfHAsciiString_0.cxx WOKTools_Info.cxx WOKTools_InterpFileValue.cxx WOKTools_MapIteratorOfMapOfHAsciiString_0.cxx WOKTools_MapOfHAsciiString_0.cxx WOKTools_Message.cxx WOKTools_Options.cxx WOKTools_PUsage.cxx WOKTools_Return.cxx WOKTools_ReturnValue.cxx WOKTools_SequenceNodeOfSequenceOfBoolean_0.cxx WOKTools_SequenceNodeOfSequenceOfDefine_0.cxx WOKTools_SequenceNodeOfSequenceOfReturnValue_0.cxx WOKTools_SequenceOfBoolean_0.cxx WOKTools_SequenceOfDefine_0.cxx WOKTools_SequenceOfReturnValue_0.cxx WOKTools_SortOfHAsciiString_0.cxx WOKTools_StringValue.cxx WOKTools_Verbose.cxx WOKTools_Warning.cxx WOKUnix.cxx WOKUnix_ASyncStatus.cxx WOKUnix_AdmFile.cxx WOKUnix_Buffer.cxx WOKUnix_BufferOverflow_0.cxx WOKUnix_CantBlockBuffer.cxx WOKUnix_DumbOutput.cxx WOKUnix_DumpScript.cxx WOKUnix_FDescr.cxx WOKUnix_FileBuffer.cxx WOKUnix_MixedOutput.cxx WOKUnix_NoBuffer.cxx WOKUnix_OutErrOutput.cxx WOKUnix_Path.cxx WOKUnix_PathIterator.cxx WOKUnix_Process.cxx WOKUnix_ProcessManager.cxx WOKUnix_ProcessOutput.cxx WOKUnix_ProcessTimeOut_0.cxx WOKUnix_RegExp.cxx WOKUnix_RemoteShell.cxx WOKUnix_SequenceNodeOfSequenceOfProcess_0.cxx WOKUnix_SequenceOfProcess_0.cxx WOKUnix_Shell.cxx WOKUnix_ShellManager.cxx WOKUnix_ShellStatus.cxx WOKUnix_Signal.cxx WOKUnix_StackIteratorOfStackOfDir_0.cxx WOKUnix_StackNodeOfStackOfDir_0.cxx WOKUnix_StackOfDir_0.cxx WOKUnix_SyncStatus.cxx WOKUnix_regexp_1.c WOKUtils_BufferOverflow_0.cxx WOKUtils_HSequenceOfParamItem_0.cxx WOKUtils_HSequenceOfPath_0.cxx WOKUtils_MapIteratorOfMapOfPath_0.cxx WOKUtils_MapOfPath_0.cxx WOKUtils_Param.cxx WOKUtils_ParamItem.cxx WOKUtils_Path.cxx WOKUtils_PathHasher.cxx WOKUtils_PathIterator.cxx WOKUtils_ProcessTimeOut_0.cxx WOKUtils_RegExp.cxx WOKUtils_RemoteShell.cxx WOKUtils_SearchIterator.cxx WOKUtils_SearchList.cxx WOKUtils_SequenceNodeOfSequenceOfParamItem_0.cxx WOKUtils_SequenceNodeOfSequenceOfPath_0.cxx WOKUtils_SequenceOfParamItem_0.cxx WOKUtils_SequenceOfPath_0.cxx WOKUtils_Shell.cxx WOKUtils_ShellManager.cxx WOKUtils_Trigger.cxx WOKernel_Array1OfHSequenceOfHAsciiString_0.cxx WOKernel_BaseEntity.cxx WOKernel_BaseEntityHasher.cxx WOKernel_ClientIterator.cxx WOKernel_DBMSystem.cxx WOKernel_DataMapIteratorOfDataMapOfFileTypeBase_0.cxx WOKernel_DataMapIteratorOfDataMapOfFileType_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFactory_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFile_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfParcel_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWarehouse_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkbench_0.cxx WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkshop_0.cxx WOKernel_DataMapOfFileTypeBase_0.cxx WOKernel_DataMapOfFileType_0.cxx WOKernel_DataMapOfHAsciiStringOfDevUnit_0.cxx WOKernel_DataMapOfHAsciiStringOfFactory_0.cxx WOKernel_DataMapOfHAsciiStringOfFile_0.cxx WOKernel_DataMapOfHAsciiStringOfParcel_0.cxx WOKernel_DataMapOfHAsciiStringOfWarehouse_0.cxx WOKernel_DataMapOfHAsciiStringOfWorkbench_0.cxx WOKernel_DataMapOfHAsciiStringOfWorkshop_0.cxx WOKernel_DevUnit.cxx WOKernel_Entity.cxx WOKernel_EntityIterator.cxx WOKernel_Factory.cxx WOKernel_File.cxx WOKernel_FileLocatorHasher.cxx WOKernel_FileType.cxx WOKernel_FileTypeBase.cxx WOKernel_FileTypeHasher.cxx WOKernel_FileTypeKeyWords.cxx WOKernel_GlobalFileTypeBase.cxx WOKernel_HAsciiStringHasher.cxx WOKernel_HSequenceOfDBMSID_0.cxx WOKernel_HSequenceOfFile_0.cxx WOKernel_HSequenceOfStationID_0.cxx WOKernel_ImplDepIterator.cxx WOKernel_IndexedDataMapNodeOfSCMapOfSortedClientsFromIterator_0.cxx WOKernel_IndexedDataMapNodeOfSCMapOfSortedImpldepFromIterator_0.cxx WOKernel_Locator.cxx WOKernel_Parcel.cxx WOKernel_SCMapOfSortedClientsFromIterator_0.cxx WOKernel_SCMapOfSortedImpldepFromIterator_0.cxx WOKernel_SequenceNodeOfSequenceOfDBMSID_0.cxx WOKernel_SequenceNodeOfSequenceOfFileType_0.cxx WOKernel_SequenceNodeOfSequenceOfFile_0.cxx WOKernel_SequenceNodeOfSequenceOfSession_0.cxx WOKernel_SequenceNodeOfSequenceOfStationID_0.cxx WOKernel_SequenceNodeOfSequenceOfUnitTypeDescr_0.cxx WOKernel_SequenceOfDBMSID_0.cxx WOKernel_SequenceOfFileType_0.cxx WOKernel_SequenceOfFile_0.cxx WOKernel_SequenceOfSession_0.cxx WOKernel_SequenceOfStationID_0.cxx WOKernel_SequenceOfUnitTypeDescr_0.cxx WOKernel_Session.cxx WOKernel_SortedClientsFromIterator_0.cxx WOKernel_SortedImpldepFromIterator_0.cxx WOKernel_Station.cxx WOKernel_UnitGraph.cxx WOKernel_UnitNesting.cxx WOKernel_UnitTypeBase.cxx WOKernel_UnitTypeDescr.cxx WOKernel_Warehouse.cxx WOKernel_Workbench.cxx WOKernel_Workshop.cxx lex.DELIVERY.c lex.EDL.c
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/make/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
+libTKWOK_la_LDFLAGS = 
+libTKWOK_la_DEPENDENCIES =  ../TKernel/libTKernel.la
+libTKWOK_la_OBJECTS =  DELIVERY.tab.lo EDL.lo EDL.tab.lo EDL.tab.lo \
+EDL_API.lo EDL_DataMapIteratorOfMapOfFile_0.lo \
+EDL_DataMapIteratorOfMapOfLibrary_0.lo \
+EDL_DataMapIteratorOfMapOfTemplate_0.lo \
+EDL_DataMapIteratorOfMapOfVariable_0.lo EDL_DataMapNodeOfMapOfFile_0.lo \
+EDL_DataMapNodeOfMapOfLibrary_0.lo EDL_DataMapNodeOfMapOfTemplate_0.lo \
+EDL_DataMapNodeOfMapOfVariable_0.lo EDL_File.lo \
+EDL_HSequenceOfVariable_0.lo EDL_Interpretor.lo EDL_Library.lo \
+EDL_MapOfFile_0.lo EDL_MapOfLibrary_0.lo EDL_MapOfTemplate_0.lo \
+EDL_MapOfVariable_0.lo EDL_SequenceNodeOfSequenceOfVariable_0.lo \
+EDL_SequenceOfVariable_0.lo EDL_StackIteratorOfStackOfBoolean_0.lo \
+EDL_StackNodeOfStackOfBoolean_0.lo EDL_StackOfBoolean_0.lo \
+EDL_Template.lo EDL_Variable.lo MS.lo MS_Alias.lo MS_Array1OfParam_0.lo \
+MS_Class.lo MS_ClassMet.lo MS_Client.lo MS_Common.lo MS_Component.lo \
+MS_Construc.lo MS_DataMapIteratorOfMapOfGlobalEntity_0.lo \
+MS_DataMapIteratorOfMapOfMethod_0.lo MS_DataMapIteratorOfMapOfType_0.lo \
+MS_Engine.lo MS_Enum.lo MS_Error.lo MS_Exec.lo MS_ExecFile.lo \
+MS_ExecPart.lo MS_Executable.lo MS_ExternMet.lo MS_Field.lo \
+MS_GenClass.lo MS_GenType.lo MS_GlobalEntity.lo MS_HArray1OfParam_0.lo \
+MS_HSequenceOfClass_0.lo MS_HSequenceOfComponent_0.lo \
+MS_HSequenceOfEngine_0.lo MS_HSequenceOfError_0.lo \
+MS_HSequenceOfExecFile_0.lo MS_HSequenceOfExecPart_0.lo \
+MS_HSequenceOfExecutable_0.lo MS_HSequenceOfExternMet_0.lo \
+MS_HSequenceOfField_0.lo MS_HSequenceOfGenClass_0.lo \
+MS_HSequenceOfGenType_0.lo MS_HSequenceOfGlobalEntity_0.lo \
+MS_HSequenceOfInstClass_0.lo MS_HSequenceOfInterface_0.lo \
+MS_HSequenceOfMemberMet_0.lo MS_HSequenceOfMethod_0.lo \
+MS_HSequenceOfPackage_0.lo MS_HSequenceOfParam_0.lo \
+MS_HSequenceOfSchema_0.lo MS_HSequenceOfType_0.lo MS_Imported.lo \
+MS_InstClass.lo MS_InstMet.lo MS_Interface.lo MS_MapOfGlobalEntity_0.lo \
+MS_MapOfMethod_0.lo MS_MapOfType_0.lo MS_MemberMet.lo MS_MetaSchema.lo \
+MS_Method.lo MS_NatType.lo MS_Package.lo MS_Param.lo \
+MS_ParamWithValue.lo MS_Pointer.lo MS_PrimType.lo MS_Schema.lo \
+MS_SequenceNodeOfSequenceOfClass_0.lo \
+MS_SequenceNodeOfSequenceOfComponent_0.lo \
+MS_SequenceNodeOfSequenceOfEngine_0.lo \
+MS_SequenceNodeOfSequenceOfError_0.lo \
+MS_SequenceNodeOfSequenceOfExecFile_0.lo \
+MS_SequenceNodeOfSequenceOfExecPart_0.lo \
+MS_SequenceNodeOfSequenceOfExecutable_0.lo \
+MS_SequenceNodeOfSequenceOfExternMet_0.lo \
+MS_SequenceNodeOfSequenceOfField_0.lo \
+MS_SequenceNodeOfSequenceOfGenClass_0.lo \
+MS_SequenceNodeOfSequenceOfGenType_0.lo \
+MS_SequenceNodeOfSequenceOfGlobalEntity_0.lo \
+MS_SequenceNodeOfSequenceOfInstClass_0.lo \
+MS_SequenceNodeOfSequenceOfInterface_0.lo \
+MS_SequenceNodeOfSequenceOfMemberMet_0.lo \
+MS_SequenceNodeOfSequenceOfMethod_0.lo \
+MS_SequenceNodeOfSequenceOfPackage_0.lo \
+MS_SequenceNodeOfSequenceOfParam_0.lo \
+MS_SequenceNodeOfSequenceOfSchema_0.lo \
+MS_SequenceNodeOfSequenceOfType_0.lo MS_SequenceOfClass_0.lo \
+MS_SequenceOfComponent_0.lo MS_SequenceOfEngine_0.lo \
+MS_SequenceOfError_0.lo MS_SequenceOfExecFile_0.lo \
+MS_SequenceOfExecPart_0.lo MS_SequenceOfExecutable_0.lo \
+MS_SequenceOfExternMet_0.lo MS_SequenceOfField_0.lo \
+MS_SequenceOfGenClass_0.lo MS_SequenceOfGenType_0.lo \
+MS_SequenceOfGlobalEntity_0.lo MS_SequenceOfInstClass_0.lo \
+MS_SequenceOfInterface_0.lo MS_SequenceOfMemberMet_0.lo \
+MS_SequenceOfMethod_0.lo MS_SequenceOfPackage_0.lo \
+MS_SequenceOfParam_0.lo MS_SequenceOfSchema_0.lo MS_SequenceOfType_0.lo \
+MS_StdClass.lo MS_TraductionError_0.lo MS_Type.lo \
+WOKAPI_BuildProcess.lo WOKAPI_Command.lo WOKAPI_Command_Factory.lo \
+WOKAPI_Command_Parcel.lo WOKAPI_Command_TriggeredMake.lo \
+WOKAPI_Command_Unit.lo WOKAPI_Command_Warehouse.lo \
+WOKAPI_Command_Workbench.lo WOKAPI_Command_Workshop.lo WOKAPI_Entity.lo \
+WOKAPI_Factory.lo WOKAPI_File.lo WOKAPI_Locator.lo WOKAPI_MakeOption.lo \
+WOKAPI_MakeStep.lo WOKAPI_Parcel.lo WOKAPI_Process.lo \
+WOKAPI_SequenceNodeOfSequenceOfEntity_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfFactory_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfFile_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfMakeOption_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfMakeStep_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfParcel_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfUnit_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfWorkbench_0.lo \
+WOKAPI_SequenceNodeOfSequenceOfWorkshop_0.lo \
+WOKAPI_SequenceOfEntity_0.lo WOKAPI_SequenceOfFactory_0.lo \
+WOKAPI_SequenceOfFile_0.lo WOKAPI_SequenceOfMakeOption_0.lo \
+WOKAPI_SequenceOfMakeStep_0.lo WOKAPI_SequenceOfParcel_0.lo \
+WOKAPI_SequenceOfUnit_0.lo WOKAPI_SequenceOfWorkbench_0.lo \
+WOKAPI_SequenceOfWorkshop_0.lo WOKAPI_Session.lo WOKAPI_Unit.lo \
+WOKAPI_Warehouse.lo WOKAPI_Workbench.lo WOKAPI_Workshop.lo \
+WOKBuilder_ArchiveExtract.lo WOKBuilder_ArchiveLibrary.lo \
+WOKBuilder_Archiver.lo WOKBuilder_CDLFile.lo WOKBuilder_CodeGenFile.lo \
+WOKBuilder_CodeGenerator.lo WOKBuilder_CodeGeneratorIterator.lo \
+WOKBuilder_Command.lo WOKBuilder_Compilable.lo WOKBuilder_Compiler.lo \
+WOKBuilder_CompilerIterator.lo WOKBuilder_CompressedFile.lo \
+WOKBuilder_DEFile.lo WOKBuilder_DLLFile.lo WOKBuilder_DLLinker.lo \
+WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfMSEntity_0.lo \
+WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfToolInShell_0.lo \
+WOKBuilder_DataMapIteratorOfDataMapOfMSActionIDOfMSAction_0.lo \
+WOKBuilder_DataMapOfHAsciiStringOfMSEntity_0.lo \
+WOKBuilder_DataMapOfHAsciiStringOfToolInShell_0.lo \
+WOKBuilder_DataMapOfMSActionIDOfMSAction_0.lo WOKBuilder_EXEFile.lo \
+WOKBuilder_EXELinker.lo WOKBuilder_Entity.lo WOKBuilder_EntityHasher.lo \
+WOKBuilder_Executable.lo WOKBuilder_ExecutableLinker.lo \
+WOKBuilder_ExportLibrary.lo WOKBuilder_HSequenceOfEntity_0.lo \
+WOKBuilder_HSequenceOfExtension_0.lo WOKBuilder_HSequenceOfLibrary_0.lo \
+WOKBuilder_HSequenceOfObjectFile_0.lo \
+WOKBuilder_HSequenceOfToolInShell_0.lo WOKBuilder_ImportLibrarian.lo \
+WOKBuilder_ImportLibrary.lo WOKBuilder_Include.lo WOKBuilder_Library.lo \
+WOKBuilder_Linker.lo WOKBuilder_MFile.lo WOKBuilder_MSAction.lo \
+WOKBuilder_MSActionID.lo WOKBuilder_MSClientExtractor.lo \
+WOKBuilder_MSEngineExtractor.lo WOKBuilder_MSEntity.lo \
+WOKBuilder_MSEntityHasher.lo WOKBuilder_MSExtractor.lo \
+WOKBuilder_MSExtractorIterator.lo WOKBuilder_MSHeaderExtractor.lo \
+WOKBuilder_MSJiniExtractor.lo WOKBuilder_MSServerExtractor.lo \
+WOKBuilder_MSTemplateExtractor.lo WOKBuilder_MSTool.lo \
+WOKBuilder_MSTranslator.lo WOKBuilder_MSTranslatorIterator.lo \
+WOKBuilder_MSchema.lo WOKBuilder_MapIteratorOfMapOfMSAction_0.lo \
+WOKBuilder_MapOfMSAction_0.lo WOKBuilder_Miscellaneous.lo \
+WOKBuilder_ObjectFile.lo WOKBuilder_PDBFile.lo \
+WOKBuilder_QueueNodeOfQueueOfMSAction_0.lo \
+WOKBuilder_QueueOfMSAction_0.lo \
+WOKBuilder_SequenceNodeOfSequenceOfEntity_0.lo \
+WOKBuilder_SequenceNodeOfSequenceOfExtension_0.lo \
+WOKBuilder_SequenceNodeOfSequenceOfLibrary_0.lo \
+WOKBuilder_SequenceNodeOfSequenceOfObjectFile_0.lo \
+WOKBuilder_SequenceNodeOfSequenceOfToolInShell_0.lo \
+WOKBuilder_SequenceOfEntity_0.lo WOKBuilder_SequenceOfExtension_0.lo \
+WOKBuilder_SequenceOfLibrary_0.lo WOKBuilder_SequenceOfObjectFile_0.lo \
+WOKBuilder_SequenceOfToolInShell_0.lo WOKBuilder_SharedLibrary.lo \
+WOKBuilder_SharedLinker.lo WOKBuilder_Specification.lo \
+WOKBuilder_StaticLibrarian.lo WOKBuilder_StaticLibrary.lo \
+WOKBuilder_TarFile.lo WOKBuilder_Tool.lo WOKBuilder_ToolInProcess.lo \
+WOKBuilder_ToolInShell.lo WOKBuilder_ToolInShellIterator.lo \
+WOKBuilder_WNTCollector.lo WOKBuilder_WNTLibrarian.lo \
+WOKBuilder_WNTLinker.lo WOKDFLT_DFLTExtract.lo \
+WOKDFLT_MSDFLTExtractor.lo \
+WOKDeliv_DataMapIteratorOfDataMapOfFiles_0.lo \
+WOKDeliv_DataMapIteratorOfDataMapOfParcel_0.lo \
+WOKDeliv_DataMapOfFiles_0.lo WOKDeliv_DataMapOfParcel_0.lo \
+WOKDeliv_DelivBuildArchive.lo WOKDeliv_DelivBuildExec.lo \
+WOKDeliv_DelivBuildSource.lo WOKDeliv_DeliveryArchive.lo \
+WOKDeliv_DeliveryBase.lo WOKDeliv_DeliveryCopy.lo \
+WOKDeliv_DeliveryDATA.lo WOKDeliv_DeliveryExecList.lo \
+WOKDeliv_DeliveryFiles.lo WOKDeliv_DeliveryGET.lo \
+WOKDeliv_DeliveryLIB.lo WOKDeliv_DeliveryList.lo \
+WOKDeliv_DeliveryListShared.lo WOKDeliv_DeliveryMetaStep.lo \
+WOKDeliv_DeliveryOBJSSchema.lo WOKDeliv_DeliverySOURCES.lo \
+WOKDeliv_DeliverySTUBClient.lo WOKDeliv_DeliveryShared.lo \
+WOKDeliv_DeliverySource.lo WOKDeliv_DeliveryStep.lo \
+WOKDeliv_DeliveryStepList.lo WOKDeliv_ParseDelivery.lo \
+WOKMake_BuildProcess.lo WOKMake_BuildProcessGroup.lo \
+WOKMake_BuildProcessIterator.lo \
+WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.lo \
+WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfSequenceOfHAsciiString_0.lo \
+WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStepBuilder_0.lo \
+WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStep_0.lo \
+WOKMake_DataMapOfHAsciiStringOfDevUnit_0.lo \
+WOKMake_DataMapOfHAsciiStringOfSequenceOfHAsciiString_0.lo \
+WOKMake_DataMapOfHAsciiStringOfStepBuilder_0.lo \
+WOKMake_DataMapOfHAsciiStringOfStep_0.lo WOKMake_DepItem.lo \
+WOKMake_DepItemHasher.lo WOKMake_HSequenceOfInputFile_0.lo \
+WOKMake_HSequenceOfOutputFile_0.lo WOKMake_HSequenceOfStepOption_0.lo \
+WOKMake_IndexedDataMapOfBuildProcessGroup_0.lo \
+WOKMake_IndexedDataMapOfHAsciiStringOfInputFile_0.lo \
+WOKMake_IndexedDataMapOfHAsciiStringOfOutputFile_0.lo \
+WOKMake_IndexedMapOfDepItem_0.lo WOKMake_InputFile.lo \
+WOKMake_MetaStep.lo WOKMake_OutputFile.lo \
+WOKMake_SequenceNodeOfSequenceOfInputFile_0.lo \
+WOKMake_SequenceNodeOfSequenceOfOutputFile_0.lo \
+WOKMake_SequenceNodeOfSequenceOfStepOption_0.lo \
+WOKMake_SequenceOfInputFile_0.lo WOKMake_SequenceOfOutputFile_0.lo \
+WOKMake_SequenceOfStepOption_0.lo WOKMake_Step.lo \
+WOKMake_StepBuilder.lo WOKMake_StepFile.lo WOKMake_Step_1.lo \
+WOKMake_TriggerStep.lo WOKNT.lo WOKNT_AdmFile.lo \
+WOKNT_Array1OfRegExp_0.lo WOKNT_Array1OfString_0.lo \
+WOKNT_CompareOfString.lo WOKNT_CopyIfCh.lo WOKNT_MixedOutput.lo \
+WOKNT_OutErrOutput.lo WOKNT_Path.lo WOKNT_PathIterator.lo \
+WOKNT_PrivCompareOfString_0.lo WOKNT_QuickSortOfString_0.lo \
+WOKNT_RegExp.lo WOKNT_ReplIfCh.lo WOKNT_ReplIfChWith.lo \
+WOKNT_SequenceNodeOfSequenceOfShell_0.lo WOKNT_SequenceOfShell_0.lo \
+WOKNT_Shell.lo WOKNT_ShellManager.lo WOKNT_ShellOutput.lo \
+WOKNT_Shell_1.lo WOKNT_StackIteratorOfStackOfHandle_0.lo \
+WOKNT_StackNodeOfStackOfHandle_0.lo WOKNT_StackOfHandle_0.lo \
+WOKNT_chmod.lo WOKNT_cmp.lo WOKNT_cp.lo WOKNT_mv.lo WOKNT_regexp_1.lo \
+WOKNT_rm.lo WOKOBJS_AppSchCxxFile.lo WOKOBJS_AppSchema.lo \
+WOKOBJS_EngLinkList.lo WOKOBJS_LibSchema.lo WOKOBJS_MSSchExtractor.lo \
+WOKOBJS_OSSG.lo WOKOBJS_SchExtract.lo WOKOBJS_SchGen.lo \
+WOKOrbix_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.lo \
+WOKOrbix_DataMapOfHAsciiStringOfHAsciiString_0.lo \
+WOKOrbix_ExtractServerList.lo WOKOrbix_IDLCompile.lo \
+WOKOrbix_IDLCompiler.lo WOKOrbix_IDLCompilerIterator.lo \
+WOKOrbix_IDLFile.lo WOKOrbix_IDLFill.lo WOKOrbix_IDLSource.lo \
+WOKOrbix_IDLSourceExtract.lo WOKOrbix_IDLTranslator.lo \
+WOKOrbix_ServerSource.lo WOKStep_ArchiveLibrary.lo \
+WOKStep_CDLUnitSource.lo WOKStep_ClientExtract.lo \
+WOKStep_CodeGenerate.lo WOKStep_Compile.lo WOKStep_ComputeLinkList.lo \
+WOKStep_DLLink.lo WOKStep_DirectLinkList.lo WOKStep_DirectTKReplace.lo \
+WOKStep_DynamicLibrary.lo WOKStep_EXELink.lo WOKStep_EngDatFiles.lo \
+WOKStep_EngLDFile.lo WOKStep_EngLinkList.lo WOKStep_EngineExtract.lo \
+WOKStep_ExecLink.lo WOKStep_ExecutableSource.lo WOKStep_Extract.lo \
+WOKStep_ExtractExecList.lo WOKStep_HeaderExtract.lo \
+WOKStep_ImplementationDep.lo WOKStep_ImportLibrary.lo \
+WOKStep_Include.lo WOKStep_JiniExtract.lo WOKStep_LibExtract.lo \
+WOKStep_LibLimit.lo WOKStep_LibLink.lo WOKStep_LibUnCompress.lo \
+WOKStep_Library.lo WOKStep_Link.lo WOKStep_LinkList.lo \
+WOKStep_MSFill.lo WOKStep_MSStep.lo WOKStep_ProcessStep.lo \
+WOKStep_ResourceSource.lo WOKStep_ServerExtract.lo WOKStep_Source.lo \
+WOKStep_SourceExtract.lo WOKStep_StaticLibrary.lo WOKStep_TKList.lo \
+WOKStep_TKReplace.lo WOKStep_TemplateExtract.lo \
+WOKStep_ToolkitSource.lo WOKStep_TransitiveLinkList.lo \
+WOKStep_TransitiveTKReplace.lo WOKStep_WNTCollect.lo WOKStep_WNTK.lo \
+WOKStep_WNTLibrary.lo WOKStep_WNTLink.lo \
+WOKTools_Array1OfHAsciiString_0.lo WOKTools_AsciiStringHasher.lo \
+WOKTools_BasicMap.lo WOKTools_BasicMapIterator.lo \
+WOKTools_CStringHasher.lo WOKTools_ChDirValue.lo \
+WOKTools_CompareOfHAsciiString.lo \
+WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.lo \
+WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.lo \
+WOKTools_DataMapOfHAsciiStringOfHAsciiString_0.lo \
+WOKTools_DataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.lo \
+WOKTools_Define.lo WOKTools_EnvValue.lo WOKTools_Error.lo \
+WOKTools_HAsciiStringHasher.lo WOKTools_HSequenceOfBoolean_0.lo \
+WOKTools_HSequenceOfDefine_0.lo WOKTools_HSequenceOfReturnValue_0.lo \
+WOKTools_IndexedDataMapOfHAsciiString_0.lo \
+WOKTools_IndexedMapOfHAsciiString_0.lo WOKTools_Info.lo \
+WOKTools_InterpFileValue.lo \
+WOKTools_MapIteratorOfMapOfHAsciiString_0.lo \
+WOKTools_MapOfHAsciiString_0.lo WOKTools_Message.lo WOKTools_Options.lo \
+WOKTools_PUsage.lo WOKTools_Return.lo WOKTools_ReturnValue.lo \
+WOKTools_SequenceNodeOfSequenceOfBoolean_0.lo \
+WOKTools_SequenceNodeOfSequenceOfDefine_0.lo \
+WOKTools_SequenceNodeOfSequenceOfReturnValue_0.lo \
+WOKTools_SequenceOfBoolean_0.lo WOKTools_SequenceOfDefine_0.lo \
+WOKTools_SequenceOfReturnValue_0.lo WOKTools_SortOfHAsciiString_0.lo \
+WOKTools_StringValue.lo WOKTools_Verbose.lo WOKTools_Warning.lo \
+WOKUnix.lo WOKUnix_ASyncStatus.lo WOKUnix_AdmFile.lo WOKUnix_Buffer.lo \
+WOKUnix_BufferOverflow_0.lo WOKUnix_CantBlockBuffer.lo \
+WOKUnix_DumbOutput.lo WOKUnix_DumpScript.lo WOKUnix_FDescr.lo \
+WOKUnix_FileBuffer.lo WOKUnix_MixedOutput.lo WOKUnix_NoBuffer.lo \
+WOKUnix_OutErrOutput.lo WOKUnix_Path.lo WOKUnix_PathIterator.lo \
+WOKUnix_Process.lo WOKUnix_ProcessManager.lo WOKUnix_ProcessOutput.lo \
+WOKUnix_ProcessTimeOut_0.lo WOKUnix_RegExp.lo WOKUnix_RemoteShell.lo \
+WOKUnix_SequenceNodeOfSequenceOfProcess_0.lo \
+WOKUnix_SequenceOfProcess_0.lo WOKUnix_Shell.lo WOKUnix_ShellManager.lo \
+WOKUnix_ShellStatus.lo WOKUnix_Signal.lo \
+WOKUnix_StackIteratorOfStackOfDir_0.lo \
+WOKUnix_StackNodeOfStackOfDir_0.lo WOKUnix_StackOfDir_0.lo \
+WOKUnix_SyncStatus.lo WOKUnix_regexp_1.lo WOKUtils_BufferOverflow_0.lo \
+WOKUtils_HSequenceOfParamItem_0.lo WOKUtils_HSequenceOfPath_0.lo \
+WOKUtils_MapIteratorOfMapOfPath_0.lo WOKUtils_MapOfPath_0.lo \
+WOKUtils_Param.lo WOKUtils_ParamItem.lo WOKUtils_Path.lo \
+WOKUtils_PathHasher.lo WOKUtils_PathIterator.lo \
+WOKUtils_ProcessTimeOut_0.lo WOKUtils_RegExp.lo WOKUtils_RemoteShell.lo \
+WOKUtils_SearchIterator.lo WOKUtils_SearchList.lo \
+WOKUtils_SequenceNodeOfSequenceOfParamItem_0.lo \
+WOKUtils_SequenceNodeOfSequenceOfPath_0.lo \
+WOKUtils_SequenceOfParamItem_0.lo WOKUtils_SequenceOfPath_0.lo \
+WOKUtils_Shell.lo WOKUtils_ShellManager.lo WOKUtils_Trigger.lo \
+WOKernel_Array1OfHSequenceOfHAsciiString_0.lo WOKernel_BaseEntity.lo \
+WOKernel_BaseEntityHasher.lo WOKernel_ClientIterator.lo \
+WOKernel_DBMSystem.lo \
+WOKernel_DataMapIteratorOfDataMapOfFileTypeBase_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfFileType_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFactory_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFile_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfParcel_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWarehouse_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkbench_0.lo \
+WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkshop_0.lo \
+WOKernel_DataMapOfFileTypeBase_0.lo WOKernel_DataMapOfFileType_0.lo \
+WOKernel_DataMapOfHAsciiStringOfDevUnit_0.lo \
+WOKernel_DataMapOfHAsciiStringOfFactory_0.lo \
+WOKernel_DataMapOfHAsciiStringOfFile_0.lo \
+WOKernel_DataMapOfHAsciiStringOfParcel_0.lo \
+WOKernel_DataMapOfHAsciiStringOfWarehouse_0.lo \
+WOKernel_DataMapOfHAsciiStringOfWorkbench_0.lo \
+WOKernel_DataMapOfHAsciiStringOfWorkshop_0.lo WOKernel_DevUnit.lo \
+WOKernel_Entity.lo WOKernel_EntityIterator.lo WOKernel_Factory.lo \
+WOKernel_File.lo WOKernel_FileLocatorHasher.lo WOKernel_FileType.lo \
+WOKernel_FileTypeBase.lo WOKernel_FileTypeHasher.lo \
+WOKernel_FileTypeKeyWords.lo WOKernel_GlobalFileTypeBase.lo \
+WOKernel_HAsciiStringHasher.lo WOKernel_HSequenceOfDBMSID_0.lo \
+WOKernel_HSequenceOfFile_0.lo WOKernel_HSequenceOfStationID_0.lo \
+WOKernel_ImplDepIterator.lo \
+WOKernel_IndexedDataMapNodeOfSCMapOfSortedClientsFromIterator_0.lo \
+WOKernel_IndexedDataMapNodeOfSCMapOfSortedImpldepFromIterator_0.lo \
+WOKernel_Locator.lo WOKernel_Parcel.lo \
+WOKernel_SCMapOfSortedClientsFromIterator_0.lo \
+WOKernel_SCMapOfSortedImpldepFromIterator_0.lo \
+WOKernel_SequenceNodeOfSequenceOfDBMSID_0.lo \
+WOKernel_SequenceNodeOfSequenceOfFileType_0.lo \
+WOKernel_SequenceNodeOfSequenceOfFile_0.lo \
+WOKernel_SequenceNodeOfSequenceOfSession_0.lo \
+WOKernel_SequenceNodeOfSequenceOfStationID_0.lo \
+WOKernel_SequenceNodeOfSequenceOfUnitTypeDescr_0.lo \
+WOKernel_SequenceOfDBMSID_0.lo WOKernel_SequenceOfFileType_0.lo \
+WOKernel_SequenceOfFile_0.lo WOKernel_SequenceOfSession_0.lo \
+WOKernel_SequenceOfStationID_0.lo WOKernel_SequenceOfUnitTypeDescr_0.lo \
+WOKernel_Session.lo WOKernel_SortedClientsFromIterator_0.lo \
+WOKernel_SortedImpldepFromIterator_0.lo WOKernel_Station.lo \
+WOKernel_UnitGraph.lo WOKernel_UnitNesting.lo WOKernel_UnitTypeBase.lo \
+WOKernel_UnitTypeDescr.lo WOKernel_Warehouse.lo WOKernel_Workbench.lo \
+WOKernel_Workshop.lo lex.DELIVERY.lo lex.EDL.lo
+CXXFLAGS = @CXXFLAGS@
+CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+DEP_FILES =  .deps/DELIVERY.tab.P .deps/EDL.P .deps/EDL.tab.P \
+.deps/EDL_API.P .deps/EDL_DataMapIteratorOfMapOfFile_0.P \
+.deps/EDL_DataMapIteratorOfMapOfLibrary_0.P \
+.deps/EDL_DataMapIteratorOfMapOfTemplate_0.P \
+.deps/EDL_DataMapIteratorOfMapOfVariable_0.P \
+.deps/EDL_DataMapNodeOfMapOfFile_0.P \
+.deps/EDL_DataMapNodeOfMapOfLibrary_0.P \
+.deps/EDL_DataMapNodeOfMapOfTemplate_0.P \
+.deps/EDL_DataMapNodeOfMapOfVariable_0.P .deps/EDL_File.P \
+.deps/EDL_HSequenceOfVariable_0.P .deps/EDL_Interpretor.P \
+.deps/EDL_Library.P .deps/EDL_MapOfFile_0.P .deps/EDL_MapOfLibrary_0.P \
+.deps/EDL_MapOfTemplate_0.P .deps/EDL_MapOfVariable_0.P \
+.deps/EDL_SequenceNodeOfSequenceOfVariable_0.P \
+.deps/EDL_SequenceOfVariable_0.P \
+.deps/EDL_StackIteratorOfStackOfBoolean_0.P \
+.deps/EDL_StackNodeOfStackOfBoolean_0.P .deps/EDL_StackOfBoolean_0.P \
+.deps/EDL_Template.P .deps/EDL_Variable.P .deps/MS.P .deps/MS_Alias.P \
+.deps/MS_Array1OfParam_0.P .deps/MS_Class.P .deps/MS_ClassMet.P \
+.deps/MS_Client.P .deps/MS_Common.P .deps/MS_Component.P \
+.deps/MS_Construc.P .deps/MS_DataMapIteratorOfMapOfGlobalEntity_0.P \
+.deps/MS_DataMapIteratorOfMapOfMethod_0.P \
+.deps/MS_DataMapIteratorOfMapOfType_0.P .deps/MS_Engine.P \
+.deps/MS_Enum.P .deps/MS_Error.P .deps/MS_Exec.P .deps/MS_ExecFile.P \
+.deps/MS_ExecPart.P .deps/MS_Executable.P .deps/MS_ExternMet.P \
+.deps/MS_Field.P .deps/MS_GenClass.P .deps/MS_GenType.P \
+.deps/MS_GlobalEntity.P .deps/MS_HArray1OfParam_0.P \
+.deps/MS_HSequenceOfClass_0.P .deps/MS_HSequenceOfComponent_0.P \
+.deps/MS_HSequenceOfEngine_0.P .deps/MS_HSequenceOfError_0.P \
+.deps/MS_HSequenceOfExecFile_0.P .deps/MS_HSequenceOfExecPart_0.P \
+.deps/MS_HSequenceOfExecutable_0.P .deps/MS_HSequenceOfExternMet_0.P \
+.deps/MS_HSequenceOfField_0.P .deps/MS_HSequenceOfGenClass_0.P \
+.deps/MS_HSequenceOfGenType_0.P .deps/MS_HSequenceOfGlobalEntity_0.P \
+.deps/MS_HSequenceOfInstClass_0.P .deps/MS_HSequenceOfInterface_0.P \
+.deps/MS_HSequenceOfMemberMet_0.P .deps/MS_HSequenceOfMethod_0.P \
+.deps/MS_HSequenceOfPackage_0.P .deps/MS_HSequenceOfParam_0.P \
+.deps/MS_HSequenceOfSchema_0.P .deps/MS_HSequenceOfType_0.P \
+.deps/MS_Imported.P .deps/MS_InstClass.P .deps/MS_InstMet.P \
+.deps/MS_Interface.P .deps/MS_MapOfGlobalEntity_0.P \
+.deps/MS_MapOfMethod_0.P .deps/MS_MapOfType_0.P .deps/MS_MemberMet.P \
+.deps/MS_MetaSchema.P .deps/MS_Method.P .deps/MS_NatType.P \
+.deps/MS_Package.P .deps/MS_Param.P .deps/MS_ParamWithValue.P \
+.deps/MS_Pointer.P .deps/MS_PrimType.P .deps/MS_Schema.P \
+.deps/MS_SequenceNodeOfSequenceOfClass_0.P \
+.deps/MS_SequenceNodeOfSequenceOfComponent_0.P \
+.deps/MS_SequenceNodeOfSequenceOfEngine_0.P \
+.deps/MS_SequenceNodeOfSequenceOfError_0.P \
+.deps/MS_SequenceNodeOfSequenceOfExecFile_0.P \
+.deps/MS_SequenceNodeOfSequenceOfExecPart_0.P \
+.deps/MS_SequenceNodeOfSequenceOfExecutable_0.P \
+.deps/MS_SequenceNodeOfSequenceOfExternMet_0.P \
+.deps/MS_SequenceNodeOfSequenceOfField_0.P \
+.deps/MS_SequenceNodeOfSequenceOfGenClass_0.P \
+.deps/MS_SequenceNodeOfSequenceOfGenType_0.P \
+.deps/MS_SequenceNodeOfSequenceOfGlobalEntity_0.P \
+.deps/MS_SequenceNodeOfSequenceOfInstClass_0.P \
+.deps/MS_SequenceNodeOfSequenceOfInterface_0.P \
+.deps/MS_SequenceNodeOfSequenceOfMemberMet_0.P \
+.deps/MS_SequenceNodeOfSequenceOfMethod_0.P \
+.deps/MS_SequenceNodeOfSequenceOfPackage_0.P \
+.deps/MS_SequenceNodeOfSequenceOfParam_0.P \
+.deps/MS_SequenceNodeOfSequenceOfSchema_0.P \
+.deps/MS_SequenceNodeOfSequenceOfType_0.P .deps/MS_SequenceOfClass_0.P \
+.deps/MS_SequenceOfComponent_0.P .deps/MS_SequenceOfEngine_0.P \
+.deps/MS_SequenceOfError_0.P .deps/MS_SequenceOfExecFile_0.P \
+.deps/MS_SequenceOfExecPart_0.P .deps/MS_SequenceOfExecutable_0.P \
+.deps/MS_SequenceOfExternMet_0.P .deps/MS_SequenceOfField_0.P \
+.deps/MS_SequenceOfGenClass_0.P .deps/MS_SequenceOfGenType_0.P \
+.deps/MS_SequenceOfGlobalEntity_0.P .deps/MS_SequenceOfInstClass_0.P \
+.deps/MS_SequenceOfInterface_0.P .deps/MS_SequenceOfMemberMet_0.P \
+.deps/MS_SequenceOfMethod_0.P .deps/MS_SequenceOfPackage_0.P \
+.deps/MS_SequenceOfParam_0.P .deps/MS_SequenceOfSchema_0.P \
+.deps/MS_SequenceOfType_0.P .deps/MS_StdClass.P \
+.deps/MS_TraductionError_0.P .deps/MS_Type.P \
+.deps/WOKAPI_BuildProcess.P .deps/WOKAPI_Command.P \
+.deps/WOKAPI_Command_Factory.P .deps/WOKAPI_Command_Parcel.P \
+.deps/WOKAPI_Command_TriggeredMake.P .deps/WOKAPI_Command_Unit.P \
+.deps/WOKAPI_Command_Warehouse.P .deps/WOKAPI_Command_Workbench.P \
+.deps/WOKAPI_Command_Workshop.P .deps/WOKAPI_Entity.P \
+.deps/WOKAPI_Factory.P .deps/WOKAPI_File.P .deps/WOKAPI_Locator.P \
+.deps/WOKAPI_MakeOption.P .deps/WOKAPI_MakeStep.P .deps/WOKAPI_Parcel.P \
+.deps/WOKAPI_Process.P .deps/WOKAPI_SequenceNodeOfSequenceOfEntity_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfFactory_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfFile_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfMakeOption_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfMakeStep_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfParcel_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfUnit_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfWorkbench_0.P \
+.deps/WOKAPI_SequenceNodeOfSequenceOfWorkshop_0.P \
+.deps/WOKAPI_SequenceOfEntity_0.P .deps/WOKAPI_SequenceOfFactory_0.P \
+.deps/WOKAPI_SequenceOfFile_0.P .deps/WOKAPI_SequenceOfMakeOption_0.P \
+.deps/WOKAPI_SequenceOfMakeStep_0.P .deps/WOKAPI_SequenceOfParcel_0.P \
+.deps/WOKAPI_SequenceOfUnit_0.P .deps/WOKAPI_SequenceOfWorkbench_0.P \
+.deps/WOKAPI_SequenceOfWorkshop_0.P .deps/WOKAPI_Session.P \
+.deps/WOKAPI_Unit.P .deps/WOKAPI_Warehouse.P .deps/WOKAPI_Workbench.P \
+.deps/WOKAPI_Workshop.P .deps/WOKBuilder_ArchiveExtract.P \
+.deps/WOKBuilder_ArchiveLibrary.P .deps/WOKBuilder_Archiver.P \
+.deps/WOKBuilder_CDLFile.P .deps/WOKBuilder_CodeGenFile.P \
+.deps/WOKBuilder_CodeGenerator.P \
+.deps/WOKBuilder_CodeGeneratorIterator.P .deps/WOKBuilder_Command.P \
+.deps/WOKBuilder_Compilable.P .deps/WOKBuilder_Compiler.P \
+.deps/WOKBuilder_CompilerIterator.P .deps/WOKBuilder_CompressedFile.P \
+.deps/WOKBuilder_DEFile.P .deps/WOKBuilder_DLLFile.P \
+.deps/WOKBuilder_DLLinker.P \
+.deps/WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfMSEntity_0.P \
+.deps/WOKBuilder_DataMapIteratorOfDataMapOfHAsciiStringOfToolInShell_0.P \
+.deps/WOKBuilder_DataMapIteratorOfDataMapOfMSActionIDOfMSAction_0.P \
+.deps/WOKBuilder_DataMapOfHAsciiStringOfMSEntity_0.P \
+.deps/WOKBuilder_DataMapOfHAsciiStringOfToolInShell_0.P \
+.deps/WOKBuilder_DataMapOfMSActionIDOfMSAction_0.P \
+.deps/WOKBuilder_EXEFile.P .deps/WOKBuilder_EXELinker.P \
+.deps/WOKBuilder_Entity.P .deps/WOKBuilder_EntityHasher.P \
+.deps/WOKBuilder_Executable.P .deps/WOKBuilder_ExecutableLinker.P \
+.deps/WOKBuilder_ExportLibrary.P .deps/WOKBuilder_HSequenceOfEntity_0.P \
+.deps/WOKBuilder_HSequenceOfExtension_0.P \
+.deps/WOKBuilder_HSequenceOfLibrary_0.P \
+.deps/WOKBuilder_HSequenceOfObjectFile_0.P \
+.deps/WOKBuilder_HSequenceOfToolInShell_0.P \
+.deps/WOKBuilder_ImportLibrarian.P .deps/WOKBuilder_ImportLibrary.P \
+.deps/WOKBuilder_Include.P .deps/WOKBuilder_Library.P \
+.deps/WOKBuilder_Linker.P .deps/WOKBuilder_MFile.P \
+.deps/WOKBuilder_MSAction.P .deps/WOKBuilder_MSActionID.P \
+.deps/WOKBuilder_MSClientExtractor.P \
+.deps/WOKBuilder_MSEngineExtractor.P .deps/WOKBuilder_MSEntity.P \
+.deps/WOKBuilder_MSEntityHasher.P .deps/WOKBuilder_MSExtractor.P \
+.deps/WOKBuilder_MSExtractorIterator.P \
+.deps/WOKBuilder_MSHeaderExtractor.P .deps/WOKBuilder_MSJiniExtractor.P \
+.deps/WOKBuilder_MSServerExtractor.P \
+.deps/WOKBuilder_MSTemplateExtractor.P .deps/WOKBuilder_MSTool.P \
+.deps/WOKBuilder_MSTranslator.P .deps/WOKBuilder_MSTranslatorIterator.P \
+.deps/WOKBuilder_MSchema.P \
+.deps/WOKBuilder_MapIteratorOfMapOfMSAction_0.P \
+.deps/WOKBuilder_MapOfMSAction_0.P .deps/WOKBuilder_Miscellaneous.P \
+.deps/WOKBuilder_ObjectFile.P .deps/WOKBuilder_PDBFile.P \
+.deps/WOKBuilder_QueueNodeOfQueueOfMSAction_0.P \
+.deps/WOKBuilder_QueueOfMSAction_0.P \
+.deps/WOKBuilder_SequenceNodeOfSequenceOfEntity_0.P \
+.deps/WOKBuilder_SequenceNodeOfSequenceOfExtension_0.P \
+.deps/WOKBuilder_SequenceNodeOfSequenceOfLibrary_0.P \
+.deps/WOKBuilder_SequenceNodeOfSequenceOfObjectFile_0.P \
+.deps/WOKBuilder_SequenceNodeOfSequenceOfToolInShell_0.P \
+.deps/WOKBuilder_SequenceOfEntity_0.P \
+.deps/WOKBuilder_SequenceOfExtension_0.P \
+.deps/WOKBuilder_SequenceOfLibrary_0.P \
+.deps/WOKBuilder_SequenceOfObjectFile_0.P \
+.deps/WOKBuilder_SequenceOfToolInShell_0.P \
+.deps/WOKBuilder_SharedLibrary.P .deps/WOKBuilder_SharedLinker.P \
+.deps/WOKBuilder_Specification.P .deps/WOKBuilder_StaticLibrarian.P \
+.deps/WOKBuilder_StaticLibrary.P .deps/WOKBuilder_TarFile.P \
+.deps/WOKBuilder_Tool.P .deps/WOKBuilder_ToolInProcess.P \
+.deps/WOKBuilder_ToolInShell.P .deps/WOKBuilder_ToolInShellIterator.P \
+.deps/WOKBuilder_WNTCollector.P .deps/WOKBuilder_WNTLibrarian.P \
+.deps/WOKBuilder_WNTLinker.P .deps/WOKDFLT_DFLTExtract.P \
+.deps/WOKDFLT_MSDFLTExtractor.P \
+.deps/WOKDeliv_DataMapIteratorOfDataMapOfFiles_0.P \
+.deps/WOKDeliv_DataMapIteratorOfDataMapOfParcel_0.P \
+.deps/WOKDeliv_DataMapOfFiles_0.P .deps/WOKDeliv_DataMapOfParcel_0.P \
+.deps/WOKDeliv_DelivBuildArchive.P .deps/WOKDeliv_DelivBuildExec.P \
+.deps/WOKDeliv_DelivBuildSource.P .deps/WOKDeliv_DeliveryArchive.P \
+.deps/WOKDeliv_DeliveryBase.P .deps/WOKDeliv_DeliveryCopy.P \
+.deps/WOKDeliv_DeliveryDATA.P .deps/WOKDeliv_DeliveryExecList.P \
+.deps/WOKDeliv_DeliveryFiles.P .deps/WOKDeliv_DeliveryGET.P \
+.deps/WOKDeliv_DeliveryLIB.P .deps/WOKDeliv_DeliveryList.P \
+.deps/WOKDeliv_DeliveryListShared.P .deps/WOKDeliv_DeliveryMetaStep.P \
+.deps/WOKDeliv_DeliveryOBJSSchema.P .deps/WOKDeliv_DeliverySOURCES.P \
+.deps/WOKDeliv_DeliverySTUBClient.P .deps/WOKDeliv_DeliveryShared.P \
+.deps/WOKDeliv_DeliverySource.P .deps/WOKDeliv_DeliveryStep.P \
+.deps/WOKDeliv_DeliveryStepList.P .deps/WOKDeliv_ParseDelivery.P \
+.deps/WOKMake_BuildProcess.P .deps/WOKMake_BuildProcessGroup.P \
+.deps/WOKMake_BuildProcessIterator.P \
+.deps/WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.P \
+.deps/WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfSequenceOfHAsciiString_0.P \
+.deps/WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStepBuilder_0.P \
+.deps/WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfStep_0.P \
+.deps/WOKMake_DataMapOfHAsciiStringOfDevUnit_0.P \
+.deps/WOKMake_DataMapOfHAsciiStringOfSequenceOfHAsciiString_0.P \
+.deps/WOKMake_DataMapOfHAsciiStringOfStepBuilder_0.P \
+.deps/WOKMake_DataMapOfHAsciiStringOfStep_0.P .deps/WOKMake_DepItem.P \
+.deps/WOKMake_DepItemHasher.P .deps/WOKMake_HSequenceOfInputFile_0.P \
+.deps/WOKMake_HSequenceOfOutputFile_0.P \
+.deps/WOKMake_HSequenceOfStepOption_0.P \
+.deps/WOKMake_IndexedDataMapOfBuildProcessGroup_0.P \
+.deps/WOKMake_IndexedDataMapOfHAsciiStringOfInputFile_0.P \
+.deps/WOKMake_IndexedDataMapOfHAsciiStringOfOutputFile_0.P \
+.deps/WOKMake_IndexedMapOfDepItem_0.P .deps/WOKMake_InputFile.P \
+.deps/WOKMake_MetaStep.P .deps/WOKMake_OutputFile.P \
+.deps/WOKMake_SequenceNodeOfSequenceOfInputFile_0.P \
+.deps/WOKMake_SequenceNodeOfSequenceOfOutputFile_0.P \
+.deps/WOKMake_SequenceNodeOfSequenceOfStepOption_0.P \
+.deps/WOKMake_SequenceOfInputFile_0.P \
+.deps/WOKMake_SequenceOfOutputFile_0.P \
+.deps/WOKMake_SequenceOfStepOption_0.P .deps/WOKMake_Step.P \
+.deps/WOKMake_StepBuilder.P .deps/WOKMake_StepFile.P \
+.deps/WOKMake_Step_1.P .deps/WOKMake_TriggerStep.P .deps/WOKNT.P \
+.deps/WOKNT_AdmFile.P .deps/WOKNT_Array1OfRegExp_0.P \
+.deps/WOKNT_Array1OfString_0.P .deps/WOKNT_CompareOfString.P \
+.deps/WOKNT_CopyIfCh.P .deps/WOKNT_MixedOutput.P \
+.deps/WOKNT_OutErrOutput.P .deps/WOKNT_Path.P \
+.deps/WOKNT_PathIterator.P .deps/WOKNT_PrivCompareOfString_0.P \
+.deps/WOKNT_QuickSortOfString_0.P .deps/WOKNT_RegExp.P \
+.deps/WOKNT_ReplIfCh.P .deps/WOKNT_ReplIfChWith.P \
+.deps/WOKNT_SequenceNodeOfSequenceOfShell_0.P \
+.deps/WOKNT_SequenceOfShell_0.P .deps/WOKNT_Shell.P \
+.deps/WOKNT_ShellManager.P .deps/WOKNT_ShellOutput.P \
+.deps/WOKNT_Shell_1.P .deps/WOKNT_StackIteratorOfStackOfHandle_0.P \
+.deps/WOKNT_StackNodeOfStackOfHandle_0.P .deps/WOKNT_StackOfHandle_0.P \
+.deps/WOKNT_chmod.P .deps/WOKNT_cmp.P .deps/WOKNT_cp.P .deps/WOKNT_mv.P \
+.deps/WOKNT_regexp_1.P .deps/WOKNT_rm.P .deps/WOKOBJS_AppSchCxxFile.P \
+.deps/WOKOBJS_AppSchema.P .deps/WOKOBJS_EngLinkList.P \
+.deps/WOKOBJS_LibSchema.P .deps/WOKOBJS_MSSchExtractor.P \
+.deps/WOKOBJS_OSSG.P .deps/WOKOBJS_SchExtract.P .deps/WOKOBJS_SchGen.P \
+.deps/WOKOrbix_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.P \
+.deps/WOKOrbix_DataMapOfHAsciiStringOfHAsciiString_0.P \
+.deps/WOKOrbix_ExtractServerList.P .deps/WOKOrbix_IDLCompile.P \
+.deps/WOKOrbix_IDLCompiler.P .deps/WOKOrbix_IDLCompilerIterator.P \
+.deps/WOKOrbix_IDLFile.P .deps/WOKOrbix_IDLFill.P \
+.deps/WOKOrbix_IDLSource.P .deps/WOKOrbix_IDLSourceExtract.P \
+.deps/WOKOrbix_IDLTranslator.P .deps/WOKOrbix_ServerSource.P \
+.deps/WOKStep_ArchiveLibrary.P .deps/WOKStep_CDLUnitSource.P \
+.deps/WOKStep_ClientExtract.P .deps/WOKStep_CodeGenerate.P \
+.deps/WOKStep_Compile.P .deps/WOKStep_ComputeLinkList.P \
+.deps/WOKStep_DLLink.P .deps/WOKStep_DirectLinkList.P \
+.deps/WOKStep_DirectTKReplace.P .deps/WOKStep_DynamicLibrary.P \
+.deps/WOKStep_EXELink.P .deps/WOKStep_EngDatFiles.P \
+.deps/WOKStep_EngLDFile.P .deps/WOKStep_EngLinkList.P \
+.deps/WOKStep_EngineExtract.P .deps/WOKStep_ExecLink.P \
+.deps/WOKStep_ExecutableSource.P .deps/WOKStep_Extract.P \
+.deps/WOKStep_ExtractExecList.P .deps/WOKStep_HeaderExtract.P \
+.deps/WOKStep_ImplementationDep.P .deps/WOKStep_ImportLibrary.P \
+.deps/WOKStep_Include.P .deps/WOKStep_JiniExtract.P \
+.deps/WOKStep_LibExtract.P .deps/WOKStep_LibLimit.P \
+.deps/WOKStep_LibLink.P .deps/WOKStep_LibUnCompress.P \
+.deps/WOKStep_Library.P .deps/WOKStep_Link.P .deps/WOKStep_LinkList.P \
+.deps/WOKStep_MSFill.P .deps/WOKStep_MSStep.P \
+.deps/WOKStep_ProcessStep.P .deps/WOKStep_ResourceSource.P \
+.deps/WOKStep_ServerExtract.P .deps/WOKStep_Source.P \
+.deps/WOKStep_SourceExtract.P .deps/WOKStep_StaticLibrary.P \
+.deps/WOKStep_TKList.P .deps/WOKStep_TKReplace.P \
+.deps/WOKStep_TemplateExtract.P .deps/WOKStep_ToolkitSource.P \
+.deps/WOKStep_TransitiveLinkList.P .deps/WOKStep_TransitiveTKReplace.P \
+.deps/WOKStep_WNTCollect.P .deps/WOKStep_WNTK.P \
+.deps/WOKStep_WNTLibrary.P .deps/WOKStep_WNTLink.P \
+.deps/WOKTools_Array1OfHAsciiString_0.P \
+.deps/WOKTools_AsciiStringHasher.P .deps/WOKTools_BasicMap.P \
+.deps/WOKTools_BasicMapIterator.P .deps/WOKTools_CStringHasher.P \
+.deps/WOKTools_ChDirValue.P .deps/WOKTools_CompareOfHAsciiString.P \
+.deps/WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHAsciiString_0.P \
+.deps/WOKTools_DataMapIteratorOfDataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.P \
+.deps/WOKTools_DataMapOfHAsciiStringOfHAsciiString_0.P \
+.deps/WOKTools_DataMapOfHAsciiStringOfHSequenceOfHAsciiString_0.P \
+.deps/WOKTools_Define.P .deps/WOKTools_EnvValue.P \
+.deps/WOKTools_Error.P .deps/WOKTools_HAsciiStringHasher.P \
+.deps/WOKTools_HSequenceOfBoolean_0.P \
+.deps/WOKTools_HSequenceOfDefine_0.P \
+.deps/WOKTools_HSequenceOfReturnValue_0.P \
+.deps/WOKTools_IndexedDataMapOfHAsciiString_0.P \
+.deps/WOKTools_IndexedMapOfHAsciiString_0.P .deps/WOKTools_Info.P \
+.deps/WOKTools_InterpFileValue.P \
+.deps/WOKTools_MapIteratorOfMapOfHAsciiString_0.P \
+.deps/WOKTools_MapOfHAsciiString_0.P .deps/WOKTools_Message.P \
+.deps/WOKTools_Options.P .deps/WOKTools_PUsage.P \
+.deps/WOKTools_Return.P .deps/WOKTools_ReturnValue.P \
+.deps/WOKTools_SequenceNodeOfSequenceOfBoolean_0.P \
+.deps/WOKTools_SequenceNodeOfSequenceOfDefine_0.P \
+.deps/WOKTools_SequenceNodeOfSequenceOfReturnValue_0.P \
+.deps/WOKTools_SequenceOfBoolean_0.P \
+.deps/WOKTools_SequenceOfDefine_0.P \
+.deps/WOKTools_SequenceOfReturnValue_0.P \
+.deps/WOKTools_SortOfHAsciiString_0.P .deps/WOKTools_StringValue.P \
+.deps/WOKTools_Verbose.P .deps/WOKTools_Warning.P .deps/WOKUnix.P \
+.deps/WOKUnix_ASyncStatus.P .deps/WOKUnix_AdmFile.P \
+.deps/WOKUnix_Buffer.P .deps/WOKUnix_BufferOverflow_0.P \
+.deps/WOKUnix_CantBlockBuffer.P .deps/WOKUnix_DumbOutput.P \
+.deps/WOKUnix_DumpScript.P .deps/WOKUnix_FDescr.P \
+.deps/WOKUnix_FileBuffer.P .deps/WOKUnix_MixedOutput.P \
+.deps/WOKUnix_NoBuffer.P .deps/WOKUnix_OutErrOutput.P \
+.deps/WOKUnix_Path.P .deps/WOKUnix_PathIterator.P \
+.deps/WOKUnix_Process.P .deps/WOKUnix_ProcessManager.P \
+.deps/WOKUnix_ProcessOutput.P .deps/WOKUnix_ProcessTimeOut_0.P \
+.deps/WOKUnix_RegExp.P .deps/WOKUnix_RemoteShell.P \
+.deps/WOKUnix_SequenceNodeOfSequenceOfProcess_0.P \
+.deps/WOKUnix_SequenceOfProcess_0.P .deps/WOKUnix_Shell.P \
+.deps/WOKUnix_ShellManager.P .deps/WOKUnix_ShellStatus.P \
+.deps/WOKUnix_Signal.P .deps/WOKUnix_StackIteratorOfStackOfDir_0.P \
+.deps/WOKUnix_StackNodeOfStackOfDir_0.P .deps/WOKUnix_StackOfDir_0.P \
+.deps/WOKUnix_SyncStatus.P .deps/WOKUnix_regexp_1.P \
+.deps/WOKUtils_BufferOverflow_0.P \
+.deps/WOKUtils_HSequenceOfParamItem_0.P \
+.deps/WOKUtils_HSequenceOfPath_0.P \
+.deps/WOKUtils_MapIteratorOfMapOfPath_0.P .deps/WOKUtils_MapOfPath_0.P \
+.deps/WOKUtils_Param.P .deps/WOKUtils_ParamItem.P .deps/WOKUtils_Path.P \
+.deps/WOKUtils_PathHasher.P .deps/WOKUtils_PathIterator.P \
+.deps/WOKUtils_ProcessTimeOut_0.P .deps/WOKUtils_RegExp.P \
+.deps/WOKUtils_RemoteShell.P .deps/WOKUtils_SearchIterator.P \
+.deps/WOKUtils_SearchList.P \
+.deps/WOKUtils_SequenceNodeOfSequenceOfParamItem_0.P \
+.deps/WOKUtils_SequenceNodeOfSequenceOfPath_0.P \
+.deps/WOKUtils_SequenceOfParamItem_0.P \
+.deps/WOKUtils_SequenceOfPath_0.P .deps/WOKUtils_Shell.P \
+.deps/WOKUtils_ShellManager.P .deps/WOKUtils_Trigger.P \
+.deps/WOKernel_Array1OfHSequenceOfHAsciiString_0.P \
+.deps/WOKernel_BaseEntity.P .deps/WOKernel_BaseEntityHasher.P \
+.deps/WOKernel_ClientIterator.P .deps/WOKernel_DBMSystem.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfFileTypeBase_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfFileType_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfDevUnit_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFactory_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfFile_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfParcel_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWarehouse_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkbench_0.P \
+.deps/WOKernel_DataMapIteratorOfDataMapOfHAsciiStringOfWorkshop_0.P \
+.deps/WOKernel_DataMapOfFileTypeBase_0.P \
+.deps/WOKernel_DataMapOfFileType_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfDevUnit_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfFactory_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfFile_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfParcel_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfWarehouse_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfWorkbench_0.P \
+.deps/WOKernel_DataMapOfHAsciiStringOfWorkshop_0.P \
+.deps/WOKernel_DevUnit.P .deps/WOKernel_Entity.P \
+.deps/WOKernel_EntityIterator.P .deps/WOKernel_Factory.P \
+.deps/WOKernel_File.P .deps/WOKernel_FileLocatorHasher.P \
+.deps/WOKernel_FileType.P .deps/WOKernel_FileTypeBase.P \
+.deps/WOKernel_FileTypeHasher.P .deps/WOKernel_FileTypeKeyWords.P \
+.deps/WOKernel_GlobalFileTypeBase.P .deps/WOKernel_HAsciiStringHasher.P \
+.deps/WOKernel_HSequenceOfDBMSID_0.P .deps/WOKernel_HSequenceOfFile_0.P \
+.deps/WOKernel_HSequenceOfStationID_0.P \
+.deps/WOKernel_ImplDepIterator.P \
+.deps/WOKernel_IndexedDataMapNodeOfSCMapOfSortedClientsFromIterator_0.P \
+.deps/WOKernel_IndexedDataMapNodeOfSCMapOfSortedImpldepFromIterator_0.P \
+.deps/WOKernel_Locator.P .deps/WOKernel_Parcel.P \
+.deps/WOKernel_SCMapOfSortedClientsFromIterator_0.P \
+.deps/WOKernel_SCMapOfSortedImpldepFromIterator_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfDBMSID_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfFileType_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfFile_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfSession_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfStationID_0.P \
+.deps/WOKernel_SequenceNodeOfSequenceOfUnitTypeDescr_0.P \
+.deps/WOKernel_SequenceOfDBMSID_0.P \
+.deps/WOKernel_SequenceOfFileType_0.P .deps/WOKernel_SequenceOfFile_0.P \
+.deps/WOKernel_SequenceOfSession_0.P \
+.deps/WOKernel_SequenceOfStationID_0.P \
+.deps/WOKernel_SequenceOfUnitTypeDescr_0.P .deps/WOKernel_Session.P \
+.deps/WOKernel_SortedClientsFromIterator_0.P \
+.deps/WOKernel_SortedImpldepFromIterator_0.P .deps/WOKernel_Station.P \
+.deps/WOKernel_UnitGraph.P .deps/WOKernel_UnitNesting.P \
+.deps/WOKernel_UnitTypeBase.P .deps/WOKernel_UnitTypeDescr.P \
+.deps/WOKernel_Warehouse.P .deps/WOKernel_Workbench.P \
+.deps/WOKernel_Workshop.P .deps/lex.DELIVERY.P .deps/lex.EDL.P
+SOURCES = $(libTKWOK_la_SOURCES)
+OBJECTS = $(libTKWOK_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .cxx .lo .o .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/TKWOK/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libTKWOK.la: $(libTKWOK_la_OBJECTS) $(libTKWOK_la_DEPENDENCIES)
+	$(CXXLINK) -rpath $(libdir) $(libTKWOK_la_LDFLAGS) $(libTKWOK_la_OBJECTS) $(libTKWOK_la_LIBADD) $(LIBS)
+.cxx.o:
+	$(CXXCOMPILE) -c $<
+.cxx.lo:
+	$(LTCXXCOMPILE) -c $<
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src/TKWOK
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/TKWOK/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+
+%.o: %.cxx
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cxx
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir mostlyclean-depend \
+distclean-depend clean-depend maintainer-clean-depend info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
