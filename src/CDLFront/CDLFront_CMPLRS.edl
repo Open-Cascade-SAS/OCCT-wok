@@ -7,8 +7,11 @@
 @set %CDLFront_CMPLRS_EDL = "";
 
 @if ( %Station == "hp" ) then
-  @string %CMPLRS_C_Options += " -Ae";
+  @string %CMPLRS_C_ModeOpt = " -Ae -DNo_Exception " ;
 @endif;
 
+@if ( %Station == "lin" ) then
+  @string %CMPLRS_C_ModeOpt = " -O2 -DNo_Exception " ;
+@endif;
 
 @endif;
