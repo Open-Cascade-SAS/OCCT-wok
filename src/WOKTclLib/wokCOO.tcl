@@ -413,8 +413,36 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	}
     }
 
+    bind $IWOK_WINDOWS($w,hlist) <Control-w> {
+	wokUpdateObsoleteFile %W
+    }
+
+
+
     return
 }
+;#
+;#
+;#
+proc wokUpdateObsoleteFile { hli } {
+    global IWOK_WINDOWS
+    set item [$hli info anchor] ;
+    set data [$hli info data $item]
+    ;#puts "item $item"
+    ;#puts "data $data"
+    set retval [wokDialBox .obsol[clock clicks] {Delete local copy} \
+		    "Your local copy of [lindex $item 1] should be updated." \
+		    warning 1 {Delete} {Update}]
+    if { $retval } {
+	wokUtils:FILES:copy [file join [lindex $item 3] [lindex $item 1]] [file join [lindex $item 2] [lindex $item 1]]
+    } else {
+	wokUtils:FILES:delete [file join [lindex $item 2] [lindex $item 1]]
+    }
+    return
+}
+;#
+;#
+;#
 proc wokGetDoublon { hli } {
     set item [$hli info anchor] ;#WOKTclLib^# Mkf.tcl //wok/src/WOKTclLib /adv_23/WOK/ef/src/WOKTclLib
     set data [$hli info data $item]
@@ -700,20 +728,19 @@ proc wokrmEq { w } {
     set hli $IWOK_WINDOWS($w,hlist)
     $IWOK_WINDOWS($w,text) delete 1.0 end
     set lrm {}
+    set ldd {}
     foreach U [$hli info children] {
 	foreach f [$hli info children $U] {
 	    set l [split  [lindex [split $f ^] 1]]
 	    if { [string compare [lindex $l 0]  =] == 0} {
 		lappend lrm "rm [lindex $l 2]/[lindex $l 1]"
+		lappend ldd "[lindex $l 2]/[lindex $l 1]"
 	    }
 	}
     }
     set but [wokDangerDialBox .wokrmeq {Remove same files} {Really do that ?} $lrm danger 0 {Apply} {Cancel}]
     if { $but == 0 } {
-	foreach f $lrm {
-	    unlink [lindex $f 1]
-	    $IWOK_WINDOWS($w,text) insert end "File [lindex $f 1] has been removed.\n"
-	}
+	wokUtils:FILES:delete $ldd
 	wokHideEq $w
     }
     return

@@ -131,7 +131,7 @@ proc wokReadStuffJournalOfcurwb { w } {
     update 
     set jnltmp [wokUtils:FILES:tmpname jnltmp[pid].[wokinfo -n $IWOK_WINDOWS($w,curwb)]]
     if [file exists $jnltmp] {
-	unlink $jnltmp
+	wokUtils:FILES:delete $jnltmp
     }
     wokIntegre:Journal:Assemble $jnltmp 
     if [file exists $jnltmp] {
@@ -150,7 +150,7 @@ proc wokEditJnl { w } {
     update 
     set jnltmp [wokUtils:FILES:tmpname jnltmp[pid].[wokinfo -n $IWOK_WINDOWS($w,curwb)]]
     if [file exists $jnltmp] {
-	unlink $jnltmp
+	wokUtils:FILES:delete $jnltmp
     }
     wokIntegre:Journal:Assemble $jnltmp 
     if [file exists $jnltmp] {
@@ -401,9 +401,7 @@ proc wokUpdateQueue { w } {
 proc wokWaffQueueExit { w } {
     global IWOK_WINDOWS
     destroy $w
-    foreach f [glob -nocomplain /tmp/jnltmp[pid].*] {
-	catch { unlink $f }
-    }
+    wokUtils:FILES:delete [glob -nocomplain /tmp/jnltmp[pid].*]
     if [info exists IWOK_WINDOWS($w,help)] {
 	catch {destroy $IWOK_WINDOWS($w,help)}
     }

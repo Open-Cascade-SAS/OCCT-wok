@@ -249,7 +249,7 @@ proc wokNewsExtract { } {
 		wokIntegre:Journal:Slice $jnltmp $n1 $n2 $command $userdata
 	    }
 	}
-	catch { unlink $jnltmp }
+	catch { wokUtils:FILES:delete $jnltmp }
     }
     return
 }
@@ -558,10 +558,10 @@ proc wokIntegre:Journal:Purge { } {
 	set num1  [lindex [lindex $lrep 0] 0]
 	set num2  [lindex [lindex $lrep end] 0]
 	set savjnl [file dirname $jnl]/${num1}-${num2}.jnl
-	frename $jnl $savjnl
+	wokUtils:FILES:rename $jnl $savjnl
 	msgprint -c WOKVC -i "Creating file $jnl"
 	wokUtils:FILES:ListToFile {} $jnl
-	chmod 0777 $jnl
+	wokUtils:FILES:chmod 0777 $jnl
 	return $savjnl
     } else {
 	return {}
@@ -590,7 +590,7 @@ proc wokIntegre:Journal:List {  } {
 #;<
 proc wokIntegre:Journal:Assemble { path {liste {}} } {
     if [file exists $path] {
-	if [catch { unlink $path } err] {
+	if [catch { wokUtils:FILES:delete $path } err] {
 	    msgprint -c WOKVC -e "Assemble error: $err"
 	    return
 	}
@@ -662,9 +662,9 @@ proc wokIntegre:Mark:GetTableName { journal {create 0} } {
     } else {
 	if { $create } {
 	    msgprint -c WOKVC -i "Creating marks file in [file dirname $diradm]"
-	    catch { mkdir -path [file dirname $diradm] }
+	    catch { wokUtils:FILES:mkdir [file dirname $diradm] }
 	    wokUtils:FILES:ListToFile {} $diradm
-	    chmod 0777 $diradm
+	    wokUtils:FILES:chmod 0777 $diradm
 	    return $diradm
 	} else {
 	    return {}
@@ -845,7 +845,7 @@ proc wokIntegre:Scoop:Create { {texte {}} } {
     set diradm [file join [file dirname [wokIntegre:Journal:GetName]] scoop.jnl]
     if { $texte != {} } {
 	wokUtils:FILES:copy $texte $diradm
-	chmod 0777 $diradm
+	wokUtils:FILES:chmod 0777 $diradm
     }
     return $diradm
 }

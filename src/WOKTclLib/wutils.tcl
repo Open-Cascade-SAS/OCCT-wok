@@ -624,31 +624,104 @@ proc wokUtils:FILES:AreSame { f1 f2 } {
 # Copy file
 #
 proc wokUtils:FILES:copy { fin fout } {
-    if { [catch { set in [ open $fin r ] } errin] == 0 } {
-        if { [catch { set out [ open $fout w ] } errout] == 0 } {
-	    set nb [copyfile $in $out]
-	    close $in 
-	    close $out
-	    return $nb
-	} else {
-	    puts stderr "Error: $errout"
-	    return -1
-	}
+    global tcl_version
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	file copy -force $fin $fout
     } else {
-	    puts stderr "Error: $errin"
-	return -1
+	if { "[info command copyfile]" == "copyfile" } {
+	    if { [catch { set in [ open $fin r ] } errin] == 0 } {
+		if { [catch { set out [ open $fout w ] } errout] == 0 } {
+		    set nb [copyfile $in $out]
+		    close $in 
+		    close $out
+		    return $nb
+		} else {
+		    puts stderr "Error: $errout"
+		    return -1
+		}
+	    } else {
+		puts stderr "Error: $errin"
+		return -1
+	    }
+	} else {
+	    puts stderr "wokUtils:FILES:copy : Error unable to find a copy command."
+	}
     }
 }
 #
-# Delete file. Tcl 7.5 or later.
+# Rename a file
 #
-proc wokUtils:FILES:delete { f } {
+proc wokUtils:FILES:rename { old new } {
     global tcl_version
-    if [file exists $f] {
-	if { "$tcl_version" == "7.5" } {
-	    unlink $f
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	file rename -force -- $old $new
+    } else {
+	if { "[info command frename]" == "frename" } {
+	    frename $old $new
 	} else {
-	    file delete $f
+	    puts stderr "wokUtils:FILES:rename : Error unable to find a rename command."
+	}
+    }
+}
+#
+# chmod a lfile ( chmod 0777 file : the best way to process..)
+#
+proc wokUtils:FILES:chmod { m  lf } {
+    global tcl_version
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	foreach f $lf {
+	    file attributes $f -permissions $m
+	}
+    } else {
+	if { "[info command chmod]" == "chmod" } {
+	    chmod $m $lf 
+	} else {
+	    puts stderr "wokUtils:FILES:chmod : Error unable to find a chmod command."
+	}
+    }
+}
+
+proc wokUtils:FILES:mkdir { d } {
+    global tcl_version
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	file mkdir $d
+    } else {
+	if ![file exists $d] {
+	    if { "[info command mkdir]" == "mkdir" } {
+		mkdir -path $d
+	    } else {
+		puts stderr "wokUtils:FILES:mkdir : Error unable to find a mkdir command."
+	    }
+	}
+    }
+    if [file exists $d] {
+	return $d
+    } else {
+	return {}
+    }
+}
+
+#
+# Delete a list of files: Either Tcl 8.x or Tcl 7.x or later and Tclx.
+#
+proc wokUtils:FILES:delete { lf } {
+    global tcl_version
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	foreach f $lf {
+	    file delete -- $f
+	}
+    } else {
+	if { "[info command unlink]" == "unlink" } {
+	    foreach f $lf {
+		unlink -nocomplain $f
+	    }
+	} else {
+	    puts stderr "wokUtils:FILES:delete : Error unable to find a delete command."
 	}
     }
 }
@@ -718,11 +791,7 @@ proc  wokUtils:FILES:FindFile { startDir namePat } {
 proc wokUtils:FILES:NatCopy { src dest {verbose 0} {YesOrNo wokUtils:EASY:NatCopy} } {
     global tcl_version
     if [file isdirectory $src] {
-	if { "$tcl_version" == "7.6" } {
-	    file mkdir $dest
-	} else {
-	    mkdir -path $dest
-	}
+	wokUtils:FILES:mkdir $dest
 	foreach f [glob -nocomplain [file join $src *]] {
 	    wokUtils:FILES:NatCopy $f [file join $dest [file tail $f]] $verbose $YesOrNo
 	}
@@ -830,22 +899,16 @@ proc wokUtils:FILES:Encodable { file } {
 # remove a directory. One level. Very ugly procedure. Do not use.
 # Bricolage pour que ca marche sur NT.
 # 
-proc wokUtils:FILES:removedir { d } {
+proc wokUtils:FILES:rmdir { d } {
     global env
-    global tcl_platform
-    if { "$tcl_platform(platform)" == "unix" } {
-	if { [file exists $d] } {
-	    foreach f [wokUtils:EASY:readdir $d] {
-		unlink -nocomplain $d/$f
-	    }
-	    rmdir -nocomplain $d 
-	}
-    } elseif { "$tcl_platform(platform)" == "windows" } {
-	if { [file exists $d] } {
-	    foreach f [wokUtils:EASY:readdir $d] {
-		file delete $d/$f
-	    }
-	    file delete $d 
+    global tcl_platform tcl_version  
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	file delete -force $d
+    } else {
+	if { "$tcl_platform(platform)" == "unix" } {
+	    catch { exec rm -rf $d}
+	} else {
 	    
 	}
     }
@@ -856,7 +919,7 @@ proc wokUtils:FILES:removedir { d } {
 #
 proc wokUtils:FILES:tmpname { name } {
     global env
-    global tcl_platform
+    global tcl_platform tcl_version
     if { "$tcl_platform(platform)" == "unix" } {
 	return [file join /tmp $name]
     } elseif { "$tcl_platform(platform)" == "windows" } {
@@ -869,15 +932,24 @@ proc wokUtils:FILES:tmpname { name } {
 #
 proc wokUtils:FILES:Userid { file } {
     global env
-    global tcl_platform
+    global tcl_platform tcl_version
+    regsub -all {\.[^.]*} $tcl_version "" major
     if { "$tcl_platform(platform)" == "unix" } {
-	file stat $file myT
-	if ![ catch { id convert userid $myT(uid) } result ] {
-	    return $result
+	if { $major == 8 } {
+	    return [file attributes $file -owner]
 	} else {
-	    return unknown
+	    if { "[info command id]" == "id" } {
+		file stat $file myT
+		if ![ catch { id convert userid $myT(uid) } result ] {
+		    return $result
+		} else {
+		    return unknown
+		}
+	    } else {
+		return unknown
+	    }
 	}
-    } elseif { "$tcl_platform(platform)" == "windows" } {
+    } else {
 	return unknown
     }
 }
@@ -903,9 +975,9 @@ proc wokUtils:FILES:MoreDiff { } {
 #
 proc wokUtils:FILES:dirtmp { tmpnam } {
     if [file exist $tmpnam] {
-	wokUtils:FILES:removedir $tmpnam
+	wokUtils:FILES:rmdir $tmpnam
     }
-    mkdir $tmpnam
+    wokUtils:FILES:mkdir $tmpnam
     return 
 }
 ;#
@@ -923,7 +995,7 @@ proc wokUtils:FILES:recopy { dir dest  {verbose 0} {FunCopy wokUtils:FILES:copy}
 	set did [file join $dest $sd]
 	if { ![file exists $did] } {
 	    if { $verbose } { puts stderr "Creating directory $did" }	    
-	    mkdir -path $did
+	    wokUtils:FILES:mkdir -path $did
 	} else {
 	    if { $verbose } { puts stderr "Directory $did already exists. " }	    
 	}
@@ -2162,24 +2234,6 @@ proc wokUtils:STACK:pop { stack } {
 #
 proc wokUtils:WB:IsRoot { wb } {
     return [expr { ( [llength [w_info -A $wb]] > 1 ) ? 0 : 1 }]
-}
-;#
-;# Create directory.
-;#
-proc wokUtils:DIR:create { dir } {
-    global tcl_version
-    if { "$tcl_version" == "7.6" || "$tcl_version" == "8.0"} {
-	set command "file mkdir $dir"
-    } else {
-	set command "mkdir -path $dir"
-    }
-    catch { eval $command } status 
-    if { "$status" == "" } {
-	return 1
-    } else {
-	puts "$status"
-	return -1
-    }
 }
 ;#
 ;# lnames is a list of names, returns a map indexed  with the lowered name and as value the original name

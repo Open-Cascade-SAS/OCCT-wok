@@ -222,7 +222,7 @@ proc wokIntegrebase  { } {
             set dirtmpu /tmp/wintegrecreateunits[pid]
             catch {
                 rmdir -nocomplain $dirtmpu 
-                mkdir -path $dirtmpu
+                wokUtils:FILES:mkdir $dirtmpu
             }
             set chkout $dirtmpu/checkout.cmd
             set chkid  [open $chkout w]
@@ -283,7 +283,7 @@ proc wokIntegreCleanup { broot table listid dirtmp } {
     }
     if [info exists dirtmp] {
         foreach d $dirtmp {
-            catch { wokUtils:FILES:removedir $d }
+            catch { wokUtils:FILES:rmdir $d }
         }
     }
     return
@@ -402,14 +402,14 @@ proc wokIntegre:BASE:InitRef { broot table vrs comment fileid } {
 proc wokIntegre:BASE:Fill { broot elmin {action move} } {
     set bdir $broot
     if ![file exists $bdir] {
-        mkdir -path $bdir
-        chmod 0777 $bdir
+        wokUtils:FILES:mkdir $bdir
+        wokUtils:FILES:chmod 0777 $bdir
     }
  
     foreach e $elmin {
         if { [file isfile $e] } {
             set bna [file tail $e]
-            catch { frename $e $bdir/$bna }
+            catch { wokUtils:FILES:rename $e $bdir/$bna }
         } elseif { [file isdirectory $e] } {
             set dl {}
             foreach f [wokUtils:EASY:readdir $e] {
@@ -457,7 +457,7 @@ proc wokIntegre:BASE:LS { } {
 proc wokIntegre:BASE:BTMPCreate { broot Unit {create 0} } {
     if { $create } {
         wokIntegre:BASE:BTMPDelete $broot $Unit
-        mkdir -path $broot/$Unit/tmp
+        wokUtils:FILES:mkdir  $broot/$Unit/tmp
     }
     return $broot/$Unit/tmp
 }
@@ -467,13 +467,7 @@ proc wokIntegre:BASE:BTMPCreate { broot Unit {create 0} } {
 # Le directory courant ne doit pas etre unit/tmp
 #;<
 proc wokIntegre:BASE:BTMPDelete { broot Unit } {
-    set R $broot/$Unit/tmp
-    if [file exists $R] {
-        foreach f [wokUtils:EASY:readdir $R] {
-            unlink $R/$f
-        }
-        rmdir -nocomplain $R
-    }
+    catch { wokUtils:FILES:rmdir $broot/$Unit/tmp }
     return 1
 }
 #
@@ -532,7 +526,7 @@ proc wokIntegre:RefCopy:SetWritable { table user } {
         foreach e [lrange $TLOC($UD) 1 end] {
             set file $dirsrc/[lindex $e 0]
             if [file owned $file] {
-                chmod u+w $file
+                wokUtils:FILES:chmod u+w $file
             } else {
                 msgprint -c WOKVC -e "Protection of $file cannot be modified (File not found or not owner)."
                 return -1
@@ -562,7 +556,7 @@ proc wokIntegre:RefCopy:FillRef {  table {fileid stdout} } {
             set file [lindex $elm 0]
             if { [string compare $vrs x.x] != 0 } {
                 if [file writable $dirsrc/$file] {
-                    frename $dirsrc/$file $dirsrc/${file}-sav
+                    wokUtils:FILES:rename $dirsrc/$file $dirsrc/${file}-sav
                     msgprint -c WOKVC -i "File $dirsrc/$file renamed ${file}-sav"
                 }
                 set Sfile $root/[wokIntegre:BASE:ftos $file $vrs]
@@ -596,7 +590,7 @@ proc wokIntegre:RefCopy:FillUser {  table {force 0} {fileid stdout} {mask 644} }
                 if [file exists $dirsrc/$file] {
                     if { $force } {
                         if { [file writable $dirsrc/$file] } {
-                            frename $dirsrc/$file $dirsrc/${file}-sav
+                            wokUtils:FILES:rename $dirsrc/$file $dirsrc/${file}-sav
                             msgprint -c WOKVC -i "File $dirsrc/$file renamed ${file}-sav"
                             set Sfile $root/[wokIntegre:BASE:ftos $file $vrs]
                             wokIntegre:BASE:GetFile $Sfile $vrs $fileid
@@ -816,7 +810,7 @@ proc wokGetcopy { } {
         foreach e $RES {
             if { [file exists [file join $to $e]] } {
                 msgprint -c WOKVC -w "Renamed [file join $to $e] [file join $to $e]-sav"
-                frename [file join $to $e] [file join $to $e]-sav
+                wokUtils:FILES:rename [file join $to $e] [file join $to $e]-sav
             }
             if { $VERBOSE } { msgprint -c WOKVC -i "Copying [file join $from $e] to [file join $to $e]" } 
             wokUtils:FILES:copy [file join $from $e] [file join $to $e]
@@ -896,7 +890,7 @@ proc wokGetbase { } {
             puts [exec cat $dirtmp/checkout.cmd]
         }
         
-        unlink $chkout
+        wokUtils:FILES:delete $chkout
         rmdir -nocomplain $dirtmp
         return $statx
     }

@@ -163,11 +163,11 @@ proc woksh_csh {args} {
 		puts $Launched "[lindex [wok_interp_command $format] 0]"
 		close $Launched
 		close $Template
-		chmod a+x $launched
+		wokUtils:FILES:chmod 0777 $launched
 		set LAUNCH $launched
 	    }
 	}
-	unlink $thefile
+	wokUtils:FILES:delete $thefile
     } 
 
     msgprint -w -c "woksh_csh" "Emacs mode disabled : use exit to return to tcl"
@@ -186,7 +186,7 @@ proc woksh_csh {args} {
 	}
     }
     wok_end_shell $format
-    unlink $launched
+    wokUtils:FILES:delete $launched
     return; 
 }
 
@@ -241,7 +241,7 @@ proc woksh_emacs {args} {
 
 	source $thefile
 	
-	unlink $thefile
+	wokUtils:FILES:delete $thefile
 	
 	set thefile "/tmp/wokenv_[id process]_$format"
 	
@@ -264,7 +264,7 @@ proc woksh_emacs {args} {
 			close $thefd
 			log_user 0;
 			exp_send -i $WOK_GLOBALS(wokinterp,$format,id) "[lindex [wok_source_cmd $format $thelongcmdfile] 0]\n"
-			unlink $thelongcmdfile
+			wokUtils:FILES:delete $thelongcmdfile
 		    }
 		    
 		    while { [string length $theline] > 100} {
@@ -286,7 +286,7 @@ proc woksh_emacs {args} {
 
 	    }
 	}
-	unlink $thefile
+	wokUtils:FILES:delete $thefile
     } 
     log_user 0;
     

@@ -50,9 +50,9 @@ proc wcheck { args } {
 
     set tmpdir /tmp/wcheck[id process]
     if [file exists $tmpdir] {
-	unlink [glob -nocomplain $tmpdir/*]
+	wokUtils:FILES:delete [glob -nocomplain $tmpdir/*]
     } else {
-	mkdir -path $tmpdir
+	wokUtils:FILES:mkdir $tmpdir
     }
 
     set LFILE {}
@@ -86,7 +86,7 @@ proc wcheck { args } {
 			msgprint -c WOKVC -e "$file cannot be created ( $status )"
 		    }
 		}
-		catch {unlink $sfile}
+		catch {wokUtils:FILES:delete $sfile}
 	    }
 	}
 
@@ -102,9 +102,9 @@ proc wcheck { args } {
 
     catch {
 	if [file exists $tmpdir] {
-	unlink [glob -nocomplain $tmpdir/*]
+	wokUtils:FILES:delete [glob -nocomplain $tmpdir/*]
 	}
-	unlink $tmpdir
+	wokUtils:FILES:delete $tmpdir
     }
 
     return

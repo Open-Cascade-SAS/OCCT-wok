@@ -115,7 +115,7 @@ proc upack { args } {
 		puts stderr "Error: $status"
 	    }
 	    if [file exists $adr] {
-		catch {unlink $adr}
+		catch {wokUtils:FILES:delete $adr}
 	    }
 	} 
 	return
@@ -133,7 +133,7 @@ proc upack { args } {
 		puts stderr "Error: $status"
 	    }
 	    if [file exists $adr] {
-		catch {unlink $adr}
+		catch {wokUtils:FILES:delete $adr}
 	    }
 	}
 	return
@@ -226,7 +226,7 @@ proc upack:UnFold { fileid errlog errdir {typsel {}} verbose } {
     foreach u $lu {
 	puts -nonewline stderr "Decoding $u ..."
 	wokUtils:FILES:uudecode $u
-	unlink $u
+	wokUtils:FILES:delete $u
 	puts stderr "Done"
     }
     return
@@ -258,7 +258,7 @@ proc upack:Fold { List3 fileid {typsel {}} verbose } {
 		puts stderr "Error: $errin"
 	    }
 	    if { $code != -1 } {
-		unlink $name
+		wokUtils:FILES:delete $name
 	    }
 	}
     }
@@ -454,7 +454,7 @@ proc wpack { args } {
 		puts stderr "Error: $status"
 	    }
 	    if [file exists $adr] {
-		catch {unlink $adr}
+		catch {wokUtils:FILES:delete $adr}
 	    }
 	} 
 	return
@@ -501,7 +501,7 @@ proc wpack { args } {
 		puts stderr "$status"
 	    }
 	} elseif { [info exists table(-d)] } { 
-	    if { ![file exists $table(-d)] } { mkdir -path $table(-d) } 
+	    if { ![file exists $table(-d)] } { wokUtils:FILES:mkdir  $table(-d) } 
 	    wpack:Fold $Wadr $ulist $table(-d) [info exists table(-v)]
 	    msgprint -i "Archive files have been created in $table(-d)"
 	} else {
@@ -525,7 +525,7 @@ proc wpack { args } {
 		    puts stderr "Error: $status"
 		}
 		if [file exists $adr] {
-		    catch {unlink $adr}
+		    catch {wokUtils:FILES:delete $adr}
 		}
 	    }
 	} else {
@@ -700,7 +700,7 @@ proc wpack:UnFold { fileid Wadr errlog errdir {typsel {}} verbose } {
     foreach u $lu {
 	puts -nonewline stderr "Decoding $u ..."
 	wokUtils:FILES:uudecode $u
-	unlink $u
+	wokUtils:FILES:delete $u
 	puts stderr "Done"
     }
     return

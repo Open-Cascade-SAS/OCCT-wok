@@ -595,7 +595,7 @@ proc wokRPRDeleteItem { w } {
 	set item [lindex $lstent 1]
 	set data [$hlist info data [$hlist info parent $entry]]
 	set vrs [lindex $data 2]
-	catch { unlink $IWOK_WINDOWS($w,qroot)/$unit/[wokIntegre:BASE:ftos $item $vrs] }
+	catch { wokUtils:FILES:delete $IWOK_WINDOWS($w,qroot)/$unit/[wokIntegre:BASE:ftos $item $vrs] }
     }
     $hlist delete entry $entry
     $IWOK_WINDOWS($w,canvas) delete all
@@ -651,9 +651,7 @@ proc wokRPRCheckItem { w } {
 proc wokRPRExit { w } {
     global IWOK_WINDOWS
     destroy $w
-    foreach f [glob -nocomplain /tmp/jnltmp[pid].*] {
-	catch { unlink $f }
-    }
+    wokUtils:FILES:delete [glob -nocomplain /tmp/jnltmp[pid].*]
     if [info exists IWOK_WINDOWS($w,help)] {
 	catch {destroy $IWOK_WINDOWS($w,help)}
     }

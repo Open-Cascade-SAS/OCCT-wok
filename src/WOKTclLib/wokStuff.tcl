@@ -193,7 +193,7 @@ proc wokDiffInText { text f1 f2 } {
     if { "$tcl_platform(platform)" == "unix" } {
 	catch {exec diff $f1 $f2 > $wtmp} 
 	wokReadFile $text $wtmp
-	unlink $wtmp
+	wokUtils:FILES:delete $wtmp
     } elseif { "$tcl_platform(platform)" == "windows" } {
 	$text delete 0.0 end
 	$text insert end {Click on button "More diff" instead.}
