@@ -8,6 +8,35 @@
 #include <Standard_ProgramError.hxx>
 
 #include <OSD_SharedLibrary.hxx>
+#include <WOKernel_File.hxx>
+
+#ifndef DONT_COMPENSATE
+#include <stdio.h>
+
+#ifdef WNT
+# include <io.h>
+#endif  // WNT
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+#if defined (HAVE_SYS_STAT_H) || defined (WNT)
+# include <sys/stat.h>
+#endif
+#include <fcntl.h>
+
+#if defined(HAVE_TIME_H) || defined(WNT)
+# include <time.h>
+#endif
+
+#include <Standard_Stream.hxx>
+#endif // DONT_COMPENSATE
+
 
 #include <WOKTools_Messages.hxx>
 
@@ -127,7 +156,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 								  const Handle(WOKBuilder_Specification)& anewcdl) const 
 {
   WOKBuilder_MSActionID anid(anaction->Entity()->Name(), anaction->Type());
-  
+  Standard_Integer decal = 0;
   switch(MSchema()->GetActionStatus(anid))
     {
     case WOKBuilder_HasFailed:
@@ -176,9 +205,10 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 	    case WOKBuilder_Uses:
 	    case WOKBuilder_SchUses :
 	    case WOKBuilder_GlobEnt:
-	      {
-		Handle(WOKBuilder_Specification) oldspec = oldaction->Entity()->File();
-		
+
+		 {
+#ifndef DONT_COMPENSATE
+		Handle(WOKBuilder_Specification) oldspec = oldaction->Entity()->File();		
 		if(!oldspec.IsNull())
 		  {
 		    if(!oldspec->Path()->Name()->IsSameString(anewcdl->Path()->Name()))
@@ -191,15 +221,53 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 		      }
 		    else
 		      {
-			WOK_TRACE {
-			  VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
+			  WOK_TRACE {
+			     VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
 						    << "NewFile : " << anewcdl->Path()->Name() << " is same than old : " 
 						    << oldspec->Path()->Name() << endm;
-			}
+			     }
 		      }
-		  }
-		
-		if(anewcdl->Path()->MDate() > oldaction->Date())
+		  }  
+    TCollection_AsciiString tempath1 = anewcdl->Path()->Name()->ToCString();
+    Standard_CString tempath = tempath1.ToCString();
+    Standard_Integer fd;
+
+    if((fd=open(tempath, O_RDONLY)) == -1)
+      {
+        WarningMsg << "WOKStep_MSFill::Execute"
+                 << "Could not create : " << tempath << endm;
+        perror(tempath);
+      }
+    else
+      {
+        close(fd);
+      }
+
+    if(fd != -1 )
+      {
+        struct stat buf;
+        if(stat(tempath, &buf))
+          {
+            ErrorMsg << "WOKStep_MSFill::Execute"
+                     << "Could not stat : " << tempath << endm;
+          }
+
+        time_t curdate ;        
+        curdate = time(NULL);
+
+        if(curdate == -1)
+          {
+            ErrorMsg << "WOKStep_MSFill::Execute"
+                     << "Could not obtain current date" << endm;
+          }        
+       if(buf.st_atime - curdate > 0)
+          {
+            decal =  buf.st_atime - curdate;       
+          }
+      }  
+#endif // DONT_COMPENSATE
+
+		if(anewcdl->Path()->MDate()- decal > oldaction->Date())
 		  {
 		    WOK_TRACE {
 		      VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
