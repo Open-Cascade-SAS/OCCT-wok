@@ -404,7 +404,6 @@ proc wokStore:Queue:Exists { wb } {
 ;# Ecrit dans diradm le fichier VCDEF.tcl contenant les definitions de la queue.
 ;# 
 proc wokStore:Report:Configure { option fileadm wb queue trignam base type counter journal welcome } {
-    puts ccc
     set proc_defined_in_VC [list \
 	    wokStore:Report:GetRootName \
 	    wokStore:Trigger:GetName \

@@ -31,6 +31,17 @@ proc wokUtils:TIME:clrsort { e1 e2 } {
 	}
     }
 }
+;#
+;# Returs for a full path the liste of n last directory part
+;# n = 1 => tail
+;# n = 2 => dir/file.c
+;# n = 3 => sdir/dir/file.c
+;# etc..
+proc wokUtils:FILES:wtail { f n } {
+    set ll [expr [llength [set lif [file split $f]]] -$n]
+    return [join [lrange $lif $ll end] /]
+}
+
 #
 # Returs the list of files in dirlist using gblist as pattern newer than lim
 # 
@@ -1507,6 +1518,11 @@ proc wokUtils:EASY:stobs2 { l } {
 	    return [wokUtils:EASY:lbs2 $l]
 	}
     }
+}
+#
+proc wokUtils:EASY:bs1 { s } {
+    regsub -all {/} $s {\\} r
+    return $r
 }
 #
 proc wokUtils:EASY:lbs1 { ls } {
