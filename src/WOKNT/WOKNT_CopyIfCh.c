@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -23,3 +24,4 @@ __declspec( dllexport ) int wokCopyIfCh ( int argc, char** argv ) {
  return status;
 
 }  /* end main */
+#endif

@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 #include <string.h>
@@ -122,3 +123,4 @@ int wokCP( int argc, char** argv )
  }
  return retVal;
 } 
+#endif

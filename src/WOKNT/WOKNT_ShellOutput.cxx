@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -12,3 +13,4 @@ void WOKNT_ShellOutput :: Cleanup () {
  if (  ( HANDLE )myFileChannel != INVALID_HANDLE_VALUE  ) Close ();
 
 }  // end WOKNT_ShellOutput :: Cleanup
+#endif

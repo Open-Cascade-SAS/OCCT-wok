@@ -1,3 +1,4 @@
+#ifdef WNT
 #define EXPORT
 #define STRICT
 #include <windows.h>
@@ -34,3 +35,4 @@ int wokMV ( int argc, char** argv ) {
  return 0;
 
 }  // end main
+#endif

@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 #include <tchar.h>
@@ -608,3 +609,4 @@ static void _WOKNT_get_env (  Handle( TColStd_HSequenceOfHAsciiString )& seq  ) 
  FreeEnvironmentStrings ( env );
 
 }  // end _WOKNT_get_env
+#endif

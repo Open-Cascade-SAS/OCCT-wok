@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <process.h>
 #include <windows.h>
@@ -28,3 +29,4 @@ __declspec( dllexport ) int wokReplIfCh ( int argc, char** argv ) {
  return status;
 
 }  /* end main */
+#endif

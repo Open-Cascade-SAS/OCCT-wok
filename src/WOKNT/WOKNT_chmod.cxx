@@ -1,3 +1,4 @@
+#ifdef WNT
 #define EXPORT
 #include <iostream.h>
 #include <stdlib.h>
@@ -267,3 +268,4 @@ static BOOL _chmod_func ( LPTSTR fName, BOOL fDir, void* data ) {
  return TRUE;
 
 }  // end _chmod_func
+#endif

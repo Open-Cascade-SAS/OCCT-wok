@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -103,3 +104,4 @@ TCollection_AsciiString WOKNT_AdmFile :: Name () const {
  return retVal;
 
 }  // end WOKNT_AdmFile :: Name
+#endif

@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -433,3 +434,4 @@ static void __fastcall _WOKNT_strip_string (  Handle( TCollection_HAsciiString )
  }  // end else
 
 }  // end _WOKNT_strip_string
+#endif

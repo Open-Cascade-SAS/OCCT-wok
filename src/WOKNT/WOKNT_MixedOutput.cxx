@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -189,3 +190,4 @@ void __fastcall _WOKNT_create_pipe (
  ) *writePipe = ( Standard_Integer )INVALID_HANDLE_VALUE;
                 
 }  // end _WOKNT_create_pipe
+#endif

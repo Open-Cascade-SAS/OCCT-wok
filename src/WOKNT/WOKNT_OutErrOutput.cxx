@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -102,3 +103,4 @@ Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_OutErrOutput :: SyncStdErr () {
  return retVal;
 
 }  // end WOKNT_OutErrOutput :: SyncStdErr
+#endif

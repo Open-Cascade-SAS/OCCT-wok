@@ -1,3 +1,4 @@
+#ifdef WNT
 /******************************************************************************/
 /* Extended regular expression matching and search.                           */
 /* Copyright (C) 1985 Free Software Foundation, Inc.                          */
@@ -26,10 +27,12 @@
 /***/
 
 /* JGA : to compile on Solaris */
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
-#if !defined(HPUX) && !defined (WNT)
-#include <alloca.h>
-
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
 #else
 /* alloca() non disponible sur HPUX 9.07 */
 # ifdef __cplusplus
@@ -1733,3 +1736,4 @@ static int bcmp_translate (
 }  /* end bcmp_translate */
 /***/
 /******************************************************************************/
+#endif

@@ -1,3 +1,4 @@
+#ifdef WNT
 #include <WOKNT_CompareOfString.ixx>
 
 WOKNT_CompareOfString :: WOKNT_CompareOfString () {
@@ -34,3 +35,4 @@ Standard_Boolean WOKNT_CompareOfString ::
 
 }  // end WOKNT_CompareOfString :: IsEqual
 
+#endif

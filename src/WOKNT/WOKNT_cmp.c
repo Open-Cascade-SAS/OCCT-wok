@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -65,3 +66,4 @@ __declspec( dllexport ) int wokCMP ( int argc, char** argv )
   
   return retVal;
 }
+#endif

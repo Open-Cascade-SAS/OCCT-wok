@@ -1,3 +1,4 @@
+#ifdef WNT
 #define EXPORT
 #include <iostream.h>
 #include <stdlib.h>
@@ -195,3 +196,4 @@ static void _print_error ( LPCTSTR fName ) {
  cerr << "wokRM: could not remove " << fName << " - " << buffer << endl << flush;
 
 }  // end _set_error
+#endif

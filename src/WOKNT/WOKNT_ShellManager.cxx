@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 #include <tchar.h>
@@ -96,3 +97,4 @@ static BOOL CALLBACK interruptHandler ( DWORD dwCode ) {
  return TRUE;
 
 }  // end interruptHandler
+#endif

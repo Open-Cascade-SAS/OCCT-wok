@@ -1,4 +1,4 @@
-
+#ifdef WNT
 
 #include <WOKNT_PathIterator.ixx>
 #include <WOKNT_Path.hxx>
@@ -183,3 +183,4 @@ void WOKNT_PathIterator::Destroy() const
   if(myStack.Top() != INVALID_HANDLE_VALUE) FindClose(myStack.Top());
 }
 
+#endif

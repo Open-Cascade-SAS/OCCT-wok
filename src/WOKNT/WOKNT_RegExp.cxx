@@ -1,4 +1,4 @@
-
+#ifdef WNT
 #include <WOKNT_RegExp.ixx>
 
 #include <WOKNT_regexp.h>
@@ -157,3 +157,4 @@ Standard_Integer WOKNT_RegExp :: Match (
 
 }  // end WOKNT_RegExp :: Match
 
+#endif

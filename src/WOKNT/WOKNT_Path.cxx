@@ -1,3 +1,4 @@
+#ifdef WNT
 #define STRICT
 #include <windows.h>
 
@@ -615,3 +616,4 @@ Standard_Boolean WOKNT_Path::IsFile ()
   if(myAttr & FILE_ATTRIBUTE_DIRECTORY) return Standard_False; 
   return Standard_True;
 }
+#endif
