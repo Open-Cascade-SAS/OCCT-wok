@@ -54,7 +54,6 @@ Standard_Integer MSAPI_InstClass::Info(const Standard_Integer argc, const WOKToo
   Standard_Boolean insttypes   = Standard_False;
   Standard_Boolean gentypes    = Standard_False;
   Standard_Boolean nesteds     = Standard_False;
-  Standard_Boolean nesting     = Standard_False;
   Standard_Boolean classoption = Standard_False;
   Handle(TCollection_HAsciiString) name;
   Standard_Integer i;

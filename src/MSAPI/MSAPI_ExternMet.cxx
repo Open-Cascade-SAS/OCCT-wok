@@ -39,7 +39,7 @@ Standard_Integer MSAPI_ExternMet::Info(const Standard_Integer argc, const WOKToo
 {
 
   Handle(TCollection_HAsciiString) name;
-  Standard_Boolean methodoption;
+  Standard_Boolean methodoption = Standard_False;
   TCollection_AsciiString astr(MSAPI_Method_Info_Options);
 
   astr.AssignCat("");

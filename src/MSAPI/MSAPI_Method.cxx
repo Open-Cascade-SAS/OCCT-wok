@@ -127,7 +127,7 @@ Standard_Integer MSAPI_Method::Info(const Standard_Integer argc, const WOKTools_
 
   if(isprivate||isinline||constret||refreturn||destructs)
     {
-      Standard_Boolean retvalue;
+      Standard_Boolean retvalue = Standard_False;
       
       if(isprivate) retvalue = method->Private();
       if(isinline)  retvalue = method->IsInline();
