@@ -36,10 +36,15 @@ is
 		 CompleteMap         : in out MapOfHAsciiString from WOKTools;
 	     	 IncompleteMap       : in out MapOfHAsciiString from WOKTools;
 		 SemiCompleteMap     : in out MapOfHAsciiString from WOKTools);
+
+    Use ( me : mutable; aClient : HAsciiString from TCollection );
+
+    Uses ( me ) returns mutable HSequenceOfHAsciiString from TColStd;
 		 
 fields
     myInterfaces  : HSequenceOfHAsciiString from TColStd;
     myMethods     : HSequenceOfHAsciiString from TColStd;
+    myUses        : HSequenceOfHAsciiString from TColStd;
 
 end Client from MS;
 

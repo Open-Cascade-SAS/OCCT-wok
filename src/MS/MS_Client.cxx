@@ -7,6 +7,7 @@ MS_Client::MS_Client(const Handle(TCollection_HAsciiString)& aClient) : MS_Globa
 {
   myInterfaces = new TColStd_HSequenceOfHAsciiString;
   myMethods    = new TColStd_HSequenceOfHAsciiString;
+  myUses       = new TColStd_HSequenceOfHAsciiString;
 }
 
 void MS_Client::Interface(const Handle(TCollection_HAsciiString)& anInter)
@@ -67,3 +68,18 @@ void MS_Client::ComputeTypes(const Handle(MS_HSequenceOfExternMet)& SeqOfExternM
     }
   }
 }
+
+void MS_Client :: Use (  const Handle( TCollection_HAsciiString )& aClient  ) {
+
+ myUses -> Append ( aClient );
+
+}  // end MS_Client :: Use
+
+Handle( TColStd_HSequenceOfHAsciiString ) MS_Client :: Uses () const {
+
+ return myUses;
+
+}  // end MS_Client :: Uses
+
+
+
