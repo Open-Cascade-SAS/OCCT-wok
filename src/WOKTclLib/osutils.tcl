@@ -145,28 +145,39 @@ proc osutils:dsp:compilable { } {
 ;#
 ;# remove from listloc OpenCascade units indesirables on NT
 ;#
-proc osutils:justwnt { listloc } {
+proc osutils:juststation {goaway listloc} {
     set lret {}
-    set goaway [list Xdps Xw ImageUtility WOKUnix]
     foreach u $listloc {
-	if { [lsearch $goaway [wokinfo -n $u]] == -1 } {
+	if { 
+	     (
+	     	[woklocate -u $u] != ""
+	     	&&
+	     	[lsearch $goaway [wokinfo -n [woklocate -u $u]]] == -1
+	     )
+	     ||
+	     (
+	     	[woklocate -u $u] == ""
+	     	&&
+	     	[lsearch $goaway [wokinfo -n $u]] == -1
+	     )
+	    
+	} {
 	    lappend lret $u
 	}
     }
-    return $lret
+    return $lret	
+}
+
+proc osutils:justwnt { listloc } {
+    set goaway [list Xdps Xw ImageUtility WOKUnix]
+    return [osutils:juststation $goaway $listloc]
 }
 ;#
 ;# remove from listloc OpenCascade units indesirables on Unix
 ;#
 proc osutils:justunix { listloc } {
-    set lret {}
     set goaway [list WNT WOKNT]
-    foreach u $listloc {
-	if { [lsearch $goaway [wokinfo -n $u]] == -1 } {
-	    lappend lret $u
-	}
-    }
-    return $lret
+    return [osutils:juststation $goaway $listloc]
 }
 ;#
 ;# Define libraries to link
