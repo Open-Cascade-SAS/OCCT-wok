@@ -199,6 +199,9 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
     case OSD_LIN:
       thestation = WOKernel_LIN;
       break;
+    case OSD_AIX:
+      thestation = WOKernel_AIX;
+      break;
     default:
       ErrorMsg << "WOKernel_Session::Open" << "Unrecognized Type of host " << ahost.HostName().ToCString() << endm;
       Standard_Failure::Raise("WOKernel_Session::Open");

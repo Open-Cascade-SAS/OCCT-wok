@@ -24,6 +24,9 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
+#include <OSD_File.hxx>
+#include <OSD_Protection.hxx>
+
 //=======================================================================
 //function : WOKernel_Workshop
 //purpose  : instantiates a Workshop (does not open It
@@ -431,6 +434,12 @@ void WOKernel_Workshop :: DumpWorkbenchList () const {
   astream << endl;
 
  }  // end for
+
+ astream.close ();
+ OSD_File aFile (   OSD_Path (  anOldPath -> ToCString ()  )   );
+
+ aFile.SetProtection (  OSD_Protection ( OSD_RW, OSD_RW, OSD_RW, OSD_RW )  );
+
 
 }  // end WOKernel_Workshop :: DumpWorkbenchList
 //=======================================================================

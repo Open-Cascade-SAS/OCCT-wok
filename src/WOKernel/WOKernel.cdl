@@ -31,7 +31,7 @@ is
 -- ENUMERATIONS
 
     
-    enumeration StationID is SUN, DECOSF, SGI, HP, WNT, MAC, LIN, UnknownStation;
+    enumeration StationID is SUN, DECOSF, SGI, HP, WNT, MAC, LIN, AIX,  UnknownStation;
     ---Purpose: liste les stations supportees par WOK
 
     enumeration DBMSID is DFLT, OBJY, OBJS, UnknownDBMS;

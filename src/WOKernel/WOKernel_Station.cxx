@@ -21,6 +21,7 @@ WOKernel_StationID WOKernel_Station::GetID(const Handle(TCollection_HAsciiString
   if( !strcmp( astring->ToCString(), "wnt" ) )  return WOKernel_WNT;
   if( !strcmp( astring->ToCString(), "mac" ) )  return WOKernel_MAC;
   if( !strcmp( astring->ToCString(), "lin" ) )  return WOKernel_LIN;
+  if( !strcmp( astring->ToCString(), "aix" ) )  return WOKernel_AIX;
 
   ErrorMsg << "WOKernel_Station::GetID" << "Station " << astring << " is unknown to WOK" << endm;
   Standard_ProgramError::Raise("WOKernel_Station::GetID");
@@ -40,6 +41,7 @@ Standard_Boolean WOKernel_Station::IsNameKnown(const Handle(TCollection_HAsciiSt
   if( !strcmp( astring->ToCString(), "wnt" ) )  return Standard_True;
   if( !strcmp( astring->ToCString(), "mac" ) )  return Standard_True;
   if( !strcmp( astring->ToCString(), "lin" ) )  return Standard_True;
+  if( !strcmp( astring->ToCString(), "aix" ) )  return Standard_True;
 
   return Standard_False;
 }
@@ -57,6 +59,7 @@ Standard_Boolean WOKernel_Station::IsNameKnown(const Handle(TCollection_HAsciiSt
   static Handle(TCollection_HAsciiString) SWNT     = new TCollection_HAsciiString("wnt");
   static Handle(TCollection_HAsciiString) SMAC     = new TCollection_HAsciiString("mac");
   static Handle(TCollection_HAsciiString) SLIN     = new TCollection_HAsciiString("lin");
+  static Handle(TCollection_HAsciiString) SAIX     = new TCollection_HAsciiString("aix");
   static Handle(TCollection_HAsciiString) SUNKNOWN = new TCollection_HAsciiString("UnknownStation");
 
   switch(anid)
@@ -75,6 +78,9 @@ Standard_Boolean WOKernel_Station::IsNameKnown(const Handle(TCollection_HAsciiSt
       return SMAC;
     case WOKernel_LIN:
       return SLIN;
+    case WOKernel_AIX:
+      return SAIX;
+      break;
     default:
       break;
     }
