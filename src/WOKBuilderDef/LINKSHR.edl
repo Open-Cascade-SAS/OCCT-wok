@@ -10,6 +10,10 @@
   @uses "LDSHR.edl";
  @endif;
 
+ @ifnotdefined ( %CSF_EDL ) then
+    @uses "CSF.edl";
+ @endif;
+
  @set %LINKSHR_Header          = "LINKSHR_Header";
  @set %LINKSHR_ObjectRef       = "LD_ObjectRef";
  @set %LINKSHR_ShortRef        = "LD_ShortRef";
@@ -18,12 +22,16 @@
  @set %LINKSHR_ArchiveFullPath = "LDSHR_ArchiveFullPath";
  @set %LINKSHR_ExternRef       = "LD_ExternRef";
  @set %LINKSHR_Footer          = "LD_Footer";
+
+ @set %LINKSHR_Use_Externlib   = %CSF_USE_EXTERNLIB;
  
  @if ( %Station == "sun" ) then
   @set %LINKSHR_DBMSOpt = "-mt";
  @else
   @set %LINKSHR_DBMSOpt = "";
  @endif;
+@set %LINKSHR_DBMSOpt =  %CSF_LINKER_CheckOpt ;
+
 
  @if ( %Station != "hp" ) then
   @template LINKSHR_FileName ( %LINKSHR_LibName ) is
@@ -49,8 +57,8 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt ) is 
-   $/opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8  -G %LINKSHR_DBMSOpt -o %Target \
+  @template LINKSHR_Header ( %Target, %LDSHR_Opt  , %LINKSHR_DBMSOpt , %CSF_CXX_COMPILER ) is 
+   $%CSF_CXX_COMPILER  %LDSHR_Opt   %LINKSHR_DBMSOpt -o %Target \
   @end;
 
   @template LINKSHR_Footer () is
@@ -262,6 +270,7 @@
   @set %LINKSHR_ObjectRef       = "LINKSHR_ObjectRef";
   @set %LINKSHR_ShortRef        = "LINKSHR_ShortRef";
   @set %LINSHR_ShortRef         = "LD_ShortRef";
+  @set %LINKSHR_LibLimit = "300";
 
   @template LINKSHR_ObjectRef ( %ObjectPath ) is
    $\^
@@ -269,7 +278,6 @@
 
   @template LINKSHR_ArchiveFullPath ( %LibName) is
   $ lib%LibName.a \
-  $\^
   @end;
 
   @template LD_ShortRef ( %LibNameUsed ) is
@@ -281,52 +289,54 @@
    $ set localud     = `basename %LD_ObjList .ObjList`
    $ set locallib    = `dirname %LD_ObjList`/../${localud}/lib${localud}.a
    $ mv -f $locallib $allLibPath
-   $ chmod 777 $allLibPath/lib${localud}.a
-   $/usr/ibmcxx/bin/makeC++SharedLib   -o %Target \
+   $ chmod 755 ${allLibPath}/lib${localud}.a
+   $ cd ${allLibPath}
+   $ /usr/ibmcxx/bin/makeC++SharedLib   -o %Target \
    $ -bM:SRE \
    $ -p 0 \
   @end;
 
   @template LINKSHR_Footer ( %Target, %LibName) is
-    $ -e$allLibPath/lib%LibName.imp \
+    $ -e${allLibPath}/lib%LibName.imp \
     $ -bnoentry ;
-    $ echo "#\!lib%LibName"             > $allLibPath/lib%LibName.exp
-    $ cat $allLibPath/lib%LibName.imp  >> $allLibPath/lib%LibName.exp
-    $ set ld_status=$status
-    $ if ( $?LIBPATH ) then
-    $  set ld_library_path="${LIBPATH}"
-    $ endif
+---    $ set ld_status=${status}
+--    $ echo "#\!lib%LibName"               > ${allLibPath}/lib%LibName.exp
+--    $ cat ${allLibPath}/lib%LibName.imp  >> ${allLibPath}/lib%LibName.exp
+--    $ if ( $?LIBPATH ) then
+--    $  set ld_library_path="${LIBPATH}"
+--    $ endif
   @end;
 
   @template LINKSHR_CheckUndefHeader (
              %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH
             ) is 
-   $if ( $?LIBPATH ) then
-   $ setenv LIBPATH %LD_LIBRARY_PATH:${LIBPATH}
-   $else
-   $if ( $?LD_LIBRARY_PATH) then
-   $ setenv LIBPATH %LD_LIBRARY_PATH
-   $else 
-   $ setenv LIBPATH ""
-   $endif
-   $endif
-   $echo "Check of undefined symbols with LIBPATH : $LIBPATH" \
----   $/usr/ccs/bin/ld -o /dev/null \
+--   $if ( $?{LIBPATH} ) then
+--   $ setenv {LIBPATH} %LD_LIBRARY_PATH:${LIBPATH}
+--   $else
+--   $  if ( $?LD_LIBRARY_PATH) then
+--   $     setenv LIBPATH %LD_LIBRARY_PATH
+--   $  else 
+--   $     setenv LIBPATH ""
+--   $  endif
+--   $endif
+--     $ echo " 	Check of undefined symbols not made on AIX "
+--     $ /usr/bin/ld -o /dev/null \
+	$ \
   @end;
 
   @template LINKSHR_CheckUndefFooter () is
     $ ;
-    $ if ( $status ) then
-    $   echo "Check failed"
-    $ else
-    $   echo "Check successed"
-    $ endif
-    $ if ( $?ld_library_path ) then
-    $  setenv LIBPATH $ld_library_path
-    $ else
-    $  unsetenv LIBPATH
-    $ endif
-    $ set status=$ld_status
+ --   $ if ( ${status} ) then
+ --   $   echo "Check failed"
+ --   $ else
+ --   $   echo "Check1 successed"
+ --   $ endif
+ --   $ if ( $?{ld_library_path} ) then
+ --   $  setenv LIBPATH "${ld_library_path}"
+ --   $ else
+ --   $  unsetenv LIBPATH
+ --   $ endif
+--    $ set status=${ld_status}
   @end;
 
 

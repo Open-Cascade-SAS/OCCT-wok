@@ -1,14 +1,173 @@
 -- File:	CSF.edl
--- Author:	Jean GAUTIER
+-- Author:	Jean GAUTIER - Jean Rahuel
 -- History:	Thu Mar 14 19:28:20 1996	Jean GAUTIER	Creation
 -- Copyright:	 Matra Datavision 1996
 
-@ifnotdefined ( %CSF_EDL) then
+-- Symbols for global WOK management
+
+@ifnotdefined ( %CSF_EDL ) then
    @set %CSF_EDL = "";
 
+   @set %CSF_SYMBOLS = "C_COMPILER C_SysOptions C_Options CXX_COMPILER CXX_SysOptions CXX_Options F77_COMPILER F77_SysOptions F77_Options CSF_LINKER CXX_COMPILERLINKER CSF_VirtualDevice LINKER_DBMSOpt LINKER_SysShared LINKER_SysExeC LINKER_SysExeW LINKER_SysOpt LINKER_SysLib LINKER_CheckOpt LINKER_CheckOut LibraryHeaderLib LibraryHeaderOpt JavaHome JavaLibs C_INCLUDE CXX_INCLUDE TCL_INCLUDE JAVA_COMPILER JAVA_JNI JAVA_INCLUDE X11_INCLUDE XMU_INCLUDE MOTIF_INCLUDE OPENGL_INCLUDE SOCKETLibs FPELibs advapi32 gdi32 user32 glu32 opengl32 wsock32 dpsLibs XwLibs OpenGlLibs MotifLibs TclLibs TclTkLibs" ;
+
+-- Standard configuration will be :
+-- ==============================
+-- %CSF_USE_CDL           = "Yes"
+--     see "ucreate -h", "uinfo -h", "w_info -h" and "wprocess -h"
+--     For executable units, default is now WITHOUT cdl processing
+-- %CSF_CREATE_FILES       = "No"
+-- %CSF_CREATE_CLASSES     = "No"
+-- %CSF_CREATE_GENERATED   = "No"
+-- %CSF_CREATE_CGEN_FILES  = "No"
+-- %CSF_USE_SOURCEINCLUDE  = "No"
+-- %CSF_CREATE_COMP        = "No"
+-- %CSF_ECHO_COMP          = "No"
+-- %CSF_CREATE_DEP         = "No"
+-- %CSF_USEFILES_COMP      = "No"
+-- %CSF_CREATEOBJECTS      = "No";
+-- %CSF_CREATE_LINK        = "No"
+-- %CSF_ECHO_LINK          = "No"
+-- %CSF_USE_EXTERNLIB      = "Yes"
+
+
+
+
+
+-- if "Yes" ===> WOK will "extract" cdl files listed in FILES
+--                        "generate" source and include files
+--                                   listed in GENERATED.files
+--                                   (not listed in FILES)
+-- if "No" ====> WOK will NOT "extract" cdl files
+--                        NOT "generate" cxx, ixx, jxx & hxx files
+-- ( only for management team of CasCade sources :
+--   see "ucreate -h", "uinfo -h", "w_info -h" and "wprocess -h" for new options
+--   For executable units, default was    WITHOUT cdl processing )
+--   For executable units, default is now WITH    cdl processing )
+   @set %CSF_USE_CDL = "Yes";
+
+-- if "Yes" ===> Will force creation src/UdName/FILES
+--                  after reading src/UdName/FILES
+--                        extraction process (add .cdl and .cxx)
+--                        add EXTERNLIB for toolkits and executables
+--                        add PACKAGES for toolkits
+-- if "No" ====> If src/UdName/FILES does not exist,
+--                  will create src/UdName/FILES
+--                       after reading src/UdName/FILES
+--                  will create CLASSES.files
+--                  will create GENERATED.files ...
+--         ====> If src/UdName/FILES exists in src/UdName/
+--                  will check existences of files
+--                  will check CLASSES.files and update if necessary
+--                  will check GENERATED.files and update if necessary
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_FILES = "No";
+
+-- if "Yes" ===> Will force creation src/UdName/CLASSES.files
+-- if "No" ====> Will check that files listed in src/UdName/CLASSES.files
+--                  exist in src/UdName/ directory.
+--         With standard mode (%CSF_USE_CDL = "Yes"),
+--            if there is modifications of sources files, this file is
+--            updated automatically.
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_CLASSES = "No";
+
+-- if "Yes" ===> Will force creation src/UdName/GENERATED.files
+-- if "No" ====> Will check that files listed in src/UdName/GENERATED.files
+--                  exist in drv/UdName/ and inc directories.
+--         With standard mode (%CSF_USE_CDL = "Yes"),
+--            if there is modifications of derivated files, this file is
+--            updated automatically.
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_GENERATED = "No";
+
+-- if "Yes" ===> will do obj.cgen step and generate lex/yacc files
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_CGEN_FILES = "No";
+
+-- if "Yes" ===> will accept .edl files with %WOKStepsDef_UseSourceInclude
+--               defined in src/UdName/UdName_WOKStepsDef.edl
+--               in order to add -I/.../src/UdName at compile time
+-- ( only for management team of CasCade sources )
+   @set %CSF_USE_SOURCEINCLUDE = "No";
+
+-- if "Yes" ===> will create compile .build file in src/UdName/
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_COMP = "Yes";
+
+-- if "Yes" ===> Echo of Compiler commands
+-- ( only for management team of CasCade sources )
+   @set %CSF_ECHO_COMP = "Yes";
+
+-- if "Yes" ===> will create .d files (include dependencies)
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATECOMP_DEP = "Yes";
+
+-- if "Yes" ===> will create OBJECTS.files (list of .o or .so files)
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATEOBJECTS = "Yes";
+
+-- if "Yes" ===> Will use FILES and GENERATED.files for compiling
+--               Not yet implemented
+-- if "No" ====> will use dependencies computed by WOK
+--               but controls that compiled files are listed in FILES,
+--               CLASSES.files or in GENERATED.files
+-- ( only for management team of CasCade sources )
+   @set %CSF_USEFILES_COMP = "No";
+
+-- if "Yes" ===> will create link .build file in src/UdName/
+-- ( only for management team of CasCade sources )
+   @set %CSF_CREATE_LINK = "Yes";
+
+-- if "Yes" ===> Echo of Link commands
+-- ( only for management team of CasCade sources )
+   @set %CSF_ECHO_LINK = "Yes";
+
+-- if "Yes" ===> will use EXTERNLIB file in Toolkits and Executables
+--               will use OBJECTS.files of units listed in PACKAGES in Toolkits
+--               will use OBJECTS.files in Executables
+-- if "No" ====> will use dependencies computed by WOK
+--               only for management team of CasCade sources
+   @set %CSF_USE_EXTERNLIB = "Yes";
+
+   @set %CSF_C_COMPILER = "";
+   @set %CSF_C_SysOptions  = "";
+   @set %CSF_C_Options  = "";
+
+   @set %CSF_CXX_COMPILER = "";
+   @set %CSF_CXX_SysOptions  = "";
+   @set %CSF_CXX_Options  = "";
+
+   @set %CSF_F77_COMPILER = "";
+   @set %CSF_F77_SysOptions  = "";
+   @set %CSF_F77_Options  = "";
+
+   @set %CSF_LINKER = "";
+   @set %CSF_CSF_VirtualDevice = "";
+   @set %CSF_LINKER_DBMSOpt = "";
+   @set %CSF_LINKER_SysShared = "";
+   @set %CSF_LINKER_SysExe = "";
+   @set %CSF_LINKER_SysExeC = "";
+   @set %CSF_LINKER_SysExeW = "";
+   @set %CSF_LINKER_SysOpt = "";
+   @set %CSF_LINKER_SysLib = "";
+   @set %CSF_LINKER_CheckOpt = "";
+   @set %CSF_LINKER_CheckOut = "";
+
+   @set %CSF_LibraryHeaderLib = "";
+   @set %CSF_LibraryHeaderOpt = "";
+
+   @set %CSF_JavaHome = "";
+   @set %CSF_JavaLibs = "";
+
+   @set %CSF_C_INCLUDE = "";
+   @set %CSF_CXX_INCLUDE = "";
+
+   @set %CSF_TCL_HOME = "";
    @set %CSF_TCL_INCLUDE = "";
+   @set %CSF_JAVA_INCLUDE = "";
 
    @set %CSF_X11_INCLUDE = "";
+   @set %CSF_X11_INCLUDE_EXTENSION = "";
    @set %CSF_XMU_INCLUDE = "";
    @set %CSF_MOTIF_INCLUDE = "";
    @set %CSF_OPENGL_INCLUDE = "";
@@ -27,6 +186,7 @@
    @set %CSF_dpsLibs = "" ;
    @set %CSF_XwLibs = "" ;
    @set %CSF_OpenGlLibs = "" ;
+   @set %CSF_MotifLibs = "" ;
 
    @set %CSF_TclLibs = "" ;
    @set %CSF_TclTkLibs = "" ;
@@ -50,29 +210,167 @@
       @set %CSF_STANDARDDB = "StandardOBJS";
    @endif;
 
+
+
+
+   @if ( %Station == "lin" ) then
+      @if ( %DBMS == "OBJS" ) then
+	 @set %CSF_OODBLibs = "";
+      @endif;
+
+      @set %CSF_CXX_COMPILER = "/usr/bin/g++ ";
+      @set %CSF_CXX_SysOptions  = "-fPIC -funsigned-char -Wall ";
+      @set %CSF_CXX_Options  = "-DLIN -DLININTEL -DNO_CXX_EXCEPTION ";
+
+      @set %CSF_C_COMPILER = "/usr/bin/gcc ";
+      @set %CSF_C_SysOptions  = "-fPIC -funsigned-char -Wall";
+      @set %CSF_C_Options  = "-DLIN -DLININTEL ";
+
+      @set %CSF_F77_COMPILER = "/usr/bin/f77 ";
+      @set %CSF_F77_SysOptions  = "-fPIC ";
+
+      @set %CSF_LINKER = "/usr/bin/ld ";
+      @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER ;
+      @set %CSF_LINKER_DBMSOpt = "";
+      @set %CSF_LINKER_SysShared = "-shared ";
+      @set %CSF_LINKER_SysExe = "";
+      @set %CSF_LINKER_SysOpt = "";
+      @set %CSF_LINKER_SysLib = "-ldl -lc ";
+      @set %CSF_LINKER_CheckOpt = "-nostartfiles ";
+      @set %CSF_LINKER_CheckOut = "-o /dev/null ";
+
+      @set %CSF_SOCKETLibs = " -ldl" ;
+
+      @set %CSF_TCL_HOME = "/usr";
+      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+
+      @set %CSF_JavaHome        = "/opt/jdk1.2.2";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I"  %CSF_JavaHome "/include/linux ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
+
+      @set %CSF_X11_INCLUDE = "-I/usr/X11R6/include ";
+      @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
+
+      @set %X11_LIB = "/usr/X11R6/lib";
+
+      @string %CSF_XwLibs = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
+
+      @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL -lglut " ;
+
+      @string %CSF_TclLibs = "-L" %CSF_TCL_HOME "/lib -Xlinker -rpath -Xlinker " %CSF_TCL_HOME "/lib -ltcl"; 
+      @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -Xlinker -rpath -Xlinker " %CSF_TCL_HOME "/lib -ltk -L" %X11_LIB " -lX11";
+   @endif;
+
+
    @if ( %Station == "sun" ) then
       @if ( %DBMS == "OBJS" ) then
 	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
       @endif;
 
-      @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl" ;
-      @set %CSF_RISCRETURNObject = "/adv_23/KL/dev/ref/src/EngineStarter/risc_return.o" ;
+      @set %CSF_CXX_COMPILER = "/opt/DEV5_1/SUNWspro/bin/CC ";
+      @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun " ;
+      @set %CSF_CXX_Options  = "-DSOLARIS -DNO_CXX_EXCEPTION " ;
+      @set %CSF_CXX_INCLUDE = "-I/opt/DEV5_1/SUNWspro/SC4.2/include/CC ";
 
-      @set %PHIGS_LIB = "/opt/SUNWits/Graphics-sw/sunphigs-3.0/lib";
-      @set %XGL_LIB   = "/opt/SUNWits/Graphics-sw/xgl-3.0/lib";
-      @set %MOTIF_LIB = "/usr/dt/lib";
+      @set %CSF_C_COMPILER   = "/opt/DEV5_1/SUNWspro/bin/cc ";
+      @set %CSF_C_SysOptions    = "-K PIC -Usun ";
+      @set %CSF_C_Options    = "-DSOLARIS ";
+      @set %CSF_C_INCLUDE    = "";
 
-      @set %CSF_TCL_INCLUDE = "/usr/tcltk/include ";
+      @set %CSF_F77_COMPILER = "f77 ";
+      @set %CSF_F77_SysOptions  = "-PIC";
+
+      @set %CSF_LINKER = "/usr/ccs/bin/ld ";
+      @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER ;
+      @if ( %DBMS == "OBJS" ) then
+         @set %CSF_LINKER_DBMSOpt = "-mt ";
+      @endif;
+      @set %CSF_LINKER_SysShared = "-G ";
+      @set %CSF_LINKER_SysExe = "";
+      @set %CSF_LINKER_SysOpt = "-xchip=ultra -xarch=v8 ";
+      @set %CSF_LINKER_SysLib = "";
+      @set %CSF_LINKER_CheckOpt = "";
+      @set %CSF_LINKER_CheckOut = "-o /dev/null ";
+
+      @set %CSF_JavaHome        = "/PRODUCTS/java/jdk1.2";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I"  %CSF_JavaHome "/include/solaris ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
+
+
+      @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl -lC -lc " ;
+      --@set %CSF_RISCRETURNObject = "/adv_23/KL/dev/ref/src/EngineStarter/risc_return.o" ;
+      @set %CSF_RISCRETURNObject = "/missing/missing/risc_return.o" ;
+
+      @string %CSF_JavaLibs = " -L" %CSF_JavaHome "/jre/lib/sparc/ -ljava ";
+
+      @set %CSF_TCL_HOME = "/usr/tcltk";
+      @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include/itcl ";
+
+      @set %CSF_X11_INCLUDE = "-I/usr/openwin/include/X11 ";
+      @set %CSF_OPENGL_INCLUDE = "-I/usr/openwin/include ";
+
+      @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl "; 
+      @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk "; 
 
       @set %X11_LIB   = "/usr/openwin/lib";
 
       @string %CSF_dpsLibs = "-L" %X11_LIB " -ldps" ;
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
-      @string %CSF_MotifLibs = "-L" %MOTIF_LIB " -lXm -L"%X11_LIB " -lXt -lX11 " ;
+      @string %CSF_MotifLibs = "-L/usr/dt/lib -lXm -L" %X11_LIB " -lXt -lX11";
 
-      @set %CSF_TclLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltcl7.5i"; 
-      @set %CSF_TclTkLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltk4.1i"; 
+   @endif;
+
+
+
+   @if (%Station == "wnt") then
+
+      @set %CSF_CXX_COMPILER = "D:/DevTools/VStudio/VC98/bin/cl ";
+      @set %CSF_CXX_SysOptions  = "-nologo -MD -W3 -GX -Ob1 -Zi ";
+      @set %CSF_CXX_Options  = "-DWNT -D_WINDOWS -DWIN32 ";
+
+      @set %CSF_C_COMPILER   = "D:/DevTools/VStudio/VC98/bin/cl ";
+      @set %CSF_C_SysOptions    = "-nologo -MD -W3 -GX -Ob1 -Zi ";
+      @set %CSF_C_Options    = "-DWNT -D_WINDOWS -DWIN32 ";
+
+      @set %CSF_F77_COMPILER = "D:/DevTools/VStudio/DF98/bin/fl32 ";
+      @set %CSF_F77_SysOptions  = "-nologo -libs:dll -Zi ";
+
+      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link ";
+      @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER ;
+      @set %CSF_VirtualDevice = "Q:";
+      @set %CSF_LINKER_DBMSOpt = "";
+      @set %CSF_LINKER_SysShared = "-subsystem:windows -dll ";
+      @set %CSF_LINKER_SysExe = "CSF_LINKER_SysExeC";
+      @set %CSF_LINKER_SysExeC = "-subsystem:CONSOLE";
+      @set %CSF_LINKER_SysExeW = "-subsystem:WINDOWS";
+      @set %CSF_LINKER_SysOpt = "-nologo -incremental:no -machine:IX86 -debug ";
+      @set %CSF_LINKER_SysLib = "";
+
+      @set %CSF_LibraryHeaderLib = "D:/DevTools/VStudio/VC98/bin/lib ";
+      @set %CSF_LibraryHeaderOpt = "-nologo ";
+
+      @string %CSF_JavaHome     = "D:/AppTools/jdk1.2.2";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/win32 ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
+
+      @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
+      @set %CSF_TCL_INCLUDE = "%CSF_TCL_HOME/include ";
+      @set %CSF_TclLibs = "%CSF_TCL_HOME/lib/tcl76i.lib";
+
+      @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib" ;
+
+      @set %CSF_advapi32 = "advapi32.lib" ;
+      @set %CSF_gdi32 = "gdi32.lib" ;
+      @set %CSF_user32 = "user32.lib" ;
+      @set %CSF_glu32 = "glu32.lib" ;
+      @set %CSF_opengl32 = "opengl32.lib" ;
+      @set %CSF_wsock32 = "wsock32.lib" ;
+
+
    @endif;
 
    @if ( %Station == "ao1" ) then
@@ -80,13 +378,23 @@
 	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
       @endif;
 
-      @set %CSF_TCL_INCLUDE = "/usr/tcltk/include ";
+      @set %CSF_C_COMPILER   = "cc ";
+      @set %CSF_CXX_COMPILER = "/usr/bin/cxx ";
+      @set %CSF_F77_COMPILER = "";
+
+      @set %CSF_TCL_HOME = "/usr/tcltk";
+      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+
+      @string %CSF_JavaHome     = "/missing/JavaHome";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/ultrix ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
 
       @set %X11_LIB = "/usr/shlib";
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @set %CSF_dpsLibs = "-ldps" ;
 
-      @set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+      @set %CSF_TclLibs = "-L%CSF_TCL_HOME/lib -rpath %CSF_TCL_HOME/lib -ltcl"; 
    @endif;
 
    @if ( %Station == "sil" ) then
@@ -94,19 +402,38 @@
 	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.3/lib/ -los -losths -loscol -losmop";
       @endif;
 
+      @set %CSF_C_COMPILER   = "cc ";
+      @set %CSF_C_SysOptions = " -signed -n32 -mips3 ";
+
+      @set %CSF_CXX_COMPILER   = "/usr/bin/CC ";
+      @set %CSF_CXX_SysOptions = " -signed -n32 -mips3 -no_prelink -woff 3115 -woff 3273 -woff 1021 -woff 1188 ";
+
+
+      @set %CSF_F77_COMPILER = "f77 ";
+
       @set %CSF_FPELibs = "-L/usr/lib32 -lfpe" ;
 
-      @set %CSF_TCL_INCLUDE = "/usr/tcltk/include ";
+      @set %CSF_TCL_HOME = "/usr/tcltk.64";
+      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+
+      @set %CSF_X11_INCLUDE_EXTENSION = " -I/usr/include/X11/extensions ";
+
+
+
+      @string %CSF_JavaHome     = "/missing/JavaHome";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/irix ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
+
 
       @set %X11_LIB = "/usr/lib32";
 
       @set %CSF_dpsLibs = "-L/usr/lib32 -ldps" ;
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
-      @string %CSF_MotifLibs = " -lXm -lXt -lX11 " ;
 
-      @set %CSF_TclLibs = "-L/usr/tcltk.64/lib -rpath /usr/tcltk.64/lib -ltcl7.5i"; 
-      @set %CSF_TclTkLibs = "-L/usr/tcltk.64/lib -rpath /usr/tcltk.64/lib -ltk4.1i"; 
+      @set %CSF_TclLibs = "-L%CSF_TCL_HOME/lib -rpath %CSF_TCL_HOME/lib -ltcl"; 
+      @set %CSF_TclTkLibs = "-L%CSF_TCL_HOMElib -rpath %CSF_TCL_HOME/lib -ltk"; 
    @endif;
 
    @if ( %Station == "hp" ) then
@@ -114,12 +441,17 @@
 	 @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
       @endif;
 
-      @set %CSF_TCL_INCLUDE = "/adv_53/hp/jr/tcltk/include ";
+      @set %CSF_C_COMPILER   = "cc ";
+      @set %CSF_CXX_COMPILER = "/opt/aCC/bin/aCC ";
+      @set %CSF_F77_COMPILER = "f77 ";
 
-      @set %CSF_X11_INCLUDE = "/usr/include/X11R6";
-      @set %CSF_XMU_INCLUDE = "/usr/contrib/X11R6/include";
-      @set %CSF_MOTIF_INCLUDE = "/usr/include/Motif1.2";
-      @set %CSF_OPENGL_INCLUDE = "/opt/graphics/OpenGL/include";
+      @set %CSF_TCL_HOME = "/missing/missing ";
+      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+
+      @set %CSF_X11_INCLUDE = "-I/usr/include/X11R6 ";
+      @set %CSF_XMU_INCLUDE = "-I/usr/contrib/X11R6/include ";
+      @set %CSF_MOTIF_INCLUDE = "-I/usr/include/Motif1.2 ";
+      @set %CSF_OPENGL_INCLUDE = "-I/opt/graphics/OpenGL/include ";
 
       @set %CSF_SOCKETLibs = "" ;
 
@@ -129,53 +461,21 @@
 
       @set %OPENGL_LIB = "/opt/graphics/OpenGL/lib";
 
-      --@string %CSF_XwLibs = "-L" %X11_LIB " -L" %XMU_LIB " -lX11 -lXext -lXmu";
       @string %CSF_XwLibs = "-L" %X11_LIB " -lX11 -lXext -L" %XMU_LIB " -lXmu";
 
       @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
 
-      --@set %CSF_TclLibs = "-L/usr/tcltk/lib/itcl -ltcl7.5i"; 
-      @set %CSF_TclLibs = "-L/adv_53/hp/jr/tcltk/lib -ltcl"; 
-      --@set %CSF_TclTkLibs = "-L/usr/tcltk/lib/itcl -ltk4.1i"; 
-      @set %CSF_TclTkLibs = "-L/adv_53/hp/jr/tcltk/lib -ltk"; 
-   @endif;
+      @set %CSF_TclLibs   = "-L%CSF_TCL_HOME/lib -ltcl"; 
+      @set %CSF_TclTkLibs = "-L%CSF_TCL_HOME/lib -ltk"; 
 
-@if (%Station == "wnt") then
 
-   @set %CSF_advapi32 = "advapi32.lib" ;
-   @set %CSF_gdi32 = "gdi32.lib" ;
-   @set %CSF_user32 = "user32.lib" ;
-   @set %CSF_glu32 = "glu32.lib" ;
-   @set %CSF_opengl32 = "opengl32.lib" ;
-   @set %CSF_wsock32 = "wsock32.lib" ;
 
-   @set %CSF_TCL_INCLUDE = "D:/DevTools/TclTk/include ";
+      @string %CSF_JavaHome     = "/missing/JavaHome";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/hp-ux ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
 
-   @set %X11_LIB = "";
 
-   @string %CSF_XwLibs  = "";
-
-   @set %CSF_TclLibs = "D:/DevTools/TclTk/lib/tcl76i.lib";
-
-@endif;
-
-   @if ( %Station == "lin" ) then
-      @if ( %DBMS == "OBJS" ) then
-	 @set %CSF_OODBLibs = "";
-      @endif;
-
-      @set %CSF_SOCKETLibs = " -ldl" ;
-
-      @set %CSF_TCL_INCLUDE = "/usr/include ";
-
-      @set %X11_LIB = "/usr/X11R6/lib";
---- POP : pour Mesa 3.0  on utilise MesaGL et MesaGLU
---- A partir de Mesa 3.1 on peut utiliser GL et GLU
-      @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lMesaGL -lMesaGLU -lglut -lXi";
----      @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lGL -lGLU -lglut -lXi";
-
-      @set %CSF_TclLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltcl8.0"; 
-      @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0 -L/usr/X11R6/lib -lX11";
    @endif;
 
   @if ( %Station == "aix" ) then
@@ -183,9 +483,14 @@
 	 @set %CSF_OODBLibs = "";
       @endif;
 
+      @set %CSF_C_COMPILER   = "xlC_r ";
+      @set %CSF_CXX_COMPILER = "xlC_r ";
+      @set %CSF_F77_COMPILER = "/usr/bin/f77 ";
+
       @set %CSF_SOCKETLibs = " " ;
 
-      @set %CSF_TCL_INCLUDE = "/usr/local/include ";
+      @set %CSF_TCL_HOME = "/missing/missing ";
+      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
 
       @set %X11_LIB = "/usr/lpp/X11/lib/R6";
       @set %CSF_XwLibs = "-L/usr/lpp/X11/lib/R6 -lX11 -lXext -lXmu ";
@@ -193,9 +498,21 @@
       @set %OPENGL_LIB = "/usr/lpp/OpenGL/lib";
       @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
 
-      @set %CSF_TclLibs   = "-I/usr/local/lib/libtcl8.1.exp "; 
-      @set %CSF_TclTkLibs = "-I/usr/local/lib/libtk8.1.exp ";
+      @set %CSF_TclLibs   = "-I%CSF_TCL_HOME/lib/libtcl.exp "; 
+      @set %CSF_TclTkLibs = "-I%CSF_TCL_HOME/lib/libtk.exp ";
+
+
+      @string %CSF_JavaHome     = "/missing/JavaHome";
+      @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/aix ";
+      @set %CSF_JAVA_COMPILER   = "javac";
+      @set %CSF_JAVA_JNI        = "javah";
+
+
   @endif;
 
+  @set %CSF_TCL_HOME = "/PRODUCTS/tcltk-83";
+  @string %CSF_TCL_INCLUDE =      %CSF_TCL_HOME "/include ";
+  @string %CSF_TclLibs     = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl "; 
+  @string %CSF_TclTkLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk ";
 
 @endif;

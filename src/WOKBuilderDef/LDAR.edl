@@ -57,7 +57,7 @@ $lib%LDAR_LibName.a\^
 
 
   @template LDAR_Iter (%LibName,%ObjectList)  is
-   $ /opt/DEV5_1/SUNWspro/bin/CC -xar -o %LibName \
+   $ %CSF_CXX_COMPILER -xar -o %LibName \
    $ %ObjectList \
    $ ;
   @end;

@@ -8,9 +8,13 @@
 @ifnotdefined ( %LIB_EDL ) then
  @set %LIB_EDL = "";
 
+ @ifnotdefined ( %CSF_EDL ) then
+    @uses "CSF.edl";
+ @endif;
+
  @set %LIB_LibraryOutput = "-out:";
 
--- filename extension for library manager command file
+-- filename extension for library manager command file (list of .obj files)
  @set %LIB_LibraryCFExt = ".lbr";
 
 -- filename for static library
@@ -28,16 +32,25 @@
  	$%LIB_ExplibName.exp\^
  @end;
 
- @template LIB_LibraryHeaderSTATIC ( %Station ) is
- 	$D:/DevTools/VStudio/VC98/bin/lib -nologo \^
+ @template LIB_LibraryHeaderSTATIC (
+                         %CSF_LibraryHeaderLib ,
+                         %CSF_LibraryHeaderOpt ,
+                         %Station ) is
+ 	$%CSF_LibraryHeaderLib %CSF_LibraryHeaderOpt \^
  @end;
 
  @template LIB_LibraryEXP ( %CollectorOutput ) is
 	$%CollectorOutput.exp\^
  @end;
 
- @template LIB_LibraryHeaderIMPORT ( %LibraryDEFile ) is
-	$D:/DevTools/VStudio/VC98/bin/lib -nologo -def:%LibraryDEFile \^
+ @template LIB_LibraryHeaderIMPORT ( 
+                         %CSF_LibraryHeaderLib ,
+                         %CSF_LibraryHeaderOpt ,
+                         --%LibraryHeaderLib ,
+                         --%LibraryHeaderOpt ,
+                         %LibraryDEFile ) is
+	--$%LibraryHeaderLib %LibraryHeaderOpt -def:%LibraryDEFile \^
+	$%CSF_LibraryHeaderLib %CSF_LibraryHeaderOpt -def:%LibraryDEFile \^
  @end;
 
  @template LIB_LibrarySTATLIB ( %CollectorOutput ) is

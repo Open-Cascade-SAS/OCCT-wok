@@ -6,7 +6,10 @@
 --			( Microsoft Visual C/C++ V4.1 )
 
 @ifnotdefined ( %LINK_EDL ) then
- @set %LINK_EDL = "";
+-- @set %LINK_EDL = ""--; Syntax error
+ @cout "LINK";
+
+ @uses "CSF.edl";
 
 -- filename extension for linker command file ( DLL )
  @set %LINK_LinkerCFExtDLL = ".lnkDLL";
@@ -21,14 +24,10 @@
  @set %LINK_LinkerOutput    = " -out:";
  
 
- @set %LinkModeOpt  = "-debug";
+ @set %LINKModeOpt  = "-debug";
 
--- Selects wether you build a CONSOLE executable or WINDOWS one
- @set %LINK_ExeType = "CONSOLE";
-
--- Set %LINK_NoDefStub if you do not want tu link with stub objects
-   @set %LINK_NoDefStub = " ";
-
+-- Set %LINK_NoDefStub if you do not want to link with stub objects
+ @set %LINK_NoDefStub = " ";
 
 
  @set %LINK_LinkerPDBOption = " -pdb:";
@@ -54,12 +53,17 @@
 	$%CollectorOutput.exe\^
  @end;
 
- @template LINK_LinkerHeaderDLL ( %Station, %LinkModeOpt ) is
-	$D:/DevTools/VStudio/VC98/bin/link -nologo -subsystem:windows -dll -incremental:no -machine:IX86 %LinkModeOpt \^
+ @template LINK_LinkerHeaderDLL ( %CSF_LINKER ,
+                                               %Station,
+                                               %LINKModeOpt ) is
+	$%CSF_LINKER -nologo -subsystem:windows -dll -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
- @template LINK_LinkerHeaderEXE ( %Station, %LinkModeOpt, %LinkSubsystem ) is
-	$D:/DevTools/VStudio/VC98/bin/link -nologo -subsystem:%LinkSubsystem -incremental:no -machine:IX86 %LinkModeOpt \^
+ @template LINK_LinkerHeaderEXE ( %CSF_LINKER ,
+                                               %Station,
+                                               %LINKModeOpt,
+                                               %LINKSubsystem ) is
+	$%CSF_LINKER -nologo -subsystem:%LINKSubsystem -incremental:no -machine:IX86 %LINKModeOpt \^
  @end;
 
 @endif;
