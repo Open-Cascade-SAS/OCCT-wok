@@ -2,16 +2,7 @@
 // Created:	Mon Aug 25 18:00:08 1997
 // Author:	Jean GAUTIER
 //		<jga@hourax.paris1.matra-dtv.fr>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 #include <WOKTools_Messages.hxx>
 
@@ -31,11 +22,11 @@
 
 #define READBUF_SIZE 1024
 
-#ifdef HAVE_IOMANIP
-# include <iomanip>
-#elif defined (HAVE_IOMANIP_H)
-# include <iomanip.h>
-#endif
+//#ifdef HAVE_IOMANIP
+//# include <iomanip>
+//#elif defined (HAVE_IOMANIP_H)
+//# include <iomanip.h>
+//#endif
 
 //=======================================================================
 //function : WOKOrbix_ExtractServerList

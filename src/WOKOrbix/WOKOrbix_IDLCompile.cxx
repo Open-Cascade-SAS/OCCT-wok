@@ -10,11 +10,7 @@
 #include <io.h>
 #endif
 
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
