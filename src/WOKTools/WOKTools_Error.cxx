@@ -3,10 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#ifndef WNT
-#include <stream.h>
-#endif
-
 #include <WOKTools_Error.ixx>
 
 Standard_EXPORT WOKTools_Error ErrorMsg;
