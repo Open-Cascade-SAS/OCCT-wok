@@ -679,12 +679,15 @@ $#endif
 @end;
 
 @template ExceptionMethod(%Class) is
+$#ifndef _Standard_Macro_HeaderFile
+$#include <Standard_Macro.hxx>
+$#endif
 $%Class::~%Class(){}
 $
 $void %Class::Raise(Standard_SStream& aReason) 
 ${
 $  Handle(%Class) _E(new %Class);
-$  _E->Reraise (aReason.rdbuf()->str());
+$  _E->Reraise (GetSString(aReason));
 $}
 $
 $void %Class::Raise(const Standard_CString AString) 
