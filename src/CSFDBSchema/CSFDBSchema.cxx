@@ -231,7 +231,8 @@ void CSFDBSchema_BuildReadTypeSelection(const Handle(MS_MetaSchema)& aMeta,
   api->WriteFile("HTFile","%SHeaderInc");
 }
 
-Handle(TCollection_HAsciiString) CSFDBSchema_IsVArray(const Handle(MS_MetaSchema)& aMeta,
+//Handle(TCollection_HAsciiString) CSFDBSchema_IsVArray(const Handle(MS_MetaSchema)& aMeta,
+Handle(TCollection_HAsciiString) CSFDBSchema_IsVArray(const Handle(MS_MetaSchema)& ,
 						      const Handle(MS_StdClass)& aClass)
 {
   Handle(TCollection_HAsciiString) result;
@@ -248,7 +249,8 @@ Handle(TCollection_HAsciiString) CSFDBSchema_IsVArray(const Handle(MS_MetaSchema
   return result;
 }
 
-Handle(TCollection_HAsciiString) CSFDBSchema_BuildConvertFunction(const Handle(MS_MetaSchema)& aMeta,
+//Handle(TCollection_HAsciiString) CSFDBSchema_BuildConvertFunction(const Handle(MS_MetaSchema)& aMeta,
+Handle(TCollection_HAsciiString) CSFDBSchema_BuildConvertFunction(const Handle(MS_MetaSchema)& ,
 								  const Handle(EDL_API)& api,
 								  const Handle(MS_Type)& aType,
 								  const Standard_Boolean forDBC)
@@ -307,10 +309,13 @@ Handle(TCollection_HAsciiString) CSFDBSchema_BuildConvertFunction(const Handle(M
   return result;
 }
 
-Handle(TCollection_HAsciiString) CSFDBSchema_BuildDriverFunction(const Handle(MS_MetaSchema)& aMeta,
-								 const Handle(EDL_API)& api,
+//Handle(TCollection_HAsciiString) CSFDBSchema_BuildDriverFunction(const Handle(MS_MetaSchema)& aMeta,
+Handle(TCollection_HAsciiString) CSFDBSchema_BuildDriverFunction(const Handle(MS_MetaSchema)& ,
+//								 const Handle(EDL_API)& api,
+								 const Handle(EDL_API)& ,
 								 const Handle(MS_Type)& aType,
-								 const Standard_Boolean forDBC)
+//								 const Standard_Boolean forDBC)
+								 const Standard_Boolean )
 {
   Handle(TCollection_HAsciiString) result;
 
