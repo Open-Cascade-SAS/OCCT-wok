@@ -47,9 +47,9 @@ proc WOKStep_JavaHeader:ComputeIncludeDir { unit } {
   set awb [lindex $allwb [expr $i - 1]]
 
   if { $fJava != 0 } {
-   set addinc [UNC [wokparam -e WOKEntity_javadir ${awb}]]
+   set addinc [wokparam -e WOKEntity_javadir ${awb}]
   } else {
-   set addinc [UNC [wokparam -e WOKEntity_drvdir ${awb}]]
+   set addinc [wokparam -e WOKEntity_drvdir ${awb}]
   }
 
   set result ${addinc}$ps$result
@@ -64,7 +64,7 @@ proc WOKStep_JavaHeader:Execute { theunit args } {
 
  global tcl_platform
 
- msgprint -i -c "WOKStep_JavaHeader:Execute" "Processing unit : $theunit"
+ msgprint -i -c "WOKStep_JavaHeader:Execute" "Processing JavaHeader unit : $theunit"
  msgprint -i -c "WOKStep_JavaHeader:Execute"
 
  set unitname [wokinfo -n $theunit]
@@ -72,10 +72,11 @@ proc WOKStep_JavaHeader:Execute { theunit args } {
  set incdir [WOKStep_JavaHeader:ComputeIncludeDir $theunit]
  wokparam -s%IncludeDir=$incdir
 
+
  foreach ID $args {
 
   scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
-  set infile [UNC [woklocate -p $ID]]
+  set infile [wokUtils:EASY:stobs2 [woklocate -p $ID]]
 	
   if { $tcl_platform(platform) == "windows" } {
    regsub -all "/" $infile "\\\\\\" infile
@@ -88,11 +89,10 @@ proc WOKStep_JavaHeader:Execute { theunit args } {
   regsub -all "\\." $nameid "_" nameid
   set outfileid ${nameid}_${outfileid}.h
 
-  set outfile [UNC [wokinfo -p pubinclude:$outfileid $theunit]]
+  set outfile [wokinfo -p pubinclude:$outfileid $theunit]
   wokparam -s%OutFile=$outfile
 
   set thecommand [wokparam -e JAVA_Header]
-	
   msgprint -i -c "WOKStep_JavaCompile:Execute" "Building header $outfileid"
 
   if { [catch {eval exec [lindex $thecommand 0]} res] } {

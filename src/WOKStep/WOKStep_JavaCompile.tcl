@@ -65,7 +65,7 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
  global env
  global tcl_platform
     
- msgprint -i -c "WOKStep_JavaCompile:Execute" "Processing unit : $theunit"
+ msgprint -i -c "WOKStep_JavaCompile:Execute" "Processing JavaCompile unit   : $theunit"
  msgprint -i -c "WOKStep_JavaCompile:Execute"
     
  set fJava [info exists env(WOK_USE_JAVA_DIRECTORY)]
@@ -74,15 +74,13 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
  set failed 0
  set incdir [WOKStep_JavaCompile:ComputeIncludeDir $theunit]
  wokparam -s%IncludeDir=$incdir
-
  if { $fJava } {
   set outdir [wokUtils:EASY:stobs2 [wokparam -e WOKEntity_javadir [wokinfo -w]]]
  } else {
-  set outdir [wokUtils:EASY:stobs2 [[wokparam -e WOKEntity_drvdir [wokinfo -w]]]
+  set outdir [wokUtils:EASY:stobs2 [wokparam -e WOKEntity_drvdir [wokinfo -w]]]
  }
 
  wokparam -s%OutDir=$outdir
-
  foreach ID $args {
 
   scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
