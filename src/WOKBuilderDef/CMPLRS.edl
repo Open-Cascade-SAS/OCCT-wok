@@ -728,16 +728,15 @@
              %CMPLRS_CXX_DBMSOpt, %IncDirectives, %DBDirectives, %Source,
              %BaseName, %OutputDir, %TmpFile
             ) is
-   $cd %OutputDir
    $%CMPLRS_CXX_Command %CMPLRS_CXX_Options \^
    $-I/usr/java_dev2/include \
    $%CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives  \^
    $-M  -c %Source -o %OutputDir/%BaseName.o 
    $set stat = $status
    $if ( $stat == 0 ) then
-   $ sed   -e 's#%OutputDir/%BaseName.o:##g' %BaseName.u | sort -u > %OutputDir/%BaseName.m
+   $ sed   -e 's#%OutputDir/%BaseName.o:##g' %OutputDir/%BaseName.u | sort -u > %OutputDir/%BaseName.m
    $endif
-   $/bin/rm -f %BaseName.u
+   $#/bin/rm -f %OutputDir/%BaseName.u
    $set status = $stat
   @end;
 

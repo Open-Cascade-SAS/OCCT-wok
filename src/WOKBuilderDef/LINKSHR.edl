@@ -246,5 +246,91 @@
     $ set status=$ld_status
   @end;
  @endif;
-@endif;
+
+--     #######   ###   #     #     --
+--     #     #    #     #   #      --
+--     #     #    #      # #       --
+--     #######    #       #        --
+--     #     #    #      # #       --
+--     #     #    #     #   #      --
+--     #     #   ###   #     #     --
+
+ @if ( %Station == "aix" ) then
+
+  @set %LINKSHR_Footer          = "LINKSHR_Footer";
+  @set %LINKSHR_ArchiveFullPath = "LINKSHR_ArchiveFullPath";
+  @set %LINKSHR_ObjectRef       = "LINKSHR_ObjectRef";
+  @set %LINKSHR_ShortRef        = "LINKSHR_ShortRef";
+  @set %LINSHR_ShortRef         = "LD_ShortRef";
+
+  @template LINKSHR_ObjectRef ( %ObjectPath ) is
+   $\^
+  @end;
+
+  @template LINKSHR_ArchiveFullPath ( %LibName) is
+  $ lib%LibName.a \
+  $\^
+  @end;
+
+  @template LD_ShortRef ( %LibNameUsed ) is
+   $ -Ilib%LibNameUsed.exp \
+  @end;
+
+  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt , %LD_ObjList ) is 
+   $ set allLibPath  = `dirname %LD_ObjList`/../../lib/
+   $ set localud     = `basename %LD_ObjList .ObjList`
+   $ set locallib    = `dirname %LD_ObjList`/../${localud}/lib${localud}.a
+   $ mv -f $locallib $allLibPath
+   $ chmod 777 $allLibPath/lib${localud}.a
+   $/usr/ibmcxx/bin/makeC++SharedLib   -o %Target \
+   $ -bM:SRE \
+   $ -p 0 \
+  @end;
+
+  @template LINKSHR_Footer ( %Target, %LibName) is
+    $ -e$allLibPath/lib%LibName.imp \
+    $ -bnoentry ;
+    $ echo "#\!lib%LibName"             > $allLibPath/lib%LibName.exp
+    $ cat $allLibPath/lib%LibName.imp  >> $allLibPath/lib%LibName.exp
+    $ set ld_status=$status
+    $ if ( $?LIBPATH ) then
+    $  set ld_library_path="${LIBPATH}"
+    $ endif
+  @end;
+
+  @template LINKSHR_CheckUndefHeader (
+             %Target, %LINKSHR_DBMSOpt, %LD_LIBRARY_PATH
+            ) is 
+   $if ( $?LIBPATH ) then
+   $ setenv LIBPATH %LD_LIBRARY_PATH:${LIBPATH}
+   $else
+   $if ( $?LD_LIBRARY_PATH) then
+   $ setenv LIBPATH %LD_LIBRARY_PATH
+   $else 
+   $ setenv LIBPATH ""
+   $endif
+   $endif
+   $echo "Check of undefined symbols with LIBPATH : $LIBPATH" \
+---   $/usr/ccs/bin/ld -o /dev/null \
+  @end;
+
+  @template LINKSHR_CheckUndefFooter () is
+    $ ;
+    $ if ( $status ) then
+    $   echo "Check failed"
+    $ else
+    $   echo "Check successed"
+    $ endif
+    $ if ( $?ld_library_path ) then
+    $  setenv LIBPATH $ld_library_path
+    $ else
+    $  unsetenv LIBPATH
+    $ endif
+    $ set status=$ld_status
+  @end;
+
+
+ @endif;
+
+ @endif;
 

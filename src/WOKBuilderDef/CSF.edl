@@ -169,7 +169,10 @@
       @set %CSF_TCL_INCLUDE = "/usr/include ";
 
       @set %X11_LIB = "/usr/X11R6/lib";
+--- POP : pour Mesa 3.0  on utilise MesaGL et MesaGLU
+--- A partir de Mesa 3.1 on peut utiliser GL et GLU
       @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lMesaGL -lMesaGLU -lglut -lXi";
+---      @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lGL -lGLU -lglut -lXi";
 
       @set %CSF_TclLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltcl8.0"; 
       @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0 -L/usr/X11R6/lib -lX11";
