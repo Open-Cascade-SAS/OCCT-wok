@@ -13,33 +13,30 @@
 ;# Should be overwritten
 ;#
 proc osutils:dsp:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for MS project from [set loc [wokinfo -p source:template.dsp KAS:dev:ros:WOKTclLib]]"
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.dsp ]]"
     return [wokUtils:FILES:FileToString $loc]
 }
 proc osutils:dsp:readtemplatex { } {
-    puts stderr "Info : readtemplate : Template for MS project from [set loc [wokinfo -p source:template.dspx KAS:dev:ros:WOKTclLib]]"
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.dspx]]"
     return [wokUtils:FILES:FileToString $loc]
 }
 proc osutils:am:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for Makefile.am from [set loc [wokinfo -p source:template.mam KAS:dev:ros:WOKTclLib]]"
-    #puts stderr "Info : readtemplate : Template for Makefile.am from [set loc /dn02/users_SUN/cascade/template.mam]"
+    puts stderr "Info : readtemplate : Template for Makefile.am from [set loc [woklocate -p WOKTclLib:source:template.mam]]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:am:readtemplatex { } {
-#    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc [wokinfo -p source:template.mamx KAS:dev:ros:WOKTclLib]]"
-    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc /dn02/users_SUN/cascade/template.mamx]"
-
+    puts stderr "Info : readtemplatex : Template for Makefile.am from [set loc [woklocate -p WOKTclLib:source:template.mamx]]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:in:readtemplate { } {
-    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc /dn01/KAS/dev/ros/src/WOKTclLib/template.min]"
+    puts stderr "Info : readtemplate : Template for Makefile.in from [set loc [woklocate -p WOKTclLib:source:template.min]]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
 proc osutils:in:readtemplatex { } {
-    puts stderr "Info : readtemplatex : Template for Makefile.in from [set loc /dn01/KAS/dev/ros/src/WOKTclLib/template.minx]"
+    puts stderr "Info : readtemplatex : Template for Makefile.in from [set loc [woklocate -p WOKTclLib:source:template.minx]]"
     return [wokUtils:FILES:FileToString $loc]
 
 }
@@ -182,7 +179,7 @@ proc LibToLink {tkit} {
 	    if [regexp -- {(-E[^ ]*)} $x] {
                 set endnameid [expr { [string wordend $x 4] -1 }]
 		set fx [string range $x 3 $endnameid]
-		if {[uinfo -t [wokcd]:[file rootname $fx]] == "toolkit"} {	
+		if {[uinfo -t [woklocate -u [file rootname $fx]]] == "toolkit"} {	
 	 		lappend l $fx
 		}
 	    }
@@ -428,7 +425,7 @@ proc osutils:tk:eatpk { EXTERNLIB  } {
 ;#
 proc osutils:tk:hascsf { EXTERNLIB } {
     set l [wokUtils:FILES:FileToList $EXTERNLIB]
-    set lret  {}
+    set lret  {STLPort}
     foreach str $l {
 	 if [regexp -- {(CSF_[^ ]*)} $str csf] {
 	     lappend lret $csf
@@ -523,16 +520,19 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
         set l_compilable [osutils:dsp:compilable]
         regsub -all -- {__XQTNAM__} $tmplat $tf  temp0
         set tkused ""
-        puts [LibToLinkX $tkloc $tf]
-        foreach tkx [LibToLinkX $tkloc $tf] {
-	  if {[uinfo -t $tkx] == "toolkit"} {
+        puts [LibToLinkX [woklocate -u $tkloc] $tf]
+        foreach tkx [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
 	    append tkused "${tkx}.lib "
 	  }
-          if {[lsearch [w_info -l] $tkx] == "-1"} {
-	    append tkused "${tkx}.lib "
+#          if {[lsearch [w_info -l] [woklocate -u $tkx]] == "-1"} {
+#	    append tkused "${tkx}.lib "
+#	  }
+	  if {[woklocate -u $tkx] == "" } {
+	      append tkused "${tkx}.lib "
 	  }
         }
-        foreach tk [LibToLinkX $tkloc $tf] {
+        foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
 		set felem [file tail [lindex [wokparam -v "%$element"] 0]] 
@@ -545,7 +545,7 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	    }
 	 }
        }
-       if {[wokparam -v %WOKSteps_exec_link $tkloc] == "#WOKStep_DLLink(exec.tks)"} { 
+       if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
            set tkused [concat $tkused "\/dll"]
            regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
            regsub -all -- {__COMPOPTD__} $temp1 "/\MDd" temp2 
@@ -635,35 +635,36 @@ proc osutils:tk:mkam { dir tkloc } {
 
     catch { unset temp0 temp1 temp2 temp3 temp4 temp5 temp6 temp7}
 
-    set tmplat [osutils:in:readtemplate]
+    #set tmplat [osutils:in:readtemplate]
     
-    regsub -all -- {__TKNAM__} "$tmplat" "$tkloc"   temp0
-    if { $close != {} } {
-	set dpncies  [osutils:in:__DEPENDENCIES__ $close]
-    } else {
-	set dpncies ""
-    }
-    regsub -all -- {__DEPENDENCIES__} "$temp0" "$dpncies" temp1
+    #regsub -all -- {__TKNAM__} "$tmplat" "$tkloc"   temp0
+    #if { $close != {} } {
+	#set dpncies  [osutils:in:__DEPENDENCIES__ $close]
+    #} else {
+	#set dpncies ""
+    #}
+    #regsub -all -- {__DEPENDENCIES__} "$temp0" "$dpncies" temp1
 
-    set objects  [osutils:in:__OBJECTS__ $lobj]
-    regsub -all -- {__OBJECTS__} "$temp1" "$objects" temp2
-    set amdep    [osutils:in:__AMPDEP__ $lobj]
-    regsub -all -- {__AMPDEP__} "$temp2" "$amdep" temp3
-    set amdeptrue [osutils:in:__AMDEPTRUE__ $lobj]
-    regsub -all -- {__AMDEPTRUE__} "$temp3" "$amdeptrue" temp4
+    #set objects  [osutils:in:__OBJECTS__ $lobj]
+    #regsub -all -- {__OBJECTS__} "$temp1" "$objects" temp2
+    #set amdep    [osutils:in:__AMPDEP__ $lobj]
+    #regsub -all -- {__AMPDEP__} "$temp2" "$amdep" temp3
+    #set amdeptrue [osutils:in:__AMDEPTRUE__ $lobj]
+    #regsub -all -- {__AMDEPTRUE__} "$temp3" "$amdeptrue" temp4
 ;#  so easy..    
-    regsub -all -- {__MAKEFILEIN__} "$temp4" "$MakeFile_am" MakeFile_in
+    #regsub -all -- {__MAKEFILEIN__} "$temp4" "$MakeFile_am" MakeFile_in
 
-    wokUtils:FILES:StringToFile "$MakeFile_in" [set fmin [file join $dir Makefile.in]]
+    #wokUtils:FILES:StringToFile "$MakeFile_in" [set fmin [file join $dir Makefile.in]]
 
-    return [list $fmam $fmin]
+    return [list $fmam]
+    #return [list $fmam $fmin]
 }
 ;#
 ;# Create in dir the Makefile.am associated with toolkit tkloc.
 ;# Returns the full path of the created file.
 ;#
 proc osutils:tk:mkamx { dir tkloc } {
-  if   { [lsearch [uinfo -f -T source [wokcd]:$tkloc] ${tkloc}_WOKSteps.edl] != "-1"} {
+  if   { [lsearch [uinfo -f -T source [woklocate -u $tkloc]] ${tkloc}_WOKSteps.edl] != "-1"} {
         set pkgs [woklocate -p ${tkloc}:EXTERNLIB]
         if { $pkgs == {} } {
 	  puts stderr "osutils:tk:mkamx : Error. File EXTERNLIB not found for executable $tkloc."
@@ -674,12 +675,12 @@ proc osutils:tk:mkamx { dir tkloc } {
     set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justunix]]
     set lobj   [wokUtils:LIST:sanspoint $lsrc]
     set CXXList {}
-    foreach SourceFile [uinfo -f -T source $tkloc] {	
+    foreach SourceFile [uinfo -f -T source [woklocate -u $tkloc]] {	
      if {[file extension $SourceFile] == ".cxx"} {	
 	  lappend CXXList [file rootname $SourceFile]
      }
     }
-    set pkgs [LibToLinkX $tkloc [lindex $CXXList 0]]
+    set pkgs [LibToLinkX [woklocate -u $tkloc] [lindex $CXXList 0]]
     set lpkgs  [osutils:justunix [wokUtils:FILES:FileToList $pkgs]]
     puts "pkgs $pkgs"
     #set lcsf   [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
@@ -741,12 +742,12 @@ proc osutils:tk:mkamx { dir tkloc } {
     set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justunix]]
     set lobj   [wokUtils:LIST:sanspoint $lsrc]
     set CXXList {}
-    foreach SourceFile [uinfo -f -T source $tkloc] {	
+    foreach SourceFile [uinfo -f -T source [woklocate -u $tkloc]] {	
      if {[file extension $SourceFile] == ".cxx"} {	
 	  lappend CXXList [file rootname $SourceFile]
      }
     }
-    set pkgs [LibToLinkX $tkloc [lindex $CXXList 0]]
+    set pkgs [LibToLinkX [woklocate -u $tkloc] [lindex $CXXList 0]]
     set lpkgs  [osutils:justunix [wokUtils:FILES:FileToList $pkgs]]
     set lcsf   [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
 
@@ -851,8 +852,8 @@ proc osutils:am:PkCXXOption ppk {
  set CXXCOMMON [lindex [wokparam -e  %CMPLRS_CXX_Options [wokcd]] 0]
  set FoundFlag ""
  foreach pk $ppk {
-  if {[lsearch [uinfo -f -T source [wokcd]:$pk] ${pk}_CMPLRS.edl] != "-1"} {
-	set CXXStr  [lindex [wokparam -e %CMPLRS_CXX_Options $pk] 0]
+  if {[lsearch [uinfo -f -T source [woklocate -u $pk]] ${pk}_CMPLRS.edl] != "-1"} {
+	set CXXStr  [lindex [wokparam -e %CMPLRS_CXX_Options [woklocate -u $pk]] 0]
 	set LastIndex [expr {[string length $CXXCOMMON ] - 1}]
 	if {[string equal $CXXCOMMON [string range $CXXStr 0 $LastIndex]]} {
 	  set CXXOption [string range  $CXXStr $LastIndex end ]
@@ -880,8 +881,8 @@ proc osutils:am:PkCOption ppk {
  set CCOMMON [lindex [wokparam -e  %CMPLRS_C_Options [wokcd]] 0]
  set FoundFlag ""
  foreach pk $ppk {
-  if {[lsearch [uinfo -f -T source [wokcd]:$pk] ${pk}_CMPLRS.edl] != "-1"} {
-	set CStr  [lindex [wokparam -e %CMPLRS_C_Options $pk] 0]
+  if {[lsearch [uinfo -f -T source [woklocate -u $pk]] ${pk}_CMPLRS.edl] != "-1"} {
+	set CStr  [lindex [wokparam -e %CMPLRS_C_Options [woklocate -u $pk]] 0]
 	set LastIndex [expr {[string length $CCOMMON ] - 1}]
 	if {[string equal $CCOMMON [string range $CStr 0 $LastIndex]]} {
 	  set COption [string range  $CStr $LastIndex end ]
@@ -985,21 +986,20 @@ proc osutils:in:__AMDEPTRUE__ { l } {
 
 ;#############################################################
 ;#
-proc TESTAM { {root /dn04/OS/OCC/RELEASE/ros/adm/make} } {
-
-    wokcd  KAS:dev:ros
-    set ltk [w_info  -T toolkit OS:OCC:RELEASE]
-    ;#set ltk TKernel
-    foreach tkloc $ltk {
-	puts " toolkit: $tkloc ==> [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]"
-	wokUtils:FILES:mkdir $root/$tkloc
-	osutils:tk:mkam $root/$tkloc $tkloc 
-	#osutils:mkdsp $root $tkloc 
-    }
-    set ltk [w_info  -T executable OS:OCC:RELEASE]
-    foreach tkloc $ltk {
-	wokUtils:FILES:mkdir $root/$tkloc
-	osutils:tk:mkamx $root/$tkloc $tkloc 
-	#osutils:mkdspx $root $tkloc 
+proc TESTAM { {root} } {
+#    source [woklocate -p OS:source:OS.tcl]
+#    source [woklocate -p WOKTclLib:source:osutils.tcl]
+    foreach theModule [OS -lm] {
+	foreach unit [$theModule:toolkits] {
+	    puts " toolkit: $unit ==> [woklocate -p ${unit}:source:EXTERNLIB]"
+	    wokUtils:FILES:rmdir $root/$unit
+	    wokUtils:FILES:mkdir $root/$unit
+	    osutils:tk:mkam $root/$unit $unit
+	}
+	foreach unit [OS:executable $theModule] {
+	    wokUtils:FILES:rmdir $root/$unit
+	    wokUtils:FILES:mkdir $root/$unit
+	    osutils:tk:mkamx $root/$unit $unit
+	}
     }
 }
