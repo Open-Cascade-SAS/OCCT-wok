@@ -269,7 +269,8 @@ CPPIntExt_WriteConstructor(const Handle(MS_Construc)& ametconst,
 
 Handle(TColStd_HSequenceOfHAsciiString) CPPIntExt_BuildMethodBody(const Handle(MS_Method)& amet,
 								  const Handle(MS_MetaSchema)& aMeta,
-								  const Handle(MS_Interface)& srcInterface,
+//								  const Handle(MS_Interface)& srcInterface,
+								  const Handle(MS_Interface)& ,
 								  const Handle(EDL_API)& api)
 {
   api->AddVariable("%MetName",amet->Name()->ToCString());
@@ -315,7 +316,8 @@ Handle(TColStd_HSequenceOfHAsciiString) CPPIntExt_BuildMethodBody(const Handle(M
 void 
 CPPIntExt_WriteMetOut(const Handle(MS_Method)& amet,
 		      const Handle(MS_MetaSchema)& aMeta,
-		      const Handle(MS_Interface)& srcInterface,
+//		      const Handle(MS_Interface)& srcInterface,
+		      const Handle(MS_Interface)& ,
 		      const Handle(EDL_API)& api,
 		      const Standard_Integer nbargsminus)
 {

@@ -23,7 +23,8 @@ Standard_Boolean CPPIntExt_IsRef(const Handle(MS_Type)&,
 
 void 
 CPPIntExt_ProcessEngineInit(const Handle(MS_MetaSchema)& aMeta,
-			    const Handle(MS_Engine)& srcEngine,
+//			    const Handle(MS_Engine)& srcEngine,
+			    const Handle(MS_Engine)& ,
 			    const Handle(EDL_API)& api,
 			    MS_MapOfType& maptype)
 {

@@ -31,7 +31,8 @@ Standard_Boolean CPPIntExt_IsRef(const Handle(MS_Type)&,
 				 const Handle(MS_MetaSchema)&);
 
 
-void CPPIntExt_ProcessIncludes(const Handle(MS_Interface)& srcInterface,
+//void CPPIntExt_ProcessIncludes(const Handle(MS_Interface)& srcInterface,
+void CPPIntExt_ProcessIncludes(const Handle(MS_Interface)& ,
 			       const Handle(EDL_API)& api,
 			       const MS_MapOfType& maptype,
 			       const MS_MapOfGlobalEntity& mappack)
@@ -84,7 +85,8 @@ void CPPIntExt_ProcessIncludes(const Handle(MS_Interface)& srcInterface,
   
 }
 
-void CPPIntExt_ProcessHeader(const Handle(MS_Interface)& srcInterface,
+//void CPPIntExt_ProcessHeader(const Handle(MS_Interface)& srcInterface,
+void CPPIntExt_ProcessHeader(const Handle(MS_Interface)& ,
 			     const Handle(EDL_API)& api)
 {
   api->Apply("%TextHeader",
@@ -96,7 +98,8 @@ void CPPIntExt_ProcessHeader(const Handle(MS_Interface)& srcInterface,
 
 
 void CPPIntExt_ProcessTypes(const Handle(MS_MetaSchema)& aMeta,
-			    const Handle(MS_Interface)& srcInterface,
+//			    const Handle(MS_Interface)& srcInterface,
+			    const Handle(MS_Interface)& ,
 			    const Handle(EDL_API)& api,
 			    const MS_MapOfType& maptype)
 {
@@ -208,7 +211,8 @@ void CPPIntExt_ProcessExec(const Handle(MS_Interface)& srcInterface,
   
 }
 
-void CPPIntExt_ProcessBottom(const Handle(MS_Interface)& srcInterface,
+//void CPPIntExt_ProcessBottom(const Handle(MS_Interface)& srcInterface,
+void CPPIntExt_ProcessBottom(const Handle(MS_Interface)& ,
 			     const Handle(EDL_API)& api)
 {
   api->Apply("%TextBottom",

@@ -28,12 +28,15 @@
 
 void CPPIntExt_ProcessAMethod(const Handle(MS_Method)& themet,
 			      const Handle(MS_MetaSchema)& aMeta,
-			      const Handle(MS_Interface)& srcInterface,
-			      const Handle(EDL_API)& api,
+//			      const Handle(MS_Interface)& srcInterface,
+			      const Handle(MS_Interface)& ,
+//			      const Handle(EDL_API)& api,
+			      const Handle(EDL_API)& ,
 			      MS_MapOfMethod& expmap,
 			      MS_MapOfType& maptype,
 			      MS_MapOfType& mapusedtype,
-			      MS_MapOfGlobalEntity& mappack,
+//			      MS_MapOfGlobalEntity& mappack,
+			      MS_MapOfGlobalEntity& ,
 			      Standard_Boolean AddArgs)
 {
   if (!themet->Private()) {
@@ -245,7 +248,8 @@ void CPPIntExt_LoadMethods(const Handle(MS_MetaSchema)& aMeta,
 
 
 void CPPIntExt_LoadMethods(const Handle(MS_MetaSchema)& aMeta,
-			   const Handle(MS_Engine)& srcEngine,
+//			   const Handle(MS_Engine)& srcEngine,
+			   const Handle(MS_Engine)& ,
 			   const Handle(EDL_API)& api,
 			   MS_MapOfMethod& expmap,
 			   MS_MapOfType& maptype,

@@ -17,8 +17,10 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
 
-void CPPIntExt_ProcessCcl(const Handle(MS_MetaSchema)& aMeta,
-			  const Handle(MS_Engine)& srcEngine,
+//void CPPIntExt_ProcessCcl(const Handle(MS_MetaSchema)& aMeta,
+void CPPIntExt_ProcessCcl(const Handle(MS_MetaSchema)& ,
+//			  const Handle(MS_Engine)& srcEngine,
+			  const Handle(MS_Engine)& ,
 			  const Handle(EDL_API)& api,
 			  MS_MapOfType& maptype,
 			  MS_MapOfGlobalEntity& mappack)
