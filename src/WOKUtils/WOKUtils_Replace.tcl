@@ -1,15 +1,15 @@
 
 
-proc WOKUtils_Replace:AdmFileType {} {
+proc WOKUtils_Replace::AdmFileType {} {
     return "dbadmfile";
 }
 
-proc WOKUtils_Replace:OutputDirTypeName {} {
+proc WOKUtils_Replace::OutputDirTypeName {} {
     return "dbtmpfile";
 }
 
 
-proc WOKUtils_Replace:HandleInputFile { ID } { 
+proc WOKUtils_Replace::HandleInputFile { ID } { 
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
 
@@ -34,7 +34,7 @@ proc WOKUtils_Replace:HandleInputFile { ID } {
     }
 }
 
-proc WOKUtils_Replace:Execute { unit args } {
+proc WOKUtils_Replace::Execute { unit args } {
     
     global tcl_interactive
 
@@ -62,9 +62,9 @@ proc WOKUtils_Replace:Execute { unit args } {
 
 	regsub -all "/" " $source $target" $replstr  TheArgs
 
-	set A [catch {eval "wokcmp $TheArgs"} result ]
+	set A [catch {eval exec "cmp $TheArgs"} result ]
 
-	if { [wokparam -e %Station $unit] == "wnt" && $result != "" } {
+	if { $result != "" } {
 	    set result 0
 	} else { set result 1 }
 	
