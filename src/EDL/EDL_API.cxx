@@ -101,7 +101,7 @@ EDL_Template& EDL_API::GetTemplate(const Standard_CString aName) const
 void EDL_API::AddVariable(const Standard_CString aName, 
 			  const Standard_CString aValue) const 
 {
-  myInter->AddVariable(aName,aValue);
+  myInter->AddVariable(aName,aValue?aValue:"");
 }
 
 void EDL_API::AddVariable(const Standard_CString aName, 
