@@ -66,6 +66,7 @@ CFLAGS_OPTIMIZE = @CFLAGS_OPTIMIZE@
 CFLAGS_WARNING = @CFLAGS_WARNING@
 CPP = @CPP@
 CSF_FPELibs_LIB = @CSF_FPELibs_LIB@
+CSF_OpenGlLibs_INCLUDE = @CSF_OpenGlLibs_INCLUDE@
 CSF_OpenGlLibs_LIB = @CSF_OpenGlLibs_LIB@
 CSF_SOCKETLibs_LIB = @CSF_SOCKETLibs_LIB@
 CSF_TclLibs_INCLUDES = @CSF_TclLibs_INCLUDES@
@@ -93,23 +94,15 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 TCL_BIN_DIR = @TCL_BIN_DIR@
-TCL_INCLUDE_FLAG = @TCL_INCLUDE_FLAG@
 TCL_LIB_FILE = @TCL_LIB_FILE@
-TCL_LIB_FLAG = @TCL_LIB_FLAG@
-TCL_LIB_SPEC = @TCL_LIB_SPEC@
 TCL_SRC_DIR = @TCL_SRC_DIR@
 TCL_VERSION = @TCL_VERSION@
 TK_BIN_DIR = @TK_BIN_DIR@
-TK_INCLUDE_FLAG = @TK_INCLUDE_FLAG@
 TK_LIB_FILE = @TK_LIB_FILE@
-TK_LIB_SPEC = @TK_LIB_SPEC@
 TK_SRC_DIR = @TK_SRC_DIR@
 TK_VERSION = @TK_VERSION@
 U = @U@
 VERSION = @VERSION@
-XMU_INCLUDE = @XMU_INCLUDE@
-X_INCLUDE = @X_INCLUDE@
-X_LIBS = @X_LIBS@
 YACC = @YACC@
 build_TKjcas = @build_TKjcas@
 
@@ -124,23 +117,23 @@ INCLUDES = $(CSF_SOCKETLibs_INCLUDES) $(CSF_FPELibs_INCLUDES) $(CSF_advapi32_INC
 lib_LTLIBRARIES = libwokcmd.la libwokdeliverysteps.la libwokdfltsteps.la libwokobjssteps.la libwokorbixsteps.la libwoksteps.la libwoktoolscmd.la libwokutilscmd.la libmscmd.la
 
 
-libwokdeliverysteps_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokdeliverysteps_la_LIBADD = ../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
 
-libwokcmd_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokcmd_la_LIBADD = ../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
 
-libwokdfltsteps_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokdfltsteps_la_LIBADD = ../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
 
-libwokobjssteps_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokobjssteps_la_LIBADD = ../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
 
-libwokorbixsteps_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokorbixsteps_la_LIBADD = ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 
-libwoksteps_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwoksteps_la_LIBADD = ../TKWOK/libTKWOK.la  ${CSF_TclLibs_LIB)
 
-libwoktoolscmd_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwoktoolscmd_la_LIBADD = ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 
-libwokutilscmd_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libwokutilscmd_la_LIBADD = ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 
-libmscmd_la_LIBADD = ../TKWOK/libTKWOK.la $(TK_LIB_SPEC) $(TCL_LIB_SPEC)
+libmscmd_la_LIBADD = ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 
 libwokdeliverysteps_la_SOURCES = wokdeliverysteps.cxx
 libwokcmd_la_SOURCES = wokcmd.cxx
@@ -172,19 +165,22 @@ libwokobjssteps_la_LDFLAGS =
 libwokobjssteps_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
 libwokobjssteps_la_OBJECTS =  wokobjssteps.lo
 libwokorbixsteps_la_LDFLAGS = 
-libwokorbixsteps_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
+libwokorbixsteps_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la \
+${CSF_TclLibs_LIB)
 libwokorbixsteps_la_OBJECTS =  wokorbixsteps.lo
 libwoksteps_la_LDFLAGS = 
-libwoksteps_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
+libwoksteps_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 libwoksteps_la_OBJECTS =  woksteps.lo
 libwoktoolscmd_la_LDFLAGS = 
-libwoktoolscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
+libwoktoolscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la \
+${CSF_TclLibs_LIB)
 libwoktoolscmd_la_OBJECTS =  woktoolscmd.lo
 libwokutilscmd_la_LDFLAGS = 
-libwokutilscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
+libwokutilscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la \
+${CSF_TclLibs_LIB)
 libwokutilscmd_la_OBJECTS =  wokutilscmd.lo
 libmscmd_la_LDFLAGS = 
-libmscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la
+libmscmd_la_DEPENDENCIES =  ../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
 libmscmd_la_OBJECTS =  mscmd.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
