@@ -148,3 +148,5 @@ srcinc:::envir.xpm
 srcinc:::envir_open.xpm
 srcinc:::MdtvLogo33x120b.gif
 srcinc:::README
+srcinc:::wokcvs.tcl
+srcinc:::ud2cvs_unix
