@@ -41,7 +41,7 @@
 typedef char          _TCHAR;
 typedef char          TCHAR;
 typedef unsigned char _TUCHAR;
-
+# endif  /* WNT */
 /***/
 /******************************************************************************/
 /* Definitions for data structures callers pass the regex library.            */
@@ -280,5 +280,4 @@ REGEXP_API int     re_set_syntax ( int );
 # endif  /* __cplusplus */
 /***/
 /******************************************************************************/
-# endif  /* __REGEXP_H */
-#endif  /* WNT */
+#endif  /* __REGEXP_H */
