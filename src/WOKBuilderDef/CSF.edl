@@ -127,7 +127,7 @@
       @set %CSF_XwLibs = "-L/usr/X11R6/lib -lX11 -lXext -lXmu -lMesaGL -lMesaGLU -lglut -lXi";
 
       @set %CSF_TclLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltcl8.0"; 
-      @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0";
+      @set %CSF_TclTkLibs = "-L/usr/lib -Xlinker -rpath -Xlinker /usr/lib -ltk8.0 -L/usr/X11R6/lib -lX11 -lXext -lXmu -lMesaGL -lMesaGLU -lglut -lXi";
    @endif;
 
 
