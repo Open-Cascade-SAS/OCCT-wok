@@ -513,7 +513,7 @@ Standard_Boolean WOKernel_Entity::IsValidName(const Handle(TCollection_HAsciiStr
   for (i=1; i<= aname->Length(); i++)
     {
       c = aname->Value(i);
-      if (!IsAlphanumeric(c) && !IsEqual(c,'-'))
+      if (  !IsAlphanumeric ( c ) && !IsEqual ( c, '-' ) && !IsEqual ( c, '.' )  )
 	return Standard_False;
     }
   

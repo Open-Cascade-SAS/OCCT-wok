@@ -11,6 +11,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #define DECLARE_WOK_STATIC(aStr) Standard_IMPORT extern const char aStr [];
+//#define DECLARE_WOK_STATIC(aStr) Standard_IMPORT const char aStr [];
 
 DECLARE_WOK_STATIC(WOKENTITY)
 DECLARE_WOK_STATIC(WOKENTITYFILELIST)
