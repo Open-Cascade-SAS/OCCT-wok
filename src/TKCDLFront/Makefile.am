@@ -19,7 +19,6 @@ libTKCDLFront_la_LIBADD = \
 
 libTKCDLFront_la_SOURCES = \
 CDL.tab.c \
-CDL.tab.c \
 CDLFront.cxx \
 lex.CDL.c
 
