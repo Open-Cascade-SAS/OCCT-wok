@@ -52,6 +52,9 @@
 
 #include <WOKStep_Compile.ixx>
 
+#include <OSD_Protection.hxx>
+#include <OSD_File.hxx>
+
 //=======================================================================
 //function : WOKStep_Compile
 //purpose  : 
@@ -183,6 +186,12 @@ void WOKStep_Compile::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execli
   ashell->Lock();
 
   myiterator.Init(ashell, OutputDir(), incdirs, dbdirs);
+#ifndef WNT
+  static Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( "\n" );
+#else
+  static Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( "\r\n" );
+#endif  // WNT
+  Handle( TCollection_HAsciiString ) str = new TCollection_HAsciiString ();
 
   for(j=1; j<=execlist->Length(); j++)
     {
@@ -219,6 +228,43 @@ _TEST_BREAK();
 	      }
 	  }
 
+          if (  !myiterator.CmdLine ().IsNull ()  ) {
+
+           Standard_Integer                   i, j;
+           Handle( TCollection_HAsciiString ) s = new TCollection_HAsciiString (
+                                                       myiterator.CmdLine ()
+                                                      );
+
+           char const* ptr = s -> ToCString ();
+
+           for ( i = 0, j = -1; i < s -> Length (); ++i, ++ptr )
+
+            if (  ( *ptr == '\r' && i && *( ptr - 1 ) != '\\' ) ||
+                  ( *ptr == '\n' && i && *( ptr - 1 ) != '\\' ) ||
+                  *ptr == '>'                                   ||
+                  *ptr == ';'
+            ) {
+
+             j = i;
+             break;
+
+            }  // end if
+
+           if ( j != -1 ) {
+
+            s = s -> SubString ( 1, j );
+
+            if (  !s.IsNull () && !s -> IsEmpty ()  ) {
+
+             str -> AssignCat ( s  );
+             str -> AssignCat ( NL );
+           
+            }  // end if
+
+           }  // end if
+          
+          }  // end if
+
 	  TreatOutput(infile,myiterator.Produces()); 
 
 	  succeeds->Append(infile);
@@ -251,6 +297,46 @@ _TEST_BREAK();
        InfoMsg << "WOKStep_Compile::Execute" 
 	       << "-----------------------------------------------------------------" << endm;
     }
+
+ if (  !str -> IsEmpty ()  ) {
+
+  Handle( TCollection_HAsciiString ) s = new TCollection_HAsciiString (  Unit () -> Name ()  );
+  s -> AssignCat ( ".comp" );
+  Handle( WOKernel_File ) stadm = new WOKernel_File (
+                                       s, Unit (), Unit () ->
+                                                    GetFileType ( "stadmfile" )
+                                      );
+
+  stadm -> GetPath ();
+
+  OSD_Path p (  stadm -> Path () -> Name () -> ToCString ()  );
+  OSD_File f ( p );
+
+  f.Build (
+   OSD_WriteOnly, OSD_Protection ( OSD_RWXD, OSD_RWXD, OSD_R, OSD_R )
+  );
+
+  if (  !f.Failed ()  ) {
+
+   f.Write (  str -> String (), str -> Length ()  );
+
+   if (  f.Failed ()  ) {
+
+    TCollection_AsciiString s;
+
+    p.SystemName ( s );
+
+    ErrorMsg << "WOKStep_Compile :: Execute"
+             << "could not create '" << new TCollection_HAsciiString ( s )
+             << "'" << endm;
+
+   }  // end if
+
+   f.Close ();
+
+  }  // end if
+
+ }  // end if
 
   if(fails->Length() && succeeds->Length())
     {

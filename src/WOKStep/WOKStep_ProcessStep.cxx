@@ -57,6 +57,10 @@
 #define CHECK_REMOTE 1
 #endif // WNT
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKStep_ProcessStep
 //purpose  : 
@@ -308,10 +312,39 @@ void WOKStep_ProcessStep::TreatOutput(const Handle(WOKMake_InputFile)& infile, c
 	      Handle(WOKMake_OutputFile) outfile;
 	      // je calcule le path de destination du file
 	      aoutfile->GetPath();
-	      
+//-> EUG4YAN
+              TCollection_AsciiString s;
+              OSD_Path p (  outent -> Path () -> Name () -> ToCString ()  );
+//<- EUG4YAN
 	      // je l'y deplace
 	      outent->Path()->MoveTo(aoutfile->Path());
+//-> EUG4YAN
+              if ( extens == WOKUtils_ObjectFile ) {
 
+               p.SetExtension ( ".d" );
+               p.SystemName   ( s );
+
+               Handle( WOKUtils_Path ) pp = new WOKUtils_Path (
+                                                 new TCollection_HAsciiString ( s )
+                                                );
+
+               if (  pp -> Exists ()  ) {
+
+                OSD_Path p (  aoutfile -> Path () -> Name () -> ToCString ()  );
+
+                p.SetExtension ( ".d" );
+                p.SystemName ( s );
+
+                Handle( WOKUtils_Path ) pd = new WOKUtils_Path (
+                                                  new TCollection_HAsciiString ( s )
+                                                 );
+
+                pp -> MoveTo ( pd );
+
+               }  // end if
+
+              }  // end if
+//<- EUG4YAN
 	      if(!istemplate)
 		{
 		  outfile = new WOKMake_OutputFile(aoutfile->LocatorName(), aoutfile, outent, aoutfile->Path());
