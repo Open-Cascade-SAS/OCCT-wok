@@ -6,19 +6,23 @@
 
 @template TransientRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
+$
 $
 $
 $package %Interface;
@@ -37,19 +41,22 @@ $}
 
 @template StorableRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
@@ -67,19 +74,22 @@ $}
 
 @template MemoryRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
@@ -98,19 +108,22 @@ $}
 
 @template TransientClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
@@ -131,18 +144,22 @@ $}
 @end;
 
 @template TransientClassClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#include <%IncludeInterface_%Class.h>
 $#include <%Class.hxx>
@@ -160,19 +177,22 @@ $}
 
 @template ValueClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
@@ -200,18 +220,22 @@ $}
 @end;
 
 @template ValueClassClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#include <%IncludeInterface_%Class.h>
 $#include <%Class.hxx>
@@ -229,19 +253,22 @@ $}
 
 @template PackageClientJAVA(%Interface,%Class,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
@@ -261,18 +288,22 @@ $}
 @end;
 
 @template PackageClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $#include <%IncludeInterface_%Class.h>
@@ -291,19 +322,22 @@ $}
 
 @template EnumJAVA(%Interface,%Class,%Values) is
 $// Java Native Class from Cas.Cade
-$//                     Copyright (C) 1991,1999 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $
 $package %Interface;
