@@ -2,17 +2,7 @@
 // Created:	Tue Mar 26 16:12:47 1996
 // Author:	Arnaud BOUZY
 //		<adn>
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
-
+#include <Standard_Stream.hxx>
 
 #include <WOKDeliv_DeliveryBase.ixx>
 #include <WOKMake_InputFile.hxx>
