@@ -13,8 +13,6 @@
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-ArrayProcedures for_array_keys
@@ -60,7 +58,6 @@ proc for_array_keys {varName arrayName codeFragment} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -320,8 +317,6 @@ proc frename {old new} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-convertlib convert_lib
@@ -431,8 +426,6 @@ proc convert_lib {tclIndex packageLib {ignore {}}} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-developer_utils saveprocs edprocs
@@ -486,8 +479,6 @@ proc edprocs {args} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-events mainloop
@@ -515,8 +506,6 @@ proc mainloop {} {
 # Mark Diekhans make no representations about the suitability of this
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -555,8 +544,6 @@ proc for_file {var filename cmd} {
 # Mark Diekhans make no representations about the suitability of this
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -655,8 +642,6 @@ proc for_recursive_glob {var dirlist globlist cmd {depth 1}} {
 # and help pages (files).  There is a virtual root to this tree. The root
 # being the merger of all "help" directories found along the $auto_path
 # variable.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -987,8 +972,6 @@ set TCLXENV(help:curSubject) "/"
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-profrep profrep
@@ -1137,8 +1120,6 @@ proc profrep {profDataVar sortKey {outFile {}} {userTitle {}}} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-directory_stack pushd popd dirs
@@ -1200,8 +1181,6 @@ proc dirs {} {
 # Mark Diekhans make no representations about the suitability of this
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -1305,8 +1284,6 @@ proc intersect {list1 list2} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 #
 
 #@package: TclX-showproc showproc
@@ -1348,8 +1325,6 @@ proc showproc args {
 # Mark Diekhans make no representations about the suitability of this
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -1422,8 +1397,6 @@ proc write_file {fileName args} {
 # AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
 # ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
 # PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 
@@ -1533,8 +1506,6 @@ proc auto_commands {{option {}}} {
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
 #------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
-#------------------------------------------------------------------------------
 
 #@package: TclX-fmath acos asin atan ceil cos cosh exp fabs floor log log10 \
            sin sinh sqrt tan tanh fmod pow atan2 abs double int round
@@ -1583,8 +1554,6 @@ proc round  x {uplevel [list expr round($x)]}
 # Mark Diekhans make no representations about the suitability of this
 # software for any purpose.  It is provided "as is" without express or
 # implied warranty.
-#------------------------------------------------------------------------------
-# $Id: tclx.nt,v 1.1 1998-09-09 18:21:14 kernel Exp $
 #------------------------------------------------------------------------------
 #
 # For nroff man pages, the areas of text to extract are delimited with:

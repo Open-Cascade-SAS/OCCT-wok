@@ -331,6 +331,16 @@ proc wokUtils:FILES:DirMapToProc { d TclFile ProcName } {
     }
 }
 #
+# Compare contents of directory d with a previous state.
+# (previous state in file $d/__PreviousState.tcl)
+# If new = 1 then once directory d parsed (re-)writes 
+# the file $d/__PreviousState.tcl
+#
+proc wokUtils:FILES:MakeDirHistory { d tclfile procname } {
+    wokUtils:FILES:DirMapToProc $d $d/$tclfile $procname
+    
+}
+#
 # Same as above but also returns a ordonned list of directories names
 # Use it as follow
 # set treelist [wokUtils:FILES:DirToTree $dir]
