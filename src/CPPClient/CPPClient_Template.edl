@@ -120,7 +120,7 @@ $class %Interface_Standard_Transient: public FrontEnd_HExternRef {
 $
 $public:
 $
-$  inline %Interface_Standard_Transient(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) : FrontEnd_HExternRef(_aRef,_anEng) 
+$  %Interface_Standard_Transient(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) : FrontEnd_HExternRef(_aRef,_anEng) 
 $   {
 $   }
 $  
@@ -250,7 +250,7 @@ $class %Interface_Standard_Persistent: public FrontEnd_HExternRef{
 $
 $public:
 $
-$  inline %Interface_Standard_Persistent(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
+$  %Interface_Standard_Persistent(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
 $                                     : FrontEnd_HExternRef(_aRef,_anEng) 
 $  {
 $  }
@@ -388,7 +388,7 @@ $  Standard_EXPORT virtual Standard_Integer HashCode(const Standard_Integer Uppe
 $  Standard_EXPORT Standard_Boolean IsEqual(const %Interface_Standard_Storable& Other) const ;
 $  Standard_EXPORT Standard_Boolean IsSimilar(const %Interface_Standard_Storable& Other) const ;
 $  %Interface_Standard_Storable(const FrontEnd_FHandle& ) {}
-$   inline %Interface_Standard_Storable(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
+$   %Interface_Standard_Storable(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
 $                             : FrontEnd_ExternRef(_aRef,_anEng) 
 $   {
 $   }
@@ -528,7 +528,7 @@ $
 $class %Interface_MMgt_TShared: public %Interface_Standard_Transient {
 $
 $public:
-$ inline %Interface_MMgt_TShared(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
+$ %Interface_MMgt_TShared(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
 $                                   : %Interface_Standard_Transient(_aRef,_anEng) 
 $        {
 $        }
@@ -665,7 +665,7 @@ $
 $public:
 $ %Methods
 $
-$ inline %Class(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
+$ %Class(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
 $                                   : %Inherits(_aRef,_anEng) 
 $        {
 $        }
@@ -783,8 +783,8 @@ $
 $public:
 $ %Methods
 $
-$ inline %Class(const FrontEnd_FHandle&) %InheritsTrick {}
-$ inline %Class(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
+$ %Class(const FrontEnd_FHandle&) %InheritsTrick {}
+$ %Class(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) 
 $                                   : %Inherits(_aRef,_anEng) 
 $        {
 $        }
