@@ -3,8 +3,6 @@ srcinc:::WOKSESSION.edl
 srcinc:::DEFAULT.edl
 srcinc:::FILES
 srcinc:::tclshrc_Wok
-srcinc:::wokcfg.bat
-srcinc:::wokcfg
 srcinc:::INSTALL
 srcinc:::wok.csh
 srcinc:::wok.bat
