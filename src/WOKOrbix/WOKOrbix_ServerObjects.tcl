@@ -23,8 +23,8 @@ proc WOKOrbix_ServerObjects:HandleInputFile { ID } {
 
 proc WOKOrbix_ServerObjects:Execute { unit args } {
 
-    msgprint -i -c "WOKOrbix_ServerObjects:Execute" "Processing server objects : $unit"
-    msgprint -i -c "WOKOrbix_ServerObjects:Execute"
+    msgprint -i -c "WOKOrbix_ServerObjects::Execute" "Processing server objects : $unit"
+    msgprint -i -c "WOKOrbix_ServerObjects::Execute"
 
     set unitname [wokinfo -n $unit]
  
