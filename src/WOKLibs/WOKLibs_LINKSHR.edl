@@ -9,7 +9,7 @@
   @end;
  @else @if ( %Station == "sun" ) then
    @template LINKSHR_Footer () is
-    $ -lC -lc -z defs;
+    $ -lC -lc ;
    @end;
    @set %LINKSHR_DBMSOpt = "";
   @endif;
