@@ -25,8 +25,10 @@
 WOKMake_BuildProcess::WOKMake_BuildProcess(const Handle(WOKernel_Locator)& alocator, 
 					   const Handle(WOKUtils_Shell)& ashell, 
 					   const Handle(WOKernel_UnitGraph)& agraph)
-: mylocator(alocator), myshell(ashell), myunitgraph(agraph), mycdlit(WOKBuilder_MSTool::GetMSchema())
-{
+: myunitgraph(agraph),
+  mylocator(alocator),
+  myshell(ashell),
+  mycdlit(WOKBuilder_MSTool::GetMSchema()){
 }
 
 //=======================================================================

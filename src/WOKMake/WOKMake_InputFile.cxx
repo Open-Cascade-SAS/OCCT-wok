@@ -196,7 +196,7 @@ Standard_Integer WOKMake_InputFile::ReadFile(const Handle(WOKUtils_Path)&    apa
 {
   if(apath->Exists())
     {
-      Standard_Integer i;
+      Standard_Integer i = 0;
       ifstream astream(apath->Name()->ToCString());
       Handle(WOKMake_InputFile) infile;
       Handle(TCollection_HAsciiString) locatorname;
@@ -260,7 +260,7 @@ Standard_Integer WOKMake_InputFile::ReadFile(const Handle(WOKUtils_Path)& apath,
 
   if(apath->Exists())
     {
-      Standard_Integer i;
+      Standard_Integer i = 0;
       ifstream astream(apath->Name()->ToCString(), ios::in);
       Handle(WOKMake_InputFile) infile;
       Handle(TCollection_HAsciiString) locatorname;

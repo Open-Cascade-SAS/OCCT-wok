@@ -207,7 +207,7 @@ Standard_Integer WOKMake_OutputFile::ReadFile(const Handle(WOKUtils_Path)&    ap
 {
   if(apath->Exists())
     {
-      Standard_Integer i;
+      Standard_Integer i = 0;
       ifstream astream(apath->Name()->ToCString());
       Handle(WOKMake_OutputFile) outfile;
 
@@ -268,7 +268,7 @@ Standard_Integer WOKMake_OutputFile::ReadFile(const Handle(WOKUtils_Path)& apath
 
   if(apath->Exists())
     {
-      Standard_Integer i;
+      Standard_Integer i = 0;
       ifstream astream(apath->Name()->ToCString(), ios::in);
       Handle(WOKMake_OutputFile) outfile;
 

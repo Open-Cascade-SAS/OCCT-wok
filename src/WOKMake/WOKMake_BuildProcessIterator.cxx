@@ -53,7 +53,11 @@ extern Standard_IMPORT MMgt_StorageManager aStorageManager;
 //=======================================================================
 WOKMake_BuildProcessIterator::WOKMake_BuildProcessIterator(const Handle(WOKMake_BuildProcess)& aprocess,
 							   const Standard_Boolean alogflag)
-: myprocess(aprocess), mygrpidx(1), mystepidx(1), mystatus(WOKMake_Unprocessed), mylogflag(alogflag)
+: myprocess(aprocess),
+  mystatus(WOKMake_Unprocessed),
+  mygrpidx(1),
+  mystepidx(1),
+  mylogflag(alogflag)
 {
   Handle(WOKMake_Step) curstep = CurStep();
   

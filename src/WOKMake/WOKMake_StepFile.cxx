@@ -12,7 +12,7 @@
 //purpose  : 
 //=======================================================================
 WOKMake_StepFile::WOKMake_StepFile()
-  : mystatus(WOKMake_Undetermined), myattr(0)
+  : myattr(0), mystatus(WOKMake_Undetermined)
 {
   SetPhysicFlag(Standard_True);
 }
@@ -26,7 +26,7 @@ WOKMake_StepFile::WOKMake_StepFile(const Handle(TCollection_HAsciiString)& anid,
 				   const Handle(WOKernel_File)&            afile, 
 				   const Handle(WOKBuilder_Entity)&        abuildent,
 				   const Handle(WOKUtils_Path)&            aoldpath)
-  : myid(anid), myfile(afile), myent(abuildent), mylastpath(aoldpath), mystatus(WOKMake_Undetermined), myattr(0)
+  : myattr(0), myfile(afile), myid(anid), myent(abuildent), mylastpath(aoldpath), mystatus(WOKMake_Undetermined)
 {
   SetPhysicFlag(Standard_True);
 }

@@ -190,8 +190,6 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
 
 	  for(Standard_Integer k=1; k<=precsteps->Length() && !found; k++)
 	    {
-	      const Handle(WOKMake_Step)& subprec     = BuildProcess()->Find(precsteps->Value(k));
-	      const Standard_CString      subpreccode = subprec->Code()->ToCString();
 	      if(!strcmp(preccode, BuildProcess()->Find(precsteps->Value(k))->Code()->ToCString()))
 		found = Standard_True;
 	    }
@@ -402,6 +400,7 @@ void WOKMake_MetaStep::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 		         << "========> " << thestep->SubCode() << " is still unprocessed" << endm;
 	      ok=Standard_False;
 	      break;
+             default: break;
 	    }
 	}
 
@@ -561,6 +560,7 @@ Standard_Boolean WOKMake_MetaStep::HandleOutputFile(const Handle(WOKMake_OutputF
 	      }
 	  }
 	  break;
+          default: break;
 	}
     }
   return Standard_False;

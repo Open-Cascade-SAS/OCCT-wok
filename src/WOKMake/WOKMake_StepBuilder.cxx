@@ -101,7 +101,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 {
   Handle(WOKMake_Step) result;
   WOKMake_DataMapOfHAsciiStringOfStepBuilder& knownsteps = WOKMake_StepBuilder::StepBuilders();
-  Standard_Integer i;
+  Standard_Integer i = 1;
 
   if(name.IsNull() || aunit.IsNull() || acode.IsNull())
     {
@@ -137,7 +137,6 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
   
   key->AssignCat("_");
   
-  i=1;
   Handle(TCollection_HAsciiString) alib = libs->Token(" ", i); 
   while(!alib->IsEmpty())
     {

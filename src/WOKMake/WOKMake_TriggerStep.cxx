@@ -74,7 +74,7 @@ Handle(TCollection_HAsciiString) WOKMake_TriggerStep::AdmFileType() const
   Handle(TCollection_HAsciiString) result;
   Handle(TCollection_HAsciiString) trigname = new TCollection_HAsciiString(Name());
 
-  trigname->AssignCat("::AdmFileType");
+  trigname->AssignCat(":AdmFileType");
 
   WOKUtils_Trigger execute;
 
@@ -109,7 +109,7 @@ Handle(TCollection_HAsciiString) WOKMake_TriggerStep::OutputDirTypeName() const
   Handle(TCollection_HAsciiString) result;
   Handle(TCollection_HAsciiString) trigname = new TCollection_HAsciiString(Name());
 
-  trigname->AssignCat("::OutputDirTypeName");
+  trigname->AssignCat(":OutputDirTypeName");
 
   WOKUtils_Trigger execute;
 
@@ -146,7 +146,7 @@ Standard_Boolean WOKMake_TriggerStep::HandleInputFile(const Handle(WOKMake_Input
 
   Handle(TCollection_HAsciiString) trigname = new TCollection_HAsciiString(Name());
 
-  trigname->AssignCat("::HandleInputFile");
+  trigname->AssignCat(":HandleInputFile");
 
   execute(trigname) << infile->ID() << endt >> b;
 
@@ -266,7 +266,7 @@ void WOKMake_TriggerStep::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
   WOKUtils_Trigger execute;
   
   Handle(TCollection_HAsciiString) trigname = new TCollection_HAsciiString(Name());
-  trigname->AssignCat("::Execute");
+  trigname->AssignCat(":Execute");
 
   execute(trigname) << Unit()->UserPathName();
 

@@ -63,8 +63,15 @@ WOKMake_Step::WOKMake_Step(const Handle(WOKMake_BuildProcess)& aprocess,
 			   const Handle(TCollection_HAsciiString)& acode,
 			   const Standard_Boolean checked,
 			   const Standard_Boolean hidden) 
-: myprocess(aprocess.operator->()), myunit(aunit), mycode(acode), mycheck(checked), myhidden(hidden), 
-  mystatus(WOKMake_Unprocessed), myexecflag(Standard_False), mydeploaded(Standard_False), myinputcomp(Standard_False)
+: myunit(aunit),
+  mycode(acode),
+  myprocess(aprocess.operator->()),
+  myinputcomp(Standard_False),
+  mydeploaded(Standard_False),
+  mystatus(WOKMake_Unprocessed),
+  mycheck(checked),
+  myhidden(hidden), 
+  myexecflag(Standard_False)
 {
 }
 
@@ -1041,8 +1048,6 @@ void WOKMake_Step::AcquitExecution(const Handle(WOKMake_HSequenceOfInputFile)& e
 	      Standard_Boolean stillforexec  = Standard_False;
 	      out_index = outmap.FindIndex(mydepout.FindKey(i));
 
-	      const Handle(WOKMake_OutputFile)& outfile = outmap(out_index);
-
 	      for (j = mydepmatrix->LowerCol(); j <= mydepmatrix->UpperCol(); j++)
 		{
 		  //in_index = inmap.FindIndex(mydepin.FindKey(j));
@@ -1542,6 +1547,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 	      }
 	  }
 	break;
+        default: break;
 	}
     }
   return Standard_False;

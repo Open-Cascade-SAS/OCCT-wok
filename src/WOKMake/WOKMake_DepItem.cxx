@@ -12,7 +12,6 @@
 #include <WOKMake_DepItem.ixx>
 
 #define READBUF_SIZE 1024
-
 //=======================================================================
 //function : WOKMake_DepItem
 //purpose  : 
@@ -181,7 +180,7 @@ Standard_Integer WOKMake_DepItem::ReadFile(const Handle(WOKUtils_Path)& afile,
 
   if(afile->Exists())
     {
-      Standard_Integer i;
+      Standard_Integer i = 0;
       ifstream astream(afile->Name()->ToCString(), ios::in);
       Handle(WOKMake_DepItem) item, lastone;
       Handle(TCollection_HAsciiString) locatorname;
