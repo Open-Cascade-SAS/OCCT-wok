@@ -143,6 +143,30 @@ proc wokUtils:FILES:ValidName { name } {
     return [expr ([regexp {^-.*} $name]) ? 0 : 1]
 }
 #
+# Read a file in a string as is.
+#
+proc wokUtils:FILES:FileToString { fin } {
+    if { [catch { set in [ open $fin r ] } errin] == 0 } {
+	set strin [read $in [file size $fin]]
+	close $in
+	return $strin
+    } else {
+	return {}
+    }
+}
+#
+# Write a string in a file
+#
+proc wokUtils:FILES:StringToFile { str path } {
+    if { [catch { set out [ open $path w ] } errout] == 0 } {
+	puts -nonewline $out $str
+	close $out
+	return 1
+    } else {
+	return {}
+    }
+}
+#
 # Read file pointed to by path
 # 1. sort = 1 tri 
 # 2. trim = 1 plusieurs blancs => 1 seul blanc
