@@ -1844,6 +1844,9 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 
   // c'est fini
 
+  char* var1 = "MethodTemplateDefOBJS";
+  char* var2 = "MethodTemplateDef";
+
   api->AddVariable("%Method",metstart->ToCString());
   api->AddVariable("%MBody",metbody->ToCString());
 
@@ -1851,7 +1854,7 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
           "%Method",
           !strcmp (
             api -> GetVariableValue ( "%CPPJiniEXTDBMS" ) -> ToCString (), "OBJS"
-           ) ? "MethodTemplateDefOBJS" : "MethodTemplateDef"
+           ) ?  var1 : var2
          );
 
 }
