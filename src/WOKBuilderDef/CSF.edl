@@ -30,7 +30,7 @@
 -- %CSF_USE_EXTERNLIB      = "Yes"
 
 
-  @set %CSF_WOKHOME = "WOKHOME_TO_DEFINE" ;
+  @set %CSF_WOKHOME = "/adv_11/KAS/BAG/wok-POP" ;
 
 
 -- if "Yes" ===> WOK will "extract" cdl files listed in FILES
@@ -404,9 +404,11 @@
 
       @set %CSF_C_COMPILER   = "cc ";
       @set %CSF_C_SysOptions = " -signed -n32 -mips3 ";
+      @set %CSF_C_Options    = "-DIRIX ";
 
       @set %CSF_CXX_COMPILER   = "/usr/bin/CC ";
       @set %CSF_CXX_SysOptions = " -signed -n32 -mips3 -no_prelink -woff 3115 -woff 3273 -woff 1021 -woff 1188 ";
+      @set %CSF_CXX_Options  = "-DIRIX -DNO_CXX_EXCEPTION " ;
 
 
       @set %CSF_F77_COMPILER = "f77 ";
@@ -444,6 +446,8 @@
       @set %CSF_C_COMPILER   = "cc ";
       @set %CSF_CXX_COMPILER = "/opt/aCC/bin/aCC ";
       @set %CSF_F77_COMPILER = "f77 ";
+      @set %CSF_CXX_Options = " -w -DHPUX -D_IOSTREAM_INIT_NOT_NEEDED ";
+      @set %CSF_C_Options = " -DHPUX ";
 
       @set %CSF_TCL_HOME = "/missing/missing ";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
