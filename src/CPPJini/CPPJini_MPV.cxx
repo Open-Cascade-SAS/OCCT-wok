@@ -1,3 +1,4 @@
+#define CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR 0
 // CLE
 //    
 // 10/1995
@@ -45,7 +46,27 @@
 
 #include <WOKTools_Messages.hxx>
 
+extern Standard_Boolean CPPJini_HasComplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
+
+extern Standard_Boolean CPPJini_HasIncomplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
+
+extern Standard_Boolean CPPJini_HasSemicomplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
+
 Handle(TCollection_HAsciiString)& CPPJini_MPVRootName();
+
+extern Handle( TCollection_HAsciiString ) CPPJini_DotReplace ( char*, char = '_' );
 
 void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 			       const Handle(MS_Method)& aMethod,
@@ -145,9 +166,9 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
       methods = theClass->GetMethods();
     }
     
-
+#if CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
     Standard_Boolean mustCreateEmptyConst = !CPPJini_HaveEmptyConstructor(aMeta,theClass->FullName(),methods);
-
+#endif  // CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
 
     if (MustBeComplete != CPPJini_INCOMPLETE) {
       CPPJini_DataMapOfAsciiStringInteger mapnames;
@@ -179,12 +200,12 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     }
 
     api->AddVariable("%Class",theClass->FullName()->ToCString());
-
+#if CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
     if (mustCreateEmptyConst) {
       api->Apply(VJMethod,"EmptyConstructorHeader");
       publics->AssignCat(api->GetVariableValue(VJMethod));
     }
-
+#endif  // CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
     
     Handle(TCollection_HAsciiString) namefinal = new TCollection_HAsciiString("Java_");
     namefinal->AssignCat(CPPJini_InterfaceName);
@@ -192,7 +213,10 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     namefinal->AssignCat(CPPJini_UnderScoreReplace(theClass->FullName()));
     namefinal->AssignCat("_FinalizeValue");
 
-    api->AddVariable("%MethodName",namefinal->ToCString());
+    api -> AddVariable (
+            "%MethodName",
+            CPPJini_DotReplace (  namefinal -> ToCString ()  ) -> ToCString ()
+           );
 
     api->Apply(VJMethod,"FinalizeForValue");
     Supplement->Append(api->GetVariableValue(VJMethod));
@@ -210,7 +234,35 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 	    api->Apply("%Includes","IncludeJCas");
 	  }
 	  else {
-	    api->Apply("%Includes","Include");
+
+            Handle( TCollection_HAsciiString ) aClt;
+            Standard_Boolean                   fDup;
+            Standard_Boolean                   fPush = Standard_False;
+
+            if (  CPPJini_HasComplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasIncomplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasSemicomplete (
+                   List -> Value ( i ), aClt, fDup
+                  )
+            ) {
+
+             fPush = Standard_True;
+             api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
+
+            }  // end if
+
+             api->Apply("%Includes","Include");
+
+            if ( fPush )
+
+             api -> AddVariable (
+                     "%Interface", CPPJini_InterfaceName -> ToCString ()
+                    );
+
 	  }
 	  publics->AssignCat(api->GetVariableValue("%Includes"));
 	}
@@ -224,7 +276,34 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 	    api->Apply("%Includes","ShortDecJCas");
 	  }
 	  else {
-	    api->Apply("%Includes","ShortDec");
+            Handle( TCollection_HAsciiString ) aClt;
+            Standard_Boolean                   fDup;
+            Standard_Boolean                   fPush = Standard_False;
+
+            if (  CPPJini_HasComplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasIncomplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasSemicomplete (
+                   List -> Value ( i ), aClt, fDup
+                  )
+            ) {
+
+             fPush = Standard_True;
+             api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
+
+            }  // end if
+
+             api->Apply("%Includes","ShortDec");
+
+            if ( fPush )
+
+             api -> AddVariable (
+                     "%Interface", CPPJini_InterfaceName -> ToCString ()
+                    );
+
 	  }
 	  publics->AssignCat(api->GetVariableValue("%Includes"));
 	}
@@ -235,12 +314,34 @@ void CPPJini_MPVClass(const Handle(MS_MetaSchema)& aMeta,
 
     // we create the inheritance
     //
-    if (theClass->GetInheritsNames()->Length() == 0) {
-      api->AddVariable("%Inherits",CPPJini_MPVRootName()->ToCString());
-    }
-    else {
-      api->AddVariable("%Inherits",CPPJini_GetFullJavaType(theClass->GetInheritsNames()->Value(1))->ToCString());
-    }
+    Handle( TCollection_HAsciiString ) aClt;
+    Standard_Boolean                   fDup;
+
+    if (  CPPJini_HasComplete (
+           theClass -> FullName (), aClt, fDup
+          ) ||
+          CPPJini_HasIncomplete (
+           theClass -> FullName (), aClt, fDup
+          ) ||
+          CPPJini_HasSemicomplete (
+           theClass -> FullName (), aClt, fDup
+          )
+    ) {
+
+     aClt -> AssignCat ( "." );
+     aClt -> AssignCat (  theClass -> FullName ()  );
+     api -> AddVariable (  "%Inherits", aClt -> ToCString ()  );
+
+    } else {
+
+     if (theClass->GetInheritsNames()->Length() == 0) {
+       api->AddVariable("%Inherits",CPPJini_MPVRootName()->ToCString());
+     }
+     else {
+       api->AddVariable("%Inherits",CPPJini_GetFullJavaType(theClass->GetInheritsNames()->Value(1))->ToCString());
+     }
+
+    }  // end else
 
     api->AddVariable("%Class",theClass->FullName()->ToCString());
 

@@ -411,11 +411,10 @@ $%ClassName* the_this = (%ClassName*) jcas_GetHandle(env,theobj);
 
 -- out argument
 
-@template TransientSetValue(%ClassName,%ArgName) is
-$Handle(%ClassName)* theprevious_%ArgName = (Handle(%ClassName)*) jcas_GetHandle(env,%ArgName);
-$if (theprevious_%ArgName) delete theprevious_%ArgName;
-$Handle(%ClassName)* thenew_%ArgName = new Handle(%ClassName);
-$(*thenew_%ArgName) = the_%ArgName;
+@template TransientSetValue(%ClassName,%ArgName,%FromInterface) is
+$if ( !%ArgName ) %ArgName = jcas_CreateObject (
+$                             env, "%FromInterface/%ClassName", %ArgName
+$                            );
 $jcas_SetHandle(env,%ArgName,thenew_%ArgName);
 @end;
 

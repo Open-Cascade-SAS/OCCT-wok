@@ -47,8 +47,10 @@ extern "C" {
 	void Standard_EXPORT CPPJini_Init(const Handle(MS_MetaSchema)&,
 			    const Handle(TCollection_HAsciiString)&, 
 			    const Handle(MS_HSequenceOfExternMet)&,
-			    const Handle(MS_HSequenceOfMemberMet)&);
-	
+			    const Handle(MS_HSequenceOfMemberMet)&,
+                            const Handle( TColStd_HSequenceOfHAsciiString )&
+                           );
+
 	void Standard_EXPORT CPPJini_Extract(const Handle(MS_MetaSchema)& ams,
 			       const Handle(TCollection_HAsciiString)& atypename,
 			       const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,

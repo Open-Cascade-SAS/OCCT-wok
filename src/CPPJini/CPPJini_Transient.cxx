@@ -1,3 +1,4 @@
+#define CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR 0
 // CLE
 //    
 // 10/1995
@@ -43,6 +44,24 @@
 #include <WOKTools_Messages.hxx>
 #include <CPPJini_DataMapOfAsciiStringInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+
+extern Standard_Boolean CPPJini_HasComplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
+
+extern Standard_Boolean CPPJini_HasIncomplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
+
+extern Standard_Boolean CPPJini_HasSemicomplete (
+                         const Handle( TCollection_HAsciiString )&,
+                         Handle( TCollection_HAsciiString       )&,
+                         Standard_Boolean&
+                        );
 
 void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 			       const Handle(MS_Method)& aMethod,
@@ -151,9 +170,9 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)& aMeta,
     else if (MustBeComplete == CPPJini_COMPLETE){
       methods = theClass->GetMethods();
     }
-
+#if CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
     Standard_Boolean mustCreateEmptyConst = !CPPJini_HaveEmptyConstructor(aMeta,theClass->FullName(),methods);
-
+#endif
     if (MustBeComplete != CPPJini_INCOMPLETE) {
       if (methods->Length() > 0)  {
 	CPPJini_DataMapOfAsciiStringInteger mapnames;
@@ -185,12 +204,12 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)& aMeta,
 	}
       }
     }
-
+#if CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
     if (mustCreateEmptyConst) {
       api->Apply(VJMethod,"EmptyConstructorHeader");
       publics->AssignCat(api->GetVariableValue(VJMethod));
     }
-
+#endif
     api->AddVariable("%Methods",publics->ToCString());
 
     publics->Clear();
@@ -204,7 +223,33 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)& aMeta,
 	    api->Apply("%Includes","IncludeJCas");
 	  }
 	  else {
-	    api->Apply("%Includes","Include");
+            Handle( TCollection_HAsciiString ) aClt;
+            Standard_Boolean                   fDup;
+            Standard_Boolean                   fPush = Standard_False;
+
+            if (  CPPJini_HasComplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasIncomplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasSemicomplete (
+                   List -> Value ( i ), aClt, fDup
+                  )
+            ) {
+
+             fPush = Standard_True;
+             api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
+
+            }  // end if
+
+             api->Apply("%Includes","Include");
+
+            if ( fPush )
+
+             api -> AddVariable (
+                     "%Interface", CPPJini_InterfaceName -> ToCString ()
+                    );
 	  }
 	  publics->AssignCat(api->GetVariableValue("%Includes"));
 	}
@@ -218,7 +263,33 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)& aMeta,
 	    api->Apply("%Includes","ShortDecJCas");
 	  }
 	  else {
+            Handle( TCollection_HAsciiString ) aClt;
+            Standard_Boolean                   fDup;
+            Standard_Boolean                   fPush = Standard_False;
+
+            if (  CPPJini_HasComplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasIncomplete (
+                   List -> Value ( i ), aClt, fDup
+                  ) ||
+                  CPPJini_HasSemicomplete (
+                   List -> Value ( i ), aClt, fDup
+                  )
+            ) {
+
+             fPush = Standard_True;
+             api -> AddVariable (  "%Interface", aClt -> ToCString ()  );
+
+            }  // end if
+
 	    api->Apply("%Includes","ShortDec");
+
+            if ( fPush )
+
+             api -> AddVariable (
+                     "%Interface", CPPJini_InterfaceName -> ToCString ()
+                    );
 	  }
 	  publics->AssignCat(api->GetVariableValue("%Includes"));
 	}
@@ -229,7 +300,27 @@ void CPPJini_TransientClass(const Handle(MS_MetaSchema)& aMeta,
 
     // we create the inheritance
     //
-    api->AddVariable("%Inherits",CPPJini_GetFullJavaType(theClass->GetInheritsNames()->Value(1))->ToCString());
+    Handle( TCollection_HAsciiString ) aClt;
+    Standard_Boolean                   fDup;
+
+    if (  CPPJini_HasComplete (
+           theClass -> GetInheritsNames ()-> Value ( 1 ), aClt, fDup
+          ) ||
+          CPPJini_HasIncomplete (
+           theClass -> GetInheritsNames ()-> Value ( 1 ), aClt, fDup
+          ) ||
+          CPPJini_HasSemicomplete (
+           theClass -> GetInheritsNames () -> Value ( 1 ), aClt, fDup
+          )
+    ) {
+
+     aClt -> AssignCat ( "." );
+     aClt -> AssignCat (  theClass -> GetInheritsNames () -> Value ( 1 )  );
+     api -> AddVariable (  "%Inherits", aClt -> ToCString ()  );
+
+   } else
+
+     api->AddVariable("%Inherits",CPPJini_GetFullJavaType(theClass->GetInheritsNames()->Value(1))->ToCString());
 
     api->AddVariable("%Class",theClass->FullName()->ToCString());
 
