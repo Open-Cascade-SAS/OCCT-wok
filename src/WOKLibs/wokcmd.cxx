@@ -3,10 +3,13 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <tcl.h>
-#ifndef WNT
-#include <strstream.h>
+#ifndef HAVE_STRSTREAM_H
+# include <strstream.h>
 #endif
 
 #include <Standard_ErrorHandler.hxx>
@@ -79,8 +82,7 @@ int Wok_Init(WOKTclTools_PInterp interp)
 
   
 
-  WOKTclTools_Package tcl(CurrentInterp, "Tcl", TCL_VERSION );
-
+  WOKTclTools_Package tcl(CurrentInterp, "Tcl", TCL_VERSION);
   
   tcl.Require();
   
