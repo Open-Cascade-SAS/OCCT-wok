@@ -65,7 +65,7 @@ proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
     }
 
     if [file exists tmp.ccl] {
-	unlink tmp.ccl
+	wokUtils:FILES:delete  tmp.ccl
     }
 
     set failed 0
@@ -124,7 +124,7 @@ proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
     if {[catch {set fidexe [open $resexe "w"]} res] == 0} {
 	puts $fidexe [lindex $thecommand 0]
 	close $fidexe
-	chmod 0755 $resexe
+	wokUtils:FILES:chmod 0755 $resexe
     } else {
 	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
 	msgprint -e -c "WOKStep_frontal:Execute" $res
@@ -196,7 +196,7 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 
     msgprint -i "Creating $fileout"
     if [file exists $fileout ] {
-	unlink $fileout
+	wokUtils:FILES:delete $fileout
     }
 
 
@@ -271,7 +271,7 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 	puts $fidexe [lindex $thecommand 0]
 	close $fidexe
 	if {[wokparam -e %Station] != "wnt"} {
-	    chmod 0755 $resexe
+	    wokUtils:FILES:chmod 0755 $resexe
 	}
     } else {
 	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $resexe"
@@ -346,15 +346,15 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
         set thecommand [wokparam -e FRONTAL_NewFrontalScript]
 
 	wokUtils:FILES:ListToFile ${thecommand} tmp.ccl
-	chmod 0755 tmp.ccl
+	wokUtils:FILES:chmod 0755 tmp.ccl
         msgprint -i "Setting Environnement"
         set WOK_GLOBALS(setenv_proc,tcl) 1
         wokenv -s 
         set WOK_GLOBALS(setenv_proc,tcl) 0
 
         if [file exists $pk.bin ] {
-	    chmod 0755 $pk.bin
-            unlink $pk.bin
+	    wokUtils:FILES:chmod 0755 $pk.bin
+            wokUtils:FILES:delete  $pk.bin
 	}
         if {[catch {eval "exec tmp.ccl " } res]} {
 	    msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
@@ -365,8 +365,8 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 
         msgprint -i -c "WOKStep_frontal:Execute" "Updating $rescore"
         if [file exists $rescore ] {
-	    chmod 0755 $rescore
-            unlink $rescore
+	    wokUtils:FILES:chmod 0755 $rescore
+            wokUtils:FILES:delete $rescore
 	}
         if [catch {eval "exec cp $pk.bin $rescore"} result] {
 	    msgprint -e -c "WOKStep_frontal:Execute" $result
@@ -389,7 +389,7 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 	    puts $fidexe [lindex $thebincommand 0]
 	    close $fidexe
 	    if {[wokparam -e %Station] != "wnt"} {
-	        chmod 0755 $resbinexe
+	        wokUtils:FILES:chmod 0755 $resbinexe
 	    }
         } else {
 	    msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $resbinexe"
@@ -479,7 +479,7 @@ proc WOKStep_frontal:ExecuteMessages { unit args } {
 
     
     if [file exists $fileoutmsg ] {
-	unlink $fileoutmsg
+	wokUtils:FILES:delete $fileoutmsg
     }
 
     set idoutmsg [open $fileoutmsg "w"]
@@ -576,7 +576,7 @@ proc WOKStep_frontal:ExecuteMessages { unit args } {
 	    set resmsg [wokinfo -p cmpmsgfile:${pk}_Cmp.us $unit]
 	    if {![catch {eval "exec $msgtool $resmsg $fileoutmess"} errorinmsg ]} {
 		msgprint -e $errorinmsg
-		unlink $fileoutmess
+		wokUtils:FILES:delete $fileoutmess
 		return 1
 	    } 
 	}
