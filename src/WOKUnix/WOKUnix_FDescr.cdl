@@ -23,7 +23,7 @@ is
 
     BuildTemporary(me: in out);
     BuildTemporary(me: in out ; apath : AsciiString from TCollection);    
-    BuildNamedPipe(me: in out);
+    BuildNamedPipe(me: in out) returns FDescr from WOKUnix;
     
     GetNbToRead(me : in out) returns Integer from Standard;
     SetUnBuffered(me : in out);

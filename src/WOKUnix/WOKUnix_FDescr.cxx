@@ -187,7 +187,8 @@ void WOKUnix_FDescr::BuildTemporary(const TCollection_AsciiString & apath)
 //function : BuildNamedPipe
 //purpose  : 
 //=======================================================================
-void WOKUnix_FDescr::BuildNamedPipe()  
+
+WOKUnix_FDescr WOKUnix_FDescr::BuildNamedPipe()  
 {
   TCollection_AsciiString apath;
   WOKUnix_FDescr         writeend;
@@ -205,7 +206,8 @@ void WOKUnix_FDescr::BuildNamedPipe()
   writeend.SetPath(OSD_Path(Name()->String()));
   writeend.Open(OSD_WriteOnly, OSD_Protection());
   writeend.SetUnBuffered();
-  
+
+  return writeend ;
 }
 
 //=======================================================================

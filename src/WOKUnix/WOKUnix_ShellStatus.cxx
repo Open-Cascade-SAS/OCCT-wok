@@ -11,7 +11,8 @@
 //=======================================================================
  WOKUnix_ShellStatus::WOKUnix_ShellStatus()
 {
-  myfile.BuildNamedPipe();
+//JR  myfile.BuildNamedPipe();
+  myfileend = myfile.BuildNamedPipe();
 }
 
 //=======================================================================
@@ -71,7 +72,7 @@ Standard_Integer WOKUnix_ShellStatus::Get()
   Standard_Integer nbtoread = myfile.GetNbToRead();
   if(nbtoread == 0) 
     {
-      Standard_ProgramError::Raise("ShellStatus::Get : Nothing to read on status pipe\n");
+      Standard_ProgramError::Raise("WOKUnix_ShellStatus::Get : Nothing to read on status pipe\n");
       return 1;
     }
 
@@ -81,7 +82,7 @@ Standard_Integer WOKUnix_ShellStatus::Get()
   if(nbtoread != buf.Length())
     {
       perror(Name()->ToCString());
-      Standard_ProgramError::Raise("ShellStatus::Get : Could not read from status pipe\n");
+      Standard_ProgramError::Raise("WOKUnix_ShellStatus::Get : Could not read from status pipe\n");
       return 1;
     }
   buf.Trunc(nbtoread);
@@ -100,7 +101,7 @@ Standard_Integer WOKUnix_ShellStatus::GetRemote()
   Standard_Integer nbtoread = myfile.GetSize();
   if(nbtoread == 0) 
     {
-      Standard_ProgramError::Raise("ShellStatus::GetRemote : Nothing to read on status file\n");
+      Standard_ProgramError::Raise("WOKUnix_ShellStatus::GetRemote : Nothing to read on status file\n");
       return 1;
     }
 
@@ -110,7 +111,7 @@ Standard_Integer WOKUnix_ShellStatus::GetRemote()
   if(nbtoread != buf.Length())
     {
       perror(Name()->ToCString());
-      Standard_ProgramError::Raise("ShellStatus::GetRemote : Could not read from status file\n");
+      Standard_ProgramError::Raise("WOKUnix_ShellStatus::GetRemote : Could not read from status file\n");
       return 1;
     }
   buf.Trunc(nbtoread);
@@ -125,7 +126,15 @@ Standard_Integer WOKUnix_ShellStatus::GetRemote()
 //=======================================================================
 void WOKUnix_ShellStatus::Destroy()
 {
+  if ( myfile.FileNo() >= 0 ) {
+    myfile.Close();
+  }
+  if ( myfileend.FileNo() >= 0 ) {
+    myfileend.Close();
+  }
+
   myfile.Remove();
+  myfileend.Remove();
 }
 
 

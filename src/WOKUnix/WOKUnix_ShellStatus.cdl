@@ -47,6 +47,7 @@ is
 fields
     mystatus : Integer is protected;
     myfile   : FDescr from WOKUnix;
+    myfileend: FDescr from WOKUnix;
     
 end ShellStatus;
 
