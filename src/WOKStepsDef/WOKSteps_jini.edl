@@ -1,5 +1,3 @@
-
-
 @ifnotdefined (%WOKSteps_jini_EDL) then
 
   @set %WOKSteps_jini_EDL = "";
@@ -22,13 +20,20 @@
   @set %WOKSteps_DepGroup  = "obj.idep";
   @set %WOKSteps_obj_idep  = "WOKStep_ImplementationDep(obj.comp)";
 
-  @set %WOKSteps_ExecGroup = " exec.list exec.tks exec.link ";
+  @if ( %Station != "wnt" ) then
+   @set %WOKSteps_ExecGroup  = " exec.list exec.tks exec.link ";
+   @set %WOKSteps_exec_list  = "*WOKStep_TransitiveLinkList(obj.comp,obj.idep)";
+   @set %WOKSteps_exec_tks   = "*WOKStep_TransitiveTKReplace(exec.list)";
+   @set %WOKSteps_exec_link  = "*WOKStep_LibLink(exec.tks)";
+  @else
+   @set %WOKSteps_ExecGroup  = " exec.jlib exec.list exec.tks exec.link ";
+   @set %WOKSteps_exec_jlib  = "WOKStep_JLibAdd(obj.idep)";
+   @set %WOKSteps_exec_list  = "*WOKStep_DirectLinkList(obj.comp,obj.idep)";
+   @set %WOKSteps_exec_tks   = "*WOKStep_DirectTKReplace(exec.list)";
+   @set %WOKSteps_exec_link  = "*WOKStep_DLLink(exec.jlib,exec.tks)";
+  @endif;
 
-  @set %WOKSteps_exec_list = "*WOKStep_TransitiveLinkList(obj.comp,obj.idep)";
-  @set %WOKSteps_exec_tks  = "*WOKStep_TransitiveTKReplace(exec.list)";
-  @set %WOKSteps_exec_link = "*WOKStep_LibLink(exec.tks)";
-
-  @set %WOKSteps_jini_LinksWith = "";
+  @set %WOKSteps_jini_LinksWith   = "";
+  @set %WOKSteps_toolkit_ListWith = " obj.comp obj.idep ";
 
 @endif;
-
