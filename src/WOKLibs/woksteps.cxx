@@ -15,6 +15,7 @@
 #include <WOKStep_HeaderExtract.hxx>
 #include <WOKStep_ServerExtract.hxx>
 #include <WOKStep_ClientExtract.hxx>
+#include <WOKStep_JiniExtract.hxx>
 #include <WOKStep_EngineExtract.hxx>
 #include <WOKStep_TemplateExtract.hxx>
 #include <WOKStep_ExtractExecList.hxx>
@@ -46,7 +47,6 @@
 #include <WOKStep_EXELink.hxx>
 #endif
 
-
 DECLARE_STEP(WOKStep_Source)
 DECLARE_STEP(WOKStep_CDLUnitSource)
 DECLARE_STEP(WOKStep_ExecutableSource)
@@ -57,6 +57,7 @@ DECLARE_STEP(WOKStep_SourceExtract)
 DECLARE_STEP(WOKStep_HeaderExtract)
 DECLARE_STEP(WOKStep_ServerExtract)
 DECLARE_STEP(WOKStep_ClientExtract)
+DECLARE_STEP(WOKStep_JiniExtract)
 DECLARE_STEP(WOKStep_EngineExtract)
 DECLARE_STEP(WOKStep_TemplateExtract)
 DECLARE_STEP(WOKStep_ExtractExecList)
@@ -87,3 +88,5 @@ DECLARE_STEP(WOKStep_StaticLibrary)
 DECLARE_STEP(WOKStep_WNTK)
 DECLARE_STEP(WOKStep_EXELink)
 #endif
+
+

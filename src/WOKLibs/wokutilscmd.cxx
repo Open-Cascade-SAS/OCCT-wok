@@ -21,7 +21,7 @@ extern "C" void _debug_break ( char* );
 # define WOKUTILS_EXPORT
 #endif  // WNT
 
-extern "C" WOKUTILS_EXPORT Wokutils_Init(WOKTclTools_PInterp);
+extern "C" int WOKUTILS_EXPORT Wokutils_Init(WOKTclTools_PInterp);
 
 int Wokutils_Init(WOKTclTools_PInterp interp)
 {

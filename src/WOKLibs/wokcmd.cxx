@@ -152,6 +152,7 @@ int Wok_Init(WOKTclTools_PInterp interp)
   WOKInter->Add("stepoutputadd",      "Trigger step output add",  WOKAPI_Command::AddOutputFile,  "WOK COMMAND\n");
   WOKInter->Add("stepoutputinfo",     "Trigger step output info", WOKAPI_Command::OutputFileInfo, "WOK COMMAND\n");
   WOKInter->Add("stepaddexecdepitem", "Adds a depitem to step",   WOKAPI_Command::AddExecDepItem, "WOK COMMAND\n");
+
   WOKUtils_ProcessManager::Arm();
 
   try {

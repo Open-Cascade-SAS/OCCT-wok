@@ -23,7 +23,7 @@ extern "C" void _debug_break ( char* );
 # define WOKTOOLS_EXPORT
 #endif  // WNT
 
-extern "C" WOKTOOLS_EXPORT Woktools_Init(WOKTclTools_PInterp);
+extern "C" int WOKTOOLS_EXPORT Woktools_Init(WOKTclTools_PInterp);
 
 int Woktools_Init(WOKTclTools_PInterp interp)
 {
