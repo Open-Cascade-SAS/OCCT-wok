@@ -3,3 +3,5 @@ IDL.yacc
 IDLFront.cxx
 idl_rules.h
 IDLFront_CMPLRS.edl
+IDLFront_LDSHR.edl
+
