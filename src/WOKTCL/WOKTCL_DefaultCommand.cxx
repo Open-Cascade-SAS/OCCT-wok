@@ -3,9 +3,7 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax.paris1.matra-dtv.fr>
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <Standard_SStream.hxx>
 
 #include <tcl.h>
 
@@ -13,9 +11,6 @@
 #  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
 #endif  // WNT
 
-#ifdef HAVE_STRSTREAM_H
-# include <strstream.h>
-#endif
 
 #include <Standard_ErrorHandler.hxx>
 
