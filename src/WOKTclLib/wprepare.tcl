@@ -11,16 +11,10 @@ proc wokPrepareUsage { } {
     puts stderr { Usage: wprepare  [-ref] [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]}
     puts stderr {        Note: If your specify more than one unit, separate names with a comma.}
     puts stderr {                                                                              }
-    puts stderr {        The following options allows you to select files based on time.       }
+    puts stderr {        The following options allows you to select files based on date/time.  }
     puts stderr {                                                                              }
-    puts stderr {    wprepare -since markname  [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]        }
-    puts stderr {        Select in the current workbench all files modified since the date     }
-    puts stderr {        pointed to the mark markname ( See command wnews. )                   }
-    puts stderr {                                                                              }
-    puts stderr {    wprepare -newer file [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]             }
-    puts stderr {         Select in the current workbench all files newer than file.           }
-    puts stderr {         (The term newer refers to the modification time.)                    }
-    puts stderr {                                                                              }
+    puts stderr {        wprepare -since date  [-ud <ud_1,ud_2, ..,ud_N>] -o [filename]        }
+    puts stderr {        Format for date is :                                                  }
     return
 }
 #
@@ -39,11 +33,7 @@ proc wprepare { args } {
     set tblreq(-son)   value_required:string
     set tblreq(-dad)   value_required:string
 
-    set tblreq(-ws)    value_required:string
-
     set tblreq(-since) value_required:string
-
-    set tblreq(-newer) value_required:string
     
     set param {}
     if { [wokUtils:EASY:GETOPT param tabarg tblreq wokPrepareUsage $args] == -1 } return
@@ -66,6 +56,9 @@ proc wprepare { args } {
     }
 
 
+    set SHPere [wokinfo -s $WBPere]
+    set SHFils [wokinfo -s $WBFils]
+
     if [info exists tabarg(-o)] {
 	set wokfileid [open $tabarg(-o) w]
 	eval "proc wprepare_return { } { close $wokfileid ; return }"
@@ -81,23 +74,12 @@ proc wprepare { args } {
     }
 
 
-    if [info exists tabarg(-ws)] {
-	set fshop $tabarg(-ws)
-    } else {
-	set fshop [wokinfo -s [wokcd]]
-    }
-
     if [info exists tabarg(-since)] {
-	if { [set journal [wokIntegre:Journal:GetName $fshop]] == {} } { 
-	    msgprint -c WOKVC -e "Journal file not found in workshop $fshop."
-	    return
-	}
-	set num  [wokIntegre:Mark:Get $journal $tabarg(-since)]
-	set date [wokIntegre:Journal:ReportDate $journal $num]
+	set date $tabarg(-since)
 	if { $date != {} } {
 	    wokclose -a
 	    wokPrepare:Report:InitTypes
-	    wokPrepare:Report:Output banner [wokinfo -n [wokinfo -s $WBFils]] $WBFils
+	    wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBPere] [wokinfo -n $WBFils] 
 	    wokPrepare:Unit:Since wokPrepare:Report:Output ${WBFils} $LUnits $date
 	    puts $wokfileid "is"
 	    puts $wokfileid "  Author        : [id user]"
@@ -113,24 +95,7 @@ proc wprepare { args } {
 	    wprepare_return
 	    return
 	} else {
-	    msgprint -c WOKVC -e "Unknown mark. Try the command : wnews -admin."
-	    return
-	}
-    }
-
-    if [info exists tabarg(-newer)] {
-	set datf [file mtime $tabarg(-newer)]
-	if { [info exists datf] } {
-	    wokclose -a
-	    wokPrepare:Report:InitTypes
-	    wokPrepare:Report:Output banner [wokinfo -n [wokinfo -s $WBFils]] $WBFils
-	    wokPrepare:Unit:Since wokPrepare:Report:Output ${WBFils} $LUnits $datf
-	    wokPrepare:Report:Output notes
-	    catch {unset wokfileid}
-	    wprepare_return
-	    return
-	} else {
-	    msgprint -c WOKVC -e "Unknown mark. Try the command : wnews -admin."
+	    msgprint -c WOKVC -e "Bad format for date."
 	    return
 	}
     }
@@ -138,11 +103,7 @@ proc wprepare { args } {
     wokclose -a
 
     wokPrepare:Report:InitTypes
-
-    set SHPere [wokinfo -s $WBPere]
-    set SHFils [wokinfo -s $WBFils]
-
-    wokPrepare:Report:Output banner [wokinfo -n $SHFils] $WBFils 
+    wokPrepare:Report:Output banner [wokinfo -n $SHFils] [wokinfo -n $WBPere] [wokinfo -n $WBFils] 
 
     if { [info exists tabarg(-ref)] || [wokUtils:WB:IsRoot $WBFils] } {
 	wokPrepare:Unit:Ref wokPrepare:Report:Output ${WBFils} $LUnits
@@ -305,33 +266,32 @@ proc wokPrepare:Report:Read { name table banner notes } {
 #;>
 # ecrit station workshop workbench sur fileid
 #;<
-proc wokPrepare:Report:WriteInfo { station workshop workbench {fileid stdout}} {
-    puts $fileid [format "Station    :  %s" $station];
+proc wokPrepare:Report:WriteInfo { workshop wbpere wbfils {fileid stdout}} {
     puts $fileid [format "Workshop   :  %s" $workshop];
-    puts $fileid [format "Workbench  :  %s\n" $workbench];
+    puts $fileid [format "Master workbench  :  %s" $wbpere];
+    puts $fileid [format "Revision workbench  :  %s\n" $wbfils];
     return
 }
 #;>
 # retourne station workshop workbench 
 #;<
-proc wokPrepare:Report:ListInfo { station workshop workbench {fileid stdout}} {
+proc wokPrepare:Report:ListInfo { workshop wbpere wbfils {fileid stdout}} {
     return [list \
-	    [format "Station    :  %s" $station]\
 	    [format "Workshop   :  %s" $workshop]\
-	    [format "Workbench  :  %s" $workbench]\
+	    [format "Master workbench :  %s" $wbpere]\
+	    [format "Revision workbench  :  %s" $wbfils]\
     ]
 }
 #;>
 # decode info (liste de 3 elements ) dans les variables qui suivent
 #;<
-proc wokPrepare:Report:ReadInfo { info station workshop workbench } {
-    upvar $station staloc $workshop wsloc $workbench wbloc
-    regexp {Station    :  (.*)} [lindex $info 0] ignore staloc
-    regexp {Workshop   :  (.*)} [lindex $info 1] ignore wsloc
-    regexp {Workbench  :  (.*)} [lindex $info 2] ignore wbloc
+proc wokPrepare:Report:ReadInfo { info workshop wbpere wbfils } {
+    upvar $workshop wsloc $wbpere wbpereloc $wbfils wbfilsloc
+    regexp {Workshop   :  (.*)} [lindex $info 0] ignore wsloc
+    regexp {Master workbench  :  (.*)} [lindex $info 1] ignore wbpereloc
+    regexp {Revision workbench  :  (.*)} [lindex $info 2] ignore wbfilsloc
     return
 }
-
 #;>
 # Init d'une global pour utiliser simplement les types de Wok.
 # (Voir wokPrepare:Report:UnitHeader)
@@ -342,7 +302,7 @@ proc wokPrepare:Report:InitTypes {} {
     set ucreateP \
 	    [list {p package} {s schema} {i interface} {C client} {e engine} {x executable}\
 	    {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal}\
-	    {d delivery} {I idl} {S server} {j jini}]
+	    {d delivery} {I idl} {S server} {j jini} {m module}]
     foreach itm $ucreateP {
 	set shrt [lindex $itm 0]
 	set long [lindex $itm 1]
@@ -401,14 +361,15 @@ proc wokPrepare:Report:UnitHeader {option string} {
     }
 }
 #;>
-#   Ecrit un report avec le contenu de strlist  
-#;<
-proc wokPrepare:Report:Skel { strlist } {
-}
-#;>
 #
 # Appele pour sortir un report sur fileid
 #
+proc wokPrepare:Report:replicate { s tim} { 
+    for {set i 0} {$i < $tim} {incr i 1} {
+	append ret $s
+    }
+    return $ret
+}
 #;<
 proc wokPrepare:Report:Output { opt args } {
 
@@ -419,10 +380,11 @@ proc wokPrepare:Report:Output { opt args } {
 
 	banner {
 	    set shop [lindex $args 0]
-	    set wb [lindex $args 1]
-	    set buf [replicate _ 30]
-	    set buf_path [replicate _ 61]
-	    wokPrepare:Report:WriteInfo [id host] $shop $wb $fileid
+	    set wbpere [lindex $args 1]
+	    set wbfils [lindex $args 2]
+	    set buf [wokPrepare:Report:replicate _ 30]
+	    set buf_path [wokPrepare:Report:replicate _ 61]
+	    wokPrepare:Report:WriteInfo $shop $wbpere $wbfils $fileid
 	    puts $fileid [format "    S   Date   Time  Name"];
 	    puts $fileid [format "    _ ________ _____ %s %s" $buf $buf_path];
 	}

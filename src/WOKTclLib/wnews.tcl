@@ -53,7 +53,8 @@ proc wokNewsUsage { } {
 proc wnews { args } {
 
     set tblreq(-h)         {}
-    set tblreq(-x)   {}
+    set tblreq(-v)         {}
+    set tblreq(-x)         {}
     set tblreq(-from)      value_required:string
     set tblreq(-to)        value_required:string
     set tblreq(-headers)   {}
@@ -71,7 +72,7 @@ proc wnews { args } {
     set tblreq(-cf)        value_required:string
 
 
-    set tblreq(-ls)        default
+    set tblreq(-ls)        {} ;#default
     set tblreq(-bydate)    {}
 
     set tblreq(-admin)     {}
@@ -79,7 +80,7 @@ proc wnews { args } {
 
     set tblreq(-o)         value_required:string
 
-    set tblreq(-ws)        value_required:string
+    set tblreq(-wb)        value_required:string
 
     set disallow(-x)      {-set -ls -rm -admin -purge }
     set disallow(-admin)  {-set -ls -rm -purge }
@@ -89,6 +90,9 @@ proc wnews { args } {
 
     if { [wokUtils:EASY:GETOPT param tabarg tblreq wokNewsUsage $args] == -1 } return
     if { [wokUtils:EASY:DISOPT tabarg disallow wokNewsUsage ] == -1 } return
+
+
+    set VERBOSE [info exists tabarg(-v)]
 
     if { $param != {} } {
 	wokNewsUsage 
@@ -100,14 +104,21 @@ proc wnews { args } {
 	return
     }
 
-    if [info exists tabarg(-ws)] {
-	set fshop $tabarg(-ws)
+    if [info exists tabarg(-wb)] {
+	set curwb $tabarg(-wb)
     } else {
-	set fshop [wokinfo -s [wokcd]]
+	if { [set curwb [wokinfo -w [wokcd]]] == {} } {
+	    msgprint -c WOKVC -e "Current location [wokcd] is not a workbench."
+	    return
+	}
     }
 
-    if { [set journal [wokIntegre:Journal:GetName $fshop]] == {} } { 
-	msgprint -c WOKVC -e "Journal file not found in workshop $fshop."
+    if { [wokStore:Report:SetQName $curwb] == {} } {
+	return
+    }
+    
+    if { ![file exists [set journal [wokIntegre:Journal:GetName]]] } { 
+	msgprint -c WOKVC -e "Journal file [wokIntegre:Journal:GetName] not found."
 	return
     }
 
@@ -136,7 +147,7 @@ proc wnews { args } {
 	    }
 	} 
 
-	set end [expr { [wokIntegre:Number:Get $fshop] - 1 } ]
+	set end [expr { [wokIntegre:Number:Get] - 1 } ]
 	set mark_from 1
 	if [info exists tabarg(-from)] { 
 	    if { [string toupper $tabarg(-from)] == "END" } {
@@ -165,7 +176,7 @@ proc wnews { args } {
 	if [info exists tabarg(-at)] {
 	    set mark_value $tabarg(-at)
 	} else {
-	    set mark_value [wokIntegre:Number:Get $fshop]
+	    set mark_value [wokIntegre:Number:Get]
 	}
  	if { $journal != {} } {
 	    if { [wokIntegre:Mark:GetTableName $journal 1] != {} } {
@@ -204,24 +215,24 @@ proc wnews { args } {
 
     if [info exists tabarg(-admin)] {
 	puts stdout "\n Journal file in directory [file dirname $journal]  \n"
-	foreach j [wokIntegre:Journal:List $fshop] {
+	foreach j [wokIntegre:Journal:List] {
 	    puts stdout [format "%15s %-9d" [file tail $j] [file size $j]]
 	}
 	set t [fmtclock [file mtime $journal]]
 	puts stdout \
 		[format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
 
-	set scoop [wokIntegre:Scoop:Read $fshop]
+	set scoop [wokIntegre:Scoop:Read ]
 	if { $scoop != {} } {
 	    puts stdout "\n Last integration: \n\n $scoop "
 	}
 	puts stdout "\n Marks: \n"
-	wnews -ls -ws $fshop
+	wnews -ls -wb $curwb
 	return
     }
 
     if [info exists tabarg(-purge)] {
-	wokIntegre:Journal:Purge $fshop
+	wokIntegre:Journal:Purge 
 	return
     }
 
@@ -232,8 +243,8 @@ proc wokNewsExtract { } {
 	set n1 [wokIntegre:Mark:Trn $journal $mark_from]
 	set n2 [wokIntegre:Mark:Trn $journal $mark_to]
 	if { $n1 != {} && $n2 != {} } {
-	    set jnltmp [wokUtils:FILES:tmpname wgetslice[id process]]
-	    wokIntegre:Journal:Assemble  $jnltmp $fshop [wokIntegre:Journal:GetBigSlice $n1 $n2 $fshop]
+	    set jnltmp [wokUtils:FILES:tmpname wgetslice[pid]]
+	    wokIntegre:Journal:Assemble  $jnltmp  [wokIntegre:Journal:GetBigSlice $n1 $n2]
 	    if { [file size $jnltmp] != 0 } {
 		wokIntegre:Journal:Slice $jnltmp $n1 $n2 $command $userdata
 	    }
@@ -280,8 +291,6 @@ proc wokNewsSlicer { comment table args } {
     return 1 
 
 }
-
-
 #
 #  ((((((((((((((((JOURNAL))))))))))))))))
 #
@@ -327,26 +336,6 @@ proc wokIntegre:Journal:EditReleaseNotes { {A {}} {S {}} {D {}} {I {}} {N {}} {D
 		"Comments      : $C"  
     ]
 }
-#;>
-# Retourne le full path du fichier journal associe a shop
-#;<
-proc wokIntegre:Journal:GetName { fshop {create 0} } {
-    set diradm [wokparam -e %VC_ROOT $fshop]/adm/[wokinfo -n [wokinfo -s $fshop]]/wintegre.jnl
-    if [file exists $diradm] {
-	return $diradm
-    } else {
-	if { $create } {
-	    msgprint -c WOKVC -i "Creating file $diradm"
-	    catch { mkdir -path [file dirname $diradm] }
-	    wokUtils:FILES:ListToFile {} $diradm
-	    chmod 0777 $diradm
-	    return $diradm
-	} else {
-	    return {}
-	}
-    }
-}
-
 # Retourne une marque unique pour ecrire dans le journal comme header de report.
 # et pour mettre un commentaire des BASES
 #;<
@@ -583,8 +572,8 @@ proc wokIntegre:Journal:ReportDate { file num} {
 #;>
 # Cree un journal tout neuf et renomme le vieux en num1-num2.jnl
 #;<
-proc wokIntegre:Journal:Purge { fshop } {
-    set jnl [wokIntegre:Journal:GetName $fshop]
+proc wokIntegre:Journal:Purge { } {
+    set jnl [wokIntegre:Journal:GetName ]
     if [file exists $jnl] {
 	set lrep [wokIntegre:Journal:ListReport $jnl]
 	set num1  [lindex [lindex $lrep 0] 0]
@@ -602,8 +591,8 @@ proc wokIntegre:Journal:Purge { fshop } {
 #;>
 # Retourne la liste des a-b.jnl dans l'ordre correct pour etre concatene.
 #;<
-proc wokIntegre:Journal:List { fshop } {
-    set dir [file dirname [wokIntegre:Journal:GetName $fshop]]
+proc wokIntegre:Journal:List {  } {
+    set dir [file dirname [wokIntegre:Journal:GetName ]]
     set l {}
     set deb 1
     while { 1 } {
@@ -618,9 +607,9 @@ proc wokIntegre:Journal:List { fshop } {
     return $l
 }
 #;>
-# Reconstruit le  journal complet de fshop dans path.
+# Reconstruit le  journal complet dans path.
 #;<
-proc wokIntegre:Journal:Assemble { path fshop {liste {}} } {
+proc wokIntegre:Journal:Assemble { path {liste {}} } {
     if [file exists $path] {
 	if [catch { unlink $path } err] {
 	    msgprint -c WOKVC -e "Assemble error: $err"
@@ -630,8 +619,8 @@ proc wokIntegre:Journal:Assemble { path fshop {liste {}} } {
     if { $liste == {} } {
 	wokUtils:FILES:concat $path \
 		[concat \
-		[wokIntegre:Journal:List $fshop] \
-		[wokIntegre:Journal:GetName $fshop] ]
+		[wokIntegre:Journal:List ] \
+		[wokIntegre:Journal:GetName ] ]
     } else {
 	wokUtils:FILES:concat $path $liste
     }
@@ -640,21 +629,21 @@ proc wokIntegre:Journal:Assemble { path fshop {liste {}} } {
 #;>
 # Retourne le path du bout de journal contenant le report <num>
 #;<
-proc wokIntegre:Journal:GetSlice { num fshop } {
-    set ljnl [wokIntegre:Journal:List $fshop]
+proc wokIntegre:Journal:GetSlice { num } {
+    set ljnl [wokIntegre:Journal:List ]
     foreach fxt $ljnl {
 	set lll [split [file root [file tail $fxt]] -]
 	if { $num >= [lindex $lll 0] && $num <= [lindex $lll 1] } {
 	    return $fxt
 	}
     }
-    return [wokIntegre:Journal:GetName $fshop]
+    return [wokIntegre:Journal:GetName ]
 }
 #;>
 # Retourne la liste des pathes des bouts de journal contenant les reports <num1> a <num2>
 #;<
-proc wokIntegre:Journal:GetBigSlice { num1 num2 fshop } {
-    set ljnl [wokIntegre:Journal:List $fshop]
+proc wokIntegre:Journal:GetBigSlice { num1 num2  } {
+    set ljnl [wokIntegre:Journal:List ]
     foreach fxt $ljnl {
 	set lll [split [file root [file tail $fxt]] -]
 	if { $num1 >= [lindex $lll 0] && $num1 <= [lindex $lll 1] } {
@@ -674,7 +663,7 @@ proc wokIntegre:Journal:GetBigSlice { num1 num2 fshop } {
     if { [info exists i1] && [info exists i2] } {
 	return [lrange $ljnl $i1 $i2]
     } elseif { [info exists i1] } {
-	return [concat [lrange $ljnl $i1 end] [wokIntegre:Journal:GetName $fshop]]
+	return [concat [lrange $ljnl $i1 end] [wokIntegre:Journal:GetName ]]
     } elseif { [info exists i2] } {
 	return {}
     } else {
@@ -873,8 +862,8 @@ proc wokIntegre:Mark:Check { s } {
 # Place texte dans le fichier scoop ( derniere integration faite)
 # si texte = {} retourne le nom du scoop.
 #;<
-proc wokIntegre:Scoop:Create { fshop {texte {}} } {
-    set diradm [wokparam -e %VC_ROOT $fshop]/adm/[wokinfo -n [wokinfo -s $fshop]]/scoop.jnl
+proc wokIntegre:Scoop:Create { {texte {}} } {
+    set diradm [file join [file dirname [wokIntegre:Journal:GetName]] scoop.jnl]
     if { $texte != {} } {
 	wokUtils:FILES:copy $texte $diradm
 	chmod 0777 $diradm
@@ -885,11 +874,11 @@ proc wokIntegre:Scoop:Create { fshop {texte {}} } {
 # Place texte dans le fichier scoop ( derniere integration faite)
 # si texte = {} retourne le nom du scoop.
 #;<
-proc wokIntegre:Scoop:Read { fshop {option header} } {
+proc wokIntegre:Scoop:Read { {option header} } {
     switch -- $option {
 
 	header {
-	    set scoop [wokIntegre:Scoop:Create $fshop]
+	    set scoop [wokIntegre:Scoop:Create]
 	    if [file exists $scoop] {
 		return [lindex [wokUtils:FILES:FileToList $scoop] 0]
 	    } else {

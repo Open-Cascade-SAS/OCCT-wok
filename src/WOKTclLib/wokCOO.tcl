@@ -4,7 +4,7 @@
 proc  wokDisplayCook { item w } {
     global IWOK_WINDOWS
     global IWOK_GLOBALS
-
+    
     set litm [split $item ^]
     if { [llength $litm] == 2 } {
 	set data [$IWOK_WINDOWS($w,hlist) info data $item]
@@ -34,7 +34,7 @@ proc  wokDisplayCook { item w } {
     }
     
     [$IWOK_WINDOWS($w,button) subwidget search] configure -state active
-
+    
     switch -- $flag {
 	+ {
 	    wokReadFile $IWOK_WINDOWS($w,text) $d1/$name
@@ -183,8 +183,6 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
     global IWOK_GLOBALS
     global IWOK_WINDOWS
 
-   
-
     if { $loc == {} } {
 	set verrue [wokCWD readnocell]
     } else {
@@ -194,10 +192,10 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	wokDialBox .wokcd {Unknown location} "Location $verrue is unknown" {} -1 OK
 	return
     }
+    
     set shop [wokinfo -s $verrue]
     set wb   [wokinfo -n [wokinfo -w $verrue]]
-
-
+    
     set w [wokTPL wprepare${verrue}]
     if [winfo exists $w ] {
 	wm deiconify $w
@@ -208,7 +206,7 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
     toplevel $w 
     wm title $w "Comparing workbenches in $shop"
     wokButton setw [list prepare $w]
-
+    
     wm geometry $w 960x720+461+113
     
     foreach type $IWOK_GLOBALS(ucreate-P) {
@@ -223,35 +221,41 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	set IWOK_WINDOWS($w,WBPere) $wb
     }
     
+    if { [wokStore:Report:SetQName ${shop}:$IWOK_WINDOWS($w,WBPere)] != {} } {
+	set IWOK_WINDOWS($w,queue_enabled) 1
+    } else {
+	set IWOK_WINDOWS($w,queue_enabled) 0
+    }
+    
     set func1 wokHliAdd
     set func2 wokHliDel
     set function wokDisplayCook
-
+    
     menubutton $w.file -menu $w.file.m -text File -underline 0 -takefocus 0
     menu $w.file.m 
     $w.file.m add command -label "Close     " -underline 1 -command [list wokPrepareExit $w]
     menubutton $w.admin -menu $w.admin.m -text Admin -underline 0 -takefocus 0 
     menu $w.admin.m 
-
+    
     $w.admin.m add command -label "Check for init" -underline 1 -command [list wokPrepareCheck $w]
     $w.admin.m  entryconfigure 1 -state disabled
     $w.admin.m  configure -postcommand [list wokPostCheck $w]
-
+    
     menubutton $w.help -menu $w.help.m -text Help -underline 0 -takefocus 0
     menu $w.help.m 
     $w.help.m add command -label "Help" -underline 1 -command [list wokPrepareHelp $w]
-
+    
     frame $w.top -relief sunken -bd 1 
     label $w.lab -relief sunken 
     
     tixScrolledHList $w.h1 -width 8c   ; set hlist1 [$w.h1 subwidget hlist]
     set locfunc1 ${func1}_$w  ; set body {$item} ; eval "proc $locfunc1 { item } { $func1 $body $w}"
     $hlist1 config -separator ^ -drawbranch 0 -browsecmd $locfunc1 -selectmode single
-
+    
     tixScrolledHList $w.h2 -width 8c   ; set hlist2 [$w.h2 subwidget hlist]
     set locfunc2 ${func2}_$w  ; set body {$item} ; eval "proc $locfunc2 { item } { $func2 $body $w}"
     $hlist2 config -separator ^ -drawbranch 0 -browsecmd $locfunc2 -selectmode single
-
+    
     tixPanedWindow $w.top.pane -orient horizontal -paneborderwidth 0 -separatorbg gray50
     pack $w.top.pane -side top -expand yes -fill both -padx 1 -pady 1
     
@@ -268,18 +272,18 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
     pack $p2.text -expand yes -fill both -padx 1 -pady 1 -padx 3
 
     frame $w.wbs -relief sunken -bd 1 
-    tixLabelEntry $w.wbs.mas -label "Workbench 1"  -labelside left -options {
+    tixLabelEntry $w.wbs.mas -label "Master workbench"  -labelside left -options {
 	label.anchor n
     }
 
-    tixLabelEntry $w.wbs.rev -label "Workbench 2"  -labelside left -options {
+    tixLabelEntry $w.wbs.rev -label "Revision workbench"  -labelside left -options {
 	label.anchor n
     }
 
     tixForm $w.wbs.mas -top 0 -left 0 -right -0
     tixForm $w.wbs.rev -top $w.wbs.mas -left 0 -right -0
-    $w.wbs.mas subwidget entry configure -textvariable IWOK_WINDOWS($w,WBPere)
-    $w.wbs.rev subwidget entry configure -textvariable IWOK_WINDOWS($w,WBFils)
+    $w.wbs.mas subwidget entry configure -textvariable IWOK_WINDOWS($w,WBPere) -state disabled 
+    $w.wbs.rev subwidget entry configure -textvariable IWOK_WINDOWS($w,WBFils) -state disabled 
 
     tixButtonBox $w.but -orientation horizontal -relief raised -padx 0 -pady 0
 
@@ -290,11 +294,11 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	    {exclude  "Exclude"   disabled  wokExcludeItem} \
 	    {hide     "Hide="     disabled  wokHideEq} \
 	    {rmeq     "rm ="      disabled  wokrmEq} \
-	    {editcopy "To Editor" disabled  wokeditcopy} \
+	    {editcopy "Edit"      disabled  wokeditcopy} \
 	    {search   "Search"    disabled  wokeditsearch} \
 	    {xdiff    "More Diff" disabled  wokxdiff} \
 	    {comment  "Comments"  disabled  wokEnterComment} \
-	    {saveas   "Save "     disabled  wokSaveas} \
+	    {saveas   "Save "     active  wokSaveas} \
 	    ]
 
     foreach b $buttons {
@@ -315,39 +319,21 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	[$w.warbut subwidget [lindex $b 0]] configure \
 	-state [lindex $b 2] -command [list [lindex $b 3] $w] -width 11
     }
-
-    if [wokStore:Queue:Enabled $shop $IWOK_WINDOWS($w,WBPere)] {
-	set trigger [wokStore:Trigger:Exists $shop]    
+    
+    if { $IWOK_WINDOWS($w,queue_enabled) } {
 	button $w.stor  -text "Store"
-	$w.stor configure -state disabled -command [list wokStoreThat $w]
+	$w.stor configure -state disabled -command [list wokStoreThat $w store]
 	
 	tixForm $w.file ; tixForm $w.admin -left $w.file
-	if { $trigger != {} } {
-	    menubutton $w.shrt -menu $w.shrt.m -text Trigger -underline 0 -takefocus 0
-	    menu $w.shrt.m
-	    $w.shrt.m add command -label "Show content" -underline 0 -command [list wokShowTrig $w $trigger]
-	    tixForm $w.shrt -left $w.admin
-	}
-
 	tixForm $w.help -right -2
 	tixForm $w.h1  -top $w.file -left 2 -right %28
 	tixForm $w.wbs -top $w.file -left $w.h1 -right $w.h2 
 	tixForm $w.h2  -top $w.file -right -2 -left %78
 	tixForm $w.but -top $w.h1 -left 2 
-	
-	set IWOK_WINDOWS($w,trig) 0 
-	
-	if { $trigger != {} } {
-	    checkbutton  $w.trig -text "Trigger" -variable  IWOK_WINDOWS($w,trig)
-	    $w.trig configure -state disabled
-	    tixForm $w.trig -top $w.h1 -left $w.but 
-	    tixForm $w.stor -top $w.h1 -left $w.trig -right -1
-	} else {
-	    tixForm $w.stor -top $w.h1 -left $w.but -right -1
-	}
+	tixForm $w.stor -top $w.h1 -left $w.but -right -1
     } else {
 	button $w.stor  -text "Update $IWOK_WINDOWS($w,WBPere)"
-	$w.stor configure -state disabled -command [list wokUpdateThat $w]
+	$w.stor configure -state disabled -command [list wokStoreThat $w copy]
 	tixForm $w.file 
 	tixForm $w.admin -left $w.file
 	tixForm $w.help  -right -2
@@ -357,11 +343,11 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	tixForm $w.but   -top $w.h1 -left 2 
 	tixForm $w.stor  -top $w.h1 -left $w.but -right -1
     }
-
+    
     tixForm $w.top -top $w.but -left 2 -right -2 -bottom  $w.warbut
     tixForm $w.warbut -bottom -0 -left %66 -right %100
     tixForm $w.lab -left 0 -bottom -0  -right $w.warbut
-
+    
     set IWOK_WINDOWS($w,menu)   $w.file.m
     set IWOK_WINDOWS($w,admin)  $w.admin.m 
     set IWOK_WINDOWS($w,label)  $w.lab
@@ -371,10 +357,13 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
     set IWOK_WINDOWS($w,hlist2) $hlist2
     set IWOK_WINDOWS($w,button) $w.but
     set IWOK_WINDOWS($w,warbut) $w.warbut
-    set IWOK_WINDOWS($w,actrig) $w.trig
     set IWOK_WINDOWS($w,store)  $w.stor
     set IWOK_WINDOWS($w,shop)   $shop
-    set IWOK_WINDOWS($w,qroot)  [wokStore:Report:GetRootName $shop 0]
+    if { "[info procs wokStore:Report:GetRootName]" == "wokStore:Report:GetRootName" } {
+	set IWOK_WINDOWS($w,qroot)  [wokStore:Report:GetRootName]
+    } else {
+	set IWOK_WINDOWS($w,qroot) /nowhere
+    }
 
     set allUnits  [wokPreparInitFils $w $wb]
     wokPreparInitPere $w $wb
@@ -416,18 +405,6 @@ proc wokPrepare { {loc {}} {les_uds {}} } {
 	    unset next
 	}
     }
-
-    bind [$w.wbs.mas subwidget entry] <Return> {
-	wokPreparInitPere [winfo toplevel %W] [%W get]
-	update
-    }
-
-    bind [$w.wbs.rev subwidget entry] <Return> {
-	wokPreparInitFils [winfo toplevel %W] [%W get]
-	update
-    }
-
-    ;#bind $w <Destroy>  { if [winfo exists %W]  { wokPrepareExit %W }}
 
     return
 }
@@ -475,15 +452,9 @@ proc wokDelall { w } {
 
 proc wokPreparInitPere { w wb } {
     global IWOK_WINDOWS 
-    global IWOK_GLOBALS
     set fwb $IWOK_WINDOWS($w,shop):$wb
-    if [wokinfo -x $fwb] {
-	wokActiveStore $w disabled
-	wokClearHlist $w [list hlist hlist2]
-    } else {
-	wokClearHlist $w [list hlist hlist1 hlist2]
-	wokDialBox .notawb {Not a workbench} "The workbench $fwb does not exist" {} -1 OK
-    }
+    wokActiveStore $w disabled
+    wokClearHlist $w [list hlist hlist2]
     return
 }
 ;#
@@ -495,17 +466,13 @@ proc wokPreparInitFils { w wb } {
     set allUnits  {}
     set fwb $IWOK_WINDOWS($w,shop):$wb
     set IWOK_WINDOWS($w,LWB) [w_info -A $fwb]
-    if [wokinfo -x $fwb] {
-	$IWOK_WINDOWS($w,hlist1) delete all
-	foreach i [ lsort [w_info -a $fwb]] {
-	    $IWOK_WINDOWS($w,hlist1) add $i -itemtype imagetext \
-		    -text [lindex $i 1] -image $IWOK_GLOBALS(image,[lindex $i 0])
-	    lappend allUnits [list [lindex $i 0] [lindex $i 1] $IWOK_GLOBALS(image,[lindex $i 0])]
-	}
-	wokClearHlist $w [list hlist hlist2]
-    } else {
-	wokDialBox .notawb {Not a workbench} "The workbench $fwb does not exist" {} -1 OK
+    $IWOK_WINDOWS($w,hlist1) delete all
+    foreach i [ lsort [w_info -a $fwb]] {
+	$IWOK_WINDOWS($w,hlist1) add $i -itemtype imagetext \
+		-text [lindex $i 1] -image $IWOK_GLOBALS(image,[lindex $i 0])
+	lappend allUnits [list [lindex $i 0] [lindex $i 1] $IWOK_GLOBALS(image,[lindex $i 0])]
     }
+    wokClearHlist $w [list hlist hlist2]
     return $allUnits
 }
 
@@ -744,75 +711,42 @@ proc wokrmEq { w } {
     return
 }
 ;#
-;#;+ xxx.tcl  /adv_23/WOK/k1dev/subiwok/prod/WOKTclLib/src
-;# met a jour le workbench pere avec le contenu du report. Pas de store
-;#;# Mkf.tcl  /adv_23/WOK/k1dev/subiwok/prod/WOKTclLib/src
-;#
-proc wokUpdateThat { w } {
-    global IWOK_WINDOWS
-    global IWOK_GLOBALS
-
-    $IWOK_WINDOWS($w,text) delete 0.0 end
-    msgsetcmd wokMessageInText $IWOK_WINDOWS($w,text)
-    set hli $IWOK_WINDOWS($w,hlist)
-    set lpere [w_info -l $IWOK_WINDOWS($w,shop):$IWOK_WINDOWS($w,WBPere)]
-    foreach U [$hli info children] {
-	if { [lsearch $lpere $U] == -1 } {
-	    set T $IWOK_GLOBALS(L_S,[uinfo -t $U])
-	    catch { ucreate -${T} $IWOK_WINDOWS($w,WBPere):$U }
-	}
-	set dest [wokinfo -p source:. $IWOK_WINDOWS($w,shop):$IWOK_WINDOWS($w,WBPere):$U]
-	if { [file exist $dest] && [file writable $dest] } {
-	    foreach f [$hli info children $U] {
-		set e [lindex [split $f ^] 1]
-		if { "[lindex $e 0]" == "#" || "[lindex $e 0]" == "+" } {
-		    set from [lindex $e 2]/[lindex $e 1]
-		    set to $dest/[lindex $e 1]
-		    if { [file exists $to] } {
-			if { [file writable $to] } {
-			    msgprint -c WOKVC -i "Saving file $to in ${to}-sav"
-			    wokUtils:FILES:copy $to ${to}-sav
-			    msgprint -c WOKVC -i "Copying $from to $to"
-			    wokUtils:FILES:copy $from $to
-			} else {
-			    msgprint -c WOKVC -e "File $to cannot be overwritten"
-			}
-		    } else {
-			msgprint -c WOKVC -i "Copying $from to $to"
-			wokUtils:FILES:copy $from $to
-		    }
-		}
-	    }
-	}
-    }
-    msgunsetcmd
-    $IWOK_WINDOWS($w,label) configure -text "Workbench $IWOK_WINDOWS($w,WBPere) has been updated."
-    return
-}
-;#
 ;# fait wstore avec comme report le contenu du texte 
 ;#
-proc wokStoreThat { args } { 
+proc wokStoreThat { w option } { 
     global IWOK_WINDOWS
     global IWOK_GLOBALS
     global wokfileid
+    global tk_version
     global env
 
-    set w [lindex $args 0]
-    set asfile [expr { ([lindex $args 1] != {}) ? 1 : 0 } ]
+    set defrep $env(HOME)/[wokinfo -n $IWOK_WINDOWS($w,shop)].$IWOK_WINDOWS($w,WBFils).[id user].report
+    if { "$tk_version" == "4.2" } {
+	set rep [tk_getSaveFile]
+	if { $rep == {} } { 
+	    set rep $defrep
+	}
+    } else {
+	set rep $defrep
+    }
 
-    set rep $env(HOME)/$IWOK_WINDOWS($w,WBFils).[id user].report
     set wokfileid [open $rep w]
 
-    wokPrepare:Report:Output banner $IWOK_WINDOWS($w,shop) $IWOK_WINDOWS($w,WBFils)
+    wokPrepare:Report:Output banner \
+	    $IWOK_WINDOWS($w,shop) $IWOK_WINDOWS($w,WBPere) $IWOK_WINDOWS($w,WBFils)
 
     set suspect 0
     tixBusy $w on 
     update
     set hli $IWOK_WINDOWS($w,hlist)
     set pfx $IWOK_WINDOWS($w,shop):$IWOK_WINDOWS($w,WBFils)
+    set lu_pere [w_info -l $IWOK_WINDOWS($w,WBPere)]
+    set lu_new {}
     foreach U [$hli info children] {
 	set T [uinfo -t ${pfx}:$U]
+	if { [lsearch $lu_pere $U] == -1 } {
+	    lappend lu_new [list $T $U]
+	}
 	wokPrepare:Report:Output uheader $U.$T
 	foreach f [$hli info children $U] {
 	    if { [lindex [$hli info data $f] 0] } {
@@ -836,8 +770,18 @@ proc wokStoreThat { args } {
     close $wokfileid
     catch {unset wokfileid}
 
-    if { $asfile } { 
+    if { "$option" == "asfile" } { 
 	$IWOK_WINDOWS($w,label) configure -text "File $rep has been created."
+	return
+    }
+    
+    tixBusy $w on
+    $IWOK_WINDOWS($w,text) delete 0.0 end
+    msgsetcmd wokMessageInText $IWOK_WINDOWS($w,text)
+
+    if { "$option" == "copy" } {
+	wstore $rep -copy 
+	set mess "Workbench $IWOK_WINDOWS($w,WBPere) has been updated."
     } else {
 	if { $suspect } {
 	    set retval [wokDialBox .wokcd {Duplicate entries} \
@@ -848,19 +792,33 @@ proc wokStoreThat { args } {
 		return
 	    }
 	}
-	tixBusy $w on
-	$IWOK_WINDOWS($w,text) delete 0.0 end
-	msgsetcmd wokMessageInText $IWOK_WINDOWS($w,text)
-	if { $IWOK_WINDOWS($w,trig) != 0 } {
-	     wstore -ws $IWOK_WINDOWS($w,shop) -trig $rep
-	} else {
-	    catch { wstore -ws $IWOK_WINDOWS($w,shop) $rep }
-	}
-	msgunsetcmd
-	$IWOK_WINDOWS($w,label) configure -text "Report $rep has been stored."
-	tixBusy $w off
-    }
 
+	if { $lu_new != {} } {
+	    if { "[wokIntegre:RefCopy:Welcome]" == "no" } {
+		set text "You will create new units. \nThis should be done BY your reference administrator before storing this report.\n"
+		set welcome {}
+		foreach x $lu_new {
+		    set tw \
+			    "ucreate -$IWOK_GLOBALS(L_S,[lindex $x 0]) $IWOK_WINDOWS($w,WBPere):[lindex $x 1]"
+		    lappend welcome $tw
+		    append text $tw "\n"
+		}
+		set retval [wokDialBox .wokcd {New units} $text warning 1 {OK}]
+		wokUtils:FILES:ListToFile $welcome $env(HOME)/welcome.tcl
+		$IWOK_WINDOWS($w,label) configure -text \
+			"File $env(HOME)/welcome.tcl has been created. Sorry for that.."
+		msgunsetcmd
+		tixBusy $w off
+		return
+	    }
+	}
+
+	wstore  $rep 
+	set mess "Report $rep has been stored."
+    }
+    msgunsetcmd
+    $IWOK_WINDOWS($w,label) configure -text $mess
+    tixBusy $w off
     return
 }
 ;#
@@ -886,17 +844,14 @@ proc wokEnterComment { w } {
 ;#
 proc wokActiveStore { w state } {
     global IWOK_WINDOWS
-    set IWOK_WINDOWS($w,trig) 0
-    if [wokStore:Queue:Enabled $IWOK_WINDOWS($w,shop) $IWOK_WINDOWS($w,WBPere)] { 
+    	    
+    if { $IWOK_WINDOWS($w,queue_enabled) } { 
 	$IWOK_WINDOWS($w,store) configure -state $state -text "Store" \
-		-command [list wokStoreThat $w]
-	if { [info commands $IWOK_WINDOWS($w,actrig)] != {} } {
-	    $IWOK_WINDOWS($w,actrig) configure -state $state
-	}
+		-command [list wokStoreThat $w store]
     } else {
 	$IWOK_WINDOWS($w,store) configure \
 		-state $state -text "Update $IWOK_WINDOWS($w,WBPere)" \
-		-command [list wokUpdateThat $w]
+		-command [list wokStoreThat $w copy]
     }
     return
 }

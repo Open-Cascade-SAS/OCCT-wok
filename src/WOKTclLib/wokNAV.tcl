@@ -227,24 +227,15 @@ proc wokNAV:Tree:Updateworkbench { w loc dir } {
     wokNAV:Initworkbench
     set disp  $IWOK_GLOBALS(workbench,disp) 
     set fdate $IWOK_GLOBALS(workbench,fdate)
-    set image $IWOK_GLOBALS(workbench,image)
-
-    if { [wokIntegre:BASE:GetType $loc] != {} } {
-	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^_Queue] {
-	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^_Queue \
-		    -itemtype imagetext -text Queue \
-		    -image [tix getimage queue] \
-		    -data  [list ${loc}:Queue trig_Queue Queue [tix getimage queue] $fdate $disp]
-	}
-	if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^_Reposit] {
-	    $IWOK_WINDOWS($w,NAV,hlist) add ${dir}^_Reposit \
-		    -itemtype imagetext -text Repository \
-		    -image [tix getimage reposit] \
-		    -data  [list ${loc}:Repository trig_Repository Repository [tix getimage reposit] $fdate $disp]
-	}
-    }
 
     foreach name [sinfo -w $loc] {
+
+	if [wokStore:Queue:Exists ${loc}:${name}] {
+	    set image $IWOK_GLOBALS(workbenchq,image)	
+	} else {
+	    set image $IWOK_GLOBALS(workbench,image)	    
+	}
+
 	$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^${name} -text $name -itemtype imagetext  \
 		-image $image \
 		-data  [list ${loc}:${name} workbench $name $image $fdate $disp]
@@ -254,11 +245,33 @@ proc wokNAV:Tree:Updateworkbench { w loc dir } {
     return
 }
 ;#
-;#
+;# loc est une adresse de workbench.
 ;#
 proc wokNAV:Tree:Updatedevunit { w loc dir } {
     global IWOK_WINDOWS
     global IWOK_GLOBALS
+
+    set disp  $IWOK_GLOBALS(workbench,disp) 
+    set fdate $IWOK_GLOBALS(workbench,fdate)
+    set image $IWOK_GLOBALS(workbench,image)
+
+    if { [wokStore:Queue:Exists $loc] } {
+	if { [wokStore:Report:SetQName $loc] != {} } {
+	    if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^_Queue] {
+		$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^_Queue \
+			-itemtype imagetext -text Queue \
+			-image [tix getimage queue] \
+			-data  [list ${loc}:Queue trig_Queue Queue [tix getimage queue] $fdate $disp]
+	    }
+	    if ![$IWOK_WINDOWS($w,NAV,hlist) info exists ${dir}^_Reposit] {
+		$IWOK_WINDOWS($w,NAV,hlist) add ${dir}^_Reposit \
+			-itemtype imagetext -text Repository \
+			-image [tix getimage reposit] \
+			-data  [list ${loc}:Repository trig_Repository Repository [tix getimage reposit] $fdate $disp]
+	    }
+	}
+    }
+
     wokNAV:Initdevunit $loc
     foreach d [lsort -command wokSortUnit [w_info -a $loc]] {
 	set name [lindex $d 1]
@@ -659,11 +672,13 @@ proc wokNAV:Initworkshop { args  } {
 
 proc wokNAV:Initworkbench { args } {
     global IWOK_GLOBALS
+    global env
     if ![info exists IWOK_GLOBALS(workbench,initdone)] {
 	set IWOK_GLOBALS(workbench,initdone) 1
 	set IWOK_GLOBALS(workbench,disp)  [list 18 18 600 30 12 1.4]
 	set IWOK_GLOBALS(workbench,fdate) wokGetworkbenchdate
 	set IWOK_GLOBALS(workbench,image) [tix getimage workbench]
+	set IWOK_GLOBALS(workbenchq,image) [tix getimage workbenchq]
     }
     return 
 }

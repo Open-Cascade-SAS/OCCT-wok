@@ -13,19 +13,20 @@ proc wokIntegreUsage { } {
     puts stderr { usage : wintegre [ <reportID> ]}
     puts stderr { }        
     puts stderr {          <reportID>  is a number. The range of the report in the queue.}
-    puts stderr {          You get this number by using the command : wstore -ls }
-    puts stderr { }
-    puts stderr {  -ref    <Base-number> }
-    puts stderr {          Used to init version of elements in the repository.}
+    puts stderr {          You get this number by using the command : wstore -wb <name> -ls }
+    puts stderr {          where <name> is the workbench used a the storage reference.}
     puts stderr { }        
     puts stderr {  -all      : Process all reports in the queue. }
     puts stderr { }
-    puts stderr {  -norefcopy: Update the repository but don't update target workbench." }
-    puts stderr {  -nobase   : Update the target workbench but don't update the repository. }
-    puts stderr {              These 2 previous options are mutually exclusive. }
-    puts stderr {  -ws Shop  : Use Shop as working shop. Shop has the form Factory:shop. }
-    puts stderr {              Default is the current workshop.                          }
-    puts stderr {  -root wb  : Use wb as the target workbench. }
+    puts stderr {  -wb Wbnam : Use Wbnam as working workbench. }
+    puts stderr {              Default is the current workbench. }
+    puts stderr { -trig file : Use trigger defined in <file>. Trigger must be a Tcl proc }
+    puts stderr {              whose name and definition is wintegre_trigger { table notes num } }
+    puts stderr {              This proc is invoked for each integration and receive 3 arguments: }
+    puts stderr {              table reflects the contents of the integration. (units and files)  }
+    puts stderr {              notes contains comments of integration }
+    puts stderr {              num the integration number.            } 
+    puts stderr { }
     puts stderr {  -param    : Show the current value of parameters. }
     return
 }
@@ -35,125 +36,92 @@ proc wokIntegreUsage { } {
 proc wintegre { args } {
 
     set tblreq(-h)         {}
-    set tblreq(-ref)       value_required:number
     set tblreq(-all)       {}
-    set tblreq(-norefcopy) {}
-    set tblreq(-nobase)    {}
-    set tblreq(-ws)        value_required:string 
-    set tblreq(-root)      value_required:string
-    set tblreq(-V)         {}
+    set tblreq(-wb)        value_required:string 
+    set tblreq(-v)         {}
+    set tblreq(-trig)      value_required:file 
     set tblreq(-param)     {}
-
-    set disallow(-nobase)    {-norefcopy}
-    set disallow(-norefcopy) {-nobase}
 
     set param {}
     if { [wokUtils:EASY:GETOPT param tabarg tblreq wokIntegreUsage $args] == -1 } return
-    if { [wokUtils:EASY:DISOPT tabarg disallow wokIntegreUsage ] == -1 } return
 
-    set VERBOSE [info exists tabarg(-V)]
+    set VERBOSE [info exists tabarg(-v)]
 
-    if { $VERBOSE } {
-	puts "param = $param"
-	catch {parray tabarg}
+    if { [set trig [info exists tabarg(-trig)]] } {
+	if { [file exists [set trigfile $tabarg(-trig)]] } {
+	    uplevel #0 source $trigfile
+	    if { "[info procs wintegre_trigger]" == "wintegre_trigger" } {
+		set trig 1
+	    } else {
+		msgprint -c WOKVC -e "Sourcing $trigfile does not create proc named wintegre_trigger. Ignored"
+		set trig 0
+	    }
+	} else {
+	    msgprint -c WOKVC -e "File $trigfile not found. Ignored"
+	    set trig 0
+	}
+    } else {
+	set trig 0
     }
-    
+
     if { [info exists tabarg(-h)] } {
 	wokIntegreUsage 
 	return
     }
 
-    if [info exists tabarg(-ws)] {
-	set fshop $tabarg(-ws)
+    if [info exists tabarg(-wb)] {
+	set curwb $tabarg(-wb)
     } else {
-	set fshop [Sinfo -s]
+	if { [set curwb [wokinfo -w [wokcd]]] == {} } {
+	    msgprint -c WOKVC -e "Current location [wokcd] is not a workbench."
+	    return
+	}
     }
 
-    if { [info exists tabarg(-param)] } {
-	wokIntegre:BASE:GetType $fshop 1
+    if { [wokStore:Report:SetQName $curwb] == {} } {
 	return
     }
 
+    if { [info exists tabarg(-param)] } {
+	msgprint -c WOKVC -i "Workbench $curwb :"
+	msgprint -c WOKVC -i "Welcome new units ?: [wokIntegre:RefCopy:Welcome]"
+	msgprint -c WOKVC -i "Reports queue  under [wokStore:Report:GetRootName]" 
+	msgprint -c WOKVC -i "Repository ([wokIntegre:BASE:GetType]) under [wokIntegre:BASE:GetRootName]" 
+	msgprint -c WOKVC -i "Integration counter in : [wokIntegre:Number:GetName]"
+	msgprint -c WOKVC -i "Integration journal in : [wokIntegre:Journal:GetName]"
 
-    set vc [file join [wokinfo -pAdmDir:. $fshop] VC.tcl]
-    if [file exists $vc] {
-	source $vc
-    } else {
-	msgprint -c WOKVC -e "Pas de fichier VC.tcl dans adm de ${fshop} ."
-	return -1
-    }
-
-    if { [set refer [info exists tabarg(-ref)]] } {
-	set vrsref $tabarg(-ref)
-    }
-
-    set refcopy [expr ![info exists tabarg(-norefcopy)]]
-    set nobase  [info exists tabarg(-nobase)]
-
-    if [info exists tabarg(-root)] {
-	set wbtop $tabarg(-root)
-	msgprint -c WOKVC -i "Using $wbtop as target workbench."
-    } else {
-	set wbtop [wokIntegre:RefCopy:GetWB]
+	return
     }
 
     if { [info exists tabarg(-all)] } {
-	set LISTREPORT [wokStore:Report:Get all $fshop ]
+	set LISTREPORT [wokStore:Report:Get all]
     } else {
 	if { [llength $param] == 1 } {
 	    set ID [lindex $param 0]
-	    set LISTREPORT [wokStore:Report:Get $ID $fshop ]
+	    set LISTREPORT [wokStore:Report:Get $ID]
 	} else {
 	   wokIntegreUsage 
 	    return -1 
 	}
     }
 	
-    ;# fin analyse des arguments
-
-    if { $VERBOSE } {
-	puts stderr "refer      = $refer"
-	if { $refer } { puts stderr "  vrsref = $vrsref" }
-	puts stderr "refcopy    = $refcopy"
-	puts stderr "nobase     = $nobase"
-	puts stderr "fshop      = $fshop"
-	puts stderr "wbtop      = $wbtop"
-	puts stderr "LISTREPORT = $LISTREPORT"
-    }
-
-    if { [set BTYPE [wokIntegre:BASE:InitFunc $fshop]] == {} } {
+    if { [set BTYPE [wokIntegre:BASE:InitFunc]] == {} } {
 	return -1
     }
-    ;#
-    ;# ClearCase : La base n'est pas geree par WOK
-    ;#
-    if { "$BTYPE" == "ClearCase" } {
-	wokIntegreClearCase
-	return
+
+    if { ![file exists [set broot [wokIntegre:BASE:GetRootName]]] } {
+	msgprint -c WOKVC -e "The repository does not exists."
+	return -1
     }
-    ;#
-    ;# Autre : SCCS, RCS, NOBASE, SIMPLE geree par WOK
-    ;#
-    set broot [wokIntegre:BASE:GetRootName $fshop 1]
+
     if ![file writable $broot] {
 	msgprint -c WOKVC -e "You cannot write in $broot."
 	return -1
     }
 
- 
 
-    set ros [wokIntegre:RefCopy:OpenWB]
-    set los [wokIntegre:RefCopy:OpenUD]
+    wokIntegrebase
 
-    if { "$BTYPE" == "NOBASE" } {
-	wokIntegrenobase
-    } else {
-	if { $nobase } {
-	    wokIntegrenobase
-	} else {
-	    wokIntegrebase
-	}
-    }
     return
 }
 #;>
@@ -163,67 +131,52 @@ proc wokIntegrebase  { } {
     uplevel {
         foreach REPORT $LISTREPORT {
 	    if { $VERBOSE } { msgprint -c WOKVC -i "Processing report in $REPORT" }
-	    set num [wokIntegre:Number:Get $fshop 1]
-	    if { [wokUtils:FILES:dirtmp [set dirtmp /tmp/wintegre[id process]]] == -1 } {
+	    set num [wokIntegre:Number:Get]
+	    if { [wokUtils:FILES:dirtmp [set dirtmp /tmp/wintegre[pid]]] == -1 } {
 		msgprint -c WOKVC -e "Unable to create working directory"
 		return -1
 	    }
 	    set jnltmp $dirtmp/wintegre.jnl
 	    set jnlid [open $jnltmp w]
-	    set comment [wokIntegre:Journal:Mark [wokinfo -n [wokinfo -s $fshop]] $num rep]
+	    set comment [wokIntegre:Journal:Mark $curwb $num rep]
 	    ;#
 	    ;# Lecture du report
 	    ;#  
-	    set mode normal
-	    if { $refer } { set mode ref }
-	    catch {unset table}
-	    set stat [wokStore:Report:Process $mode $REPORT table info notes]
+	    set stat [wokStore:Report:Process normal $REPORT table info notes]
 	    if { $stat == -1 } {
 		wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
 		return -1
 	    }
-	    ;#
-	    ;#  Recup version associee a l'ilot et Inits
-	    ;#
-	    if { $refer } {
-		set version [wokIntegre:Version:Check $fshop $vrsref]
-		set func wokIntegre:BASE:InitRef
-	    } else {
-		set version [wokIntegre:Version:Get $fshop]
-		set func wokIntegre:BASE:UpdateRef
-	    }
-	    
-	    if { $version == {} } {
-		msgprint -c WOKVC -e "Unable to get base version for $fshop"
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
+	    wokPrepare:Report:ReadInfo $info workshop wmaster workbench
+	    if ![info exists workbench] {
+		msgprint -c WOKVC -e "Old format report. Use wprepare to create a new one."
 		return -1
 	    }
-	    ;#
+
+	    set version [wokIntegre:Version:Get]
+
 	    ;# 1. Bases temporaires : Ecriture de la commande
 	    ;# 
 	    set cmdtmp $dirtmp/wintegre.cmd
 	    set cmdid [open $cmdtmp w]
 	    
-	    $func $broot table $version $comment $cmdid
+	    wokIntegre:BASE:UpdateRef $broot table $version $comment $cmdid
 	    wokIntegre:BASE:EOF $cmdid ; close $cmdid
 
 	    ;#
 	    ;# 1 bis. Tester [id user] peut ecrire dans le workbench qui sert de REFCOPY
 	    ;#
-	    if { $refcopy == 1 } {
-		set write_ok [wokIntegre:RefCopy:Writable $fshop table $wbtop $ros $los]
-		if { $write_ok == -1 } {
-		    msgprint -c WOKVC -e "You cannot write or create units in the workbench $wbtop"
-		    wokIntegreCleanup $broot table [list $cmdid $jnlid] $dirtmp 
-		    return -1
-		}
-	    }    
+	    set write_ok [wokIntegre:RefCopy:Writable table $curwb]
+	    if { $write_ok == -1 } {
+		msgprint -c WOKVC -e "You cannot write or create units in the workbench $curwb"
+		wokIntegreCleanup $broot table [list $cmdid $jnlid] $dirtmp 
+		return -1
+	    }
 	    
 	    ;#
 	    ;# 2. Bases temporaires : Execution et ecriture journal temporaire
 	    ;#    
-	    wokPrepare:Report:ReadInfo $info station workshop workbench
-	    wokIntegre:Journal:WriteHeader rep $num $workbench $station $jnlid
+	    wokIntegre:Journal:WriteHeader rep $num $workbench xxxxx $jnlid
 	    
 	    set statx [wokIntegre:BASE:Execute $VERBOSE $cmdtmp $jnlid] 
 	    if { $statx != 1 } {
@@ -242,119 +195,69 @@ proc wokIntegrebase  { } {
 		msgprint -c WOKVC -i [format "Updating unit %s in repository" $UD]
 		wokIntegre:BASE:Fill $broot/$UD [wokIntegre:BASE:BTMPCreate $broot $UD 0]
 	    }
-
-	    
 	    ;#
 	    ;# 4. Fermer le journal temporaire
 	    ;#
 	    wokIntegre:Journal:WriteNotes $notes $jnlid ; close $jnlid
-	    
+	    set saved_notes $notes
 	    ;#
-	    ;# 5. Mettre a jour le journal , le scoop et le compteur et le numero de version si -ref
+	    ;# 5. Mettre a jour le journal , le scoop et le compteur 
 	    ;#
-	    wokUtils:FILES:concat [wokIntegre:Journal:GetName $fshop 1] $jnltmp
-	    wokIntegre:Scoop:Create $fshop $jnltmp
+	    wokUtils:FILES:concat [wokIntegre:Journal:GetName] $jnltmp
+	    wokIntegre:Scoop:Create $jnltmp
 	    
-	    if { [wokIntegre:Number:Put $fshop [wokIntegre:Number:Incr $fshop]] == {} } {
+	    if { [wokIntegre:Number:Put  [wokIntegre:Number:Incr ]] == {} } {
 		msgprint -c WOKVC -e "during update of counter."
 		wokIntegreCleanup $broot table [list $cmdid $jnlid] $dirtmp 
 		return -1
 	    }
 	    
-	    if { $refer } {
-		wokIntegre:Version:Put $fshop $version
-	    }
-	    
 	    ;#
-	    ;# 6. Si refcopy = 1 Mise a jour de WBTOP 
+	    ;# 6. Mise a jour de CURWB et appel trigger.
 	    ;#
-	    if { $refcopy == 1 } {
-		catch {unset table}
-		wokIntegre:Journal:PickReport $jnltmp table notes $num
-		wokIntegre:RefCopy:GetPathes $fshop table $wbtop $ros $los
-		set dirtmpu /tmp/wintegrecreateunits[id process]
-		catch {
-		    rmdir -nocomplain $dirtmpu 
-		    mkdir -path $dirtmpu
-		}
-		set chkout $dirtmpu/checkout.cmd
-		set chkid  [open $chkout w]
-		wokIntegre:RefCopy:FillRef $fshop table $chkid
-		wokIntegre:BASE:EOF $chkid 
-		close $chkid
-		msgprint -c WOKVC -i "Updating units in target workbench(es) $wbtop $ros"
-		set statx [wokIntegre:BASE:Execute $VERBOSE $chkout] 
-		if { $statx != 1 } {
-		    msgprint -c WOKVC -e "during checkout(Get). The report has not been removed."
-		    wokIntegreCleanup $broot table [list $chkid] [list $dirtmpu]
-		    return -1
-		}
-		wokIntegreCleanup $broot table [list $chkid] [list $dirtmpu]
-	    }
-	    
-	    ;#
-	    ;# 8. Detruire le report et menage
-	    ;#
-	    wokStore:Report:Del $REPORT 1
-	    wokIntegreCleanup $broot table [list $cmdid $jnlid] [list $dirtmp]
-	}
-    }
-}
-#;>
-# Miscellaneous: Assemblage traitement sans mise a jour de la base. 
-#;<
-proc wokIntegrenobase  { } {
-    uplevel {
-	foreach REPORT $LISTREPORT {
-	    if { $VERBOSE } {msgprint -c WOKVC -i "Processing report in $REPORT"}
-	    set num [wokIntegre:Number:Get $fshop 1]
-	    if { [wokUtils:FILES:dirtmp [set dirtmp /tmp/wintegre[id process]]] == -1 } {
-		msgprint -c WOKVC -e "Unable to create working directory"
-		return -1
-	    }
-	    set jnltmp $dirtmp/wintegre.jnl
-	    set jnlid [open $jnltmp w]
-	    set comment [wokIntegre:Journal:Mark [wokinfo -n [wokinfo -s $fshop]] $num rep]
-	    ;#
-	    ;# Lecture du report
-	    ;#  
 	    catch {unset table}
-	    set stat [wokStore:Report:Process normal $REPORT table info notes]
-	    if { $stat == -1 } {
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
+	    wokIntegre:Journal:PickReport $jnltmp table notes $num
+	    wokIntegre:RefCopy:GetPathes  table $curwb
+	    set dirtmpu /tmp/wintegrecreateunits[pid]
+	    catch {
+		rmdir -nocomplain $dirtmpu 
+		mkdir -path $dirtmpu
+	    }
+	    set chkout $dirtmpu/checkout.cmd
+	    set chkid  [open $chkout w]
+	    wokIntegre:RefCopy:FillRef  table $chkid
+	    wokIntegre:BASE:EOF $chkid 
+	    close $chkid
+	    msgprint -c WOKVC -i "Updating units in workbench $curwb"
+	    set statx [wokIntegre:BASE:Execute $VERBOSE $chkout] 
+	    if { $statx != 1 } {
+		msgprint -c WOKVC -e "during checkout(Get). The report has not been removed."
+		wokIntegreCleanup $broot table [list $chkid] [list $dirtmpu]
 		return -1
 	    }
+
+	    ;#
+	    ;# 8. Activate trigger if any.
+	    ;#
+	    if { $trig } {
+		msgprint -c WOKVC -i "Invoking trigger file $trigfile"
+		catch { 
+		    wokIntegre:Journal:Slice $jnltmp $num $num wintegre_trigger {}
+		    rename wintegre_trigger {}
+		} status
+		if { $status != {} } {
+		    msgprint -c WOKVC -w "Trigger status = $status"
+		}
+	    }
+
+	    wokIntegreCleanup $broot table [list $chkid] [list $dirtmpu]
 	    
-	    set write_ok [wokIntegre:RefCopy:Writable $fshop table $wbtop $ros $los]
-	    if { $write_ok == -1 } {
-		msgprint -c WOKVC -e "You cannot write or create units in the workbench $wbtop"
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp
-		return -1
-	    }
-	    set pathes_ok [wokIntegre:RefCopy:GetPathes $fshop table $wbtop $ros $los]
-	    if { $write_ok == -1 } {
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp
-		return -1
-	    }
+	    ;#
+	    ;# 9. Detruire le report et menage
+	    ;#
+	    wokStore:Report:Del $REPORT 
+	    wokIntegreCleanup $broot table [list $cmdid $jnlid] [list $dirtmp]
 	    
-	    wokPrepare:Report:ReadInfo $info station workshop workbench
-	    wokIntegre:Journal:WriteHeader rep $num $workbench $station $jnlid
-	    
-	    set copy_ok [wokIntegre:RefCopy:Copy $VERBOSE table $jnlid]
-	    if { $copy_ok == -1 } {
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp
-		return -1
-	    }
-	    wokIntegre:Journal:WriteNotes $notes $jnlid ; close $jnlid
-	    wokUtils:FILES:concat [wokIntegre:Journal:GetName $fshop 1] $jnltmp
-	    if { [wokIntegre:Number:Put $fshop [wokIntegre:Number:Incr $fshop]] == {} } {
-		msgprint -c WOKVC -e "during update of counter."
-		wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
-		return -1
-	    }
-	    
-	    wokStore:Report:Del $REPORT 1
-	    wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
 	}
     }
 }
@@ -389,10 +292,10 @@ proc wokIntegreCleanup { broot table listid dirtmp } {
 # Se fait en fonction du type de repository code dans le parametre VC_TYPE
 #
 #;<
-proc wokIntegre:BASE:InitFunc { fshop } {
+proc wokIntegre:BASE:InitFunc { } {
     global env
     set wdir $env(WOK_LIBRARY)
-    set type [wokIntegre:BASE:GetType $fshop ]
+    set type [wokIntegre:BASE:GetType]
     if { $type != {} } {
 	set interface $wdir/WOKVC.$type
 	if [file exist $interface] {
@@ -404,34 +307,6 @@ proc wokIntegre:BASE:InitFunc { fshop } {
 	}
     } else {
 	msgprint -c WOKVC -w "Unknown type for source repository."
-	return {}
-    }
-}
-#;>
-# Retourne le type de la base courante.  {} sinon => utiliser ca pour savoir si il y en une !!
-#;<
-proc wokIntegre:BASE:GetType { fshop {dump 0} } {
-    set lvc [wokparam -l VC $fshop]
-    if { $lvc != {} } {
-	if { [lsearch -regexp $lvc %VC_TYPE=*] != -1 } {
-	    if { $dump } {
-		foreach dir [wokparam -L $fshop] {
-		    if [file exists $dir/VC.edl] {
-			msgprint -c WOKVC -i "Following definitions in file : $dir/VC.edl"
-			break
-		    }
-		}
-		msgprint -c WOKVC -i "Repository root          : [wokparam -e %VC_ROOT $fshop]"
-		msgprint -c WOKVC -i "Repository type          : [wokparam -e %VC_TYPE $fshop]" 
-		msgprint -c WOKVC -i "Default update done in   : [wokIntegre:RefCopy:GetWB]" 
-		msgprint -c WOKVC -i "OpenSource workbench     : [wokIntegre:RefCopy:OpenWB]"
-		msgprint -c WOKVC -i "List units in there with : OS -u list"
-	    }
-	    return  [wokparam -e %VC_TYPE $fshop]
-	} else {
-	    return {}
-	}
-    } else {
 	return {}
     }
 }
@@ -453,13 +328,13 @@ proc wokIntegre:BASE:UpdateRef { broot table vrs comment fileid } {
 	puts $fileid [format "cd %s" $tmpud]
 	set root $broot/$UD
 	foreach ELM $TLOC($UD) {
-	    set mark _[lindex $ELM 0]
+	    set mark [lindex $ELM 0]
 	    set F [lindex $ELM 1]
 	    set bna [file tail $F]
 	    set sfl $root/[wokIntegre:BASE:ftos $bna $vrs]
-	    switch $mark {
+	    switch -- $mark {
 		
-		_+ {
+		+ {
 		    if [file exists $sfl] {
 			;#puts "Coucou: reapparition de $sfl"
 			wokIntegre:BASE:UpdateFile $sfl $vrs $comment $F $fileid
@@ -469,7 +344,7 @@ proc wokIntegre:BASE:UpdateRef { broot table vrs comment fileid } {
 		    }
 		}
 		
-		_# {
+		# {
 		    if [file exists $sfl] {
 			wokIntegre:BASE:UpdateFile $sfl $vrs $comment $F $fileid
 		    } else {
@@ -478,7 +353,7 @@ proc wokIntegre:BASE:UpdateRef { broot table vrs comment fileid } {
 		    }
 		}
 		
-		_- {
+		- {
 		  wokIntegre:BASE:DeleteFile $bna $fileid
 		}
 	    }
@@ -536,7 +411,7 @@ proc wokIntegre:BASE:Fill { broot elmin {action move} } {
 	    catch { frename $e $bdir/$bna }
 	} elseif { [file isdirectory $e] } {
 	    set dl {}
-	    foreach f [readdir $e] {
+	    foreach f [wokUtils:EASY:readdir $e] {
 		lappend dl $e/$f
 	    }
 	    wokIntegre:BASE:Fill $broot $dl $action
@@ -547,65 +422,29 @@ proc wokIntegre:BASE:Fill { broot elmin {action move} } {
 #;>
 # Detruit une base Bname. 
 #;<
-proc wokIntegre:BASE:Delete { fshop Bname } {
-    if [catch { exec rm -rf [wokIntegre:BASE:GetRootName $fshop]/$Bname } status ] {
+proc wokIntegre:BASE:Delete {  Bname } {
+    if [catch { exec rm -rf [wokIntegre:BASE:GetRootName]/$Bname } status ] {
 	msgprint -c WOKVC -e "BASE:Delete $status"
 	return -1
     } 
     return 1
 }
-
-#;>
-# retourne le nom de la racine ou les bases sont accrochees.
-# Il y a une etage de plus par rapport aux anciennes bases pour faciliter 
-# les tests et la sauvegarde.
-#;<
-proc wokIntegre:BASE:GetRootName { fshop {create 0} } {
-    set diradm [wokparam -e %VC_ROOT $fshop]/BASES
-    if [file exists $diradm] {
-	return $diradm
-    } else {
-	if { $create } {
-	    msgprint -c WOKVC -i "Creating file $diradm"
-	    mkdir -path $diradm
-	    chmod 0755 $diradm
-	    return $diradm
-	} else {
-	    return {}
-	}
-    }
-}
 #;>
 # retourne 1 si le user courant peut ecrire dans les base de l'atelier courant
 #;<
-proc wokIntegre:BASE:Writable { fshop } {
-    return [file writable [wokIntegre:BASE:GetRootName $fshop]]
+proc wokIntegre:BASE:Writable { } {
+    return [file writable [wokIntegre:BASE:GetRootName]]
 }
 #;>
 # retourne la liste des bases sous la forme { {name ext} ... {name ext} } 
 #;<
-proc wokIntegre:BASE:LS { fshop } {
+proc wokIntegre:BASE:LS { } {
     set l {}
-    set r [wokIntegre:BASE:GetRootName $fshop]
+    set r [wokIntegre:BASE:GetRootName ]
     if [file exists $r] {
-	foreach e [lsort [readdir $r]] {
+	foreach e [lsort [wokUtils:EASY:readdir $r]] {
 	    if { [string compare [file type $r/$e] file] != 0 } {
 		lappend l [list [file root $e] [file extension $e]]
-	    }
-	}
-    }
-    return $l
-}
-#;>
-# retourne la liste des bases ayant une base temporaire
-#;<
-proc wokIntegre:BASE:BTMPLS { fshop } {
-    set l {}
-    set r [wokIntegre:BASE:GetRootName $fshop]
-    if [file exists $r] {
-	foreach e [lsort [readdir $r]] {
-	    if [file exists $r/$e/tmp] {
-		lappend l $e
 	    }
 	}
     }
@@ -629,7 +468,7 @@ proc wokIntegre:BASE:BTMPCreate { broot Unit {create 0} } {
 proc wokIntegre:BASE:BTMPDelete { broot Unit } {
     set R $broot/$Unit/tmp
     if [file exists $R] {
-	foreach f [readdir $R] {
+	foreach f [wokUtils:EASY:readdir $R] {
 	    unlink $R/$f
 	}
 	rmdir -nocomplain $R
@@ -642,26 +481,17 @@ proc wokIntegre:BASE:BTMPDelete { broot Unit } {
 #;>
 #   Check owner et fait ucreate si necessaire des UDs de table
 #   1. ucreate -p workbench:NTD si owner OK    
-#   workbench est celui dans lequel on integre sauf si UD est dans
-#   la liste $los auquel cas l'integration se fait dans ros
-#;< 
-proc wokIntegre:RefCopy:Writable { fshop table workbench ros los} {
+#;<
+proc wokIntegre:RefCopy:Writable { table workbench } {
     upvar $table TLOC
-
     foreach UD [array names TLOC] {
 	regexp {(.*)\.(.*)} $UD ignore name type
-	if { [lsearch $los $name] != -1 } {
-	    set destwb $ros
-	} else {
-	    set destwb $workbench
+	if { [lsearch [w_info -l ${workbench}] $name ] == -1 } {
+	    ucreate -$type ${workbench}:${name}
 	}
-	if { [lsearch [w_info -l ${fshop}:${destwb}] $name ] == -1 } {
-	    ucreate -$type ${fshop}:${destwb}:${name}
-	}
-	set dirsrc [wokinfo -p source:. ${fshop}:${destwb}:${name}]
-	;#puts " writable dirsrc = $dirsrc"
+	set dirsrc [wokinfo -p source:. ${workbench}:${name}]
 	if ![file writable $dirsrc] {
-	    msgprint -c WOKVC -e "You cannot write in workbench $destwb ($dirsrc)"
+	    msgprint -c WOKVC -e "You cannot write in directory $dirsrc"
 	    return -1
 	}
     }
@@ -674,101 +504,40 @@ proc wokIntegre:RefCopy:Writable { fshop table workbench ros los} {
 #   Input:   table(NTD.p) = { {toto.c 2.1} {titi.c 4.3} } 
 #   Output:  table(NTD.p) = { /home/wb/qqchose/NTD/src {toto.c 2.1} {titi.c 4.3} }
 #;<
-proc wokIntegre:RefCopy:GetPathes { fshop table workbench ros los} {
+proc wokIntegre:RefCopy:GetPathes { table workbench } {
     upvar $table TLOC
-    ;#puts "-------------AVANT getpathes ----------------"    
-    ;#parray TLOC
     foreach UD [array names TLOC] {
 	regexp {(.*)\.(.*)} $UD ignore name type
-	if { [lsearch $los $name] != -1 } {
-	    set destwb $ros
-	} else {
-	    set destwb $workbench
-	}
-	if { [lsearch [w_info -l ${fshop}:$destwb] $name ] != -1 } {
+	if { [lsearch [w_info -l $workbench] $name ] != -1 } {
 	    set lsf $TLOC($UD)
-	    set TLOC($UD) [linsert $lsf 0 [wokparam -e %${name}_Src ${fshop}:${destwb}:${name}]] 
+	    set TLOC($UD) [linsert $lsf 0 [wokinfo -p source:. ${workbench}:${name}]] 
 	} else {
-	    msgprint -c WOKVC -e "(GetPathes) Unit $name not found in $destwb"
+	    msgprint -c WOKVC -e "(GetPathes) Unit $name not found in $workbench"
 	    return -1
 	}
     }
-    ;#puts "-------------APRES----------------"
-    ;#parray TLOC
     return 1
 }
 #;>
-#   Copy les elements de table (liste) dans le repertoire associe
-#   Utilise par wintegre -nobase
-#   Input:  table(NTD.p) = { /home/wb/qqchose/NTD/src {flag1 path1} {flag2 path2} }
-#   path :  adresse du fichier dans le frigo. 
-#   Retour: { ... {p1 p2} ... } si OK {} sinon
+#   Modifie si c'est possible les protections  des elements de table (liste) 
+#   si ils appartiennent a <user>
+#   Utilise par wget en reference
+#   Input:  table(NTD.p) = { /home/wb/qqchose/NTD/src {toto.c 2.1} {titi.c 4.3} }
 #;<
-proc wokIntegre:RefCopy:Copy { VERBOSE table {fileid stdout} } {
+proc wokIntegre:RefCopy:SetWritable { table user } {
     upvar $table TLOC
-   
-    catch { unset err }
-    set LUD [lsort [array names TLOC]]
-    foreach ud $LUD {
-	set lret {}
-	set dirsrc [lindex $TLOC($ud) 0]
-	foreach e [lrange $TLOC($ud) 1 end] {
-	    if { "[lindex $e 0]" != "-" } {
-		set fromp [lindex $e 1]
-		set file [file tail $fromp]
-		set destp $dirsrc/$file
-		if { [file exists $fromp] } {
-		    if { [file exists $destp] } {
-			if { [file owned $destp] } {
-			    lappend lret [list [format "    Modified  :  %s -.-" $file] $fromp $destp]
-			} else {
-			    msgprint -c WOKVC -e "Protection of $destp cannot be modified (not owner)."
-			    set err 1
-			    break
-			}
-		    } else {
-			if { [file writable [file dirname $destp]] } {
-			    lappend lret [list [format "    Added     :  %s -.-" $file] $fromp $destp]
-			} else {
-			    msgprint -c WOKVC -e "File $destp cannot be created (permission denied)."
-			    set err 1
-			    break
-			}
-		    }
-		} else {
-		    msgprint -c WOKVC -e "File $fromp doesnt not exists."
-		    set err 1
-		    break
-		}
+    foreach UD [array names TLOC] {
+	set dirsrc [lindex $TLOC($UD) 0]
+	foreach e [lrange $TLOC($UD) 1 end] {
+	    set file $dirsrc/[lindex $e 0]
+	    if [file owned $file] {
+		chmod u+w $file
+	    } else {
+		msgprint -c WOKVC -e "Protection of $file cannot be modified (File not found or not owner)."
+		return -1
 	    }
 	}
-	if [info exists err ] { break }
-	set TLOC($ud) $lret
     }
-    
-    if [info exists err] { 
-	msgprint -c WOKVC -i "No file copied."
-	return -1 
-    }
-
-    foreach ud $LUD {
-	puts $fileid [format "\n  %s (Updated) :  \n----" $ud]
-	msgprint -c WOKVC -i [format "  %s (Updated) :  \n----" $ud]
-	foreach d $TLOC($ud) {
-	    set straff [lindex $d 0]
-	    set fromp  [lindex $d 1]
-	    set destp  [lindex $d 2]
-	    msgprint -c WOKVC -i $straff
-	    puts $fileid $straff
-	    if { [file exists $destp] } {
-		chmod 0644 $destp
-	    }
-	    if { $VERBOSE } { msgprint -c WOKVC -i "Copying $fromp $destp"}
-	    wokUtils:FILES:copy $fromp $destp
-	    chmod 0444 $destp
-	}
-    }
-
     return 1
 }
 #;>
@@ -777,13 +546,13 @@ proc wokIntegre:RefCopy:Copy { VERBOSE table {fileid stdout} } {
 # Si un fichier a creer existe deja et est writable, il est renomme en -sav
 # Comportement correspondant au remplissage du workbench de reference
 #;<
-proc wokIntegre:RefCopy:FillRef { fshop table {fileid stdout} } {
+proc wokIntegre:RefCopy:FillRef {  table {fileid stdout} } {
     upvar $table TLOC
     foreach UD [array names TLOC] {
 	set lsf $TLOC($UD)
 	set dirsrc [lindex $lsf 0]
 	puts $fileid "cd $dirsrc"
-	set root [wokIntegre:BASE:GetRootName $fshop]/$UD
+	set root [wokIntegre:BASE:GetRootName ]/$UD
 	set i [llength $lsf]
 	while { $i > 1 } {
 	    set i [expr $i-1]
@@ -809,13 +578,13 @@ proc wokIntegre:RefCopy:FillRef { fshop table {fileid stdout} } {
 # Comportement correspondant au remplissage d'une UD avec wget.
 # On change aussi la protection du fichier cree (writable pour le user)
 #;<
-proc wokIntegre:RefCopy:FillUser { fshop table {force 0} {fileid stdout} {mask 644} } {
+proc wokIntegre:RefCopy:FillUser {  table {force 0} {fileid stdout} {mask 644} } {
     upvar $table TLOC
     foreach UD [array names TLOC] {
 	set lsf $TLOC($UD)
 	set dirsrc [lindex $lsf 0]
 	puts $fileid "cd $dirsrc"
-	set root [wokIntegre:BASE:GetRootName $fshop]/$UD
+	set root [wokIntegre:BASE:GetRootName ]/$UD
 	set i [llength $lsf]
 	while { $i > 1 } {
 	    set i [expr $i-1]
@@ -849,108 +618,25 @@ proc wokIntegre:RefCopy:FillUser { fshop table {force 0} {fileid stdout} {mask 6
     return
 }
 #
-#  ((((((((((((((((VERSION))))))))))))))))
-#
-#;>
-# Retourne le path du fichier version.sccs, si create = 1 le cree s'il n'existe pas.
-#;<
-proc wokIntegre:Version:GetTableName { fshop {create 0} } {
-    set diradm [wokparam -e %VC_ROOT $fshop]/adm/version.sccs
-    if [file exists $diradm] {
-	return $diradm
-    } else {
-	if { $create } {
-	    msgprint -c WOKVC -i "Creating versions file in [file dirname $diradm]"
-	    catch { mkdir -path [file dirname $diradm] }
-	    wokUtils:FILES:ListToFile {} $diradm
-	    chmod 0777 $diradm
-	    return $diradm
-	} else {
-	    return {}
-	}
-    }
-}
-#;>
-# Retourne la liste des ilots et leur numero associe.
-#;<
-proc wokIntegre:Version:Dump { fshop } {
-    return [wokUtils:FILES:FileToList [wokIntegre:Version:GetTableName $fshop]]
-}
-#;>
-# Retourne le numero de version associe a l'ilot <shop> {} sinon
-#;<
-proc wokIntegre:Version:Get { fshop } {
-    set f [wokIntegre:Version:GetTableName $fshop]
-    if { $f != {} } {
-	set str [wokinfo -n [wokinfo -s $fshop]]
-	foreach e [wokUtils:FILES:FileToList $f] {
-	    if { $str == [lindex $e 0] } {
-		return [lindex $e 1]
-	    }
-	}
-    }
-    return {}
-}
-#;>
-# Ecrit dans version.sccs le numero de version <ver> associe a shop
-#;<
-proc wokIntegre:Version:Put { fshop ver } {
-    set f [wokIntegre:Version:GetTableName $fshop]
-    set l [wokUtils:FILES:FileToList $f]
-    set str [wokinfo -n [wokinfo -s $fshop]]
-    if { [lsearch $l [list $str $ver]] == -1 } {
-	msgprint -c WOKVC -i "Registering the shop $str with version number $ver"
-	lappend l [list $str $ver]
-	wokUtils:FILES:copy $f ${f}-previous
-	wokUtils:FILES:ListToFile $l $f
-    }
-    return $ver
-}
-#;>
-# retourne un entier utilisable pour initialiser un nouvel ilot
-#;<
-proc wokIntegre:Version:Next { fshop } {
-    set mx 0
-    foreach e [wokUtils:FILES:FileToList [wokIntegre:Version:GetTableName $fshop]] {
-	set n [lindex $e 1]
-	set mx [expr ( $mx > $n ) ? $mx : $n]
-    }
-    return [incr mx]
-}
-#
 #  ((((((((((((((((COMPTEUR-INTEGRATIONS))))))))))))))))
 #
-#;>
-# Retourne le nom du fichier contenant le compteur d'integration 
-#;<
-proc wokIntegre:Number:GetName { fshop } {
-    return [wokparam -e %VC_ROOT $fshop]/adm/[wokinfo -n [wokinfo -s $fshop]]/report.num
-}
 #;>
 # Retourne le numero de l'integration suivante (celle a faire dans shop )
 # Si Setup = 1 , met le compteur a 1
 #;<
-proc wokIntegre:Number:Get { fshop {Setup 0} } {
-    set diradm [wokIntegre:Number:GetName $fshop]
+proc wokIntegre:Number:Get { } {
+    set diradm [wokIntegre:Number:GetName]
     if [file exists $diradm] {
 	return [wokUtils:FILES:FileToList $diradm]
     } else {
-	if { $Setup } {
-	    msgprint -c WOKVC -i "Creating file $diradm"
-	    catch { mkdir -path [file dirname $diradm] }
-	    wokUtils:FILES:ListToFile 1 $diradm
-	    chmod 0777 $diradm
-	    return 1
-	} else {
-	    return {}
-	}
+	return {} 
     }
 }
 #;>
 # Ecrit number comme numero de l'integration suivante
 #;<
-proc wokIntegre:Number:Put { fshop number } {
-    set diradm [wokIntegre:Number:GetName $fshop]
+proc wokIntegre:Number:Put {  number } {
+    set diradm [wokIntegre:Number:GetName]
     if [file exists $diradm] {
 	wokUtils:FILES:ListToFile $number $diradm
 	return $number
@@ -961,8 +647,8 @@ proc wokIntegre:Number:Put { fshop number } {
 #;>
 # Incremente le numero de l'integration 
 #;<
-proc wokIntegre:Number:Incr { fshop } {
-    set diradm [wokIntegre:Number:GetName $fshop]
+proc wokIntegre:Number:Incr { } {
+    set diradm [wokIntegre:Number:GetName]
     if [file exists $diradm] {
 	set n [wokUtils:FILES:FileToList $diradm]
 	return [incr n]
@@ -987,9 +673,10 @@ proc wokGetUsage { } {
 	
 	wget  [-f] [-ud <udname>] <filename> [-v <version>]
 	wget  [-f] [-ud <udname>] <filename_1> ... <filename_N>
-	wget  [-f] -r <reportname>  
 	
 	-ud     : Keyword used to specify a unit name
+
+	-wb     : Specify the workbench repository to copy from.
 
 	-f      : Force files to be overwritten if they already exist.
 
@@ -1014,48 +701,46 @@ proc wget { args } {
     set tblreq(-v)      value_required:string
     set tblreq(-ud)     value_required:string
     set tblreq(-r)      value_required:string
-    set tblreq(-ws)     value_required:string
-    set tblreq(-root)   value_required:string 
-    set tblreq(-from)   value_required:string 
+    set tblreq(-wb)     value_required:string
     
     set param {}
     if { [wokUtils:EASY:GETOPT param tabarg tblreq wokGetUsage $args] == -1 } return
 
     set VERBOSE [info exists tabarg(-V)]
 
-    if { $VERBOSE } {
-	puts "param = $param"
-	catch {parray tabarg}
-    }
-    
+    ;# recup 1 er workbench dans l'arbre"
+    ;#
 
-    if { [info exists tabarg(-h)] } {
-	wokGetUsage
+    if [info exists tabarg(-wb)] {
+	set fromwb $tabarg(-wb)
+    } else {
+	msgprint -c WOKVC -e "Option -from is required."
 	return
     }
 
-    if [info exists tabarg(-ws)] {
-	set fshop $tabarg(-ws)
+
+    if { "[wokinfo -t [wokinfo -w $fromwb]]" == "workbench" } {
+	if { [wokStore:Report:SetQName $fromwb] == {} } {	
+	    msgprint -c WOKVC -e "$fromwb has no repository. Copying from workbench $fromwb."
+	    set directcp 1
+	}
     } else {
-	set fshop [wokinfo -s [wokcd]]
+	msgprint -c WOKVC -e "$fromwb is not a workbench. Nothing done."
+	return
+    }
+    
+
+    set workbench [wokinfo -n [wokinfo -w [wokcd]]]
+    if { "[wokinfo -n [wokinfo -w $fromwb]]" == "$workbench" } {
+	msgprint -c WOKVC -e "Cannot piss on my foot"
+	return
     }
 
+    set fshop [wokinfo -s [wokcd]]
 
-    ;# name of target workbench
-    ;# 
-    if [info exists tabarg(-root)] {
-	set workbench $tabarg(-root)
-    } else {
-	set workbench [wokinfo -n [wokinfo -w [wokcd]]]
+    if { $VERBOSE } {
+	puts "Copying from $fromwb "
     }
-
-
-    ;#puts "fshop = $fshop workbench = $workbench"
-
-    ;# name of source workbench from where the source file are to be copied.
-    ;# only used in NOBASE case.
-    ;#
-
 
     if [info exists tabarg(-ud)] {
 	set ud $tabarg(-ud)
@@ -1077,53 +762,16 @@ proc wget { args } {
 	catch {unset listbase}
     }
 
-    if [info exists tabarg(-r)] {
-	set ID $tabarg(-r)
-    } else {
-	catch {unset ID }
-    }
-
-    if { [set BTYPE [wokIntegre:BASE:InitFunc $fshop]] == {} } {
+    if { [set BTYPE [wokIntegre:BASE:InitFunc]] == {} } {
 	return -1
     }
 
-    set vc [file join [wokinfo -pAdmDir:. $fshop] VC.tcl]
-    if [file exists $vc] {
-	source $vc
-    } else {
-	msgprint -c WOKVC -e "Pas de fichier VC.tcl dans adm de ${fshop} ."
-	return -1
-    }
-
-
-    if [info exists tabarg(-from)] {
-	set fromwb $tabarg(-from)
-    } else {
-	set fromwb [wokIntegre:RefCopy:GetWB]
-    }
-
-
-    if { "$BTYPE" == "ClearCase" } {
-	wokGetClearCase
-	return
-    }
-
-    ;#
-    ;# Autre : SCCS, RCS, NOBASE, SIMPLE geree par WOK
-    ;#
-
-    set broot [wokIntegre:BASE:GetRootName $fshop]
-    if { $broot == {} } {
+    if { ![file exists [set broot [wokIntegre:BASE:GetRootName]]] } {
 	msgprint -c WOKVC -e "The repository does not exists."
-	wokIntegre:BASE:GetType $fshop 1
 	return -1
     }
 
-    if { "$BTYPE" == "NOBASE" } {
-	wokGetnobase
-    } else {
-	wokGetbase
-    }
+    wokGetbase
     return
 }
 ;#
@@ -1131,91 +779,67 @@ proc wget { args } {
 ;#
 proc wokGetbase { } {
     uplevel {
-	set actv [wokIntegre:Version:Get $fshop]
-	if { $actv == {} } {
-	    msgprint -c WOKVC -e "The workshop $fshop has no entry in the repository."
-	    return -1
+	set actv [wokIntegre:Version:Get]
+	set listfileinbase [wokIntegre:BASE:List $ud $actv]
+	if [info exists listbase] {
+	    if { $param == {} } { 
+		foreach f [wokUtils:LIST:GM $listfileinbase *] {
+		    puts $f
+		}
+	    } else {
+		foreach f [wokUtils:LIST:GM $listfileinbase $param] {
+		    puts $f
+		}
+	    }
+	    return
 	}
 	
+	if { [set RES [wokUtils:LIST:GM $listfileinbase $param]]  == {} } {
+	    msgprint -c WOKVC -e "No match for $param in unit $ud."
+	    return
+	}
+
 	if [info exists version] {
 	    set vrs $version
 	} else {
 	    set vrs last:${actv} 
 	}
 
-	if { $VERBOSE } { msgprint -c WOKVC -i "Checking out version : $vrs" }
-	
-	set listfileinbase [wokIntegre:BASE:List $fshop $ud $actv]
-
-	if [info exists listbase] {
-	    set laff [wokUtils:LIST:GM $listfileinbase $param]
-	    foreach f $laff {
-		puts $f
-	    }
+	if { $VERBOSE } { msgprint -c WOKVC -i "Checking out version : $vrs" }	
+	if { [info exists version] && [llength $RES] > 1 } {
+	    msgprint -c WOKVC -e "Option -v should be used with only one file to check out. Not done"
 	    return
 	}
-	
-	if [info exists ID] {
-	    wokIntegre:Journal:Assemble  /tmp/jnltmp $fshop
-	    if [regexp {^[0-9]+$} $ID] {
-		wokIntegre:Journal:PickReport /tmp/jnltmp table notes $ID 
-	    } else {
-		puts "Not yet implemented"
-		;#set res [wokIntegre:Journal:PickMultReport /tmp/jnltmp $ID $ID]
-		;#puts $res
-	    }
-	    catch { unlink /tmp/jnltmp }
+
+	set locud [woklocate -u $ud ${fshop}:${workbench}]
+	if { $locud != {} } {
+	    set table(${ud}.[uinfo -c $locud]) [wokUtils:LIST:pair $RES $vrs 2]
 	} else {
-	    if { $param == {} } {
-		foreach f $listfileinbase {
-		    puts $f
-		}
-		return
-	    }
-	    if { [set RES [wokUtils:LIST:GM $listfileinbase $param]]  == {} } {
-		msgprint -c WOKVC -e "No match for $param in unit $ud."
-	    }
-
-	    if { [info exists version] && [llength $RES] > 1 } {
-		msgprint -c WOKVC -e "Option -v should be used with only one file to check out. Not done"
-		return
-	    }
-
-	    set locud [woklocate -u $ud ${fshop}:${workbench}]
-	    if { $locud != {} } {
-		set table(${ud}.[uinfo -c $locud]) [wokUtils:LIST:pair $RES $vrs 2]
-	    } else {
-		msgprint -c WOKVC -e "Unit $ud not found. Cannot create a new one (Unknown type)."
-		return -1
-	    }
-	}
-	
-	if { [wokIntegre:RefCopy:Writable $fshop table $workbench {} {}] == -1 } {
+	    msgprint -c WOKVC -e "Unit $ud not found. Cannot create a new one (Unknown type)."
 	    return -1
 	}
-	wokIntegre:RefCopy:GetPathes $fshop table $workbench {} {}
-	
-	if { [llength [w_info -A ${fshop}:$workbench]] == 1 } {
-	    msgprint -c WOKVC -w "You are working in the reference area."
+
+	if { [wokIntegre:RefCopy:Writable table $workbench] == -1 } {
 	    return -1
 	}
+	wokIntegre:RefCopy:GetPathes table $workbench
 	
-	if { [wokUtils:FILES:dirtmp [set dirtmp /tmp/wintegrecreateunits[id process]]] == -1 } {
+	if { [wokUtils:FILES:dirtmp [set dirtmp /tmp/wintegrecreateunits[pid]]] == -1 } {
 	    msgprint -c WOKVC -e "Unable to create working directory"
 	    return -1
 	}
-
+	
 	set chkout $dirtmp/checkout.cmd
 	set chkid  [open $chkout w]
-	wokIntegre:RefCopy:FillUser $fshop table $forced $chkid
+	wokIntegre:RefCopy:FillUser table $forced $chkid
 	wokIntegre:BASE:EOF $chkid
 	close $chkid
-
+	
 	if { $VERBOSE } {
 	    msgprint -c WOKVC -i "Send the following script:"
 	    puts [exec cat $dirtmp/checkout.cmd]
 	}
-
+	
 	set statx [wokIntegre:BASE:Execute $VERBOSE $chkout] 
 	if { $statx != 1 } {
 	    msgprint -c WOKVC -e "Error during checkout(Get)."
@@ -1228,91 +852,4 @@ proc wokGetbase { } {
 	return $statx
     }
 }
-;#
-;#
-;#
-proc wokGetnobase { } {
-    uplevel {
-	if [wokUtils:WB:IsRoot $workbench] {
-	    msgprint -c WOKVC -e "You are working in the reference area. Use chmod and edit the file..."
-	    return -1
-	}
 
-	if [info exists version] {
-	    msgprint -c WOKVC -w "Value $version for option -v ignored in this context (NOBASE)."
-	}
-	
-	set listfileinbase [wokIntegre:BASE:List $fshop $ud {}]
-
-	if [info exists listbase] {
-	    set laff [wokUtils:LIST:GM $listfileinbase $param]
-	    foreach f $laff {
-		puts $f
-	    }
-	    return
-	}
-	
-	if [info exists ID] {
-	    msgprint -c WOKVC -w "Value $ID for option -r ignored in this context (NOBASE)."
-	    return
-	} else {
-	    if { $param == {} } {
-		foreach f $listfileinbase {
-		    puts $f
-		}
-		return
-	    }
-	    if { [set RES [wokUtils:LIST:GM $listfileinbase $param]]  == {} } {
-		msgprint -c WOKVC -e "No match for $param in unit $ud."
-	    }
-	    set locud [woklocate -u $ud]
-	    if { $locud != {} } {
-		set table(${ud}.[uinfo -c $locud]) $RES
-	    } else {
-		msgprint -c WOKVC -e "Unit $ud not found. Unknown type for creation."
-		return -1
-	    }
-	}
-	
-	foreach UD [array names table] {
-	    regexp {(.*)\.(.*)} $UD ignore name type
-	    if { [lsearch [w_info -l $workbench] $name ] == -1 } {
-		;# if workbench is writable ..
-		;#msgprint -c WOKVC -i "Creating unit ${workbench}:${name}"
-		ucreate -$type ${workbench}:${name}
-	    }
-	    set dirsrc [wokinfo -p source:. ${workbench}:${name}]
-	    if ![file writable $dirsrc] {
-		msgprint -c WOKVC -e "You cannot write in directory $dirsrc"
-		return -1
-	    }
-	    set fromsrc [wokinfo -p source:. ${fromwb}:${name}]
-	    set table($UD) [list $fromsrc $dirsrc $table($UD)]
-	}
-	foreach UD [array names table] {
-	    set from [lindex $table($UD) 0]
-	    set dest [lindex $table($UD) 1]
-	    foreach file [lindex $table($UD) 2] {
-		if [file exists $dest/$file] {
-		    if { $forced } {
-			if { [file writable $dest/$file] } {
-			    frename $dest/$file $dest/${file}-sav
-			    msgprint -c WOKVC -i "File $dest/$file renamed ${file}-sav"
-			    wokUtils:FILES:copy $from/$file $dest/$file
-			    chmod 0644 $dest/$file
-			} else {
-			    msgprint -c WOKVC -e "File $dest/$file is not writable. Cannot be overwritten."
-			    return -1
-			}
-		    } else {
-			msgprint -c WOKVC -e "File $dest/$file already exists. Not overwritten."
-		    }
-		} else {
-		    wokUtils:FILES:copy $from/$file $dest/$file
-		    chmod 0644 $dest/$file
-		}
-	    }
-	}
-    }
-    return
-}

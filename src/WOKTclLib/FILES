@@ -117,6 +117,7 @@ srcinc:::unit_rdonly.xpm
 srcinc:::wbuild.xpm
 srcinc:::work.xpm
 srcinc:::workbench.xpm
+srcinc:::workbenchq.xpm
 srcinc:::workbench_open.xpm
 srcinc:::workshop.xpm
 srcinc:::workshop_open.xpm
@@ -146,3 +147,4 @@ srcinc:::wcompare.tcl
 srcinc:::envir.xpm
 srcinc:::envir_open.xpm
 srcinc:::MdtvLogo33x120b.gif
+srcinc:::README

@@ -14,7 +14,7 @@ proc wokUpdateRepository { {loc {}} } {
     }
     set fact [wokinfo -f $verrue]
     set shop [wokinfo -s $verrue]
-    set type [wokIntegre:BASE:InitFunc $shop]
+    set type [wokIntegre:BASE:InitFunc]
 
     set w [wokTPL rpr${verrue}]
     if [winfo exists $w ] {
@@ -102,8 +102,8 @@ proc wokUpdateRepository { {loc {}} } {
     set IWOK_WINDOWS($w,canvas)  $canva
     set IWOK_WINDOWS($w,fact)    $fact
     set IWOK_WINDOWS($w,shop)    $shop
-    set IWOK_WINDOWS($w,journal) [wokIntegre:Journal:GetName $IWOK_WINDOWS($w,shop)]
-    set IWOK_WINDOWS($w,qroot)   [wokIntegre:BASE:GetRootName $IWOK_WINDOWS($w,shop)]
+    set IWOK_WINDOWS($w,journal) [wokIntegre:Journal:GetName]
+    set IWOK_WINDOWS($w,qroot)   [wokIntegre:BASE:GetRootName]
     set IWOK_WINDOWS($w,data)    {}
 
 
@@ -120,8 +120,8 @@ proc wokUpdateRepository { {loc {}} } {
     set IWOK_GLOBALS(repository,popup,menu) [$IWOK_GLOBALS(repository,popup) subwidget menu]
     $IWOK_GLOBALS(repository,popup,menu)    configure -font $IWOK_GLOBALS(font) 
 
-    set LB [wokIntegre:BASE:LS $IWOK_WINDOWS($w,shop)]
-    set V  [wokIntegre:Version:Get $IWOK_WINDOWS($w,shop)]
+    set LB [wokIntegre:BASE:LS]
+    set V  [wokIntegre:Version:Get]
     set R  $IWOK_WINDOWS($w,qroot)
 
     foreach d  $LB {
@@ -200,7 +200,7 @@ proc wokFillUnit { w tree ent } {
 	set T [lindex $data 2]
 	set V [lindex $data 3]
 	set dir $R/${B}${T}
-	set LSF [wokIntegre:BASE:List $IWOK_WINDOWS($w,shop) $B $V]
+	set LSF [wokIntegre:BASE:List $B $V]
 	set txtima [tix getimage textfile]
 	foreach s $LSF {
 	    set sfile $dir/[wokIntegre:BASE:ftos $s $V]
@@ -254,33 +254,7 @@ proc wokRPRBrowse {  w slb action args } {
 proc wokRPRShowVersions { w } {
     global IWOK_WINDOWS
 
-    $IWOK_WINDOWS($w,text) delete 1.0 end
-
-    set msg "Versions and workshops:" ; $IWOK_WINDOWS($w,text) insert end $msg\n
-    set msg "_______________________" ; $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    foreach e [wokIntegre:Version:Dump $IWOK_WINDOWS($w,shop)] {
-	set msg "    [lindex $e 1] : [lindex $e 0]"
-	$IWOK_WINDOWS($w,text) insert end $msg\n
-    }
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "Repository location:"; $IWOK_WINDOWS($w,text) insert end $msg\n
-    set msg "____________________" ; $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "     [wokIntegre:BASE:GetRootName $IWOK_WINDOWS($w,shop)]" ; 
-    $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "Administration directory:";  $IWOK_WINDOWS($w,text) insert end $msg\n
-    set msg "_________________________" ; $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "     [file dirname [wokIntegre:Version:GetTableName $IWOK_WINDOWS($w,shop)]]" ;
-    $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "EDL file used for parameters:"; $IWOK_WINDOWS($w,text) insert end $msg\n
-    set msg "_____________________________" ; $IWOK_WINDOWS($w,text) insert end $msg\n
-    $IWOK_WINDOWS($w,text) insert end \n
-    set msg "     [lindex [wokparam -F VC $IWOK_WINDOWS($w,shop)] 0]" ;
-    $IWOK_WINDOWS($w,text) insert end $msg\n
+    puts " not yet implemented"
     return
 }
 
@@ -465,7 +439,7 @@ proc wokSetCanv { w } {
 	    tixBusy $w on
 	    update
 	    set _x [wokIntegre:Journal:UnMark [lindex $info 1]]
-	    set _j [wokIntegre:Journal:GetSlice [set _n [lindex $_x 1]] $IWOK_WINDOWS($w,shop) ]
+	    set _j [wokIntegre:Journal:GetSlice [set _n [lindex $_x 1]]]
 	    
 	    wokReadList $IWOK_WINDOWS($w,text) \
 		    [wokIntegre:Journal:PickMultReport $_j ${_n} ${_n}]
@@ -523,10 +497,6 @@ proc wokSetCanv { w } {
     }
     return
 }
-;#
-;# Widget
-;#
-
 ;#
 ;# recupere le sfile en cours
 ;#
@@ -611,7 +581,7 @@ proc wokRPRDeleteItem { w } {
     } elseif { $len ==  1 } {
 	set unit [lindex $lstent 0]
 	tixBusy $w on
-	wokIntegre:BASE:Delete $IWOK_WINDOWS($w,shop) $unit
+	wokIntegre:BASE:Delete  $unit
 	tixBusy $w off
     } elseif { $len  >  1 } {
 	set unit [lindex $lstent 0]
@@ -640,7 +610,7 @@ proc wokRPRCheckItem { w } {
 	$IWOK_WINDOWS($w,text) delete 0.0 end
 	set dir $IWOK_WINDOWS($w,qroot)/$unit
 	set lst {}
-	catch { set lst [readdir $dir] }
+	catch { set lst [wokUtils:EASY:readdir $dir] }
 	foreach sfile [lsort $lst] {
 	    if [wokIntegre:BASE:IsElm $sfile] {
 		set stat [wokIntegre:BASE:check $dir/$sfile]
@@ -674,7 +644,7 @@ proc wokRPRCheckItem { w } {
 proc wokRPRExit { w } {
     global IWOK_WINDOWS
     destroy $w
-    foreach f [glob -nocomplain /tmp/jnltmp[id process].*] {
+    foreach f [glob -nocomplain /tmp/jnltmp[pid].*] {
 	catch { unlink $f }
     }
     if [info exists IWOK_WINDOWS($w,help)] {

@@ -13,8 +13,7 @@ proc wokWaffQueue { {loc {}} } {
 	wokDialBox .wokcd {Unknown location} "Location $verrue is unknown" {} -1 OK
 	return
     }
-    set shop [wokinfo -s $verrue]
-
+    set curwb [wokinfo -w $verrue]
     set w  [wokTPL queue${verrue}]
     if [winfo exists $w ] {
 	wm deiconify $w
@@ -23,7 +22,7 @@ proc wokWaffQueue { {loc {}} } {
     }
     
     toplevel $w
-    wm title $w "Integration Queue of $shop"
+    wm title $w "Integration Queue of $curwb"
     wm geometry $w 742x970+515+2
 
     wokButton setw [list reports $w]
@@ -78,7 +77,7 @@ proc wokWaffQueue { {loc {}} } {
     pack $gw.but -fill both
 
     set buttons1 [list \
-	    {journal       "Display"    active wokReadStuffJournalOfshop} \
+	    {journal       "Display"    active wokReadStuffJournalOfcurwb} \
 	    {today         "Today's"    active wokToday} \
 	    {upday         "Prev"       active wokUpday} \
 	    {downday       "Next"       active wokDownday} \
@@ -104,18 +103,15 @@ proc wokWaffQueue { {loc {}} } {
     set IWOK_WINDOWS($w,reports)     $fw.but
     set IWOK_WINDOWS($w,journal)     $gw.but
     set IWOK_WINDOWS($w,journal,day) [clock scan yesterday]
-    set IWOK_WINDOWS($w,shop)        $shop
-    set IWOK_WINDOWS($w,frigo)       [wokStore:Report:GetRootName $IWOK_WINDOWS($w,shop)]
-    set IWOK_WINDOWS($w,basewrite)   [wokIntegre:BASE:Writable $IWOK_WINDOWS($w,shop)]
+    set IWOK_WINDOWS($w,curwb)        $curwb
+    set IWOK_WINDOWS($w,frigo)       [wokStore:Report:GetRootName]
+    set IWOK_WINDOWS($w,basewrite)   [wokIntegre:BASE:Writable]
 
     wokUpdateQueue $w
-    set jnl [wokIntegre:Journal:GetName $IWOK_WINDOWS($w,shop)]
+    set jnl [wokIntegre:Journal:GetName]
     if [file exist $jnl] {
 	$w.lab configure -text "Last integration: [fmtclock [file mtime $jnl]]"
     }
-
-    ;#bind $w <Destroy>  { if [winfo exists %W] { wokWaffQueueExit %W }}
-
     return
 }
 
@@ -125,15 +121,15 @@ proc wokSearchJnl { w } {
     return
 }
 
-proc wokReadStuffJournalOfshop { w } {
+proc wokReadStuffJournalOfcurwb { w } {
     global IWOK_WINDOWS
     tixBusy $w on
     update 
-    set jnltmp [wokUtils:FILES:tmpname jnltmp[id process].[wokinfo -n $IWOK_WINDOWS($w,shop)]]
+    set jnltmp [wokUtils:FILES:tmpname jnltmp[pid].[wokinfo -n $IWOK_WINDOWS($w,curwb)]]
     if [file exists $jnltmp] {
 	unlink $jnltmp
     }
-    wokIntegre:Journal:Assemble $jnltmp $IWOK_WINDOWS($w,shop)
+    wokIntegre:Journal:Assemble $jnltmp 
     if [file exists $jnltmp] {
 	wokReadFile $IWOK_WINDOWS($w,text) $jnltmp  end
     }
@@ -148,11 +144,11 @@ proc wokEditJnl { w } {
     global IWOK_WINDOWS
     tixBusy $w on
     update 
-    set jnltmp [wokUtils:FILES:tmpname jnltmp[id process].[wokinfo -n $IWOK_WINDOWS($w,shop)]]
+    set jnltmp [wokUtils:FILES:tmpname jnltmp[pid].[wokinfo -n $IWOK_WINDOWS($w,curwb)]]
     if [file exists $jnltmp] {
 	unlink $jnltmp
     }
-    wokIntegre:Journal:Assemble $jnltmp $IWOK_WINDOWS($w,shop)
+    wokIntegre:Journal:Assemble $jnltmp 
     if [file exists $jnltmp] {
 	wokEDF:EditFile $jnltmp
     }
@@ -190,10 +186,10 @@ proc wokThisday { w } {
     global IWOK_WINDOWS
     tixBusy $w on
     update
-    set jnltmp [wokUtils:FILES:tmpname jnltmp[id process].[wokinfo -n $IWOK_WINDOWS($w,shop)]]
+    set jnltmp [wokUtils:FILES:tmpname jnltmp[pid].[wokinfo -n $IWOK_WINDOWS($w,curwb)]]
     $IWOK_WINDOWS($w,text) delete 1.0 end
     if ![file exists $jnltmp] {
-	wokIntegre:Journal:Assemble $jnltmp $IWOK_WINDOWS($w,shop)
+	wokIntegre:Journal:Assemble $jnltmp 
     }
     set upto [expr $IWOK_WINDOWS($w,journal,day) + 24*3600]
     set str [wokIntegre:Journal:Since $jnltmp $IWOK_WINDOWS($w,journal,day) $upto]
@@ -293,7 +289,7 @@ proc wokIntegrateReport { w } {
 	    $IWOK_WINDOWS($w,text) delete 1.0 end
 	    msgsetcmd wokIntegre:Msg $w
 	    tixBusy $w on
-	    wintegre -ws $IWOK_WINDOWS($w,shop) $entry
+	    wintegre -wb $IWOK_WINDOWS($w,curwb) $entry
 	    msgunsetcmd
 	    $IWOK_WINDOWS($w,text) see end
 	    wokUpdateQueue $w
@@ -319,7 +315,7 @@ proc wokRemoveReport { w } {
 	    msgsetcmd wokIntegre:Msg $w
 	    tixBusy $w on
 	    update
-	    wstore -f -ws $IWOK_WINDOWS($w,shop) -rm $entry
+	    wstore -wb $IWOK_WINDOWS($w,curwb) -rm $entry
 	    msgunsetcmd
 	    $IWOK_WINDOWS($w,text) see end
 	    wokUpdateQueue $w
@@ -401,7 +397,7 @@ proc wokUpdateQueue { w } {
 proc wokWaffQueueExit { w } {
     global IWOK_WINDOWS
     destroy $w
-    foreach f [glob -nocomplain /tmp/jnltmp[id process].*] {
+    foreach f [glob -nocomplain /tmp/jnltmp[pid].*] {
 	catch { unlink $f }
     }
     if [info exists IWOK_WINDOWS($w,help)] {
@@ -411,17 +407,11 @@ proc wokWaffQueueExit { w } {
     return  
 }
 
-proc wokShowTrig { w trigcmd } {
-    global IWOK_WINDOWS
-    wokReadFile $IWOK_WINDOWS($w,text) $trigcmd
-    return
-}
-
 proc wokPurgeJnl { w } {
     global IWOK_WINDOWS
     msgsetcmd wokIntegre:Msg $w
     tixBusy $w on
-    wokIntegre:Journal:Purge $IWOK_WINDOWS($w,shop)
+    wokIntegre:Journal:Purge 
     tixBusy $w off
     msgunsetcmd
     return

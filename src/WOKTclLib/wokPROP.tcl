@@ -37,8 +37,6 @@ proc wokProperties {dir location itype } {
 	regsub {trig_} $itype "" type 
     }
 
-    ;#bind $w <Destroy> { if [winfo exists %W] {wokPROP:Kill %W} }
-
     switch $type {
 
 	session {
@@ -50,8 +48,6 @@ proc wokProperties {dir location itype } {
 		    -label "Environment"   -raisecmd [list wokPROP:UPD $w]
 	    $notes add pag4 -createcmd "wokPROP:NOT wokPROP:pth $w $notes pag4" \
 		    -label "Pathes"         -raisecmd [list wokPROP:UPD $w]
-	    ;#$notes add pag5 -createcmd "wokPROP:NOT wokPROP:EDF $w $notes pag5 $location" \
-		;#    -label "Editor"          -raisecmd [list wokPROP:UPD $w]
 	    $notes add pag6 -createcmd "wokPROP:NOT wokPROP:EDL $w $notes pag6 $location" \
 		    -label "Edl"             -raisecmd [list wokPROP:UPD $w]
 	}
@@ -80,8 +76,8 @@ proc wokProperties {dir location itype } {
 	workshop {
 	    $notes add pag1 -createcmd "wokPROP:NOT wokPROP:workshop $w $notes pag1 $location" \
 		    -label "General" -raisecmd [list wokPROP:UPD $w]
-	    $notes add pag2 -createcmd "wokPROP:NOT wokPROP:workshopconfig $w $notes pag2 $location" \
-		    -label "Parcel Configuration" -raisecmd [list wokPROP:UPD $w]
+	    $notes add pag2 -createcmd "wokPROP:NOT wokPROP:workshopistuff $w $notes pag2 $location" \
+		    -label "Integration stuff" -raisecmd [list wokPROP:UPD $w]
 	    $notes add pag3 -createcmd "wokPROP:NOT wokPROP:workbenchtree $w $notes pag3 $location" \
 		    -label "Workbench Tree" -raisecmd [list wokPROP:UPD $w]
 	    $notes add pag4 -createcmd "wokPROP:NOT wokPROP:EDL $w $notes pag4 $location" \
@@ -91,8 +87,8 @@ proc wokProperties {dir location itype } {
 	workbench {
 	    $notes add pag1 -createcmd "wokPROP:NOT wokPROP:workbench $w $notes pag1 $location" \
 		    -label "General" -raisecmd [list wokPROP:UPD $w]
-	    $notes add pag2 -createcmd "wokPROP:NOT wokPROP:workbenchtk $w $notes pag2 $location" \
-		    -label "Toolkits" -raisecmd [list wokPROP:UPD $w]
+	    $notes add pag2 -createcmd "wokPROP:NOT wokPROP:workbenchqq $w $notes pag2 $location" \
+		    -label "Integration stuff" -raisecmd [list wokPROP:UPD $w]
 	    $notes add pag3 -createcmd "wokPROP:NOT wokPROP:EDL $w $notes pag3 $location" \
 		    -label "Edl" -raisecmd [list wokPROP:UPD $w]
 	}
@@ -143,26 +139,27 @@ proc wokPROP:Queue { adr nb page location} {
     set w [$nb subwidget $page]
     frame $w.top -relief flat -bd 1 
     pack $w.top -side top -expand yes -fill both -padx 1 -pady 1
-    set qdir [wokStore:Report:GetRootName $location]
-    if { $qdir != {} } {
-	set text [text $w.top.jnl -relief flat -font $IWOK_GLOBALS(font)]
-	$text insert end "Queue in directory: $qdir\n\n"
-	set journal [wokIntegre:Journal:GetName $location] 
-	if { $journal != {} } {
-	    set dir [file dirname $journal]
-	    $text insert end "Journal in directory: $dir\n\n"
-	    foreach j [wokIntegre:Journal:List $location] {
-		$text insert end "[format "%15s %-9d" [file tail $j] [file size $j]]\n"
+    if { [wokStore:Report:SetQName $location] != {} } {	
+	if { [set qdir [wokStore:Report:GetRootName]] != {} } {
+	    set text [text $w.top.jnl -relief flat -font $IWOK_GLOBALS(font)]
+	    $text insert end "Integration queue in directory: $qdir\n\n"
+	    set journal [wokIntegre:Journal:GetName] 
+	    if { $journal != {} } {
+		set dir [file dirname $journal]
+		$text insert end "Journal in directory: $dir\n\n"
+		foreach j [wokIntegre:Journal:List] {
+		    $text insert end "[format "%15s %-9d" [file tail $j] [file size $j]]\n"
+		}
+		set t [fmtclock [file mtime $journal]]
+		set str [format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
+		$text insert end "$str\n\n"
+		set scoop [wokIntegre:Scoop:Read]
+		if { $scoop != {} } {
+		    $text insert end "Last integration: \n\n $scoop "
+		}
+		$text configure -state disabled
+		tixForm $text -top 2 -left 2 -bottom %99 -right %99
 	    }
-	    set t [fmtclock [file mtime $journal]]
-	    set str [format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
-	    $text insert end "$str\n\n"
-	    set scoop [wokIntegre:Scoop:Read $location]
-	    if { $scoop != {} } {
-		$text insert end "Last integration: \n\n $scoop "
-	    }
-	    $text configure -state disabled
-	    tixForm $text -top 2 -left 2 -bottom %99 -right %99
 	}
     }
     return
@@ -349,7 +346,7 @@ proc  wokPROP:pth:Open { dirima filima tree hlist dir  } {
 	    
 	    PTHDIR {
 		set pdir [lindex $data 1]
-		if ![catch { set lfdir [readdir [glob -nocomplain $pdir]] }] {
+		if ![catch { set lfdir [wokUtils:EASY:readdir [glob -nocomplain $pdir]] }] {
 		    foreach f [lsort $lfdir] {
 			if ![file isdirectory $pdir/$f] {
 			    if {[string match *^* ${f}] == 0 } {
@@ -722,35 +719,11 @@ proc wokPROP:workshop { adr nb page location} {
     tixForm $w.top.msg -top [list $w.top.ima 20] -left 2
     return
 }
-proc wokPROP:workshopconfig { adr nb page location} {
+proc wokPROP:workshopistuff { adr nb page location} {
     global IWOK_GLOBALS
     set w [$nb subwidget $page]
     frame $w.top -relief flat -bd 1 
     pack $w.top -side top -expand yes -fill both -padx 1 -pady 1
-    set fact [wokinfo -N $location]
-
-    tixScrolledText $w.top.used ; set tused [$w.top.used subwidget text]
-    tixScrolledText $w.top.avai ; set tavai [$w.top.avai subwidget text]
-
-    label $w.top.image 
-    set img [image create compound -window $w.top.image]
-    $img add image -image [tix getimage parcel] ; $img add text -text "  Parcels"
-    $w.top.image config -image $img
-    
-    label $w.top.iused -text "Used:" ; label $w.top.iavai -text "Available:"
-
-    tixForm $w.top.image -top 8 -left 6
-    tixForm $w.top.iused -top [list $w.top.image 20] -left 6  
-    tixForm $w.top.iavai -top [list $w.top.image 20] -left [list $w.top.iused 240]
-    tixForm $w.top.used  -left 2 -top $w.top.iused -bottom %99 -right %50
-    tixForm $w.top.avai  -left $w.top.used -top $w.top.iused -bottom %99 -right %99
-
-    wokReadList $tused [sinfo -p $location]
-    wokReadList $tavai [lsort [Winfo -p $fact:[finfo -W $fact]]]
-
-    $tused config -state disabled
-    $tavai config -state disabled
-
     update
     return
 }
@@ -790,123 +763,55 @@ proc wokPROP:workbenchtree { adr nb page location} {
     pack $w.top -side top -expand yes -fill both -padx 1 -pady 1
     set tree [tixTree $w.top.tree -options {hlist.separator "^" hlist.selectMode single }]
     set hli [$tree subwidget hlist]
-    set father [wokWbtree:LoadSons $location [wokinfo -p WorkbenchListFile $location]]
+    set lfath [wokWbtree:LoadSons $location [wokinfo -p WorkbenchListFile $location]]
+    if { [llength $lfath] == 1 } {
+	set father [lindex $lfath 0]
+    } elseif { [llength $lfath] > 1 } {
+	puts " more than one root in workbench tree"
+	set father [lindex $lfath 0]
+    }
+
     $hli add ^
     update
-    button $w.top.but -text "Click here to run" \
+    button $w.top.but -text "Show tree" \
 	    -command [list wokWbtree:Tree $tree $hli "" $father $image]
     tixForm $w.top.but -top 2
     tixForm $tree  -top $w.top.but -left 2 -right %99  -bottom %99
     return
 }
 
-proc wokPROP:workbenchtk  { adr nb page location} {
+proc wokPROP:workbenchqq  { adr nb page location} {
     global IWOK_GLOBALS
     set w [$nb subwidget $page]
     frame $w.top -relief flat -bd 1 
     pack $w.top -side top -expand yes -fill both -padx 1 -pady 1
-
-    tixPanedWindow $w.top.pane -orient horizontal -paneborderwidth 0 -separatorbg gray50
-    pack $w.top.pane -side top -expand yes -fill both -padx 1 -pady 1
-    set p1   [$w.top.pane add tree -min 100 -size  160]
-    set p2   [$w.top.pane add text]
-    
-    set tree  [tixTree $p1.tree]
-    set text  [text  $p2.text]
-
-    pack $p1.tree -expand yes -fill both -padx 1 -pady 1
-    pack $p2.text -expand yes -fill both -padx 1 -pady 1 -padx 3
-
-    set labatt $text
-    $labatt configure -relief flat -font $IWOK_GLOBALS(font)
-
-    set hlist [$tree subwidget hlist]
-    $hlist config  -indicator 1 -selectmode single -separator  "^"  -drawbranch 1
-    set boldstyle [tixDisplayStyle imagetext -fg #000080 -font $IWOK_GLOBALS(boldfont)]
-    $tree config -opencmd [list wokPROP:workbenchtk:Open $labatt $tree $hlist] \
-	    -browsecmd [list wokPROP:workbenchtk:Browse  $labatt $tree $hlist]
-
-    foreach P [w_info -k $location] {
-	set packages [woklocate -p ${P}:PACKAGES]
-	$hlist add ${P} -itemtype imagetext -style $boldstyle -text ${P} \
-		-image $IWOK_GLOBALS(image,toolkit) -data [list TOOLKIT $P $packages]
-	$tree setmode ${P} open
-    }
-
-    return
-}
-   
-proc wokPROP:workbenchtk:Open { att tree hlist dir  } {
-     if {[set children [$hlist info children $dir]] != {}} {
-	foreach kid $children {
-	    $hlist show entry $kid
-	}
-    } else {
-	set packages [wokUtils:FILES:FileToList [lindex [$hlist info data $dir] end]]
-	foreach p $packages {
-	    $hlist add ${dir}^${p} -itemtype imagetext -text $p -data [list PACKAGES $p]
-	}
-    }
-    return
-}
-proc wokPROP:workbenchtk:Browse { att tree hlist dir } { 
-    global IWOK_GLOBALS
-    set type [lindex [set data [$hlist info data $dir]] 0]
-    switch -- $type {
-	TOOLKIT  {
-	    set P [lindex $data 1]
-	    set U [woklocate -u $P]
-	    if { "$U" != "" } {
-		set t [uinfo -t $U]
-		set location [wokinfo -p library:lib${P}.so $U]
-		if [file exists $location] {
-		    catch { unset tt }
-		    file lstat $location tt
-		    set lm  [list \
-			    [list $t          $U] \
-			    [list separator   1]\
-			    [list File        [file tail $location]] \
-			    [list Location    [file dirname $location]] \
-			    [list separator   1] \
-			    [list Size        "$tt(size) (bytes)"]\
-			    [list separator   1]\
-			    [list Created     [string range [fmtclock $tt(ctime)] 4 18]]\
-			    [list Modified    [string range [fmtclock $tt(mtime)] 4 18]]\
-			    [list separator   1]\
-			    ]
-		    wokPROP:Nice $att $lm
+    if { [wokStore:Report:SetQName $location] != {} } {	
+	if { [set qdir [wokStore:Report:GetRootName]] != {} } {
+	    set text [text $w.top.jnl -relief flat -font $IWOK_GLOBALS(font)]
+	    $text insert end "Integration queue in directory: $qdir\n\n"
+	    set journal [wokIntegre:Journal:GetName] 
+	    if { $journal != {} } {
+		set dir [file dirname $journal]
+		$text insert end "Journal in directory: $dir\n\n"
+		foreach j [wokIntegre:Journal:List] {
+		    $text insert end "[format "%15s %-9d" [file tail $j] [file size $j]]\n"
 		}
-	    }
-	}
-
-	PACKAGES {
-	    set p [lindex $data 1]
-	    set u [woklocate -u $p]
-	    if { "$u" != "" } {
-		set t [uinfo -t $u]
-		set location [wokinfo -p library:lib${p}.so $u]
-		if [file exists $location] {
-		    catch { unset tt }
-		    file lstat $location tt
-		    set lm  [list \
-			    [list $t          $u] \
-			    [list separator   1]\
-			    [list File        [file tail $location]] \
-			    [list Location    [file dirname $location]] \
-			    [list separator   1] \
-			    [list Size        "$tt(size) (bytes)"]\
-			    [list separator   1]\
-			    [list Created     [string range [fmtclock $tt(ctime)] 4 18]]\
-			    [list Modified    [string range [fmtclock $tt(mtime)] 4 18]]\
-			    [list separator   1]\
-			    ]
-		    wokPROP:Nice $att $lm
+		set t [fmtclock [file mtime $journal]]
+		set str [format "%15s %-8d(Last modified %s)" [file tail $journal] [file size $journal] $t]
+		$text insert end "$str\n\n"
+		set scoop [wokIntegre:Scoop:Read]
+		if { $scoop != {} } {
+		    $text insert end "Last integration: \n\n $scoop "
 		}
+		$text configure -state disabled
+		tixForm $text -top 2 -left 2 -bottom %99 -right %99
 	    }
 	}
     }
+
     return
 }
+
 ;#
 ;#                            ((((((( D E V U N I T )))))))
 ;#

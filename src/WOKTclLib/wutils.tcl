@@ -47,7 +47,7 @@ proc wokUtils:FILES:Since { dirlist gblist lim } {
 	    }
 	    set result [concat $result $ll]
         }
-        foreach file [readdir $dir] {
+        foreach file [wokUtils:EASY:readdir $dir] {
             set file $dir/$file
             if [file isdirectory $file] {
                 set fileTail [file tail $file]
@@ -90,7 +90,7 @@ proc wokUtils:FILES:IsNewer { f1 f2 } {
 proc wokUtils:FILES:Intersect { ldir table } {
     upvar $table TLOC
     foreach r $ldir {
-	foreach f [readdir $r] {
+	foreach f [wokUtils:EASY:readdir $r] {
 	    if [info exists TLOC($f)] {
 		set l $TLOC($f)
 	    } else {
@@ -184,7 +184,7 @@ proc wokUtils:FILES:find { dirlist gblist } {
         foreach ptn $gblist {
             set result [concat $result [glob -nocomplain -- $dir/$ptn]]
         }
-        foreach file [readdir $dir] {
+        foreach file [wokUtils:EASY:readdir $dir] {
             set file $dir/$file
             if [file isdirectory $file] {
                 set fileTail [file tail $file]
@@ -623,7 +623,7 @@ proc wokUtils:FILES:delete { f } {
 proc wokUtils:FILES:ls  { dir {select all} } {
     set l {}
     if { [file exists $dir] } {
-	foreach f [readdir $dir] {
+	foreach f [wokUtils:EASY:readdir $dir] {
 	    set e [file extension $f]
 	    switch -- $select {
 		all {
@@ -800,14 +800,14 @@ proc wokUtils:FILES:removedir { d } {
     global tcl_platform
     if { "$tcl_platform(platform)" == "unix" } {
 	if { [file exists $d] } {
-	    foreach f [readdir $d] {
+	    foreach f [wokUtils:EASY:readdir $d] {
 		unlink -nocomplain $d/$f
 	    }
 	    rmdir -nocomplain $d 
 	}
     } elseif { "$tcl_platform(platform)" == "windows" } {
 	if { [file exists $d] } {
-	    foreach f [readdir $d] {
+	    foreach f [wokUtils:EASY:readdir $d] {
 		file delete $d/$f
 	    }
 	    file delete $d 
@@ -1838,7 +1838,7 @@ proc wokUtils:EASY:yfind { dfile dlist } {
 ;#
 proc wokUtils:EASY:seadir { dir } {
     set l $dir
-    foreach f [readdir $dir] {
+    foreach f [wokUtils:EASY:readdir $dir] {
 	if [file isdirectory $dir/$f] { 
 	    set l [concat $l [wokUtils:EASY:seadir $dir/$f]]
 	}
@@ -2142,3 +2142,14 @@ proc wokUtils:EASY:u2l { lnames map } {
     }
     return
 }
+;#
+;#
+;#
+proc wokUtils:EASY:readdir { dir } {
+    set l {}
+    foreach f [glob -nocomplain [file join $dir *]] {
+	lappend l [file tail $f]
+    }
+    return $l
+}
+
