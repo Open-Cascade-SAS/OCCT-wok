@@ -8,7 +8,8 @@
 
 CPPJini_ClientInfo :: CPPJini_ClientInfo (
                        const Handle( MS_MetaSchema            )& aMS,
-                       const Handle( TCollection_HAsciiString )& aName
+                       const Handle( TCollection_HAsciiString )& aName,
+                       const Standard_Integer                    aLevel
                       ) {
 
  Handle( MS_Client ) clt = aMS -> GetClient ( aName );
@@ -30,7 +31,9 @@ CPPJini_ClientInfo :: CPPJini_ClientInfo (
 
  }  // end else
 
- myName = new TCollection_HAsciiString ( aName );
+ myName  = new TCollection_HAsciiString ( aName );
+ myLevel = aLevel;
+ myRoot  = Standard_False;
 
 }  // end CPPJini_ClientInfo :: CPPJini_ClientInfo
 

@@ -71,9 +71,10 @@ $private %Virtual native %Return %Class_%MethodName_%NbMet(%Arguments);
 $
 @end;
 
-@template MethodTemplateDef(%Method,%MBody) is
+@template MethodTemplateDef(%Method,%MBody,%MVar,%MRet) is
 $%Method
 ${
+$%MVar
 $jcas_Locking alock(env);
 ${
 $try {
@@ -86,14 +87,16 @@ $  Err << (char) 0;
 $  jcas_ThrowException(env,Err.rdbuf()->str());
 $}
 $}
-$alock.Release(); 
+$alock.Release();
+$%MRet
 $}
 $
 @end;
 
-@template MethodTemplateDefOBJS(%Method,%MBody) is
+@template MethodTemplateDefOBJS(%Method,%MBody,%MVar,%MRet) is
 $%Method
 ${
+$%MVar;
 $jcas_Locking alock(env);
 ${
 $OS_ESTABLISH_FAULT_HANDLER;
@@ -109,6 +112,7 @@ $}
 $OS_END_FAULT_HANDLER;
 $}
 $alock.Release(); 
+$%MRet;
 $}
 $
 @end;
@@ -127,5 +131,41 @@ $%Class::~%Class() {}
 
 
 @template EnumValueDef(%Class,%Value,%Number) is
-$public final static int %Value = %Number;
+$public final static short %Value = %Number;
+@end;
+
+@template GetPrevious ( %PrevClassName, %PackName, %ShortClassName, %ShortPackName ) is
+$
+$public %PackName.%PrevClassName get%ShortPackName%ShortClassName () {
+$
+$ if ( thePrevious == null ) thePrevious = new %PackName.%PrevClassName ();
+$
+$ thePrevious.HID = HID;
+$
+$ if ( aVirer == 1 ) {
+$
+$  thePrevious.aVirer = aVirer;
+$  aVirer = 0;
+$
+$ }  // end if
+$
+$ return thePrevious;
+$
+$}  // end get%PackName%ShortClassName
+@end;
+
+@template SetPrevious ( %Class, %PackName, %PrevClassName ) is
+$public %Class ( %PackName.%PrevClassName aPrev ) {
+$
+$ thePrevious = aPrev;
+$ HID         = aPrev.HID;
+$ aVirer      = 0;
+$
+$}  // end %Class
+@end;
+
+@template ThePrevious ( %PackName, %PrevClassName ) is
+$
+$ private %PackName.%PrevClassName thePrevious = null;
+$
 @end;

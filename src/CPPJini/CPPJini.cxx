@@ -1,41 +1,52 @@
-// CLE : Extracteur de stubs C++ pour CAS.CADE 
-//    Matra-Datavision 1995
-//
-// 10/1995
-//
-#include <MS.hxx>
-#include <MS_Client.hxx>
 #include <CPPJini.hxx>
-#include <WOKTools_Messages.hxx>
-#include <WOKTools_MapOfHAsciiString.hxx>
-#include <WOKTools_MapIteratorOfMapOfHAsciiString.hxx>
-#include <MS_ParamWithValue.hxx>
-#include <MS_HArray1OfParam.hxx>
-#include <MS_HSequenceOfClass.hxx>
 #include <CPPJini_DataMapOfAsciiStringInteger.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <CPPJini_ClientInfo.hxx>
 #include <CPPJini_SequenceOfClientInfo.hxx>
 
-#define CPPJINI_BOOLEAN 1
-#define CPPJINI_CHARACTER 2
-#define CPPJINI_ENUMERATION 3
-#define CPPJINI_EXTCHARACTER 4
-#define CPPJINI_INTEGER 5
-#define CPPJINI_REAL 6
-#define CPPJINI_BYTE 7
-#define CPPJINI_SHORTREAL 8
+#include <MS.hxx>
+#include <MS_Client.hxx>
+#include <MS_ParamWithValue.hxx>
+#include <MS_HArray1OfParam.hxx>
+#include <MS_HSequenceOfClass.hxx>
 
-Handle(MS_HSequenceOfMemberMet) SeqOfMemberMet = new MS_HSequenceOfMemberMet;
-Handle(MS_HSequenceOfExternMet) SeqOfExternMet = new MS_HSequenceOfExternMet;
+#include <WOKTools_Messages.hxx>
+#include <WOKTools_MapOfHAsciiString.hxx>
+#include <WOKTools_MapIteratorOfMapOfHAsciiString.hxx>
+#include <WOKTools_DataMapOfHAsciiStringOfHAsciiString.hxx>
 
-Handle(TCollection_HAsciiString) CPPJini_InterfaceName;
-Handle(TCollection_HAsciiString) CPPJini_ErrorArgument = new TCollection_HAsciiString("%error%");
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+
+#include <limits.h>
+
+#define CPPJINI_BOOLEAN         1
+#define CPPJINI_CHARACTER       2
+#define CPPJINI_ENUMERATION     3
+#define CPPJINI_EXTCHARACTER    4
+#define CPPJINI_INTEGER         5
+#define CPPJINI_REAL            6
+#define CPPJINI_BYTE            7
+#define CPPJINI_SHORTREAL       8
+
+static Handle( MS_MetaSchema ) s_MS;
+static CPPJini_ExtractionType  s_Type;
+
+Handle( MS_HSequenceOfMemberMet ) SeqOfMemberMet = new MS_HSequenceOfMemberMet ();
+Handle( MS_HSequenceOfExternMet ) SeqOfExternMet = new MS_HSequenceOfExternMet ();
+
+Handle( TCollection_HAsciiString ) CPPJini_InterfaceName;
+Handle( TCollection_HAsciiString ) CPPJini_ErrorArgument =
+                                    new TCollection_HAsciiString ( "%error%" );
 
 Handle( TCollection_HAsciiString ) CPPJini_DotReplace ( char*, char = '_' );
 
 static CPPJini_SequenceOfClientInfo s_CltInfo;
 static WOKTools_MapOfHAsciiString   s_CltMap;
+static Standard_Integer             s_UseLevel;
+
+WOKTools_MapOfHAsciiString                   g_ImportMap;
+WOKTools_DataMapOfHAsciiStringOfHAsciiString g_SkipMap;
+Handle( CPPJini_ClientInfo )                 g_Client;
 
 static Standard_Boolean CPPJini_CheckClients (
                          const Handle( TCollection_HAsciiString )& className,
@@ -124,269 +135,404 @@ Standard_Boolean CPPJini_HasSemicomplete (
 
 }  // end CPPJini_HasIncomplete
 
-Standard_Boolean CPPJini_Defined ( 
-                  const Handle( TCollection_HAsciiString )& aTypeName,
-                  Handle( TCollection_HAsciiString )&       cltName
-                 ) {
-
- Standard_Boolean       retVal = Standard_False;
- CPPJini_ExtractionType type;
- Standard_Integer       i;
-
- for ( i = 1; i <= s_CltInfo.Length (); ++i ) {
-
-  if (  s_CltInfo.Value ( i ) -> Defined ( aTypeName, type )  ) {
-
-   cltName = new TCollection_HAsciiString (  s_CltInfo.Value ( i ) -> Name ()  );
-   retVal  = Standard_True;
-   break;
-
-  }  // end if
-
- }  // end for
-
- return retVal;
-
-}  // end CPPJini_Defined
-
 Standard_Boolean CPPJini_Defined (
-                  const Handle( MS_MetaSchema            )& ms,
                   const Handle( TCollection_HAsciiString )& aTypeName,
                   Handle( TCollection_HAsciiString )&       cltName,
                   Standard_Boolean&                         fDuplicate,
                   CPPJini_ExtractionType&                   aType
                  ) {
 
- Standard_Boolean       retVal = Standard_False;
- CPPJini_ExtractionType type;
- Standard_Integer       i;
+ Standard_Boolean                    retVal = Standard_False;
+ CPPJini_ExtractionType              type;
+ Standard_Integer                    i;
+ Handle( CPPJini_ClientInfo )        cInfo;
+ TColStd_SequenceOfInteger           sLevels;
+ TColStd_SequenceOfInteger           sModes;
+ TColStd_SequenceOfInteger           sIndices;
 
  fDuplicate = Standard_False;
 
- for ( i = 1; i <= s_CltInfo.Length (); ++i ) {
+ for ( i = 1; i <= s_CltInfo.Length (); ++i )
 
   if (  s_CltInfo.Value ( i ) -> Defined ( aTypeName, type )  ) {
 
-   if ( !retVal ) {
-
-    cltName = new TCollection_HAsciiString (  s_CltInfo.Value ( i ) -> Name ()  );
-    aType   = type;
-    retVal  = Standard_True;
-
-   } else {
-
-    Standard_Integer                                j;
-    const Handle( TColStd_HSequenceOfHAsciiString ) use =
-     ms -> GetClient (  s_CltInfo.Value ( i ) -> Name ()  ) -> Uses ();
-
-    for ( j = 1; j <= use -> Length (); ++j )
-
-     if (   use -> Value ( j ) -> IsSameString ( cltName )   ) return retVal;
-
-    fDuplicate = Standard_True;
-    break;
-
-   }  // end else
+   sLevels.Append  (  s_CltInfo.Value ( i ) -> Level ()  );
+   sIndices.Append (  i                                  );
+   sModes.Append   (  ( Standard_Integer )type           );
 
   }  // end if
 
- }  // end for
+ switch (  sLevels.Length ()  ) {
+
+  case 0:
+
+  break;
+
+  case 1:
+
+   cltName = new TCollection_HAsciiString (
+                  s_CltInfo.Value (  sIndices.Value ( 1 )  ) -> Name ()
+                 );
+   aType   = ( CPPJini_ExtractionType )sModes.Value ( 1 );
+   retVal  = Standard_True;
+
+  break;
+
+  default: {
+
+   Handle( CPPJini_ClientInfo ) ci;
+   Standard_Boolean             fDefined = Standard_False;
+
+   if ( s_Type != CPPJini_SEMICOMPLETE ) {
+
+    for (  i = 1; i <= sIndices.Length (); ++i  )
+
+     if (   s_CltInfo.Value (  sIndices.Value ( i )  ) -> Root ()    )
+
+      if ( !fDefined ) {
+
+       ci = s_CltInfo.Value (  sIndices.Value ( i )  );
+       s_CltInfo.Remove (  sIndices.Value ( i )  );
+       s_CltInfo.Prepend ( ci );
+       fDefined = Standard_True;
+       cltName = new TCollection_HAsciiString (  ci -> Name ()  );
+       aType = ( CPPJini_ExtractionType )sModes.Value ( i );
+
+      } else {
+
+       fDuplicate = Standard_True;
+       break;
+
+      }  // end else
+
+    if ( !fDefined ) {
+
+     Standard_Integer maxVal = INT_MIN;
+     Standard_Integer index, j;
+
+     for (  i = 1; i <= sLevels.Length (); ++i  )
+
+      if (  sLevels.Value ( i ) > maxVal  ) {
+
+       maxVal     = sLevels.Value  ( i );
+       index      = sIndices.Value ( i );
+       j          = i;
+       fDuplicate = Standard_False;
+       fDefined   = Standard_True;
+
+      } else if (  sLevels.Value ( i ) == maxVal  ) {
+
+       fDuplicate = Standard_True;
+       continue;
+
+      }  // end if
+
+     ci      = s_CltInfo.Value ( index );
+     cltName = new TCollection_HAsciiString (  ci -> Name ()  );
+     aType   = ( CPPJini_ExtractionType )sModes.Value ( j );
+     s_CltInfo.Remove  ( index );
+     s_CltInfo.Prepend ( ci    );
+
+    }  // end if
+
+   }  // end if
+
+   if ( !fDefined ) {
+
+    Standard_Integer minVal = INT_MAX;
+    Standard_Integer index, j;
+
+    for (  i = 1; i <= sLevels.Length (); ++i  )
+
+     if (  sLevels.Value ( i ) < minVal  ) {
+
+      minVal     = sLevels.Value  ( i );
+      index      = sIndices.Value ( i );
+      j          = i;
+      fDuplicate = Standard_False;
+
+     } else if (  sLevels.Value ( i ) == minVal  ) {
+
+      fDuplicate = Standard_True;
+      continue;
+
+     }  // end if
+
+    ci      = s_CltInfo.Value ( index );
+    cltName = new TCollection_HAsciiString (  ci -> Name ()  );
+    aType   = ( CPPJini_ExtractionType )sModes.Value ( j );
+    s_CltInfo.Remove  ( index );
+    s_CltInfo.Prepend ( ci    );
+
+   }  // end if
+
+   retVal = Standard_True;
+
+  }  // default
+
+ }  // end switch;
 
  return retVal;
 
 }  // end CPPJini_Defined
 
-// Standard Extractor API : list the EDL files used by this program
-//
-Handle(TColStd_HSequenceOfHAsciiString) CPPJini_TemplatesUsed()
-{
-  Handle(TColStd_HSequenceOfHAsciiString) result = new TColStd_HSequenceOfHAsciiString;
+Standard_Boolean CPPJini_Defined ( 
+                  const Handle( TCollection_HAsciiString )& aTypeName,
+                  Handle( TCollection_HAsciiString )&       cltName
+                 ) {
 
-  result->Append(new TCollection_HAsciiString("CPPJini_Template.edl"));
-  result->Append(new TCollection_HAsciiString("CPPJini_General.edl"));
+ Standard_Boolean       fDup;
+ CPPJini_ExtractionType xType;
 
-  return result;
-}
+ return CPPJini_Defined ( aTypeName, cltName, fDup, xType );
+
+}  // end CPPJini_Defined
+
+Handle( TColStd_HSequenceOfHAsciiString ) CPPJini_TemplatesUsed () {
+
+ Handle( TColStd_HSequenceOfHAsciiString ) result =
+  new TColStd_HSequenceOfHAsciiString ();
+
+ result -> Append (  new TCollection_HAsciiString ( "CPPJini_Template.edl" )  );
+ result -> Append (  new TCollection_HAsciiString ( "CPPJini_General.edl"  )  );
+
+ return result;
+
+}  // end CPPJini_TemplatesUsed
 
 static void _CPPJini_FillUses (
              const Handle( MS_MetaSchema                   )& ms,
              const Handle( TColStd_HSequenceOfHAsciiString )& use
             ) {
 
- Standard_Integer i;
+ ++s_UseLevel;
 
- for ( i = 1; i <= use -> Length (); ++i )
+  Standard_Integer i;
 
-  if (   !s_CltMap.Contains (  use -> Value ( i )  )   ) {
+  for ( i = 1; i <= use -> Length (); ++i )
 
-   Handle( MS_Client ) clt = ms -> GetClient (  use -> Value ( i )  );
+   if (   !s_CltMap.Contains (  use -> Value ( i )  )   ) {
 
-   s_CltInfo.Prepend (   new CPPJini_ClientInfo (  ms, use -> Value ( i )  )   );
-   s_CltMap.Add (  use -> Value ( i )  );
+    Handle( MS_Client ) clt = ms -> GetClient (  use -> Value ( i )  );
 
-   _CPPJini_FillUses (  ms, clt -> Uses ()  );
+    s_CltInfo.Prepend (
+               new CPPJini_ClientInfo (
+                    ms, use -> Value ( i ), s_UseLevel
+                   )
+              );
+    s_CltMap.Add (  use -> Value ( i )  );
 
-  }  // end if
+    _CPPJini_FillUses (  ms, clt -> Uses ()  );
+
+   }  // end if
+
+ if (  i == 1 && s_CltInfo.Length ()  )
+
+  s_CltInfo.Value ( 1 ) -> SetRoot ( Standard_True );
+
+ --s_UseLevel;
 
 }  // end _CPPJini_FillUses
 
-void CPPJini_Init(const Handle(MS_MetaSchema)& aMeta,
-		  const Handle(TCollection_HAsciiString)& aName, 
-		  const Handle(MS_HSequenceOfExternMet)& SeqOfEM,
-		  const Handle(MS_HSequenceOfMemberMet)& SeqOfMM,
-                  const Handle(TColStd_HSequenceOfHAsciiString)& use
-                 ) {
+void CPPJini_Init (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( TCollection_HAsciiString        )& aName, 
+      const Handle( MS_HSequenceOfExternMet         )& SeqOfEM,
+      const Handle( MS_HSequenceOfMemberMet         )& SeqOfMM,
+      const Handle( TColStd_HSequenceOfHAsciiString )& use
+     ) {
 
-  Handle( MS_Client ) client;
+ SeqOfMemberMet = SeqOfMM;
+ SeqOfExternMet = SeqOfEM;
+
+ WOKTools_MapOfHAsciiString map;
+
+ for ( Standard_Integer i = 1; i <= SeqOfEM -> Length (); ++i )
+
+  if (   map.Contains (  SeqOfEM -> Value ( i ) -> FullName ()  )   )
+
+   SeqOfEM -> Remove ( i );
+
+  else
+
+   map.Add (  SeqOfEM -> Value ( i ) -> FullName ()  );
+
+ if (  aMeta -> IsClient ( aName )  ) {
+
+  CPPJini_InterfaceName = aName;
+
+ } else {
+
+  ErrorMsg << "CPPJini" << "Init : Client " << aName << " not found..." << endm;
+  Standard_NoSuchObject :: Raise ();
   
-  SeqOfMemberMet = SeqOfMM;
-  SeqOfExternMet = SeqOfEM;
-
-  if (aMeta->IsClient(aName)) {
-    CPPJini_InterfaceName = aName;
-  }
-  else {
-    ErrorMsg << "CPPJini" << "Init : Client " << aName << " not found..." << endm;
-    Standard_NoSuchObject::Raise();
-  }
+ }  // end else
 
  s_CltInfo.Clear ();
  s_CltMap.Clear  ();
 
+ s_UseLevel = 0;
  _CPPJini_FillUses ( aMeta, use );
 
-}
+ g_SkipMap.Clear ();
 
-Handle(TCollection_HAsciiString)& CPPJini_TransientRootName() 
-{
-  static Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("Standard_Transient");
+ g_Client = new CPPJini_ClientInfo ( aMeta, aName, 0 );
 
-  return name;
-}
+}  // end CPPJini_Init
 
-Handle(TCollection_HAsciiString)& CPPJini_MemoryRootName() 
-{
-  static Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("MMgt_TShared");
+Handle( TCollection_HAsciiString )& CPPJini_TransientRootName () {
 
-  return name;
-}
+ static Handle( TCollection_HAsciiString ) name =
+  new TCollection_HAsciiString ( "Standard_Transient" );
 
-Handle(TCollection_HAsciiString)& CPPJini_MPVRootName() 
-{
-  static Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("jcas.Object");
+ return name;
 
-  return name;
-}
+}  // end CPPJini_TransientRootName
 
-Handle(EDL_API)&  CPPJini_LoadTemplate(const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,
-				   const Handle(TCollection_HAsciiString)& outdir)
-{
-  static Handle(EDL_API)  api = new EDL_API;
-  static Standard_Boolean alreadyLoaded = Standard_False;
+Handle( TCollection_HAsciiString )& CPPJini_MemoryRootName () {
 
-  api->ClearVariables();
+ static Handle( TCollection_HAsciiString ) name =
+  new TCollection_HAsciiString ("MMgt_TShared");
 
-  if (!alreadyLoaded) {
-    alreadyLoaded = Standard_True;
+ return name;
 
-    for(Standard_Integer i = 1; i <= edlsfullpath->Length(); i++) {
-      api->AddIncludeDirectory(edlsfullpath->Value(i)->ToCString());
-    }
+}  // end CPPJini_MemoryRootName
 
-    if (api->Execute("CPPJini_Template.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPJini" << "unable to load : CPPJini_Template.edl" << endm;
-      Standard_NoSuchObject::Raise();
-    } 
-    if (api->Execute("CPPJini_General.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPJini" << "unable to load : CPPJini_General.edl" << endm;
-      Standard_NoSuchObject::Raise();
-    } 
-  }
+Handle( TCollection_HAsciiString )& CPPJini_MPVRootName () {
 
-  // full path of the destination directory
-  //
-  api->AddVariable(VJFullPath,outdir->ToCString());
+ static Handle( TCollection_HAsciiString ) name =
+  new TCollection_HAsciiString ( "jcas.Object" );
 
-  // templates for methods extraction
-  //
-  api->AddVariable(VJMethodHeader,"MethodHeader");
-  api->AddVariable(VJConstructorHeader,"ConstructorHeader");
-  api->AddVariable(VJInterface,CPPJini_InterfaceName->ToCString());
+ return name;
 
-  return api;
-}
+}  // end CPPJini_MPVRootName
 
-// write the content of a variable into a file
-//
-void CPPJini_WriteFile(const Handle(EDL_API)& api,
-		       const Handle(TCollection_HAsciiString)& aFileName,
-		       const Standard_CString var)
-{
-  // ...now we write the result
-  //
-  api->OpenFile("HTFile",aFileName->ToCString());
-  api->WriteFile("HTFile",var);
-  api->CloseFile("HTFile");
-}
+Handle( EDL_API )& CPPJini_LoadTemplate (
+                    const Handle( TColStd_HSequenceOfHAsciiString )& edlsfullpath,
+				    const Handle( TCollection_HAsciiString        )& outdir
+                   ) {
 
-// we test the type and dispatch it in the different lists
-//
-//void CPPJini_DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
-void CPPJini_DispatchUsedType(const Handle(MS_MetaSchema)& ,
-				const Handle(MS_Type)& thetype,
-				const Handle(TColStd_HSequenceOfHAsciiString)& List,
-				const Handle(TColStd_HSequenceOfHAsciiString)& Incp,
-//				const Standard_Boolean notusedwithref)
-				const Standard_Boolean )
-{
-  MS::AddOnce(List,thetype->FullName());
-  MS::AddOnce(Incp,thetype->FullName());
-}
+ static Handle( EDL_API )  api           = new EDL_API ();
+ static Standard_Boolean   alreadyLoaded = Standard_False;
+
+ api -> ClearVariables ();
+
+ if ( !alreadyLoaded ) {
+
+  alreadyLoaded = Standard_True;
+
+  for ( Standard_Integer i = 1; i <= edlsfullpath -> Length(); ++i )
+
+   api -> AddIncludeDirectory (
+           edlsfullpath -> Value ( i ) -> ToCString ()
+          );
 
 
-Handle(TCollection_HAsciiString) CPPJini_UnderScoreReplace(const Handle(TCollection_HAsciiString)& name)
-{
-  char str[5000];
-  char* from = name->ToCString();
-  int cur=0;
-  for (int i=0; i < name->Length(); i++) {
-    if (from[i] == '_') {
-      str[cur] = '_';
-      cur++;
-      str[cur] = '1';
-      cur++;
-    }
-    else {
-      str[cur] = from[i];
-      cur++;
-    }
-  }
-  str[cur] = '\0';
-  return new TCollection_HAsciiString(str);
+  if (  api -> Execute ( "CPPJini_Template.edl" ) != EDL_NORMAL  ) {
+
+   ErrorMsg << "CPPJini" << "unable to load : CPPJini_Template.edl" << endm;
+   Standard_NoSuchObject :: Raise ();
+
+  }  // end if
+
+  if (  api -> Execute ( "CPPJini_General.edl" ) != EDL_NORMAL  ) {
+
+   ErrorMsg << "CPPJini" << "unable to load : CPPJini_General.edl" << endm;
+   Standard_NoSuchObject :: Raise ();
+
+  }  // end if
+  
+ }  // end if
+
+ api -> AddVariable (  VJFullPath,          outdir -> ToCString ()  );
+ api -> AddVariable (  VJMethodHeader,     "MethodHeader"           );
+ api -> AddVariable (  VJConstructorHeader,"ConstructorHeader"      );
+ api -> AddVariable (
+         VJInterface, CPPJini_InterfaceName -> ToCString ()
+        );
+
+ Handle( TCollection_HAsciiString ) libName = new TCollection_HAsciiString (
+                                                   CPPJini_InterfaceName -> ToCString ()
+                                                  );
+
+ libName -> ChangeAll ( '.', '_' );
+
+ api -> AddVariable (  "%LibName", libName -> ToCString ()  );
+
+ return api;
+
+}  // end CPPJini_LoadTemplate
+
+void CPPJini_WriteFile (
+      const Handle( EDL_API                  )& api,
+      const Handle( TCollection_HAsciiString )& aFileName,
+      const Standard_CString                    var
+     ) {
+
+ api -> OpenFile  ("HTFile", aFileName -> ToCString ()  );
+ api -> WriteFile ("HTFile", var                        );
+ api -> CloseFile ("HTFile"                             );
+
+}  // end CPPJini_WriteFile
+
+void CPPJini_DispatchUsedType (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( MS_Type                         )& thetype,
+      const Handle( TColStd_HSequenceOfHAsciiString )& List,
+      const Handle( TColStd_HSequenceOfHAsciiString )& Incp,
+      const Standard_Boolean                           notusedwithref
+     ) {
+
+ MS :: AddOnce (  List, thetype -> FullName ()  );
+ MS :: AddOnce (  Incp, thetype -> FullName ()  );
+
+}  // end CPPJini_DispatchUsedType
+
+Handle( TCollection_HAsciiString ) CPPJini_UnderScoreReplace (
+                                    const Handle( TCollection_HAsciiString )& name
+                                   ) {
+
+ char  str[ 5000 ];
+ char* from = name -> ToCString ();
+ int   cur = 0;
+ 
+ for (  int i = 0; i < name -> Length (); ++i )
+
+  if ( from[ i ] == '_' ) {
+
+   str[ cur++ ] = '_';
+   str[ cur++ ] = '1';
+
+  } else str[ cur++ ] = from[ i ];
+
+ str[ cur ] = '\0';
+ 
+ return new TCollection_HAsciiString ( str );
 	
-}
+}  // end CPPJini_UnderScoreReplace
 
+Standard_Boolean CPPJini_HaveEmptyConstructor (
+                  const Handle( MS_MetaSchema            )& aMeta,
+                  const Handle( TCollection_HAsciiString )& aClass,
+                  const Handle( MS_HSequenceOfMemberMet  )& methods
+                 ) {
 
-//Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& aMeta,
-Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& ,
-//					      const Handle(TCollection_HAsciiString)& aClass,
-					      const Handle(TCollection_HAsciiString)& ,
-					      const Handle(MS_HSequenceOfMemberMet)& methods)
-{
-  if (methods.IsNull()) return Standard_False;
+ if (  methods.IsNull ()  ) return Standard_False;
   
-  for (int i = 1; i <= methods->Length(); i++) {
-    if (methods->Value(i)->IsKind(STANDARD_TYPE(MS_Construc))) {
-      if ((methods->Value(i)->Params().IsNull()) && !methods->Value(i)->Private() && !methods->Value(i)->IsProtected()) {
-	return Standard_True;
-      }
-    }
-  }
-  
-  return Standard_False;
-}
+ for (  int i = 1; i <= methods -> Length (); ++i  )
 
+  if (   methods -> Value ( i ) -> IsKind (  STANDARD_TYPE( MS_Construc )  )   )
+#if 1
+   if (  methods -> Value ( i ) -> Params ().IsNull () &&
+        !methods -> Value ( i ) -> Private ()          &&
+        !methods -> Value ( i ) -> IsProtected ()
+   ) return Standard_True;
+#else
+   if (  methods -> Value ( i ) -> Params ().IsNull ()  ) return Standard_True;
+#endif
+ return Standard_False;
 
+}  // end CPPJini_HaveEmptyConstructor
 
 // sort the method used types :
 //
@@ -394,85 +540,113 @@ Standard_Boolean CPPJini_HaveEmptyConstructor(const Handle(MS_MetaSchema)& ,
 //    List     : the types that must have a full definition
 //    Incp     : the types that only have to be declared
 //
-void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
-			       const Handle(MS_Method)& aMethod,
-			       const Handle(TColStd_HSequenceOfHAsciiString)& List,
-			       const Handle(TColStd_HSequenceOfHAsciiString)& Incp)
-{
-  Standard_Integer                 i;
-  Handle(MS_Param)                 aParam;
-  Handle(MS_Type)                  thetype;
-  Handle(TCollection_HAsciiString) aName,aNameType,parname;
+void CPPJini_MethodUsedTypes (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( MS_Method                       )& aMethod,
+      const Handle( TColStd_HSequenceOfHAsciiString )& List,
+      const Handle( TColStd_HSequenceOfHAsciiString )& Incp
+     ) {
 
-  if (aMethod->IsKind(STANDARD_TYPE(MS_MemberMet))) {
-    Handle(MS_MemberMet) aMM = *((Handle(MS_MemberMet)*)&aMethod);
+ Standard_Integer                   i;
+ Handle( MS_Param                 ) aParam;
+ Handle( MS_Type                  ) thetype;
+ Handle( TCollection_HAsciiString ) aName, aNameType, parname;
 
-    aName = aMM->Class();
-  }
-  else if (aMethod->IsKind(STANDARD_TYPE(MS_ExternMet))) {
-    Handle(MS_ExternMet) aMM = *((Handle(MS_ExternMet)*)&aMethod);
+ if (   aMethod -> IsKind (  STANDARD_TYPE( MS_MemberMet )  )   ) {
 
-    aName = aMM->Package();
-  }
+  Handle( MS_MemberMet ) aMM = *(   (  Handle( MS_MemberMet )*  )&aMethod   );
 
-  aParam = aMethod->Returns();
+  aName = aMM -> Class ();
 
-  if (!aParam.IsNull()) {
-    thetype = aParam->Type();
-    parname = aParam->TypeName();
+ } else if (   aMethod -> IsKind (  STANDARD_TYPE( MS_ExternMet )  )   ) {
 
-    if (thetype->IsKind(STANDARD_TYPE(MS_Alias))) {
-      Handle(MS_Alias) analias = *((Handle(MS_Alias)*)&thetype);
-      
-      parname = analias->DeepType();
-      
-      if (aMeta->IsDefined(parname)) {
-	thetype = aMeta->GetType(parname);
-      }
-      else {
-	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
-	Standard_NoSuchObject::Raise();
-      }
-    }
+  Handle( MS_ExternMet ) aMM = *(   (  Handle( MS_ExternMet )*  )&aMethod   );
+
+  aName = aMM -> Package ();
   
-    if (!parname->IsSameString(aName)) {
-      CPPJini_DispatchUsedType(aMeta,thetype,List,Incp,!aMethod->IsRefReturn());
-    }
-  }
+ }  // end if
 
-  Standard_Boolean          fEnum    = Standard_False;     
-  Handle(MS_HArray1OfParam) seqparam = aMethod->Params();
+ aParam = aMethod -> Returns ();
 
-  if(!seqparam.IsNull()) {
-    for (i = 1; i <= seqparam->Length(); i++) {
-      thetype = seqparam->Value(i)->Type();
-       
-      if (  !fEnum && thetype -> IsKind (  STANDARD_TYPE( MS_Enum )  )   ) fEnum = Standard_True;
+ if (  !aParam.IsNull ()  ) {
 
-      parname = seqparam->Value(i)->TypeName();
+  thetype = aParam -> Type     ();
+  parname = aParam -> TypeName ();
 
-      if (thetype->IsKind(STANDARD_TYPE(MS_Alias))) {
-	Handle(MS_Alias) analias = *((Handle(MS_Alias)*)&thetype);
+  if (   thetype -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
+
+   Handle( MS_Alias ) analias = *(   (  Handle( MS_Alias )*  )&thetype   );
       
-	parname = analias->DeepType();
+   parname = analias -> DeepType ();
       
-	if (aMeta->IsDefined(parname)) {
-	  thetype = aMeta->GetType(parname);
-	}
-	else {
-	  ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
-	  Standard_NoSuchObject::Raise();
-	}
-      }
+   if (  aMeta -> IsDefined ( parname )  )
 
-      if (!parname->IsSameString(aName)) {
-	CPPJini_DispatchUsedType(aMeta,thetype,List,Incp,Standard_False);
-      }
-    }
-    if ( fEnum ) List -> Append (  new TCollection_HAsciiString ( "Standard_Integer" )  );
-  }
-}
+	thetype = aMeta -> GetType ( parname );
 
+   else {
+
+	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+	Standard_NoSuchObject :: Raise ();
+
+   }  // end else
+
+  }  // end if
+  
+  if (  !parname -> IsSameString ( aName )  )
+
+   CPPJini_DispatchUsedType (
+    aMeta, thetype, List, Incp, !aMethod -> IsRefReturn ()
+   );
+
+ }  // end if
+
+ Standard_Boolean          fEnum    = Standard_False;     
+ Handle(MS_HArray1OfParam) seqparam = aMethod->Params();
+
+ if (  !seqparam.IsNull ()  ) {
+
+  for ( i = 1; i <= seqparam -> Length (); ++i ) {
+
+   thetype = seqparam -> Value ( i ) -> Type ();
+     
+   if (  !fEnum && thetype -> IsKind (  STANDARD_TYPE( MS_Enum )  )   )
+
+    fEnum = Standard_True;
+
+   parname = seqparam -> Value ( i ) -> TypeName ();
+
+   if (   thetype -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
+
+    Handle( MS_Alias ) analias = *(   (  Handle( MS_Alias )*  )&thetype   );
+      
+    parname = analias -> DeepType ();
+      
+    if (  aMeta -> IsDefined ( parname )  )
+
+     thetype = aMeta -> GetType ( parname );
+
+    else {
+
+     ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+     Standard_NoSuchObject :: Raise ();
+	
+    }  // end else
+
+   }  // end if
+
+   if (  !parname -> IsSameString ( aName )  )
+
+    CPPJini_DispatchUsedType (
+     aMeta, thetype, List, Incp, Standard_False
+    );
+
+  }  // end for
+
+  if ( fEnum ) List -> Append (  new TCollection_HAsciiString ( "Standard_Integer" )  );
+
+ }  // end if
+
+}  // end CPPJini_MethodUsedTypes
 
 // sort the class used types :
 //
@@ -480,32 +654,37 @@ void CPPJini_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 //    List     : the types that must have a full definition
 //    Incp     : the types that only have to be declared
 //
-void CPPJini_ClassUsedTypes(const Handle(MS_MetaSchema)& aMeta,
-			const Handle(MS_Class)& aClass,
-			const Handle(TColStd_HSequenceOfHAsciiString)& List,
-			const Handle(TColStd_HSequenceOfHAsciiString)& Incp)
-{
-  Standard_Integer                        i;
-  Handle(TColStd_HSequenceOfHAsciiString) asciiseq;
-  Handle(TCollection_HAsciiString)        str,aNameType;
+void CPPJini_ClassUsedTypes (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( MS_Class                        )& aClass,
+      const Handle( TColStd_HSequenceOfHAsciiString )& List,
+      const Handle( TColStd_HSequenceOfHAsciiString )& Incp
+     ) {
 
-  asciiseq = aClass->GetInheritsNames();
+ Standard_Integer                          i;
+ Handle( TColStd_HSequenceOfHAsciiString ) asciiseq;
+ Handle( TCollection_HAsciiString        ) str, aNameType;
 
-  for (i = 1; i <= asciiseq->Length(); i++) {
-    aNameType = new TCollection_HAsciiString;
-    aNameType->AssignCat(CPPJini_InterfaceName);
-    aNameType->AssignCat("_");
-    aNameType->AssignCat(asciiseq->Value(i));
-    MS::AddOnce(List,aNameType);
-  }
+ asciiseq = aClass -> GetInheritsNames ();
 
-  Handle(MS_HSequenceOfMemberMet) metseq = aClass->GetMethods();
+ for ( i = 1; i <= asciiseq -> Length (); ++i ) {
 
-  for (i = 1; i <= metseq->Length(); i++) {
-    CPPJini_MethodUsedTypes(aMeta,metseq->Value(i),List,Incp);
-  }
-}
+  aNameType = new TCollection_HAsciiString ();
+  aNameType -> AssignCat (  CPPJini_InterfaceName    );
+  aNameType -> AssignCat (  "_"                      );
+  aNameType -> AssignCat (  asciiseq -> Value ( i )  );
 
+  MS::AddOnce ( List, aNameType );
+
+ }  // end for
+
+ Handle( MS_HSequenceOfMemberMet ) metseq = aClass -> GetMethods ();
+
+ for ( i = 1; i <= metseq -> Length (); ++i )
+
+  CPPJini_MethodUsedTypes (  aMeta, metseq -> Value ( i ), List, Incp  );
+
+}  // end CPPJini_ClassUsedTypes
 
 // sort the used types :
 //
@@ -513,288 +692,288 @@ void CPPJini_ClassUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 //    List     : the types that must have a full definition
 //    Incp     : the types that only have to be declared
 //
-void CPPJini_UsedTypes(const Handle(MS_MetaSchema)& aMeta,
-			 const Handle(MS_Common)& aCommon,
-			 const Handle(TColStd_HSequenceOfHAsciiString)& List,
-			 const Handle(TColStd_HSequenceOfHAsciiString)& Incp)
-{
-  if (aCommon->IsKind(STANDARD_TYPE(MS_Type))) {
-    if (aCommon->IsKind(STANDARD_TYPE(MS_Class))) {
-      Handle(MS_Class) aClass = *((Handle(MS_Class)*)&aCommon);
+void CPPJini_UsedTypes (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( MS_Common                       )& aCommon,
+      const Handle( TColStd_HSequenceOfHAsciiString )& List,
+      const Handle( TColStd_HSequenceOfHAsciiString )& Incp
+     ) {
+
+ if (   aCommon -> IsKind (  STANDARD_TYPE( MS_Type  )  ) &&
+        aCommon -> IsKind (  STANDARD_TYPE( MS_Class )  )
+ ) {
+
+  Handle( MS_Class ) aClass = *(   (  Handle( MS_Class )*  )&aCommon   );
       
-      CPPJini_ClassUsedTypes(aMeta,aClass,List,Incp);
-    }
-  }
-}
+  CPPJini_ClassUsedTypes ( aMeta, aClass, List, Incp );
+
+ }  // end if
+
+}  // end CPPJini_UsedTypes
 
 // build a return, parameter or field type in c++
 //  return a <type name> or a Handle_<type name>
 //
-Handle(TCollection_HAsciiString) CPPJini_BuildType(const Handle(MS_MetaSchema)& aMeta,
-						   const Handle(TCollection_HAsciiString)& aTypeName)
-{
-  Handle(TCollection_HAsciiString)   result = new TCollection_HAsciiString();
-  Handle(TCollection_HAsciiString)   rTypeName;
-  Handle(TCollection_HAsciiString)   parname;
-  Handle(MS_Type)                    aType;
+Handle( TCollection_HAsciiString ) CPPJini_BuildType (
+                                    const Handle( MS_MetaSchema            )& aMeta,
+                                    const Handle( TCollection_HAsciiString )& aTypeName
+                                   ) {
 
+ Handle( TCollection_HAsciiString ) result = new TCollection_HAsciiString ();
+ Handle( TCollection_HAsciiString ) rTypeName;
+ Handle( TCollection_HAsciiString ) parname;
+ Handle( MS_Type                  ) aType;
   
-  if (aMeta->IsDefined(aTypeName)) {
-    aType     = aMeta->GetType(aTypeName);
-    parname   = aTypeName;
+ if (  aMeta -> IsDefined ( aTypeName )  ) {
 
-    if (aType->IsKind(STANDARD_TYPE(MS_Alias))) {
-      Handle(MS_Alias) analias = *((Handle(MS_Alias)*)&aType);
+  aType   = aMeta -> GetType ( aTypeName );
+  parname = aTypeName;
+
+  if (   aType -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
+
+   Handle( MS_Alias ) analias = *(   (  Handle( MS_Alias )*  )&aType   );
       
-      parname = analias->DeepType();
+   parname = analias -> DeepType ();
       
-      if (aMeta->IsDefined(parname)) {
-	aType = aMeta->GetType(parname);
-      }
-      else {
-	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
-	Standard_NoSuchObject::Raise();
-      }
-    }
+   if (  aMeta -> IsDefined ( parname )  )
+
+	aType = aMeta -> GetType ( parname );
+
+   else {
+
+    ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+    Standard_NoSuchObject :: Raise ();
+
+   }  // end else
+
+  }  // end if
     
+  if (   aType -> IsKind (  STANDARD_TYPE( MS_Enum )  )   )
 
-    if (aType->IsKind(STANDARD_TYPE(MS_Enum))) {
-      parname = new TCollection_HAsciiString("int");
-    }
-    result->AssignCat(parname);
-    if (aType->IsKind(STANDARD_TYPE(MS_NatType))) {
-      if (aType->IsKind(STANDARD_TYPE(MS_Imported)) || aType->IsKind(STANDARD_TYPE(MS_Pointer))) {
-	result = CPPJini_ErrorArgument;
-      }
-    }
-    if (!strcmp(aType->FullName()->ToCString(),"Standard_Address")) {
-      result = CPPJini_ErrorArgument;
-    }
-    
-  }
-  else {
-    ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
-    Standard_NoSuchObject::Raise();
-  }
+   parname = new TCollection_HAsciiString ( "int" );
 
-  return result;
-}
+  result -> AssignCat ( parname );
 
+  if (   aType -> IsKind (  STANDARD_TYPE( MS_NatType )  )   )
 
-Standard_Boolean CPPJini_IsCasType(const Handle(TCollection_HAsciiString)& typname)
-{
-  char* typeName = typname->ToCString();
+   if (  aType -> IsKind (  STANDARD_TYPE( MS_Imported )  ) ||
+         aType -> IsKind (  STANDARD_TYPE( MS_Pointer  )  )
+   ) result = CPPJini_ErrorArgument;
 
-  if (!strcmp(typeName,"Object")) {
-    return Standard_True;
-  }
+  if (   !strcmp (  aType -> FullName () -> ToCString (), "Standard_Address"  )   )
 
-  if (typeName[0] != 'S') return Standard_False;
+   result = CPPJini_ErrorArgument;
 
-  if (!strcmp(typeName,"Standard_CString")) {
-    return Standard_True;
-  }
+ } else {
 
-  if (!strcmp(typeName,"Standard_ExtString")) {
-    return Standard_True;
-  }
+  ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
+  Standard_NoSuchObject :: Raise ();
 
-  if (!strcmp(typeName,"Standard_Character")) {
-    return Standard_True;
-  }
+ }  // end else
 
-  if (!strcmp(typeName,"Standard_Integer")) {
-    return Standard_True;
-  }
-  
-  if (!strcmp(typeName,"Standard_Real")) {
-    return Standard_True;
-  }
-  
-  if (!strcmp(typeName,"Standard_Boolean")) {
-    return Standard_True;
-  }
-  
-  if (!strcmp(typeName,"Standard_ExtCharacter")) {
-    return Standard_True;
-  }
-  
-  if (!strcmp(typeName,"Standard_Byte")) {
-    return Standard_True;
-  }
-  
-  if (!strcmp(typeName,"Standard_ShortReal")) {
-    return Standard_True;
-  }
+ return result;
 
-  if (!strcmp(typeName,"Standard_Address")) {
-    return Standard_True;
-  }
+}  // end CPPJini_BuildType
 
-  return Standard_False;
-}
+Standard_Boolean CPPJini_IsCasType (  const Handle( TCollection_HAsciiString )& typname  ) {
 
-  
+ char* typeName = typname -> ToCString ();
 
-Handle(TCollection_HAsciiString) CPPJini_CheckPrimParam(const Handle(TCollection_HAsciiString)& parname,
-							const Standard_Boolean isout)
-{
-  char* typeName = parname->ToCString();
+ if (  !strcmp ( typeName, "Object" )  ) return Standard_True;
 
+ if ( typeName[ 0 ] != 'S' ) return Standard_False;
 
-  if (!strcmp(typeName,"Standard_Address")) {
-    return CPPJini_ErrorArgument;
-  }
-  if (!strcmp(typeName,"Standard_ExtString")) {
-    if (!isout) {
-      return new TCollection_HAsciiString("String");
-    }
-    return new TCollection_HAsciiString("StringBuffer");
-  }
+ if (  !strcmp ( typeName, "Standard_CString"      )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_ExtString"    )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Character"    )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Integer"      )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Real"         )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Boolean"      )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_ExtCharacter" )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Byte"         )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_ShortReal"    )  ) return Standard_True;
+ if (  !strcmp ( typeName, "Standard_Address"      )  ) return Standard_True;
 
-  if (isout) {
-    return parname;
-  }
+ return Standard_False;
 
-  if (!strcmp(typeName,"Standard_Integer")) {
-    return new TCollection_HAsciiString("int");
-  }
-  
-  if (!strcmp(typeName,"Standard_Real")) {
-    return new TCollection_HAsciiString("double");
-  }
-  
-  if (!strcmp(typeName,"Standard_Boolean")) {
-    return new TCollection_HAsciiString("boolean");
-  }
-  
-  if (!strcmp(typeName,"Standard_ExtCharacter")) {
-    return new TCollection_HAsciiString("char");
-  }
-  
-  if (!strcmp(typeName,"Standard_Byte")) {
-    return new TCollection_HAsciiString("byte");
-  }
-  
-  if (!strcmp(typeName,"Standard_ShortReal")) {
-    return new TCollection_HAsciiString("float");
-  }
-  
+}  // end CPPJini_IsCasType
 
-  return parname;
-}
+Handle( TCollection_HAsciiString ) CPPJini_CheckPrimParam (
+                                    const Handle( TCollection_HAsciiString )& parname,
+                                    const Standard_Boolean                    isout
+                                   ) {
 
-Handle(TCollection_HAsciiString) CPPJini_GetFullJavaType(const Handle(TCollection_HAsciiString)& className)
-{
-  Handle(TCollection_HAsciiString) theret;
-  if (CPPJini_IsCasType(className)) {
-    theret = new TCollection_HAsciiString("jcas.");
-  }
-  else {
-    theret = new TCollection_HAsciiString(CPPJini_InterfaceName->ToCString());
-    theret->AssignCat(".");
-  }
-  theret->AssignCat(className);
-  return theret;
-}
+ char* typeName = parname -> ToCString ();
 
+ if (  !strcmp ( typeName, "Standard_Address" )  ) return CPPJini_ErrorArgument;
+
+ if (  !strcmp ( typeName, "Standard_ExtString" )  )
+
+  return !isout ? new TCollection_HAsciiString ( "String"       )
+                : new TCollection_HAsciiString ( "StringBuffer" );
+
+ if ( isout ) return parname;
+
+ if (  !strcmp ( typeName, "Standard_Integer"      )  )
+  return new TCollection_HAsciiString ( "int"     );
+ if (  !strcmp ( typeName, "Standard_Real"         )  )
+  return new TCollection_HAsciiString ( "double"  );
+ if (  !strcmp ( typeName, "Standard_Boolean"      )  )
+  return new TCollection_HAsciiString ( "boolean" );
+ if (  !strcmp ( typeName, "Standard_ExtCharacter" )  )
+  return new TCollection_HAsciiString ( "char"    );
+ if (  !strcmp ( typeName, "Standard_Byte"         )  )
+  return new TCollection_HAsciiString ( "byte"    );
+ if (  !strcmp ( typeName, "Standard_ShortReal"    )  )
+  return new TCollection_HAsciiString ( "float"   );
+
+ return parname;
+
+}  // end CPPJini_CheckPrimParam
+
+Handle( TCollection_HAsciiString ) CPPJini_GetFullJavaType (
+                                    const Handle( TCollection_HAsciiString )& className
+                                   ) {
+
+ Handle( TCollection_HAsciiString ) theret;
+
+ if (  CPPJini_IsCasType ( className )  )
+
+  theret = new TCollection_HAsciiString ( "jcas." );
+ 
+ else {
+
+  theret = new TCollection_HAsciiString (  CPPJini_InterfaceName -> ToCString ()  );
+  theret -> AssignCat ( "." );
+
+ }  // end else
+
+ theret -> AssignCat ( className );
+
+ return theret;
+
+}  // end CPPJini_GetFullJavaType
 
 // Build a parameter list for methods
 //    the output is in C++
 //
-Handle(TCollection_HAsciiString) CPPJini_BuildParameterList(const Handle(MS_MetaSchema)& aMeta, 
-							    const Handle(MS_HArray1OfParam)& aSeq,
-							    const Standard_Boolean withtype)
-{
-  Standard_Integer                 i;
-  Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString;
-  Handle(MS_Type)                  aType;
-  Handle(MS_Class)                 aClass;
-  Handle(TCollection_HAsciiString) parname;
+Handle( TCollection_HAsciiString ) CPPJini_BuildParameterList (
+                                    const Handle( MS_MetaSchema     )& aMeta, 
+                                    const Handle( MS_HArray1OfParam )& aSeq,
+                                    const Standard_Boolean             withtype
+                                   ) {
 
-  if(!aSeq.IsNull()) {
-    for (i = 1; i <= aSeq->Length(); i++) {
-      if (i > 1) {
-	result->AssignCat(",");
-      }
+ Standard_Integer                   i;
+ Handle( TCollection_HAsciiString ) result = new TCollection_HAsciiString ();
+ Handle( MS_Type                  ) aType;
+ Handle( MS_Class                 ) aClass;
+ Handle( TCollection_HAsciiString ) parname;
 
-      if (aMeta->IsDefined(aSeq->Value(i)->TypeName())) {
-	if (!withtype) {
-	  result->AssignCat(aSeq->Value(i)->Name());
-	}
-	else {
+ if (  !aSeq.IsNull ()  ) {
 
-	  parname = aSeq->Value(i)->TypeName();
-	  aType   = aMeta->GetType(parname);
+  for (  i = 1; i <= aSeq -> Length (); ++i  ) {
+
+   if ( i > 1 ) result -> AssignCat ( "," );
+
+   if (   aMeta -> IsDefined (  aSeq -> Value ( i ) -> TypeName ()  )   ) {
+
+    if ( !withtype )
+
+     result -> AssignCat (  aSeq -> Value ( i ) -> Name ()  );
+
+    else {
+
+     parname = aSeq -> Value ( i ) -> TypeName ();
+     aType   = aMeta -> GetType ( parname );
       
-	  if (aType->IsKind(STANDARD_TYPE(MS_Alias))) {
-	    Handle(MS_Alias) analias = *((Handle(MS_Alias)*)&aType);
-	    
-	    parname = analias->DeepType();
-	    
-	    if (aMeta->IsDefined(parname)) {
-	      aType = aMeta->GetType(parname);
-	    }
-	    else {
-	      ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
-	      Standard_NoSuchObject::Raise();
-	    }
-	  }
+     if (   aType -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
 
-	  if (aType->IsKind(STANDARD_TYPE(MS_Imported)) || aType->IsKind(STANDARD_TYPE(MS_Pointer))) {
-	    result = CPPJini_ErrorArgument;
-	    return result;
-	  }
-	  if (aType->IsKind(STANDARD_TYPE(MS_Enum))) {
-	    if (aSeq->Value(i)->IsOut()) {
-	      parname = new TCollection_HAsciiString("Standard_Integer");
-	    }
-	    else {
-	      parname = new TCollection_HAsciiString("int");
-	    }
-	  }
+      Handle( MS_Alias ) analias = *(   (  Handle( MS_Alias )*  )&aType   );
+	    
+      parname = analias -> DeepType ();
+	    
+      if (  aMeta -> IsDefined ( parname )  )
 
-	  if (aType->IsKind(STANDARD_TYPE(MS_PrimType))) {
-	    parname = CPPJini_CheckPrimParam(parname,aSeq->Value(i)->IsOut());
-	    if (parname == CPPJini_ErrorArgument) return parname;
-	  }
+       aType = aMeta -> GetType ( parname );
+
+      else {
+
+       ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+       Standard_NoSuchObject :: Raise ();
+
+      }  // end else
+
+     }  // end if
+
+     if (  aType -> IsKind (  STANDARD_TYPE( MS_Imported )  ) ||
+           aType -> IsKind (  STANDARD_TYPE( MS_Pointer  )  )
+     ) {
+
+      result = CPPJini_ErrorArgument;
+      return result;
+
+     }  // end if
+
+     if (   aType -> IsKind(  STANDARD_TYPE( MS_Enum )  )   )
+
+      if (  aSeq -> Value ( i ) -> IsOut ()  )
+
+       parname = new TCollection_HAsciiString ( "Standard_Integer" );
+
+      else
+
+       parname = new TCollection_HAsciiString ( "int" );
+
+     if (   aType -> IsKind (  STANDARD_TYPE( MS_PrimType )  )   ) {
+
+      parname = CPPJini_CheckPrimParam (  parname, aSeq -> Value ( i ) -> IsOut ()  );
+
+      if ( parname == CPPJini_ErrorArgument ) return parname;
+
+     }  // end if
 	  
-	  result->AssignCat(parname);
-	  result->AssignCat(" ");
-	  result->AssignCat(aSeq->Value(i)->Name());
-	}	  
-      }
-    }
-  }
-  return result;
-}
+     result -> AssignCat ( parname );
+     result -> AssignCat ( " " );
+     result -> AssignCat (  aSeq -> Value ( i ) -> Name ()  );
 
+    }  // end else
 
+   }  // end if
 
-void CPPJini_CheckMethod(const Standard_Integer index,
-			 const Handle(TCollection_HAsciiString)& thename,
-			 CPPJini_DataMapOfAsciiStringInteger& themap,
-			 TColStd_Array1OfInteger& theindexes)
-{
+  }  // end for
 
-  TCollection_AsciiString name(thename->ToCString());
+ }  // end if
 
+ return result;
 
-  if (themap.IsBound(name)) {
-    Standard_Integer curnb=0;
-    Standard_Integer theindex = themap.Find(name);
-    if (theindexes(theindex) == 0) {
-      theindexes(theindex) = 1;
-    }
-    curnb = theindexes(theindex) + 1;
-    theindexes(index) = curnb;
-    themap.UnBind(name);
-  }
-  themap.Bind(name,index);
-}
+}  // end if
+
+void CPPJini_CheckMethod (
+      const Standard_Integer                    index,
+      const Handle( TCollection_HAsciiString )& thename,
+      CPPJini_DataMapOfAsciiStringInteger&      themap,
+      TColStd_Array1OfInteger&                  theindexes
+     ) {
+
+ TCollection_AsciiString name(  thename -> ToCString ()  );
+
+ if (  themap.IsBound ( name )  ) {
+
+  Standard_Integer curnb = 0;
+  Standard_Integer theindex = themap.Find ( name );
+
+  if (  theindexes ( theindex ) == 0  ) theindexes ( theindex ) = 1;
+
+  curnb = theindexes ( theindex ) + 1;
+  theindexes ( index ) = curnb;
+  themap.UnBind ( name );
+
+ }  // end if
+
+ themap.Bind ( name, index );
+
+}  // end CPPJini_CheckMethod
 			 
-
-
 // build a c++ declaration method
 // the result is in the EDL variable VJMethod
 //
@@ -1044,8 +1223,7 @@ Handle(TCollection_HAsciiString) CPPJini_ConvertToJavaType(const Handle(MS_MetaS
 
 void   CPPJini_ArgumentBuilder(const Handle(MS_MetaSchema)& aMeta, 
 			       const Handle(EDL_API)& api, 
-//			       const Handle(TCollection_HAsciiString)& className,
-			       const Handle(TCollection_HAsciiString)& ,
+			       const Handle(TCollection_HAsciiString)& className,
 			       const Handle(MS_Method)& m,
 			       Handle(TCollection_HAsciiString)& ArgsInDecl,
 			       Handle(TCollection_HAsciiString)& ArgsRetrieve,
@@ -1279,164 +1457,221 @@ Standard_Boolean CPPJini_HasMagicConstructor(const Handle(MS_Type)& atyp)
   return Standard_True;
 }
 
-Standard_Boolean CPPJini_HasEmptyConstructor(const Handle(MS_Type)& atyp)
-{
-  Handle(MS_Class) thecl = Handle(MS_Class)::DownCast(atyp);
-  if (thecl.IsNull()) return Standard_False;
-  Handle(MS_HSequenceOfMemberMet) methods = thecl->GetMethods();
-  for (Standard_Integer i=1; i<= methods->Length(); i++) {
-    if (methods->Value(i)->IsKind(STANDARD_TYPE(MS_Construc))) {
-      Handle(MS_HArray1OfParam) parameters = methods->Value(i)->Params();
-      if (parameters.IsNull()) {
-	if (methods->Value(i)->Private()) {
-	  return Standard_False;
-	}
-	return Standard_True;
-      }
-    }
-  }
-  return Standard_False;
-}
+Standard_Boolean CPPJini_HasEmptyConstructor (  const Handle( MS_Type )& atyp  ) {
 
+ Handle( MS_Class ) thecl = Handle( MS_Class ) :: DownCast ( atyp );
 
-void   CPPJini_ReturnBuilder(const Handle(MS_MetaSchema)& aMeta, 
-			     const Handle(EDL_API)& api, 
-//			     const Handle(TCollection_HAsciiString)& className,
-			     const Handle(TCollection_HAsciiString)& ,
-			     const Handle(MS_Method)& m,
-			     const Handle(TCollection_HAsciiString)& MethodCall,
-			     Handle(TCollection_HAsciiString)& RetInDecl,
-			     Handle(TCollection_HAsciiString)& RetInCall,
-			     Handle(TCollection_HAsciiString)& RetOut)
-{
-  if (!m->Returns().IsNull()) {
-    Handle(MS_Type) rtype  = aMeta->GetType(m->Returns()->TypeName());
+ if (  thecl.IsNull ()  ) return Standard_False;
 
-    if (rtype->IsKind(STANDARD_TYPE(MS_Alias))) {
-      Handle(TCollection_HAsciiString) parname;
-      Handle(MS_Alias)                 analias = *((Handle(MS_Alias)*)&rtype);
+ Handle( MS_HSequenceOfMemberMet ) methods = thecl -> GetMethods ();
+
+ for (  Standard_Integer i = 1; i<= methods -> Length (); ++i  ) {
+
+  if (   methods -> Value ( i ) -> IsKind (  STANDARD_TYPE( MS_Construc )  )   ) {
+
+   Handle( MS_HArray1OfParam ) parameters = methods -> Value ( i ) -> Params ();
+
+   if (  parameters.IsNull ()  ) {
+
+    if (  methods -> Value ( i ) -> Private ()  ) return Standard_False;
+
+    return Standard_True;
+
+   }  // end if
+
+  }  // end if
+
+ }  // end for
+
+ return Standard_False;
+
+}  // end CPPJini_HasEmptyConstructor
+
+void CPPJini_ReturnBuilder (
+      const Handle( MS_MetaSchema            )& aMeta, 
+      const Handle( EDL_API                  )& api, 
+      const Handle( TCollection_HAsciiString )& className,
+      const Handle( MS_Method                )& m,
+      const Handle( TCollection_HAsciiString )& MethodCall,
+            Handle( TCollection_HAsciiString )& RetInDecl,
+            Handle( TCollection_HAsciiString )& RetInCall,
+            Handle( TCollection_HAsciiString )& RetOut
+     ) {
+
+ char* objType = "jobject";
+
+ if (  !m -> Returns ().IsNull ()  ) {
+
+  Handle( MS_Type ) rtype = aMeta -> GetType (
+                                      m -> Returns () -> TypeName ()
+                                     );
+
+  if (   rtype -> IsKind (  STANDARD_TYPE( MS_Alias )  )   ) {
+
+   Handle( TCollection_HAsciiString ) parname;
+   Handle( MS_Alias                 ) analias =
+    *(   (  Handle( MS_Alias )*  )& rtype   );
       
-      parname = analias->DeepType();
+   parname = analias -> DeepType ();
       
-      if (aMeta->IsDefined(parname)) {
-	rtype = aMeta->GetType(parname);
-      }
-      else {
-	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
-	Standard_NoSuchObject::Raise();
-      }
-    }
+   if (  aMeta -> IsDefined ( parname )  )
+
+    rtype = aMeta -> GetType ( parname );
+
+   else {
+
+    ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+	Standard_NoSuchObject :: Raise ();
+
+   }  // end else
+
+  }  // end if
     
-    int curprimtype = 0;
-    RetInDecl = CPPJini_ConvertToJavaType(aMeta,rtype->FullName(),Standard_False,curprimtype);
+  int curprimtype = 0;
+
+  RetInDecl = CPPJini_ConvertToJavaType (
+               aMeta, rtype -> FullName (), Standard_False, curprimtype
+              );
     
-    if (strcmp(RetInDecl->ToCString(),"jobject")) {
-      // retour type basique
+  if (   strcmp (  RetInDecl -> ToCString (),"jobject"  )   ) {
       
-      if (!strcmp(RetInDecl->ToCString(),"jstring")) {
-	api->AddVariable("%MethodCall",MethodCall->ToCString());
-	api->Apply("%Return","ReturnString");
-	RetInCall->AssignCat(api->GetVariableValue("%Return"));
-	RetOut->AssignCat("return thejret;");
-      }
-      else if (!strcmp(RetInDecl->ToCString(),"cstring")) {
-	RetInDecl = new TCollection_HAsciiString("jobject");
-	api->AddVariable("%MethodCall",MethodCall->ToCString());
-	api->Apply("%Return","ReturnCString");
-	RetInCall->AssignCat(api->GetVariableValue("%Return"));
-	RetOut->AssignCat("return thejret;");
-      }
-      else {
-	RetInCall->AssignCat(RetInDecl);
-	RetInCall->AssignCat(" thejret = ");
-	RetInCall->AssignCat(MethodCall);
-	RetInCall->AssignCat(";\n");
-	RetOut->AssignCat("return thejret;");
-      }
-    }
+   if (   !strcmp (  RetInDecl -> ToCString (), "jstring"  )   ) {
+
+    api -> AddVariable (  "%MethodCall", MethodCall -> ToCString ()  );
+    api -> Apply("%Return","ReturnString");
+    RetInCall -> AssignCat (  api -> GetVariableValue ( "%Return" )  );
+    objType = "jstring";
+
+   } else if (   !strcmp (  RetInDecl -> ToCString (),"cstring"  )   ) {
+
+    RetInDecl = new TCollection_HAsciiString("jobject");
+    api -> AddVariable (  "%MethodCall", MethodCall -> ToCString ()  );
+    api -> Apply ( "%Return", "ReturnCString" );
+    RetInCall -> AssignCat (  api -> GetVariableValue ( "%Return" )  );
+
+   } else {
+
+    objType = RetInDecl -> ToCString ();
+    RetInCall -> AssignCat ( " thejret = " );
+    RetInCall -> AssignCat ( MethodCall    );
+    RetInCall -> AssignCat ( ";\n"         );
+    goto setReturn;
+
+   }  // end else
+
+  } else {
+
+   if (   rtype -> IsKind (  STANDARD_TYPE( MS_StdClass )  )   ) {
+
+    Handle( MS_StdClass ) aClass =
+     *(   (  Handle( MS_StdClass )*  )& rtype   );
+
+    api -> AddVariable (
+            "%ClassName", aClass -> FullName () -> ToCString()
+           );
+    api -> AddVariable (  "%MethodCall", MethodCall -> ToCString ()  );
+
+    if (   CPPJini_IsCasType (  rtype -> FullName ()  )   )
+
+     api -> AddVariable ( "%FromInterface", "jcas" );
+
     else {
-      if (rtype->IsKind(STANDARD_TYPE(MS_StdClass))) {
-	Handle(MS_StdClass) aClass = *((Handle(MS_StdClass)*)&rtype);
-	api->AddVariable("%ClassName",aClass->FullName()->ToCString());
-	api->AddVariable("%MethodCall",MethodCall->ToCString());
 
-	if (CPPJini_IsCasType(rtype->FullName())) {
+     Handle( TCollection_HAsciiString ) cltName;
+     Handle( TCollection_HAsciiString ) iName =
+      CPPJini_Defined (  aClass -> FullName (), cltName  ) ?
+       cltName : CPPJini_InterfaceName;
 
-	  api->AddVariable("%FromInterface","jcas");
-	}
+     api -> AddVariable (
+             "%FromInterface",
+             CPPJini_DotReplace (
+              iName -> ToCString (), '/'
+             ) -> ToCString ()
+            );
+
+    }  // end else
+
+    if (  aClass -> IsTransient ()  )
+
+     api -> Apply ( "%Return", "ReturnHandle" );
+
 	else {
 
-         Handle( TCollection_HAsciiString ) cltName;
-         Handle( TCollection_HAsciiString ) iName = CPPJini_Defined (
-                                                     aClass -> FullName (), cltName
-                                                    ) ? cltName : CPPJini_InterfaceName;
-	  api -> AddVariable (
-                  "%FromInterface",
-                  CPPJini_DotReplace (
-                   iName -> ToCString (), '/'
-                  ) -> ToCString ()
-                 );
-	}
-	if (aClass->IsTransient()) {
-	  api->Apply("%Return","ReturnHandle");
-	}
-	else {
-	  if (m->IsRefReturn()) {
-	    api->Apply("%Return","ReturnValueRef");
-	  }
-	  else if (CPPJini_HasMagicConstructor(aClass)) {
-	    api->Apply("%Return","ReturnValueMagic");
-	  }
-	  else if (CPPJini_HasEmptyConstructor(aClass)) {
-	    api->Apply("%Return","ReturnValueEmpty");
-	  }
-	  else {
-	    api->Apply("%Return","ReturnValueMalloc");
-	  }
-	}
-	RetInCall->AssignCat(api->GetVariableValue("%Return"));
-	RetOut->AssignCat("return thejret;");
-      }
-      else {
-	// type primitif non converti en type java
-	api->AddVariable("%ClassName",rtype->FullName()->ToCString());
-	api->AddVariable("%MethodCall",MethodCall->ToCString());
-	if (CPPJini_IsCasType(rtype->FullName())) {
-	  api->AddVariable("%FromInterface","jcas");
-	}
-	else {
+     if (  m -> IsRefReturn ()  )
 
-         Handle( TCollection_HAsciiString ) cltName;
-         Handle( TCollection_HAsciiString ) iName = CPPJini_Defined (
-                                                     rtype -> FullName (), cltName
-                                                    ) ? cltName : CPPJini_InterfaceName;
-	  api -> AddVariable (
-                  "%FromInterface",
-                  CPPJini_DotReplace (
-                   iName -> ToCString (), '/'
-                  ) -> ToCString ()
-                 );
-	}
-	if (m->IsRefReturn()) {
-	  api->Apply("%Return","ReturnValueRef");
-	}
-	else {
-	  api->Apply("%Return","ReturnValueMalloc");
-	}
-	RetInCall->AssignCat(api->GetVariableValue("%Return"));
-	RetOut->AssignCat("return thejret;");
+      api -> Apply ( "%Return","ReturnValueRef" );
 
-      }
+     else if (  CPPJini_HasMagicConstructor ( aClass )  )
 
-    }
-  }
-  else {
-    // pas de return 
-    RetInDecl->AssignCat("void");
-    RetInCall->AssignCat(MethodCall);
-    RetInCall->AssignCat(";\n");
-  }
-}
+      api -> Apply ( "%Return", "ReturnValueMagic" );
+
+     else if (  CPPJini_HasEmptyConstructor ( aClass )  )
+
+      api -> Apply ( "%Return","ReturnValueEmpty" );
+
+     else
+
+      api -> Apply ( "%Return","ReturnValueMalloc" );
+
+    }  // end else
+
+    RetInCall -> AssignCat (  api -> GetVariableValue ( "%Return" )  );
+
+   } else {
+
+    api -> AddVariable (
+            "%ClassName", rtype -> FullName () -> ToCString ()
+           );
+    api -> AddVariable (  "%MethodCall", MethodCall -> ToCString ()  );
+
+	if (   CPPJini_IsCasType (  rtype -> FullName ()  )   )
+
+     api -> AddVariable ( "%FromInterface","jcas" );
+
+    else {
+
+     Handle( TCollection_HAsciiString ) cltName;
+     Handle( TCollection_HAsciiString ) iName =
+      CPPJini_Defined (
+       rtype -> FullName (), cltName
+      ) ? cltName : CPPJini_InterfaceName;
+
+     api -> AddVariable (
+             "%FromInterface",
+             CPPJini_DotReplace (
+               iName -> ToCString (), '/'
+             ) -> ToCString ()
+            );
+
+    }  // end else
+
+    if (  m -> IsRefReturn ()  )
+
+     api -> Apply ( "%Return", "ReturnValueRef" );
+
+	else
+
+     api -> Apply ( "%Return", "ReturnValueMalloc" );
+
+    RetInCall -> AssignCat (  api -> GetVariableValue ( "%Return" )  );
+
+   }  // end else
+
+  }  // end else
+setReturn:
+  api -> AddVariable ( "%ObjType", objType );
+  api -> Apply ( "%MVar", "ReturnVar" );
+  api -> AddVariable ( "%MRet", "return thejret;" );
+  
+ } else {
+
+  RetInDecl -> AssignCat ( "void"     );
+  RetInCall -> AssignCat ( MethodCall );
+  RetInCall -> AssignCat ( ";\n"      );
+
+ }  // end else
+
+}  // end CPPJini_ReturnBuilder
 
 // build a method call for stub c++
 //
@@ -1467,6 +1702,12 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
   metname->AssignCat(CPPJini_InterfaceName);
   metname->AssignCat("_");
   Handle(TCollection_HAsciiString) classunder = CPPJini_UnderScoreReplace(className);
+
+
+  api -> AddVariable ( "%MVar", "" );
+  api -> AddVariable ( "%MRet", "" );
+
+
   if ((nummet != 0) || (m->IsKind(STANDARD_TYPE(MS_Construc)))) {
     metname->AssignCat(classunder);
     metname->AssignCat("_");
@@ -1606,15 +1847,11 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
   api->AddVariable("%Method",metstart->ToCString());
   api->AddVariable("%MBody",metbody->ToCString());
 
-char* var1 = "MethodTemplateDefOBJS";
-char* var2 = "MethodTemplateDef";
-
-
   api -> Apply (
           "%Method",
           !strcmp (
             api -> GetVariableValue ( "%CPPJiniEXTDBMS" ) -> ToCString (), "OBJS"
-           ) ? var1 : var2
+           ) ? "MethodTemplateDefOBJS" : "MethodTemplateDef"
          );
 
 }
@@ -1783,62 +2020,89 @@ void CPPJini_TypeExtract(const Handle(MS_MetaSchema)& aMeta,
   }
 }
 
-void CPPJini_Extract(const Handle(MS_MetaSchema)& aMeta,
-		     const Handle(TCollection_HAsciiString)& aTypeName,
-		     const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,
-		     const Handle(TCollection_HAsciiString)& outdir,
-		     const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
-		     const Standard_CString Mode)
-{  
-  if (aMeta->IsDefined(aTypeName) || aMeta->IsPackage(aTypeName)) {
-    CPPJini_ExtractionType theMode = CPPJini_COMPLETE;
+void CPPJini_Extract (
+      const Handle( MS_MetaSchema                   )& aMeta,
+      const Handle( TCollection_HAsciiString        )& aTypeName,
+      const Handle( TColStd_HSequenceOfHAsciiString )& edlsfullpath,
+      const Handle( TCollection_HAsciiString        )& outdir,
+      const Handle( TColStd_HSequenceOfHAsciiString )& outfile,
+      const Standard_CString                           Mode
+     ) {  
+
+ if (  aMeta -> IsDefined ( aTypeName ) ||
+       aMeta -> IsPackage ( aTypeName )
+ ) {
+
+  CPPJini_ExtractionType theMode = CPPJini_COMPLETE;
     
-    if (strcmp(Mode,"CPPJini_COMPLETE") == 0) {
-      theMode = CPPJini_COMPLETE;
-    }
-    else if (strcmp(Mode,"CPPJini_INCOMPLETE") == 0) {
-      theMode = CPPJini_INCOMPLETE;
-    }
-    else if (strcmp(Mode,"CPPJini_SEMICOMPLETE") == 0) {
-      theMode = CPPJini_SEMICOMPLETE;
-    }
-    else {
-      ErrorMsg << "CPPJini" << "Unknown extraction mode:" << Mode << endm;
-      Standard_NoSuchObject::Raise();
-    }
-    
-    Standard_Boolean                   fDuplicate;
-    CPPJini_ExtractionType             type;
-    Handle( TCollection_HAsciiString ) cltName;
+  if (  strcmp ( Mode, "CPPJini_COMPLETE" ) == 0  )
 
-    if (  CPPJini_Defined ( aMeta, aTypeName, cltName, fDuplicate, type )  ) {
+   theMode = CPPJini_COMPLETE;
 
-     if ( theMode == CPPJini_COMPLETE     && type == CPPJini_COMPLETE ||
-          theMode == CPPJini_INCOMPLETE                               ||
-          theMode == CPPJini_SEMICOMPLETE && type == CPPJini_COMPLETE
-     ) {     
+  else if (  strcmp ( Mode, "CPPJini_INCOMPLETE" ) == 0  )
 
-      InfoMsg << "CPPJini" << "Skipping " << aTypeName
-              << " (already defined in " << cltName << ")" << endm;
+   theMode = CPPJini_INCOMPLETE;
 
-      if ( fDuplicate )
+  else if (  strcmp ( Mode, "CPPJini_SEMICOMPLETE" ) == 0  )
 
-       WarningMsg << "CPPJini" << aTypeName << " defined in more than one client declared in 'uses' statement"
-                  << endm;
+   theMode = CPPJini_SEMICOMPLETE;
 
-      return;
-
-     }  // end if
-
-    }  // end if
-
-    CPPJini_TypeExtract(aMeta,aTypeName,edlsfullpath,outdir,outfile,theMode,Mode);
-  }
   else {
-    ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
-    Standard_NoSuchObject::Raise();
-  }
-}
+
+   ErrorMsg << "CPPJini" << "Unknown extraction mode:" << Mode << endm;
+   Standard_NoSuchObject :: Raise ();
+
+  }  // end else
+
+  s_MS   = aMeta;
+  s_Type = theMode;
+
+  Standard_Boolean                   fDuplicate;
+  CPPJini_ExtractionType             type;
+  Handle( TCollection_HAsciiString ) cltName;
+
+  if (  CPPJini_Defined (
+         aTypeName, cltName, fDuplicate, type
+        )
+  ) {
+
+   if ( theMode == CPPJini_COMPLETE     && type == CPPJini_COMPLETE ||
+        theMode == CPPJini_INCOMPLETE                               ||
+        theMode == CPPJini_SEMICOMPLETE && type == CPPJini_COMPLETE
+   ) {     
+
+    InfoMsg << "CPPJini" << "Skipping " << aTypeName
+            << " (already defined in " << cltName << ")" << endm;
+
+    g_SkipMap.Bind ( aTypeName, cltName );
+
+    if ( fDuplicate )
+
+     WarningMsg << "CPPJini"
+                << aTypeName
+                << " defined in more than one client declared in 'uses' statement"
+                << endm;
+
+    return;
+
+   }  // end if
+
+  }  // end if
+
+  g_ImportMap.Clear ();
+
+  CPPJini_TypeExtract (
+   aMeta, aTypeName, edlsfullpath, outdir, outfile, theMode, Mode
+  );
+
+ } else {
+
+  ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
+  Standard_NoSuchObject :: Raise ();
+
+ }  // end else
+
+}  // end CPPJini_Extract
 
 Handle( TCollection_HAsciiString ) CPPJini_DotReplace ( char* str, char c ) {
 

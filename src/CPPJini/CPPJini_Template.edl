@@ -1,4 +1,10 @@
-@template TransientRootClientJAVA(%Interface) is
+-- File:	CPPJini_Template.edl
+-- Author:	Kernel (CLE)
+-- History:	Tue Dec 19 08:22:43 1995	Kernel	Creation
+-- Copyright:	 Matra Datavision 1995
+
+
+@template TransientRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -22,14 +28,14 @@ $
 $public class Standard_Transient extends jcas.Object {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $
 $}
 @end;
 
-@template StorableRootClientJAVA(%Interface) is
+@template StorableRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -53,13 +59,13 @@ $
 $public class Standard_Storable extends jcas.Object {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $}
 @end;
 
-@template MemoryRootClientJAVA(%Interface) is
+@template MemoryRootClientJAVA(%Interface,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -84,13 +90,13 @@ $
 $public class MMgt_TShared extends %Interface.Standard_Transient {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $}
 @end;
 
-@template TransientClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods) is
+@template TransientClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -110,13 +116,12 @@ $
 $package %Interface;
 $
 $import jcas.Object;
-$import %Inherits;
 $%Includes
 $
 $public class %Class extends %Inherits {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $%Methods
@@ -125,7 +130,7 @@ $
 $}
 @end;
 
-@template TransientClassClientCXX(%Interface,%Class,%Methods,%Includes) is
+@template TransientClassClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
 $//                     Copyright (C) 1991,1995 by
 $//  
 $//                      MATRA DATAVISION, FRANCE
@@ -139,7 +144,7 @@ $//
 $// At the termination of the contract, the software and all copies of this
 $// software must be deleted.
 $
-$#include <%Interface_%Class.h>
+$#include <%IncludeInterface_%Class.h>
 $#include <%Class.hxx>
 $#include <jcas.hxx>
 $#include <stdlib.h>
@@ -153,7 +158,7 @@ $%Methods
 $}
 @end;
 
-@template ValueClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods) is
+@template ValueClassClientJAVA(%Interface,%Class,%Inherits,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -172,28 +177,29 @@ $
 $
 $package %Interface;
 $
-$import jcas.Object;
-$import %Inherits;
 $%Includes
 $
 $public class %Class extends %Inherits {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $%Methods
 $
-$native static void FinalizeValue(long anHID);
+$public native static void FinalizeValue(long anHID);
 $
 $public void finalize() {
-$       FinalizeValue(HID);
+$   synchronized(myCasLock) {
+$     if ( aVirer != 0 ) FinalizeValue(HID);
+$     HID = 0;
+$   }
 $}
 $
 $}
 @end;
 
-@template ValueClassClientCXX(%Interface,%Class,%Methods,%Includes) is
+@template ValueClassClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
 $//                     Copyright (C) 1991,1995 by
 $//  
 $//                      MATRA DATAVISION, FRANCE
@@ -207,7 +213,7 @@ $//
 $// At the termination of the contract, the software and all copies of this
 $// software must be deleted.
 $
-$#include <%Interface_%Class.h>
+$#include <%IncludeInterface_%Class.h>
 $#include <%Class.hxx>
 $#include <jcas.hxx>
 $#include <stdlib.h>
@@ -221,7 +227,7 @@ $%Methods
 $}
 @end;
 
-@template PackageClientJAVA(%Interface,%Class,%Includes,%Methods) is
+@template PackageClientJAVA(%Interface,%Class,%Includes,%Methods,%LibName) is
 $// Java Native Class from Cas.Cade
 $//                     Copyright (C) 1991,1999 by
 $//  
@@ -245,7 +251,7 @@ $
 $public class %Class {
 $
 $ static {
-$    System.loadLibrary("%Interface");
+$    System.loadLibrary("%LibName");
 $ }
 $            
 $%Methods
@@ -254,7 +260,7 @@ $
 $}
 @end;
 
-@template PackageClientCXX(%Interface,%Class,%Methods,%Includes) is
+@template PackageClientCXX(%Interface,%Class,%Methods,%Includes,%IncludeInterface) is
 $//                     Copyright (C) 1991,1995 by
 $//  
 $//                      MATRA DATAVISION, FRANCE
@@ -269,7 +275,7 @@ $// At the termination of the contract, the software and all copies of this
 $// software must be deleted.
 $
 $
-$#include <%Interface_%Class.h>
+$#include <%IncludeInterface_%Class.h>
 $#include <%Class.hxx>
 $#include <jcas.hxx>
 $#include <stdlib.h>
@@ -346,8 +352,11 @@ $, %TypeName %ArgName\^
 -- argument transfert
 
 @template TransientGetValue(%ClassName,%ArgName) is
-$Handle(%ClassName) the_%ArgName;
-$ if ( %ArgName ) the_%ArgName = *((Handle(%ClassName)*) jcas_GetHandle(env,%ArgName));
+$ Handle( %ClassName ) the_%ArgName;
+$ void*                ptr_%ArgName = jcas_GetHandle(env,%ArgName);
+$ 
+$ if ( ptr_%ArgName != NULL ) the_%ArgName = *(   (  Handle( %ClassName )*  )ptr_%ArgName   );
+$
 @end;
 
 @template ValueGetValue(%ClassName,%ArgName) is
@@ -379,7 +388,7 @@ $Standard_Integer the_%ArgName = jcas_GetInteger(env,%ArgName);
 @end;
 
 @template IntegerGetEnumValue(%ArgName,%EnumName) is
-$%EnumName the_%ArgName = (%EnumName)jcas_GetInteger (env,%ArgName );
+$%EnumName the_%ArgName = ( %EnumName )jcas_GetInteger ( env, %ArgName );
 @end;
 
 @template ExtCharacterGetValue(%ArgName) is
@@ -409,12 +418,19 @@ $%ClassName* the_this = (%ClassName*) jcas_GetHandle(env,theobj);
 
 -- out argument
 
-@template TransientSetValue(%ClassName,%ArgName) is
-$Handle(%ClassName)* theprevious_%ArgName = (Handle(%ClassName)*) jcas_GetHandle(env,%ArgName);
-$if (theprevious_%ArgName) delete theprevious_%ArgName;
-$Handle(%ClassName)* thenew_%ArgName = new Handle(%ClassName);
-$(*thenew_%ArgName) = the_%ArgName;
-$jcas_SetHandle(env,%ArgName,thenew_%ArgName);
+@template TransientSetValue(%ClassName,%ArgName,%FromInterface) is
+$
+$ Handle( %ClassName )* theprevious_%ArgName =
+$  (  Handle( %ClassName )*  )jcas_GetHandle ( env, %ArgName );
+$
+$ if ( theprevious_%ArgName ) delete theprevious_%ArgName;
+$
+$ Handle( %ClassName )* thenew_%ArgName = new Handle( %ClassName );
+$
+$ ( *thenew_%ArgName ) = the_%ArgName;
+$
+$ jcas_SetHandle (env, %ArgName, thenew_%ArgName );
+$
 @end;
 
 @template CStringSetValue(%ArgName) is
@@ -486,41 +502,45 @@ $jcas_SetHandle(env,theobj,theret);
 @template ReturnHandle(%ClassName,%MethodCall,%FromInterface) is
 $Handle(%ClassName)* theret = new Handle(%ClassName);
 $*theret = %MethodCall;
-$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+$thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
 @end;
 
 @template ReturnValueMagic(%ClassName,%MethodCall,%FromInterface) is
 $%ClassName* theret = new %ClassName(%MethodCall);
-$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+$thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
 @end;
 
 @template ReturnValueRef(%ClassName,%MethodCall,%FromInterface) is
 $const %ClassName& theret = %MethodCall;
-$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",&theret);
+$thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",&theret,0);
 @end;
 
 @template ReturnValueEmpty(%ClassName,%MethodCall,%FromInterface) is
 $%ClassName* theret = new %ClassName();
 $*theret = %MethodCall;
-$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+$thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
 @end;
 
 @template ReturnValueMalloc(%ClassName,%MethodCall,%FromInterface) is
 $%ClassName *theret = ((%ClassName *) malloc(sizeof(%ClassName)));
 $*theret = %MethodCall;
-$jobject thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
+$thejret = jcas_CreateObject(env,"%FromInterface/%ClassName",theret);
 @end;
 
 @template ReturnCString(%MethodCall) is
 $Standard_CString sret = %MethodCall;
 $jclass CLSret  = env->FindClass("jcas/Standard_CString");
-$jobject thejret = env->AllocObject(CLSret);
+$thejret = env->AllocObject(CLSret);
 $jcas_SetCStringValue(env,thejret,sret);
 @end;
 
 @template ReturnString(%MethodCall) is
 $Standard_ExtString sret = %MethodCall;
-$jstring thejret = jcas_ConvertTojstring(env,sret);
+$thejret = jcas_ConvertTojstring(env,sret);
+@end;
+
+@template ReturnVar (%ObjType) is
+$%ObjType thejret;
 @end;
 
 -- finalize for MPV types
@@ -537,3 +557,4 @@ $}
 $}
 $
 @end;
+
