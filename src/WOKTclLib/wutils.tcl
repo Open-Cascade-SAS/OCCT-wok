@@ -9,17 +9,58 @@ proc wokUtils:TIME:dpe { dpedateheure } {
     return [convertclock "$day $dt($mth) $yea $hour"]
 }
 #
-# Returs the list of files in dir newer than date
+# Convert a date 08-Jan-94.12:05:43 to seconds 
+# clock scan "Sun Nov 24 12:30 1996"
 #
-proc wokUtils:FILES:Since { dir {date "00:00:00" }} {
-    set lim [clock scan $date]
-    set l {}
-    foreach file [ readdir $dir ] {
-	if { [file mtime $dir/$file] > $lim } {
-	    lappend l $file
+proc wokUtils:TIME:clr { e } {
+    if {[regsub {(..)\-(...)\-(..)\.(........)} $e {\1 \2 \3 \4} f] != 0 } {
+	return [clock scan $f]
+    }
+}
+#
+# Sort 2 dates in ClearCase format.
+#
+proc wokUtils:TIME:clrsort { e1 e2 } {
+    if {[regsub {(..)\-(...)\-(..)\.(........)} $e1 {\1 \2 \3 \4} f1] != 0 } {
+	if {[regsub {(..)\-(...)\-(..)\.(........)} $e2 {\1 \2 \3 \4} f2] != 0 } {
+	    if { [clock scan $f1] <= [clock scan $f2] } {
+		return -1
+	    } else {
+		return 1
+	    }
 	}
     }
-    return $l
+}
+#
+# Returs the list of files in dirlist using gblist as pattern newer than lim
+# 
+proc wokUtils:FILES:Since { dirlist gblist lim } {
+    set result {}
+    set recurse {}
+    foreach dir $dirlist {
+        foreach ptn $gblist {
+	    set ll {}
+	    foreach fle [glob -nocomplain -- $dir/$ptn] {
+		if { [file mtime $fle] > $lim } {
+		    lappend ll $fle
+		}
+	    }
+	    set result [concat $result $ll]
+        }
+        foreach file [readdir $dir] {
+            set file $dir/$file
+            if [file isdirectory $file] {
+                set fileTail [file tail $file]
+                if {!(($fileTail == ".") || ($fileTail == ".."))} {
+                    lappend recurse $file
+                }
+            }
+        }
+    }
+    if ![lempty $recurse] {
+        set result [concat $result [wokUtils:FILES:Since $recurse $gblist $lim]]
+    }
+    return $result
 }
 #
 # returns a list:
@@ -60,6 +101,40 @@ proc wokUtils:FILES:Intersect { ldir table } {
 	}
     }
     return
+}
+;#
+;# Put a list of strings in a map indexed by the n first field.
+;# if sep = "/" then strings may represent pathes.
+;# Hence if n = 1 => 2 first fields of the path are used for indexing.
+;# The value is (a list) of the remainder path.
+;# All the pathes in lpathes must contains at least n fields.
+;# Example: n=1 a/b/c => map(a/b) = c
+;#              a/b/d => map(a/b) = {c d } and so on.
+;# if n = -1 then automatically search the longuest string index
+;#
+proc wokUtils:LIST:ListOfPathesToMap { lpath nf map {sep /} } {
+    upvar $map TLOC
+
+    if { $nf < 0 } {
+	puts "???
+    } else {
+	set n $nf
+    }
+
+
+    set np [expr $n + 1]
+    
+    foreach p $lpath {
+	set ll [split $p $sep]
+	set k [join [lrange $ll 0 $n] $sep] 	
+	if [info exists TLOC($k)] {
+	    set l $TLOC($k)
+	    lappend l [join [lrange $ll $np end] $sep]
+	    set TLOC($k) $l
+	} else {
+	    set TLOC($k) [join [lrange $ll $np end] $sep]
+	}
+    }
 }
 #
 # Returns 1 if name does not begin with -
@@ -144,6 +219,7 @@ proc wokUtils:FILES:DirToTree { d } {
 ;#
 ;# Write in map all directories under d. Each index is a directory name ( trimmed by d).
 ;# Contents of index is the list of files in that directory
+;# "Error regsub  --" peut arriver si d se termine par un slache
 ;#
 proc wokUtils:FILES:DirToMap { d map {tail 0} } { 
     upvar $map TLOC
@@ -189,6 +265,51 @@ proc wokUtils:FILES:DirToMap { d map {tail 0} } {
     return
 }
 ;#
+;# Returns a list of Tcl statements that should be 
+;# used for checking existence of files in lpath.
+;# Invoked later on, procname will return elements in lpath
+;# that no longer exists.
+;# 
+proc wokUtils:FILES:WasThere { lpath procname } {
+    lappend l [format "proc $procname { } {"]
+    lappend l [format "set l {}"]
+    foreach f $lpath {
+	set fmt [format "if { !\[file exists %s\] } {lappend l %s }" $f $f]
+	lappend l $fmt
+    }
+    lappend l [format "return \$l\n}"]
+}
+;#
+;# Returns a list of Tcl statements that should be 
+;# used for checking date of files in lpath.
+;# Invoked later on, procname will return elements in lpath
+;# that have been modified and their original date.
+;# 
+proc wokUtils:FILES:Remember { lpath procname } {
+    lappend l [format "proc $procname { } {"]
+    lappend l [format "set l {}"]
+    foreach f $lpath {
+	set d [file mtime $f]
+	set fmt \
+[format "if { \[file mtime %s\] != %s } {lappend l [list %s %s]}" $f $d $f $d]
+	lappend l $fmt
+    }
+    lappend l [format "return \$l\n}"]
+}
+;#
+;# used to sort MAP created by wokUtils:FILES:DirToMap
+;# so that tree directory is traversed "en largeur daborrhe' 
+;#
+proc wokUtils:FILES:Depth { d1 d2 } { 
+    set n1 [regsub -all / $d1 {} nil]
+    set n2 [regsub -all / $d2 {} nil]
+    if { $n1 > $n2 } {
+	return 1
+    } else {
+	return -1
+    }
+}
+;#
 ;# Same as above but write a Tcl proc to perform it. Proc has 1 argument. the name of the map.
 ;# 
 proc wokUtils:FILES:DirMapToProc { d TclFile ProcName } { 
@@ -209,7 +330,25 @@ proc wokUtils:FILES:DirMapToProc { d TclFile ProcName } {
 	return -1
     }
 }
-
+#
+# Same as above but also returns a ordonned list of directories names
+# Use it as follow
+# set treelist [wokUtils:FILES:DirToTree $dir]
+# wokUtils:FILES:DirToH MAP root "" $treelist
+#
+proc wokUtils:FILES:DirToH { var node label info } { 
+    upvar #0 $var data
+    set data($node-label) $label
+    set data($node-children) ""
+    set num 0
+    foreach rec $info {
+	set subnode "$node-[incr num]"
+	lappend data($node-children) $subnode
+	set sublabel [lindex $rec 0]
+	set subinfo [lindex $rec 1]
+	wokUtils:FILES:DirToH  $var $subnode $sublabel $subinfo
+    }
+}
 #
 # Concat all files in lsfiles. Writes the result in result
 #
@@ -295,370 +434,20 @@ proc wokUtils:FILES:ListToFile { liste path } {
     }
 }
 #
-# l1 U l2 
 #
-proc wokUtils:LIST:union { l1 l2 } {
-    set l {}
-    foreach e [concat $l1 $l2] {
-	if { [lsearch $l $e] == -1 } {
-	    lappend l $e
-	} 
-    }
-    return $l
-}
 #
-# l1 - l2
-#
-proc wokUtils:LIST:moins { l1 l2 } {
-    set l {}
-    foreach e $l1 {
-	if { [lsearch $l2 $e] == -1 } {
-	    lappend l $e
-	}
-    }
-    return $l
-}
-#
-# Do something i cannot remenber, 
-# 
-proc wokUtils:LIST:subls { list } {
-    set l {}
-    set len [llength $list]
-    for {set i 0} {$i < $len} {incr i 1} {
-	lappend l [lrange $list 0 $i]
-    }
-    return $l
-}
-#
-# { 1 2 3 } =>  { 3 2 1 }
-#
-proc wokUtils:LIST:reverse { list } { 
-    set ll [llength $list]
-    if { $ll == 0 } {
-	return
-    } elseif { $ll == 1 } {
-	return $list
+proc wokUtils:FILES:AppendListToFile { liste path } {
+    if [ catch { set id [ open $path a ] } ] {
+	return 0
     } else {
-	return [concat [wokUtils:LIST:reverse [lrange $list 1 end]] [list [lindex $list 0]]]
-    }
-}
-#
-# flat a list: { a {b c} {{{{d}}}e } etc.. 
-#            =>   { a b c d e }
-#
-proc wokUtils:LIST:flat { list } {
-    if { [llength $list] == 0 } {
-	return {}
-    } elseif { [llength [lindex $list 0]] == 1 } {
-	return [concat [lindex $list 0] [wokUtils:LIST:flat [lrange $list 1 end]]]
-    } elseif { [llength [lindex $list 0]] > 1 } {
-	return [concat [wokUtils:LIST:flat [lindex $list 0]] [wokUtils:LIST:flat [lrange $list 1 end]]]
-    }
-}
-#
-# returns 3 lists l1-l2 l1-inter-l2 l2-l1
-#
-proc wokUtils:LIST:i3 { l1 l2 } {
-    set a1(0) {} ; unset a1(0)
-    set a2(0) {} ; unset a2(0)
-    set a3(0) {} ; unset a3(0)
-    foreach v $l1 {
-        set a1($v) {}
-    }
-    foreach v $l2 {
-        if [info exists a1($v)] {
-            set a2($v) {} ; unset a1($v)
-        } {
-            set a3($v) {}
-        }
-    }
-    list [lsort [array names a1]] [lsort [array names a2]]  [lsort [array names a3]]
-}
-#
-# returns all elements of list matching of the expr in lexpr
-# Ex: GM [glob *] [list *.tcl *.cxx A*.c]
-#
-proc wokUtils:LIST:GM { list lexpr } {
-    set l {}
-    foreach expr $lexpr {
-	foreach e $list {
-	    if [string match $expr $e] {
-		if { [lsearch $l $e] == -1 } {
-		    lappend l $e
-		}
-	    }
+	foreach e $liste {
+	    puts $id $e
 	}
-    }
-    return $l
-}
-#
-# returns the longer prefix that begin with str in inlist ( Completion purpose.)
-#
-proc wokUtils:LIST:POF { str inlist } {
-    set list {}
-    foreach e $inlist {
-	if {[string match $str* $e]} {
-	    lappend list $e
-	}
-    }
-    if { $list == {} } {
-	return [list {} {}]
-    }
-    set l [expr [string length $str] -1]
-    set miss 0
-    set e1 [lindex $list 0]
-    while {!$miss} {
-	incr l
-	if {$l == [string length $e1]} {
-	    break
-	}
-	set new [string range $e1 0 $l]
-	foreach f $list {
-	    if ![string match $new* $f] {
-		set miss 1
-		incr l -1
-		break
-	    }
-	}
-    }
-    set match [string range $e1 0 $l]
-    set newlist {}
-    foreach e $list {
-	if {[string match $match* $e]} {
-	    lappend newlist $e
-	}
-    }
-    return [list $match $newlist]
-}
-#
-# pos = 1 {{a b c } x} => { {x a} {x b} {x c} } default
-# pos = 2 {{a b c } x} => { {a x} {a x} {a x} }
-#
-proc wokUtils:LIST:pair { l e {pos 1}} {
-    set r {}
-    if { $pos == 1 } {
-	foreach x $l {
-	    lappend r [list $e $x ]
-	}
-    } else {
-	foreach x $l {
-	    lappend r [list $x $e ]
-	}
-    }
-
-    return $r
-}
-#
-# { {x a} {x b} {x c} } => {a b c}
-#
-proc wokUtils:LIST:unpair { ll } {
-    set r {}
-    foreach x $ll {
-	lappend r [lindex $x 1]
-    }
-    return $r
-}
-#
-# keep in list of form ll = { {x a} {x b} {x c} } all elements which "cdr lisp" is in l
-#
-proc wokUtils:LIST:selectpair { ll l } {
-    set rr {}
-    foreach x $ll {
-
-	if { [lsearch $l [lindex $x 1]] != -1 } {
-	    lappend rr $x
-	}
-    }
-    return $rr
-}
-#
-# sort a list of pairs
-#
-proc wokUtils:LIST:Sort2 { ll } {
-    catch { unset tw }
-    foreach x $ll {
-	set e [lindex $x 0]
-	if [info exists tw($e)] {
-	    set lw $tw($e)
-	    lappend lw [lindex $x 1]
-	    set tw($e) $lw
-	} else {
-	    set tw($e) [lindex $x 1]
-	}
-    }
-    set l {}
-    foreach x  [lsort [array names tw]] {
-	foreach y [lsort $tw($x)] {
-	    lappend l [list $x $y]
-	}
-    }
-    return $l
-}
-#
-# Purge a list. Dont modify order
-#
-proc wokUtils:LIST:Purge { l } {
-    set r {}
-     foreach e $l {
-	 if ![info exist tab($e)] {
-	     lappend r $e
-	     set tab($e) {}
-	 } 
-     }
-     return $r
-}
-#
-# trim a list
-#
-proc wokUtils:LIST:Trim { l } {
-    set r {}
-    foreach e $l {
-	if { $e != {} } {
-	    set r [ concat $r $e]
-	}
-    }
-    return $r
-}
-#
-# truncates all strings in liststr which length exceed nb char
-# 
-proc wokUtils:LIST:cut { liststr {nb 10} } {
-    set l {}
-    foreach str $liststr {
-	set len [string length $str]
-	if { $len <= [expr $nb + 2 ]} {
-	    lappend l $str
-	} else {
-	    lappend l [string range $str 0 $nb]..
-	}
-    }
-    return $l
-}
-#
-# compares 2 lists of fulls pathes (master and revision) and fill table with the following format
-# table(simple.nam) {flag path1 path2}
-# flag = + => simple.nam in master but not in revision 
-# flag = ? => simple.nam in master and in revision (files should be further compared)
-# flag = - => simple.nam in revision but not in master 
-#
-proc wokUtils:LIST:SimpleDiff { table master revision {gblist {}} } {
-    upvar $table TLOC
-    catch {unset TLOC}
-    foreach e $master {
-	set key [file tail $e]
-	if { $gblist == {} } {
-	    set TLOC($key) [list - [file dirname $e]]
-	} elseif { [lsearch $gblist [file extension $key]]  != -1 } { 
-	    set TLOC($key) [list - [file dirname $e]]
-	}
-    }
-    foreach e $revision {
-	set key [file tail $e]
-	set dir [file dirname $e]
-	if { $gblist == {} } {
-	    if { [expr { ( [lsearch -exact [array names TLOC] $key] == -1 ) ? 0 : 1 }] } {
-		set TLOC($key) [list ? [lindex $TLOC($key) 1] $dir]
-	    } else {
-		set TLOC($key) [list + $dir]
-	    }
-	} elseif { [lsearch $gblist [file extension $key]]  != -1 } { 
-	    if { [expr { ( [lsearch -exact [array names TLOC] $key] == -1 ) ? 0 : 1 }] } {
-		set TLOC($key) [list ? [lindex $TLOC($key) 1] $dir]
-	    } else {
-		set TLOC($key) [list + $dir]
-	    }
-	}
-    }
-    return
-}
-#
-# modify table ( created by wokUtils:LIST:SimpleDiff) as follows:
-# substitues flag ? by = if function(path1,path2) returns 1 , by # if not
-# all indexes in tbale are processed.
-#
-proc wokUtils:LIST:CompareAllKey { table function } {
-    upvar $table TLOC
-    foreach e [array names TLOC] {
-	set flag [lindex $TLOC($e) 0]
-	set f1 [lindex $TLOC($e) 1]/$e
-	set f2 [lindex $TLOC($e) 2]/$e
-	if { [string compare $flag ?] == 0 } {
-	    if { [$function $f1 $f2] == 1 } {
-		set TLOC($e) [list = $f1 $f2]
-	    } else {
-		set TLOC($e) [list # $f1 $f2]
-	    }
-	}
-    }
-}
-#
-# Same as above but only indexex in keylist are processed.
-# This proc to avoid testing each key in the above procedure
-#  
-proc wokUtils:LIST:CompareTheseKey { table function keylist } {
-    upvar $table TLOC
-    foreach e [array names TLOC] {
-	if  { [expr { ([lsearch -exact $keylist $e] != -1) ? 1 : 0}] } {
-	    set flag [lindex $TLOC($e) 0]
-	    set f1 [lindex $TLOC($e) 1]/$e
-	    set f2 [lindex $TLOC($e) 2]/$e
-	    if { [string compare $flag ?] == 0 } {
-		if { [$function $f1 $f2] == 1 } {
-		    set TLOC($e) [list = $f1 $f2]
-		} else {
-		    set TLOC($e) [list # $f1 $f2]
-		}
-	    }
-	} else {
-	    unset TLOC($e)
-	}
-    }
-    return
-}
-#
-# same as array set, i guess
-#
-proc wokUtils:LIST:ListToMap { name list2 } {
-    upvar $name TLOC 
-    foreach f $list2 {
-	set TLOC([lindex $f 0]) [lindex $f 1]
-    }
-    return
-}
-#
-# reverse 
-#
-proc wokUtils:LIST:MapToList { name {reg *}} {
-    upvar $name TLOC 
-    set l {}
-    foreach f [array names TLOC $reg] {
-	lappend l [list $f $TLOC($f)]
-    }
-    return $l
-}
-#
-# Same as wokUtils:LIST:ListToMap. For spurious reason
-#
-proc wokUtils:LIST:MapList { name list2 } {
-    upvar $name TLOC 
-    foreach f $list2 {
-	set TLOC([lindex $f 0]) [lindex $f 1]
-    }
-    return
+	close $id
+	return 1
+    } 
 }
 
-# 
-# Applique le test Func sur l'element index de list 
-#
-proc wokUtils:LIST:Filter { list Func {index 0} } {
-    set l {}
-    foreach e $list {
-	if { [$Func [lindex $e $index]] } {
-	    lappend l $e
-	}
-    }
-    return $l
-}
 #
 # Compares 2 full pathes for TEXT ASCII files. Returs 1 if identicals 0 ifnot
 #
@@ -683,12 +472,6 @@ proc wokUtils:FILES:AreSame { f1 f2 } {
     }
 }
 #
-# Renvoie 1 si wb est une racine 0 sinon
-#
-proc wokUtils:WB:IsRoot { wb } {
-    return [expr { ( [llength [w_info -A $wb]] > 1 ) ? 0 : 1 }]
-}
-#
 # Copy file
 #
 proc wokUtils:FILES:copy { fin fout } {
@@ -705,6 +488,19 @@ proc wokUtils:FILES:copy { fin fout } {
     } else {
 	    puts stderr "Error: $errin"
 	return -1
+    }
+}
+#
+# Delete file. Tcl 7.5 or later.
+#
+proc wokUtils:FILES:delete { f } {
+    global tcl_version
+    if [file exists $f] {
+	if { "$tcl_version" == "7.5" } {
+	    unlink $f
+	} else {
+	    file delete $f
+	}
     }
 }
 #
@@ -744,6 +540,59 @@ proc wokUtils:FILES:ls  { dir {select all} } {
 	}
     }
     return  [lsort $l]
+}
+;#
+;#
+;#
+proc  wokUtils:FILES:FindFile { startDir namePat } {
+    set pwd [pwd]
+    if [catch {cd $startDir} err] {
+	puts stderr $err
+	return
+    }
+    foreach match [glob -nocomplain -- $namePat] {
+	puts stdout [file join $startDir $match]
+    }
+    foreach file [glob -nocomplain *] {
+	if [file isdirectory $file] {
+	     wokUtils:FILES:FindFile [file join $startDir $file] $namePat
+	}
+    }
+    cd $pwd
+}
+;#
+;# Copy src in dest and translate to native format
+;# src qnd dest can be directory.
+;# at least Tcl 7.6 (file mkdir ..) if not uses Tclx
+;# Basic use wokUtils:FILES:NatCopy  pth1 pth2
+;#
+proc wokUtils:FILES:NatCopy { src dest {verbose 0} {YesOrNo wokUtils:EASY:NatCopy} } {
+    global tcl_version
+    if [file isdirectory $src] {
+	if { "$tcl_version" == "7.6" } {
+	    file mkdir $dest
+	} else {
+	    mkdir -path $dest
+	}
+	foreach f [glob -nocomplain [file join $src *]] {
+	    wokUtils:FILES:NatCopy $f [file join $dest [file tail $f]] $verbose $YesOrNo
+	}
+	return
+    }
+
+    if [file isdirectory $dest] {
+	set dest [file join $dest [file tail $src]]
+    }
+
+    if [$YesOrNo $src] {
+	if { $verbose } { puts stderr "Converting $src" }
+	set in [open $src]
+	set ws [read $in]
+	close $in
+	set out [open $dest w]
+	puts -nonewline $out $ws
+	close $out 
+    }
 }
 #
 # Compress /decompress fullpath
@@ -909,37 +758,476 @@ proc wokUtils:FILES:dirtmp { tmpnam } {
     }
     mkdir $tmpnam
     return 
-}    
-#
-# Doc
-#
-proc wokH { reg } {
-    global auto_index
-    set maxl 0
-    set l {}
-    foreach name [lsort [array names auto_index $reg]] {
-	lappend l $name
-	if {[string length $name] > $maxl} {
-	    set maxl [string length $name]
+}
+;#
+;# Recursive copy of dir in dest . 
+;# Date of files in dest are modified since they are newly created.
+;# FunCopy is the function called to perform the copy.
+;# It receives 2 arguments :
+;# 1. Full path of the source file.
+;# 2. Full path of the destination file.
+;#
+proc wokUtils:FILES:recopy { dir dest  {verbose 0} {FunCopy wokUtils:FILES:copy} } { 
+    wokUtils:FILES:DirToMap $dir MAP
+    foreach odir [lsort -command wokUtils:FILES:Depth [array names MAP]] {
+	regsub  {^/} $odir {} sd
+	set did [file join $dest $sd]
+	if { ![file exists $did] } {
+	    if { $verbose } { puts stderr "Creating directory $did" }	    
+	    mkdir -path $did
+	} else {
+	    if { $verbose } { puts stderr "Directory $did already exists. " }	    
+	}
+	foreach f $MAP($odir) {
+	    if { $verbose } { puts stderr "Creating file [file join $did [file tail $f]]" }
+	    $FunCopy $f [file join $did [file tail $f]]
 	}
     }
-    foreach name [lsort $l] {
-	puts stdout [format "%-*s = %s" $maxl  $name [lindex $auto_index($name) 1]]
+    return
+}
+;#
+;#
+;#
+proc  wokUtils:FILES:html { file } {
+    global tcl_platform
+    if { "$tcl_platform(platform)" == "unix" } {
+	set cmd "exec netscape -remote \"openFile($file)\""
+	if { [catch $cmd] != 0 } {
+	    exec netscape &
+	    while { [catch $cmd] != 0 } { 
+		after 500
+	    }
+	}
+    } elseif { "$tcl_platform(platform)" == "windows" } {
+	set cmd [list exec netscape $file &]
+	if { [catch $cmd] != 0 } {
+	    set prog [tk_getOpenFile -title "Where is Netscape ?"]
+	    if { $prog != "" } {
+		puts $prog
+		exec $prog $file &
+	    }
+	}
+    }
+    return    
+}
+#
+# l1 U l2 
+#
+proc wokUtils:LIST:union { l1 l2 } {
+    set l {}
+    foreach e [concat $l1 $l2] {
+	if { [lsearch $l $e] == -1 } {
+	    lappend l $e
+	} 
+    }
+    return $l
+}
+#
+# l1 - l2
+#
+proc wokUtils:LIST:moins { l1 l2 } {
+    set l {}
+    foreach e $l1 {
+	if { [lsearch $l2 $e] == -1 } {
+	    lappend l $e
+	}
+    }
+    return $l
+}
+#
+# Do something i cannot remenber, 
+# 
+proc wokUtils:LIST:subls { list } {
+    set l {}
+    set len [llength $list]
+    for {set i 0} {$i < $len} {incr i 1} {
+	lappend l [lrange $list 0 $i]
+    }
+    return $l
+}
+#
+# { 1 2 3 } =>  { 3 2 1 }
+#
+proc wokUtils:LIST:reverse { list } { 
+    set ll [llength $list]
+    if { $ll == 0 } {
+	return
+    } elseif { $ll == 1 } {
+	return $list
+    } else {
+	return [concat [wokUtils:LIST:reverse [lrange $list 1 end]] [list [lindex $list 0]]]
+    }
+}
+#
+# flat a list: { a {b c} {{{{d}}}e } etc.. 
+#            =>   { a b c d e }
+#
+proc wokUtils:LIST:flat { list } {
+    if { [llength $list] == 0 } {
+	return {}
+    } elseif { [llength [lindex $list 0]] == 1 } {
+	return [concat [lindex $list 0] [wokUtils:LIST:flat [lrange $list 1 end]]]
+    } elseif { [llength [lindex $list 0]] > 1 } {
+	return [concat [wokUtils:LIST:flat [lindex $list 0]] [wokUtils:LIST:flat [lrange $list 1 end]]]
+    }
+}
+#
+# returns 3 lists l1-l2 l1-inter-l2 l2-l1
+#
+proc wokUtils:LIST:i3 { l1 l2 } {
+    set a1(0) {} ; unset a1(0)
+    set a2(0) {} ; unset a2(0)
+    set a3(0) {} ; unset a3(0)
+    foreach v $l1 {
+        set a1($v) {}
+    }
+    foreach v $l2 {
+        if [info exists a1($v)] {
+            set a2($v) {} ; unset a1($v)
+        } {
+            set a3($v) {}
+        }
+    }
+    list [lsort [array names a1]] [lsort [array names a2]]  [lsort [array names a3]]
+}
+#
+# returns all elements of list matching of the expr in lexpr
+# Ex: GM [glob *] [list *.tcl *.cxx A*.c]
+#
+proc wokUtils:LIST:GM { list lexpr } {
+    set l {}
+    foreach expr $lexpr {
+	foreach e $list {
+	    if [string match $expr $e] {
+		if { [lsearch $l $e] == -1 } {
+		    lappend l $e
+		}
+	    }
+	}
+    }
+    return $l
+}
+#
+# returns the longer prefix that begin with str in inlist ( Completion purpose.)
+#
+proc wokUtils:LIST:POF { str inlist } {
+    set list {}
+    foreach e $inlist {
+	if {[string match $str* $e]} {
+	    lappend list $e
+	}
+    }
+    if { $list == {} } {
+	return [list {} {}]
+    }
+    set l [expr [string length $str] -1]
+    set miss 0
+    set e1 [lindex $list 0]
+    while {!$miss} {
+	incr l
+	if {$l == [string length $e1]} {
+	    break
+	}
+	set new [string range $e1 0 $l]
+	foreach f $list {
+	    if ![string match $new* $f] {
+		set miss 1
+		incr l -1
+		break
+	    }
+	}
+    }
+    set match [string range $e1 0 $l]
+    set newlist {}
+    foreach e $list {
+	if {[string match $match* $e]} {
+	    lappend newlist $e
+	}
+    }
+    return [list $match $newlist]
+}
+#
+# Split l in to p list of max n elements.
+# then llength(l) = p*n + r
+#
+proc wokUtils:LIST:split { l n } {
+    set i 0
+    foreach e $l {
+	incr i
+	if { $i <= $n } {
+	    lappend bf $e
+	} else {
+	    set i 1
+	    if [info exists bf] {
+		lappend res $bf
+		set bf $e
+	    }
+	}
+    }
+    lappend res $bf
+    return $res
+}
+#
+# pos = 1 {{a b c } x} => { {x a} {x b} {x c} } default
+# pos = 2 {{a b c } x} => { {a x} {a x} {a x} }
+#
+proc wokUtils:LIST:pair { l e {pos 1}} {
+    set r {}
+    if { $pos == 1 } {
+	foreach x $l {
+	    lappend r [list $e $x ]
+	}
+    } else {
+	foreach x $l {
+	    lappend r [list $x $e ]
+	}
+    }
+
+    return $r
+}
+#
+# { {x a} {x b} {x c} } => {a b c}
+#
+proc wokUtils:LIST:unpair { ll } {
+    set r {}
+    foreach x $ll {
+	lappend r [lindex $x 1]
+    }
+    return $r
+}
+#
+# keep in list of form ll = { {x a} {x b} {x c} } all elements which "cdr lisp" is in l
+#
+proc wokUtils:LIST:selectpair { ll l } {
+    set rr {}
+    foreach x $ll {
+
+	if { [lsearch $l [lindex $x 1]] != -1 } {
+	    lappend rr $x
+	}
+    }
+    return $rr
+}
+#
+# sort elements of l, according to key 
+# key is the field number of an element considered as a string  
+# command is invoked and receive the 2 fields.
+#
+proc wokUtils:LIST:sort { l key {sep " "} {mode -ascii} {order -increasing}} {
+    foreach e $l {
+	puts $e
+	set x [split $e $sep]
+	puts "x = $x"
+	set map([lindex $x $key]) $e
+    }
+    parray map
+    set le_tour_est_joue {}
+    foreach e [lsort $mode $order [array names map]] {
+	lappend le_tour_est_joue $map($e)
+    }
+    return $le_tour_est_joue
+}
+#
+# sort a list of pairs
+#
+proc wokUtils:LIST:Sort2 { ll } {
+    catch { unset tw }
+    foreach x $ll {
+	set e [lindex $x 0]
+	if [info exists tw($e)] {
+	    set lw $tw($e)
+	    lappend lw [lindex $x 1]
+	    set tw($e) $lw
+	} else {
+	    set tw($e) [lindex $x 1]
+	}
+    }
+    set l {}
+    foreach x  [lsort [array names tw]] {
+	foreach y [lsort $tw($x)] {
+	    lappend l [list $x $y]
+	}
+    }
+    return $l
+}
+#
+# Purge a list. Dont modify order
+#
+proc wokUtils:LIST:Purge { l } {
+    set r {}
+     foreach e $l {
+	 if ![info exist tab($e)] {
+	     lappend r $e
+	     set tab($e) {}
+	 } 
+     }
+     return $r
+}
+#
+# Purge and sort a list.
+#
+proc wokUtils:LIST:SortPurge { l } {
+     foreach e $l {
+	 set tab($e) {}
+     }
+     return [lsort [array names tab]]
+}
+#
+#
+# trim a list
+#
+proc wokUtils:LIST:Trim { l } {
+    set r {}
+    foreach e $l {
+	if { $e != {} } {
+	    set r [ concat $r $e]
+	}
+    }
+    return $r
+}
+#
+# truncates all strings in liststr which length exceed nb char
+# 
+proc wokUtils:LIST:cut { liststr {nb 10} } {
+    set l {}
+    foreach str $liststr {
+	set len [string length $str]
+	if { $len <= [expr $nb + 2 ]} {
+	    lappend l $str
+	} else {
+	    lappend l [string range $str 0 $nb]..
+	}
+    }
+    return $l
+}
+#
+# compares 2 lists of fulls pathes (master and revision) and fill table with the following format
+# table(simple.nam) {flag path1 path2}
+# flag = + => simple.nam in master but not in revision 
+# flag = ? => simple.nam in master and in revision (files should be further compared)
+# flag = - => simple.nam in revision but not in master 
+#
+proc wokUtils:LIST:SimpleDiff { table master revision {gblist {}} } {
+    upvar $table TLOC
+    catch {unset TLOC}
+    foreach e $master {
+	set key [file tail $e]
+	if { $gblist == {} } {
+	    set TLOC($key) [list - [file dirname $e]]
+	} elseif { [lsearch $gblist [file extension $key]]  != -1 } { 
+	    set TLOC($key) [list - [file dirname $e]]
+	}
+    }
+    foreach e $revision {
+	set key [file tail $e]
+	set dir [file dirname $e]
+	if { $gblist == {} } {
+	    if { [expr { ( [lsearch -exact [array names TLOC] $key] == -1 ) ? 0 : 1 }] } {
+		set TLOC($key) [list ? [lindex $TLOC($key) 1] $dir]
+	    } else {
+		set TLOC($key) [list + $dir]
+	    }
+	} elseif { [lsearch $gblist [file extension $key]]  != -1 } { 
+	    if { [expr { ( [lsearch -exact [array names TLOC] $key] == -1 ) ? 0 : 1 }] } {
+		set TLOC($key) [list ? [lindex $TLOC($key) 1] $dir]
+	    } else {
+		set TLOC($key) [list + $dir]
+	    }
+	}
     }
     return
 }
 #
-# Easy  1. Stupid. Dont use
+# modify table ( created by wokUtils:LIST:SimpleDiff) as follows:
+# substitues flag ? by = if function(path1,path2) returns 1 , by # if not
+# all indexes in tbale are processed.
 #
-proc wokUtils:EASY:Apply { f l } {
-    if { $l != {} } {
-	$f [lindex $l 0]
-	wokUtils:EASY:Apply $f [lrange $l 1 end]
-	return
+proc wokUtils:LIST:CompareAllKey { table function } {
+    upvar $table TLOC
+    foreach e [array names TLOC] {
+	set flag [lindex $TLOC($e) 0]
+	set f1 [lindex $TLOC($e) 1]/$e
+	set f2 [lindex $TLOC($e) 2]/$e
+	if { [string compare $flag ?] == 0 } {
+	    if { [$function $f1 $f2] == 1 } {
+		set TLOC($e) [list = $f1 $f2]
+	    } else {
+		set TLOC($e) [list # $f1 $f2]
+	    }
+	}
     }
 }
 #
-# Very,very,very,very,very useful
+# Same as above but only indexex in keylist are processed.
+# This proc to avoid testing each key in the above procedure
+#  
+proc wokUtils:LIST:CompareTheseKey { table function keylist } {
+    upvar $table TLOC
+    foreach e [array names TLOC] {
+	if  { [expr { ([lsearch -exact $keylist $e] != -1) ? 1 : 0}] } {
+	    set flag [lindex $TLOC($e) 0]
+	    set f1 [lindex $TLOC($e) 1]/$e
+	    set f2 [lindex $TLOC($e) 2]/$e
+	    if { [string compare $flag ?] == 0 } {
+		if { [$function $f1 $f2] == 1 } {
+		    set TLOC($e) [list = $f1 $f2]
+		} else {
+		    set TLOC($e) [list # $f1 $f2]
+		}
+	    }
+	} else {
+	    unset TLOC($e)
+	}
+    }
+    return
+}
+#
+# same as array set, i guess
+#
+proc wokUtils:LIST:ListToMap { name list2 } {
+    upvar $name TLOC 
+    foreach f $list2 {
+	set TLOC([lindex $f 0]) [lindex $f 1]
+    }
+    return
+}
+#
+# reverse 
+#
+proc wokUtils:LIST:MapToList { name {reg *}} {
+    upvar $name TLOC 
+    set l {}
+    foreach f [array names TLOC $reg] {
+	lappend l [list $f $TLOC($f)]
+    }
+    return $l
+}
+#
+# Same as wokUtils:LIST:ListToMap. For spurious reason
+#
+proc wokUtils:LIST:MapList { name list2 } {
+    upvar $name TLOC 
+    foreach f $list2 {
+	set TLOC([lindex $f 0]) [lindex $f 1]
+    }
+    return
+}
+
+# 
+# Applique le test Func sur l'element index de list 
+#
+proc wokUtils:LIST:Filter { list Func {index 0} } {
+    set l {}
+    foreach e $list {
+	if { [$Func [lindex $e $index]] } {
+	    lappend l $e
+	}
+    }
+    return $l
+}
+    
+#
+# not Very,very,very,very,very useful
 #
 proc wokUtils:EASY:GETOPT { prm table tablereq usage listarg } {
 
@@ -1043,21 +1331,51 @@ proc wokUtils:EASY:DISOPT  { tabarg tbldis usage } {
     return
 }
 ;#
+;# Answer Yes or No to convert file ( full path /ordinary file  )
+;# Here is a quite bestial/brutal version to convert automatically about 70 percent of text files
 ;#
-;#
-proc wokUtils:EASY:Check_auto_path { auto_path } {
-    foreach d [wokUtils:LIST:Purge $auto_path] {
-	if [file exists $d/tclIndex] {
-	    puts "tclIndex     in  $d"
-	} elseif [file exists $d/pkgIndex.tcl] {
-	    puts "pkgIndex.tcl in  $d"
-	} else {
-	    puts "ERROR:       $d"
+proc wokUtils:EASY:NatCopy { file } {
+    set glob_style_patterns {*.cxx *.C *.h *.c *.f *.ll *.cdl *.edl *.tcl *.ld *.idl *.ccl}
+    set bf [file tail $file]
+    foreach ptn $glob_style_patterns {
+	if [string match $ptn $bf] {
+	    return 1
 	}
     }
-    return
+    return 0
 }
-
+# fait la substitution de / par \\ sur NT
+# sur Unix ne fait rien
+#
+proc wokUtils:EASY:stobs2 { l } {
+    global tcl_platform
+    switch -- $tcl_platform(platform) {
+	unix {
+	    return $l
+	}
+	windows {
+	    return [wokUtils:EASY:lbs2 $l]
+	}
+    }
+}
+#
+proc wokUtils:EASY:lbs1 { ls } {
+    set lr {}
+    foreach s $ls {
+	regsub -all {/} $s {\\} r
+	lappend lr $r
+    }
+    return $lr
+}
+#
+proc wokUtils:EASY:lbs2 { ls } {
+    set lr {}
+    foreach s $ls {
+	regsub -all {/} $s {\\\\} r
+	lappend lr $r
+    }
+    return $lr
+}
 #
 # string trim does not work. Do it 
 # 
@@ -1093,24 +1411,6 @@ proc wokUtils:EASY:MAD { table here t } {
     }
     foreach v [array names tin] {
 	set TLOC($here,$v) $tin($v)
-    }
-}
-#
-# Exec command. VERBOSE = 1 et WATCHONLY 1 => display but dont execute
-#
-proc wokUtils:EASY:command { command {VERBOSE 0} {WATCHONLY 0} } {
-    if { $VERBOSE } {
-	puts stderr "Exec: $command"
-    }
-    if { $WATCHONLY } {
-	return [list 1 1]
-    }
-    if [catch {eval exec $command} status] {
-	puts stderr "Error in command: $command"
-	puts stderr "Status          : $status"
-	return [list -1 $status]
-    } else {
-	return [list 1 $status]
     }
 }
 #
@@ -1204,10 +1504,47 @@ proc wokUtils:EASY:tar { option args } {
 
     return $statutar
 }
+#
+# Send a mail on unix platform.
+#
+proc wokUtils:EASY:mail { to from cc subject text {option send} } {
+    global tcl_platform
+    if { "$tcl_platform(platform)" == "unix" } {
+	switch -- $option {
+	    send {
+		set cmd {wokUtils:EASY:mail $to $from $cc $subject $text command}
+		if {[catch $cmd result] != 0} {
+		    puts $result
+		    return {}
+		} else {
+		    return 1
+		}
+	    }
+	    
+	    command {
+		set fid [open "| /usr/lib/sendmail -oi -t" "w"]
+		puts $fid "To: $to"
+		if {[string length $from] > 0} {
+		    puts $fid "From: $from"
+		}
+		if {[string length $cc] > 0} {
+		    puts $fid "Cc: $cc"
+		}
+		puts $fid "Subject: $subject"
+		puts $fid "Date: [clock format [clock seconds]]"
+		puts $fid ""  
+		puts $fid $text
+		close $fid
+		return 1
+	    }
+	}
+    }
+}
 ;#
 ;# topological sort. returns a list.
 ;#wokUtils:EASY:tsort {  {a h} {b g} {c f} {c h} {d i}  }
 ;#               => { d a b c i g f h }
+;#
 proc wokUtils:EASY:tsort { listofpairs } {
     foreach x $listofpairs {
 	set e1 [lindex $x 0]
@@ -1271,15 +1608,88 @@ proc wokUtils:EASY:OneHead { str len } {
     return  $str[replicate " " [expr { $len - [string length $str] }]]
 }
 #
-# Sho call stack
+# Execute lcmd : a list of commands
+# return the list of commqnd to execute in case of error.
+# that is returns {}if everything's OK.
+# verbose 1 exec 0 => just print. dont execute.
+# verbose 1 exec 1 => print command then execute.
+# verbose 0 exec 1 => just execute 
+# verbose 0 exec 0 => do nothing. 
+# continue 0 => return if error.
+# continue 1 => try do end execution of list.
+# 
+proc wokUtils:EASY:Command { lcmd {verbose 0} {exec 1} {continue 1} } {
+    foreach command $lcmd {
+	if { $verbose } { puts stdout "Ex: $command" }
+	if { $exec } {
+	    if [catch { eval exec $command } status ] {
+		puts "$status"
+		if { $continue == 0 } {
+		    return -1
+		}
+	    }
+	}
+    }
+    return 1
+}
+;#
+;# Same as above without exec
+;#
+proc wokUtils:EASY:TclCommand { lcmd {verbose 0} {exec 1} {continue 1} } {
+    foreach command $lcmd {
+	if { $verbose } { puts stdout "Ex: $command" }
+	if { $exec } {
+	    eval $command
+	}
+    }
+    return 1
+}
 #
-proc wokUtils:EASY:ShowCall {{file stdout}} {
-    puts $file "Tcl call trace"
-    for  { set l [expr [info level]-1] } { $l > 0 } { incr l -1 } {
-	puts $file "$l : [info level $l]"
+# Execute command_file as a whole. Default send exec.
+# Can use package Expect on Unix platform. => shell is expect:ShellName
+# Send a exec command on WNT platform
+#
+proc wokUtils:EASY:Execute { command_file {shell sh} {fileid stdout} {timeout -1} {V 0} } {
+    global tcl_platform
+    if { "$shell" == "noexec" } {
+	foreach l [wokUtils:FILES:FileToList $command_file] {
+	    puts "$l"
+	}
+	return
+    } elseif { "$shell" == "expect:sh" } {
+	set shell sh
+	spawn -noecho $shell $command_file
+	set LOCID $spawn_id
+	log_user 0
+	exp_internal $V
+	set timeout $timeout
+	expect {
+	    -i $LOCID -indices -re "(\[^\r]*)\r\n" {
+		;#puts stdout $expect_out(1,string)
+		puts $fileid $expect_out(1,string)
+		exp_continue
+	    }
+	    -i $LOCID eof {
+		puts $fileid "Received eof. Bye"
+		return
+	    }
+	    -i $LOCID timeout {
+		puts $fileid "Timeout excedeed ($timeout) from spawned process."
+	    }
+	}
+	return
+    } else {
+	foreach command [wokUtils:FILES:FileToList $command_file] {
+	    puts "Ex: $command"
+	    if ![catch { eval exec $command } status ] {
+		puts $fileid $status
+	    } else {
+		puts "Ex ERROR: $status"
+	    }
+	}
+	return
     }
 }
-
 ;#
 ;# search for each element in dfile if it belongs to a directory of dlist
 ;#
@@ -1328,40 +1738,281 @@ proc wokUtils:EASY:NiceList { a sep } {
     }
     return $ret
 }
-
-proc  wokUtils:FILES:html { file } {
-    global tcl_platform
-    if { "$tcl_platform(platform)" == "unix" } {
-	set cmd "exec netscape -remote \"openFile($file)\""
-	if { [catch $cmd] != 0 } {
-	    exec netscape &
-	    while { [catch $cmd] != 0 } { 
-		after 500
-	    }
+;#
+;# Write a Tcl proc to return the contents of map. Proc will have 1 argument: the name of the map.
+;# 
+proc wokUtils:EASY:MapToProc { map TclFile ProcName } { 
+    upvar $map TLOC
+    if ![ catch { set id [ open $TclFile w ] } errout ] {
+	puts $id "proc $ProcName { map } {"
+	puts $id "upvar \$map TLOC"
+	foreach x [array names TLOC] {
+	    puts $id "set TLOC($x) {$TLOC($x)}"
 	}
-    } elseif { "$tcl_platform(platform)" == "windows" } {
-	set cmd [list exec netscape $file &]
-	if { [catch $cmd] != 0 } {
-	    set prog [tk_getOpenFile -title "Where is Netscape ?"]
-	    if { $prog != "" } {
-		puts $prog
-		exec $prog $file &
+	puts $id "return"
+	puts $id "}"
+	close $id
+	return 1
+    } else {
+	puts stderr "$errout"
+	return -1
+    }
+}
+;#
+;# Write a Tcl proc to return the contents of list. Proc will has no argument.
+;# 
+proc wokUtils:EASY:ListToProc { list TclFile ProcName } { 
+    if ![ catch { set id [ open $TclFile w ] } errout ] {
+	puts $id "proc $ProcName { } {"
+	puts $id "set l {$list}" 
+	puts $id {return $l}
+	puts $id "}"
+	close $id
+	return 1
+    } else {
+	puts stderr "$errout"
+	return -1
+    }
+}
+;#
+;# Returns the list of all "revision" files in map that is:
+;#
+proc wokUtils:EASY:RevFiles { map } {
+    upvar $map TLOC
+    set l {}
+    foreach x [array names TLOC] {
+	foreach e $TLOC($x) {
+	    if [regexp {[ ]*#[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)} $e all basn elem from] {
+		lappend l [file join $from $basn]
+	    }  elseif [regexp {[ ]*\+[ ]*([^ ]*)[ ]*([^ ]*)} $e all basn from] {
+		lappend l [file join $from $basn]
 	    }
 	}
     }
-    return    
+    return $l
 }
-;# essais
+;#
+;# Write a map. map(.ext) = { list of files in lpath with this extension)
 ;# 
-;#proc wokUtils:FILES:lcprp { listorig target } {
-;#    foreach r $listorig {
-;#	puts "Copying $r onto $target"
-;#	catch { exec cp -rp $r $target} status
-;#	puts "$status"
-;#    }
-;#}
+proc wokUtils:EASY:ext { lpath map } {
+    upvar $map TLOC
+    catch { unset TLOC }
+    foreach f $lpath {
+	lappend TLOC([file extension $f]) $f
+    }
+    return
+}
+;#
+;# Compares 2 maps created by DirToMap.
+;# Writes in res the result of comparison in res
+;# res is a map indexed by :
+;#
+;# ##,d where d was found both in the 2 maps imas and irev.
+;# Element res(##,d) contains the comparaison of the 2 directories.
+;# --,d where d was found in imas and not in irev
+;#
+;#
+proc wokUtils:EASY:Compare { imas irev res {CompareFunc wokUtils:FILES:AreSame} {hidee 0} {gblist *} } {
+    upvar $imas mas $irev rev $res TLOC 
+    if { [array exists mas] } {
+	set lmas [array names mas]
+    } else {
+	set lmas {}
+    }
+    set lcom [wokUtils:LIST:i3 $lmas [array names rev]]
+    set pnts "                                        "
+    foreach dir [lsort [lindex $lcom 1]] {
+	wokUtils:LIST:SimpleDiff COMP $mas($dir) $rev($dir) $gblist
+	if { [array exists COMP] } {
+	    set lapp {}
+	    foreach e [lsort [array names COMP]] {
+		set flag [lindex $COMP($e) 0]
+		set f1 [set d1 [lindex $COMP($e) 1]]/$e
+		set f2 [set d2 [lindex $COMP($e) 2]]/$e
+		if { [string compare $flag ?] == 0 } {
+		    if { [$CompareFunc $f1 $f2] == 1 } {
+			if { $hidee == 0 } {
+			    lappend lapp [format "    = %-30s %-40s %s" $e $d1 $d2]
+			}
+		    } else {
+			lappend lapp [format "    # %-30s %-40s %s" $e $d1 $d2]
+		    }
+		} elseif { "$flag" == "+" } {
+		    lappend lapp [format "    + %-30s %s %s" $e $pnts $d1]
+		} elseif { "$flag" == "-" } {
+		    lappend lapp [format "    - %-30s %s %s" $e $d1 $pnts]
+		}
+	    }
+	    set TLOC(##,$dir) $lapp
+	}
+    }
+    
+    foreach dir [lindex $lcom 0] {
+	set lapp {}
+	foreach f $mas($dir) {
+	    lappend lapp [format "    - %-30s %s %s" [file tail $f] $f $pnts]  
+	}
+	set TLOC(--,$dir) $lapp
+    }
+    foreach dir [lindex $lcom 2] {
+	set lapp {}
+	foreach f $rev($dir) {
+	    lappend lapp  [format "    + %-30s %s %s" [file tail $f] $pnts [file dirname $f]]
+	}
+	set TLOC(++,$dir) $lapp
+    }
+    return
+}
+;#
+;# lit une map cree par wokUtils:EASY:Compare et imprime dans l'ordre.
+;#
+proc wokUtils:EASY:WriteCompare { dir1 dir2 map {fileid stdout} } {
+    upvar $map TLOC
 
-;#proc wokUtils:FILES:cprp { d1 d2 } {
-;#    set cmd "tar cf - . | ( cd $d2 ; tar xf - )"
-;#    return 
-;#}
+    foreach dir [lsort [array names TLOC ##,*]] {
+	puts $fileid "\n Directory $dir\n"
+	foreach l $TLOC($dir) {
+	    puts $fileid $l
+	}
+    }
+
+    foreach dir [array names TLOC --,*] {
+	puts $fileid "\n Directory $dir\n"
+	foreach l $TLOC($dir) {
+	    puts $fileid $l
+	}
+    }
+
+    foreach dir [lsort -command wokUtils:FILES:Depth [array names TLOC ++,*]] {
+	puts $fileid "\n Directory $dir\n"
+	foreach l $TLOC($dir) {
+	    puts $fileid $l
+	}
+    }
+}
+;#
+;# lit sur fileid un report cree par wokUtils:EASY:WriteCompare et genere une map avec comme index:
+;# ##,x Contient la liste des operations a faire sur le sous dir x qui n'est que modifie
+;# ++,x Contient la liste des operations (ajout) a faire sur le sous dir x qui est nouveau
+;# --,x Contient la liste des operations (rm) a faire sur le sous dir x qui a disparu.
+;# Pour l'appelant Ca s'est bien passe si [array exists map]
+;# Arrete la lecture a la premiere ligne contenant un caractere en 1 er colonne.
+;#
+proc wokUtils:EASY:ReadCompare { map fileid } {
+    upvar $map TLOC
+    catch { unset TLOC }
+    while {[gets $fileid x] >= 0} {
+	if { $x != {} } {
+	    if { [string range $x 0 0] == " " } {
+		if { [regexp { Directory (.*)} $x all comdir] } {
+		    set TLOC($comdir) {}
+		} else {
+		    if [info exists comdir] {
+			if [info exists TLOC($comdir)] {
+			    set l $TLOC($comdir)
+			    lappend l $x
+			    set TLOC($comdir)  $l
+			}
+		    } else {
+			puts stderr "Format error: $x"
+			return
+		    }
+		}
+	    } else {
+		return
+	    }
+	}
+    }
+}
+;#
+;# sert a trier les index ++ d'une map cree ci dessus de facon a obtenir une liste de directories
+;# triee "de la racine vers le bas". Pas bokou plus que wokUtils:FILES:Depth
+;# donc inx1 et inx2 de la forme ++,dirname
+;#
+proc wokUtils:EASY:SortCompare++ { inx1 inx2 } {
+    regsub -all {\+\+,} $inx1 {} d1
+    regsub -all {\+\+,} $inx2 {} d2
+    return [wokUtils:FILES:Depth $d1 $d2]
+}
+;#
+;# returns 1 if map has no entry concerning regx
+;#
+proc wokUtils:EASY:MapEmpty { map {regx *} } {
+    upvar $map TLOC
+    if [array exists TLOC] {
+	set ll 0
+	foreach x [array names TLOC $regx] {
+	    set ll [expr { $ll + [llength $TLOC($x)]} ]
+	}
+	if { $ll == 0 } {
+	    return 1
+	} else {
+	    return 0
+	}
+    } else {
+	return 1
+    }
+}
+;#
+;# a stack with an array ; push
+;#
+proc wokUtils:STACK:push { stack value } {
+    upvar $stack TLOC
+    if ![info exists TLOC(top)] {
+	set TLOC(top) 0
+    }
+    set TLOC($TLOC(top)) $value
+    incr TLOC(top)
+}
+;#
+;# a stack with an array ; pop returns {} if empty
+;#
+proc wokUtils:STACK:pop { stack } {
+    upvar $stack TLOC
+    if ![info exists TLOC(top)] {
+	return {}
+    }
+    if { $TLOC(top) == 0 } {
+	return {}
+    } else {
+	incr TLOC(top) -1
+	set x $TLOC($TLOC(top))
+	unset  TLOC($TLOC(top))
+	return $x
+    }
+}
+#
+# Renvoie 1 si wb est une racine 0 sinon
+#
+proc wokUtils:WB:IsRoot { wb } {
+    return [expr { ( [llength [w_info -A $wb]] > 1 ) ? 0 : 1 }]
+}
+;#
+;# Create directory.
+;#
+proc wokUtils:DIR:create { dir } {
+    global tcl_version
+    if { "$tcl_version" == "7.6" || "$tcl_version" == "8.0"} {
+	set command "file mkdir $dir"
+    } else {
+	set command "mkdir -path $dir"
+    }
+    catch { eval $command } status 
+    if { "$status" == "" } {
+	return 1
+    } else {
+	puts "$status"
+	return -1
+    }
+}
+;#
+;# lnames is a list of names, returns a map indexed  with the lowered name and as value the original name
+;# used to copy file from Windows to Unix system.
+;#
+proc wokUtils:EASY:u2l { lnames map } {
+    upvar $map TLOC
+    foreach name $lnames {
+	set TLOC([string tolower $name]) $name
+    }
+    return
+}

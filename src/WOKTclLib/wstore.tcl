@@ -874,17 +874,27 @@ proc wokStore:Report:Get { id fshop } {
 }
 ;#
 ;# Renvoie 1 si on peut faire store dans une queue associee au workbench.
-;# Pour l'instant workbench racine
+;# Pour l'instant renvoie 1 si wb est le workbench racine
 ;#
-proc wokStore:Queue:Enabled { shop wb } {
-    if { "[wokIntegre:RefCopy:GetWB ${shop}]" == "$wb" } {
-	return 1
+proc wokStore:Queue:Enabled { fshop wb } {
+    set vc [file join [wokinfo -pAdmDir:. $fshop] VC.tcl]
+    if [file exists $vc] {
+	source $vc
+	if { "[info procs wokIntegre:RefCopy:GetWB]" != {} } {
+	    if { "[wokIntegre:RefCopy:GetWB]" == "$wb" } {
+		return 1
+	    } else {
+		return 0
+	    }
+	} else {
+	    msgprint -c WOKVC -e "proc wokIntegre:RefCopy:GetWB is undefined (File $vc )."
+	    return 0
+	}
     } else {
+	msgprint -c WOKVC -i "File $vc not found. Assume wokIntegre:RefCopy:GetWB is root workbench."	
 	return 0
     }
 }
-
-
 ;#
 ;# Fait ls d'une file qname. Si qname = {} ls de la file de l'ilot.
 ;#
