@@ -84,7 +84,6 @@ extern "C" {
 
 void CDL_InitVariable();
 
-static char *YY_fileName="";      
 static int   YY_nb_error;
 static int   YY_nb_warning;
 static Handle(TCollection_HAsciiString) CDLFileName;
@@ -584,7 +583,7 @@ char *TypeCompletion(char *aName)
 {
   Handle(TColStd_HSequenceOfHAsciiString)  aSeqOfPackage;
   Handle(TCollection_HAsciiString)         aFullName     = new TCollection_HAsciiString;
-  Standard_Integer                         i,pos;
+  Standard_Integer                         i;
   
   if (Current_Entity == CDL_GENCLASS || Current_Entity == CDL_STDCLASS) {
     Handle(TCollection_HAsciiString) aPackageName, thethetypename = new TCollection_HAsciiString(aName);
@@ -2455,11 +2454,11 @@ void Param_Begin()
     aParam->Type(athetypename,aPackName);
 
     if (!ParamValue.IsNull()) {
-      MS_TypeOfValue pt;
+      MS_TypeOfValue pt = MS_INTEGER;
       MS_ParamWithValue *pwv;
 
       switch (ParamType) {
-      case INTEGER: pt = MS_INTEGER;
+      case INTEGER:
 		    break;
       case REAL:    pt = MS_REAL;
 		    break;
@@ -2615,7 +2614,7 @@ void Set_Any()
 }
 
 
-extern "C" CDLparse();
+extern "C" int CDLparse();
 
 
 void CDL_Main()
@@ -2673,7 +2672,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 		 const Handle(TColStd_HSequenceOfHAsciiString)& anInstList,
 		 const Handle(TColStd_HSequenceOfHAsciiString)& anGenList) 
 {
-  Standard_Integer  ErrorLevel = 0;
+  volatile Standard_Integer  ErrorLevel = 0;
 
   CDL_InitVariable();
 

@@ -1,18 +1,29 @@
 /*======================================================*/
-/*== CDL lexical analyzer.       
+/*== CDL lexical analyzer.                              */
 /*======================================================*/
 
 %{
 
 #include <string.h>
 #include <stdio.h>
-
+#ifdef WNT
+# include <io.h>
+#else
+# include <unistd.h>
+#endif  /* WNT */
 
 #include <cdl_defines.hxx>
 void add_cpp_comment(int,char*);
 #define yylval CDLlval
 #include <CDL.tab.h>
 int CDLlineno;
+
+#ifndef YY_NO_UNPUT
+# define YY_NO_UNPUT
+#endif  /* YY_NO_UNPUT */
+
+extern void CDLerror ( char* );
+
 %}
 
 
@@ -196,31 +207,31 @@ static EndComment()
 /* Returns the last identifier */
 
 char* YYident(){
-
+ return NULL;
 }
 
 /* Returns the last integer */
 
 char* YYinteger(){
-
+ return NULL;
 }
 
 /* Returns the last real */
 
 char* YYreal(){
-
+ return NULL;
 }
 
 /* Returns the last literal */
 
 char* YYliteral(){
-
+ return NULL;
 }
 
 /* Returns the last String */
 
 char* YYstring(){
-
+ return NULL;
 }
 
 /* Returns the last comment 

@@ -22,6 +22,14 @@
 #define CDL_OBJ      4
 #define CDL_LIBRARY  5
 #define CDL_EXTERNAL 6
+
+#include <stdlib.h>
+
+#include <cdl_rules.h>
+
+extern void CDLerror ( char* );
+extern int  CDLlex   ( void  );
+
 %}
 /*=-=-=-= End of The needed includes and variabels   =-=-=-=-=-=-=-=-=-=-=-=*/
 
