@@ -19,19 +19,11 @@
 
   @set    %WOKSteps_ExecGroup  = "exec.libs exec.tks exec.link";
 
---  @ifnotdefined ( %WOKSteps_LinkShr ) then
-  
-    @set    %WOKSteps_exec_libs  = "#WOKStep_TransitiveLinkList(src,src.list,exec.comp,exec.idep)";
-    @set    %WOKSteps_exec_tks   = "#*WOKStep_TransitiveTKReplace(exec.libs)";
+  @set    %WOKSteps_exec_libs  = "#WOKStep_TransitiveLinkList(src,src.list,exec.comp,exec.idep)";
+  @set    %WOKSteps_exec_tks   = "#*WOKStep_TransitiveTKReplace(exec.libs)";
 
---  @else
---
---    @set    %WOKSteps_exec_libs  = "#WOKStep_DirectLinkList(src,src.list,exec.comp,exec.idep)";
---    @set    %WOKSteps_exec_tks   = "#WOKStep_DirectTKReplace(exec.libs)";
---
---  @endif;
 
-    @set    %WOKSteps_exec_link  = "#WOKStep_ExecLink(exec.tks)";
+  @set    %WOKSteps_exec_link  = "#WOKStep_ExecLink(exec.tks)";
 
   @set %WOKSteps_delivery_cdl_list_steps = "src";
   @set %WOKSteps_delivery_cdl_list_extensions = ".cdl";
