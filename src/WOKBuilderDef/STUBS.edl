@@ -40,9 +40,9 @@
 
 @endif;
 
-@string %STUBS_tkMain  = %STUBS_Dir "tkStub.obj";
-@string %STUBS_uMain   = %STUBS_Dir "uStub.obj";
-@string %STUBS_Library = %STUBS_Dir "Rtk.lib";
+@string %STUBS_tkMain  = " ";
+@string %STUBS_uMain   = " ";
+@string %STUBS_Library = " ";
 
 
 @endif;
