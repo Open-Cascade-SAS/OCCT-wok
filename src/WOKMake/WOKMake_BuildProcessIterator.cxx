@@ -603,7 +603,7 @@ void WOKMake_BuildProcessIterator::ReorderCurrentGroup()
 	      }
 	      else {
 		filepack->GetPath();
-		WOKUtils_AdmFile afile(filepack->Path()->Name());
+		WOKUtils_AdmFile afile(filepack->Path());
 		Handle(TColStd_HSequenceOfHAsciiString) udsoftk = afile.Read();
 		
 		for (Standard_Integer j=1;j<= udsoftk->Length(); j++) {
