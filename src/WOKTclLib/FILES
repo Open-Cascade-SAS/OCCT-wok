@@ -75,6 +75,8 @@ srcinc:::factory_open.xpm
 srcinc:::file.xpm
 srcinc:::frontal.xpm
 srcinc:::frontal_open.xpm
+srcinc:::jini.xpm
+srcinc:::jini_open.xpm
 srcinc:::gettable.xpm
 srcinc:::idl.xpm
 srcinc:::idl_open.xpm
@@ -143,3 +145,4 @@ srcinc:::wokQUE.tcl
 srcinc:::wcompare.tcl
 srcinc:::envir.xpm
 srcinc:::envir_open.xpm
+srcinc:::MdtvLogo33x120b.gif

@@ -2,6 +2,7 @@ proc wokBuild { {fast 0} } {
 
     global IWOK_WINDOWS
     global IWOK_GLOBALS
+    global env
     set w $IWOK_GLOBALS(toplevel)
     set top [frame $w.thu -bd 1 -relief raised]
     
@@ -73,7 +74,8 @@ proc wokBuild { {fast 0} } {
 
     set arr [$w.l subwidget arrow] ; tixBalloon $arr.bal ; $arr.bal bind $arr -msg "Last spots"
 
-    button $w.mdtv -image [tix getimage MatraDatavision] -command wokSeeLayout
+    ;#button $w.mdtv -image [tix getimage MatraDatavision] -command wokSeeLayout
+    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/MdtvLogo33x120b.gif] -command wokSeeLayout
     tixBalloon $w.mdtv.bal
     $w.mdtv.bal bind $w.mdtv -msg "See Layout"
 

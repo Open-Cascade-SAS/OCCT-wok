@@ -51,7 +51,7 @@ proc iwok { args } {
     ;#tix addbitmapdir /adv_23/WOK/k3dev/iwok/src/WOKTclLib  ;# THUY EM
 
     ;# ucreate -P dans factory/workshop/ => erreur ?!!!
-    set IWOK_GLOBALS(ucreate-P) [list {p package} {s schema} {i interface} {C client} {e engine} {x executable} {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal} {d delivery} {I idl} {S server}]
+    set IWOK_GLOBALS(ucreate-P) [list {j jini} {p package} {s schema} {i interface} {C client} {e engine} {x executable} {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal} {d delivery} {I idl} {S server}]
 
     foreach type $IWOK_GLOBALS(ucreate-P) {
 	set st [lindex $type 0]

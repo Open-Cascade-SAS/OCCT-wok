@@ -40,7 +40,7 @@ proc wadm {{entity ""}} {
 
 
 proc wls { args } {
-    set f [lsearch -regexp $args {-[pniCtexscfOrd]} ]
+    set f [lsearch -regexp $args {-[pnijCtexscfOrd]} ]
     if { $f != -1 } {
 	set ft [lindex [split [lindex $args $f] -] 1]
 	set lx {}
