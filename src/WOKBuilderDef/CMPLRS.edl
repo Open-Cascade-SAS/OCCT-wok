@@ -419,9 +419,7 @@
 					      %BaseName, 
 					      %OutputDir ,
                                               %TmpFile , %Entity ) is
-     $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
-     $cd %OutputDir
-     $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
+      $cd %OutputDir &&  $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt  %IncDirectives %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
       $set stat = $status
       $echo '$C_COMPILER  %CMPLRS_C_SysOptions %CMPLRS_C_Options $INCDIRS %CMPLRS_C_ModeOpt %CMPLRS_C_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_Unit_C_Options %CMPLRS_C_WOKDirectives -c $SOURCE -o $OBJECT' > %OutputDir/../%Entity/.adm/c.compile
       $if ( $stat == 0 ) then
@@ -466,9 +464,7 @@
 						%BaseName,
                                                 %OutputDir ,
                                                 %TmpFile , %Entity ) is
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o 
-     $cd %OutputDir 
-     $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
+      $cd %OutputDir && $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives %CMPLRS_CXX_WOKDirectives -c %Source -o %OutputDir/%BaseName.o  >& %TmpFile
       $set stat = $status
       
       $if ( $stat == 0 ) then
@@ -665,16 +661,16 @@
     @end;
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-DDEB -D_DEBUG -DCSFDB";
-       @set %CMPLRS_C_ModeOpt   = "-DDEB -D_DEBUG -DCSFDB";
+       @set %CMPLRS_CXX_ModeOpt = "-DDEB -D_DEBUG";
+       @set %CMPLRS_C_ModeOpt   = "-DDEB -D_DEBUG";
        @set %CMPLRS_CXX_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
        @set %CMPLRS_C_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
        @set %CMPLRS_F77_ModeOpt = "-DDEB -D_DEBUG";
     @else
-       @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception -DCSFDB";
-       @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception -DCSFDB";
+       @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception";
+       @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception";
        @set %CMPLRS_CXX_SysOptions = "-nologo -MD -W3 -GX -O2 ";
-       @set %CMPLRS_C_SysOptions = "-nologo -MDd -W3 -GX -O2 ";
+       @set %CMPLRS_C_SysOptions = "-nologo -MD -W3 -GX -O2 ";
        @set %CMPLRS_F77_ModeOpt = "-DNDEBUG -DNo_Exception";
     @endif;
 
@@ -754,10 +750,10 @@
              %BaseName, %OutputDir, %CMPLRS_ExportBehaviour
             ) is
   $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
-  $  %IncDirectives %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_ModeOpt \^
+  $  %IncDirectives %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \^
   $ -Fd%PDBName -c -Tp %Source -Fo%OutputDir%BaseName.obj;
   $set cmplrs_status=%status%;
-  $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
+  $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL -D_MT %CMPLRS_ExportBehaviour  %IncDirectives %CMPLRS_CXX_INCLUDE\^
   $ %Source -o %OutputDir%BaseName.m;
   $set status=%cmplrs_status%;
   @end;
@@ -784,12 +780,12 @@
   @end;
 
   @template CMPLRS_C_CmdLine (
-             %CMPLRS_C_COMPILER, %CMPLRS_C_SysOptions, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, 
+             %CMPLRS_C_COMPILER, %CMPLRS_C_SysOptions, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %CMPLRS_CXX_DBMSOpt,
              %IncDirectives, %PDBName, %Source,
              %BaseName, %OutputDir, %CMPLRS_ExportBehaviour
             ) is
   $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_ExportBehaviour\^
-  $  %IncDirectives %CMPLRS_C_ModeOpt \^
+  $  %IncDirectives %CMPLRS_CXX_DBMSOpt %CMPLRS_C_ModeOpt \^
   $ -Fd%PDBName -c -Tc %Source -Fo%OutputDir%BaseName.obj;
   $set cmplrs_status=%status%;
   $@acpp.exe -M -m -+ %CMPLRS_C_Options -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
