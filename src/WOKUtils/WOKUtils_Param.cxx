@@ -55,7 +55,7 @@ void WOKUtils_Param :: SetBasicVariables ( void ) {
  myapi -> AddVariable ( "%Station",     "sun"       );
 #elif defined(linux) || defined(LIN)
  myapi -> AddVariable ( "%Station",     "lin"       );
-#elif defined(__osf__)
+#elif defined(__osf__) || defined(DECOSF1)
  myapi -> AddVariable ( "%Station",     "ao1"       );
 #elif defined(__hpux) || defined(HPUX)
  myapi -> AddVariable ( "%Station",     "hp"       );
