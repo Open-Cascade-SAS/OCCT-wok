@@ -44,7 +44,7 @@
 #include <WOKMake_BuildProcessIterator.ixx>
 
 // ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
-extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
