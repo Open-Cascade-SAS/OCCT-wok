@@ -445,11 +445,13 @@ Standard_Boolean WOKTclTools_Interpretor::GetReturnValues(WOKTools_Return& retva
     {
       retval.AddStringValue(argv[i]);
     }
+  if ( argc > 1 ) {
 #if defined( WNT ) && defined( _DEBUG )
-  Free ( argv );
+    Free ( argv );
 #else
-  free(argv);
+    free(argv);
 #endif  // WNT && _DEBUG
+  }
   return Standard_False;
 }
 
