@@ -133,6 +133,9 @@ WOKBuilder_BuildStatus WOKBuilder_CompilerIterator::Execute(const Handle(WOKBuil
   if(status == WOKBuilder_Success)
     {
       myproduction = acompiler->Produces();
+
+      if (  !acompiler -> myCmdLine.IsNull ()  ) myCmdLine = new TCollection_HAsciiString ( acompiler -> myCmdLine );
+
     }
   return status;
 }

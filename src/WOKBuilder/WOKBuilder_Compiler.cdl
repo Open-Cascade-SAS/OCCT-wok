@@ -48,4 +48,9 @@ fields
     myincdirs : HSequenceOfPath      from WOKUtils;
     mydbdirs  : HSequenceOfPath      from WOKUtils;
     myoptions : HAsciiString         from TCollection;
+    myCmdLine : HAsciiString         from TCollection;
+
+friends
+
+   class CompilerIterator from WOKBuilder
 end Compiler;

@@ -282,7 +282,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalLibSearchDirectives()
 //=======================================================================
 Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalDatabaseDirectives()
 {
-  Handle(TCollection_HAsciiString) res = new TCollection_HAsciiString;
+  Handle(TCollection_HAsciiString) res = new TCollection_HAsciiString ( "\\\n" );
 
   if(!mydbdirs.IsNull())
     {
@@ -349,7 +349,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalLibraryList()
   Standard_Integer i;
   Handle(TCollection_HAsciiString) line;
 
-  line = new TCollection_HAsciiString;
+  line = new TCollection_HAsciiString ( "\\\n" );
 
   for(i=1; i<=mylibs->Length(); i++)
     {
@@ -458,7 +458,29 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   Shell()->Send(EvalHeader());
   Shell()->Send(EvalObjectList());
   Shell()->Send(EvalLibraryList());
+#ifndef LIN
   Shell()->Execute(EvalFooter());
+#else
+  static Handle( TCollection_HAsciiString ) skipStr =
+   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start; defaulting to " );
+  Shell () -> Send (  EvalFooter ()  );
+
+  Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
+  Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
+
+  if (  !paramH.IsNull     () && !paramF.IsNull     () &&
+        !paramH -> IsEmpty () && !paramF -> IsEmpty ()
+  ) {
+
+   Shell () -> Send ( paramH );
+   Shell () -> Send ( EvalLibSearchDirectives ()  );
+   Shell () -> Send ( EvalDatabaseDirectives  ()  );
+   Shell () -> Send (  EvalObjectList  ()  );
+   Shell () -> Send (  EvalLibraryList ()  );
+   Shell () -> Execute ( paramF );
+
+  } else Shell () -> Execute (  new TCollection_HAsciiString ( "\n" )  );
+#endif  // LIN
 
   if(Shell()->Status())
     {
@@ -470,6 +492,9 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       ErrorMsg.DontPrintHeader();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
+#ifdef LIN
+          if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
+#endif  // LIN
 	  ErrorMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
       if(ph) ErrorMsg.DoPrintHeader();
@@ -482,6 +507,9 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
       errmsgs = Shell()->Errors();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
+#ifdef LIN
+          if (  errmsgs -> Value ( i ) -> Search ( skipStr ) == 1  ) continue;
+#endif  // LIN
 	  InfoMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
       if(ph) InfoMsg.DoPrintHeader();

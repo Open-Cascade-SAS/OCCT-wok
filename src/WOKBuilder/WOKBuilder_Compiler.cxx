@@ -21,6 +21,10 @@
 
 #include <stdio.h>
 
+#include <OSD_Protection.hxx>
+#include <OSD_File.hxx>
+#include <WOKUtils_AdmFile.hxx>
+
 //=======================================================================
 //function : WOKBuilder_Compiler
 //purpose  : 
@@ -154,6 +158,10 @@ void WOKBuilder_Compiler::SetCompilable(const Handle(WOKBuilder_Compilable)& afi
 //=======================================================================
 WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
 {
+
+  static Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( " \\\n " );
+  static Handle( TCollection_HAsciiString ) LF = new TCollection_HAsciiString ( "\n"     );
+
   int start;
 
 #ifdef WNT
@@ -190,6 +198,8 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
   Shell()->ClearOutput();
   Shell()->Execute(astr);
 
+  myCmdLine = new TCollection_HAsciiString ( astr );
+
   Handle(TColStd_HSequenceOfHAsciiString) resseq = Shell()->Errors();
 
   if(Shell()->Status())
@@ -218,6 +228,79 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
   Shell()->ClearOutput();
 
   SetProduction(EvalProduction());
+
+  astr -> Clear ();
+
+  for (  start = 1; start <= Produces () -> Length (); ++start  ) {
+
+   Handle( WOKBuilder_Entity ) ent = Produces () -> Value ( start );
+
+   if (  ent -> IsKind (
+                 STANDARD_TYPE( WOKBuilder_ObjectFile )
+                )
+   ) {
+
+    astr -> AssignCat (  ent -> Path () -> FileName ()  );
+    astr -> AssignCat ( ": " );
+
+   } else if (  ent -> IsKind (
+                        STANDARD_TYPE( WOKBuilder_MFile )
+                       )
+          ) {
+
+    WOKUtils_AdmFile mFile (  ent -> Path ()  );
+
+    Handle( TColStd_HSequenceOfHAsciiString ) deps = mFile.Read ();
+
+    for (  int i = 1; i <= deps -> Length (); ++i  ) {
+
+     astr -> AssignCat ( NL );
+     astr -> AssignCat (  deps -> Value ( i )  );
+
+    }  // end for
+
+    astr -> AssignCat ( LF );
+
+   }  // end if
+
+  }  // end for
+
+  if (  !astr -> IsEmpty ()  ) {
+
+   OSD_Path dPath (  OutputDir () -> Name () -> ToCString ()  );
+
+   dPath.SetName (  Compilable () -> Path () -> BaseName () -> ToCString ()  );
+   dPath.SetExtension ( ".d" );
+
+   OSD_File dFile ( dPath );
+
+   dFile.Build (
+          OSD_WriteOnly,
+          OSD_Protection ( OSD_RWXD, OSD_RWXD, OSD_R, OSD_R )
+         );
+
+   if (  !dFile.Failed ()  ) {
+
+    dFile.Write (  astr -> String (), astr -> Length ()  );
+
+    if (  dFile.Failed ()  ) {
+
+     TCollection_AsciiString name;
+
+     dPath.SystemName ( name );
+
+     ErrorMsg << "WOKBuilder_Compiler::Execute"
+              << "could not create '" << new TCollection_HAsciiString ( name )
+              << "'" << endm;
+
+    }  // end if
+
+    dFile.Close ();
+
+   }  // end if
+
+  }  // end if
+
   return WOKBuilder_Success;
 }
 
