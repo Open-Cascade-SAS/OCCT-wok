@@ -93,6 +93,12 @@ Standard_Integer WOKAPI_Command::WorkbenchCreate(const WOKAPI_Session& asession,
       return 1;
     }
 
+// imv & apv - March 21, 2002
+    WOKAPI_Session * modsess = (WOKAPI_Session *) &asession;
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 21, 2002
+
   WOKAPI_Workbench abench;
 
 
@@ -112,10 +118,22 @@ Standard_Integer WOKAPI_Command::WorkbenchCreate(const WOKAPI_Session& asession,
     {
       if(!abench.Build(asession, name, fathername, opts.Defines(), querydefault))
 	{
+
+// imv & apv - March 21, 2002
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 21, 2002
+
 	  return 0;
 	}
       else return 1;
     }
+
+// imv & apv - March 21, 2002
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 21, 2002
+
   return 0;
 }
 //=======================================================================
@@ -383,6 +401,12 @@ Standard_Integer WOKAPI_Command::WorkbenchMove(const WOKAPI_Session& asession,
       return 1;
     }
 
+// imv & apv - March 20, 2002 (OCC47)
+    WOKAPI_Session * modsess = (WOKAPI_Session *) &asession;
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 20, 2002
+
   WOKAPI_Workbench abench(asession,name);
   
   if (!abench.IsValid()) {
@@ -399,7 +423,13 @@ Standard_Integer WOKAPI_Command::WorkbenchMove(const WOKAPI_Session& asession,
     return 1;
   }
 
-  return abench.ChangeFather(afather);
+// imv & apv - March 20, 2002 (OCC47)
+// return abench.ChangeFather(afather);
+    Standard_Boolean result = abench.ChangeFather(afather);
+    modsess->Close();
+    modsess->Open();
+    return result;
+// imv & apv - March 20, 2002
 }
 
 
@@ -448,6 +478,12 @@ Standard_Integer WOKAPI_Command::WorkbenchDestroy(const WOKAPI_Session& asession
       return 1;
     }
 
+// imv & apv - March 21, 2002
+    WOKAPI_Session * modsess = (WOKAPI_Session *) &asession;
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 21, 2002
+
   WOKAPI_Workbench abench(asession,name);
   
   if(!abench.IsValid())
@@ -458,6 +494,12 @@ Standard_Integer WOKAPI_Command::WorkbenchDestroy(const WOKAPI_Session& asession
     }
 
   abench.Destroy();
+
+// imv & apv - March 21, 2002
+    modsess->Close();
+    modsess->Open();
+// imv & apv - March 21, 2002
+
   return 0;
 }
 
