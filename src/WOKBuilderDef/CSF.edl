@@ -242,7 +242,7 @@
       @set %CSF_SOCKETLibs = " -ldl" ;
 
       @set %CSF_TCL_HOME = "/usr";
-      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @set %CSF_JavaHome        = "/opt/jdk1.2.2";
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I"  %CSF_JavaHome "/include/linux ";
@@ -306,7 +306,7 @@
       @string %CSF_JavaLibs = " -L" %CSF_JavaHome "/jre/lib/sparc/ -ljava ";
 
       @set %CSF_TCL_HOME = "/usr/tcltk";
-      @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include/itcl ";
+      @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
 
       @set %CSF_X11_INCLUDE = "-I/usr/openwin/include/X11 ";
       @set %CSF_OPENGL_INCLUDE = "-I/usr/openwin/include ";
@@ -358,7 +358,7 @@
       @set %CSF_JAVA_JNI        = "javah";
 
       @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
-      @set %CSF_TCL_INCLUDE = "%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
       @set %CSF_TclLibs = "%CSF_TCL_HOME/lib/tcl76i.lib";
 
       @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib" ;
@@ -383,7 +383,7 @@
       @set %CSF_F77_COMPILER = "";
 
       @set %CSF_TCL_HOME = "/usr/tcltk";
-      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @string %CSF_JavaHome     = "/missing/JavaHome";
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/ultrix ";
@@ -394,7 +394,7 @@
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @set %CSF_dpsLibs = "-ldps" ;
 
-      @set %CSF_TclLibs = "-L%CSF_TCL_HOME/lib -rpath %CSF_TCL_HOME/lib -ltcl"; 
+      @set %CSF_TclLibs = %CSF_TCL_HOME "/lib -rpath " %CSF_TCL_HOME "/lib -ltcl"; 
    @endif;
 
    @if ( %Station == "sil" ) then
@@ -414,7 +414,7 @@
       @set %CSF_FPELibs = "-L/usr/lib32 -lfpe" ;
 
       @set %CSF_TCL_HOME = "/usr/tcltk.64";
-      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @set %CSF_X11_INCLUDE_EXTENSION = " -I/usr/include/X11/extensions ";
 
@@ -432,8 +432,8 @@
       @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
       @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
 
-      @set %CSF_TclLibs = "-L%CSF_TCL_HOME/lib -rpath %CSF_TCL_HOME/lib -ltcl"; 
-      @set %CSF_TclTkLibs = "-L%CSF_TCL_HOMElib -rpath %CSF_TCL_HOME/lib -ltk"; 
+      @set %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -rpath " %CSF_TCL_HOME "/lib -ltcl"; 
+      @set %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -rpath " %CSF_TCL_HOME "/lib -ltk"; 
    @endif;
 
    @if ( %Station == "hp" ) then
@@ -446,7 +446,7 @@
       @set %CSF_F77_COMPILER = "f77 ";
 
       @set %CSF_TCL_HOME = "/missing/missing ";
-      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @set %CSF_X11_INCLUDE = "-I/usr/include/X11R6 ";
       @set %CSF_XMU_INCLUDE = "-I/usr/contrib/X11R6/include ";
@@ -465,8 +465,8 @@
 
       @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
 
-      @set %CSF_TclLibs   = "-L%CSF_TCL_HOME/lib -ltcl"; 
-      @set %CSF_TclTkLibs = "-L%CSF_TCL_HOME/lib -ltk"; 
+      @set %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl"; 
+      @set %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -ltk"; 
 
 
 
@@ -490,7 +490,7 @@
       @set %CSF_SOCKETLibs = " " ;
 
       @set %CSF_TCL_HOME = "/missing/missing ";
-      @set %CSF_TCL_INCLUDE = "-I%CSF_TCL_HOME/include ";
+      @set %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @set %X11_LIB = "/usr/lpp/X11/lib/R6";
       @set %CSF_XwLibs = "-L/usr/lpp/X11/lib/R6 -lX11 -lXext -lXmu ";
@@ -498,8 +498,8 @@
       @set %OPENGL_LIB = "/usr/lpp/OpenGL/lib";
       @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
 
-      @set %CSF_TclLibs   = "-I%CSF_TCL_HOME/lib/libtcl.exp "; 
-      @set %CSF_TclTkLibs = "-I%CSF_TCL_HOME/lib/libtk.exp ";
+      @set %CSF_TclLibs   = "-I" %CSF_TCL_HOME "/lib/libtcl.exp "; 
+      @set %CSF_TclTkLibs = "-I" %CSF_TCL_HOME "/lib/libtk.exp ";
 
 
       @string %CSF_JavaHome     = "/missing/JavaHome";
@@ -510,9 +510,5 @@
 
   @endif;
 
-  @set %CSF_TCL_HOME = "/PRODUCTS/tcltk-83";
-  @string %CSF_TCL_INCLUDE =      %CSF_TCL_HOME "/include ";
-  @string %CSF_TclLibs     = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl "; 
-  @string %CSF_TclTkLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk ";
 
 @endif;
