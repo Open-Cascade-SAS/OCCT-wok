@@ -74,9 +74,13 @@ proc wokBuild { {fast 0} } {
 
     set arr [$w.l subwidget arrow] ; tixBalloon $arr.bal ; $arr.bal bind $arr -msg "Last spots"
 
-    button $w.mdtv -image [image create photo -file $env(WOK_LIBRARY)/opencascade.gif] ;#command wokSeeLayout
-    ;#tixBalloon $w.mdtv.bal
-    ;#$w.mdtv.bal bind $w.mdtv -msg "See Layout"
+    if [file exists $env(WOK_LIBRARY)/images/opencascade.gif] {
+	set ogif $env(WOK_LIBRARY)/images/opencascade.gif
+    } else {
+	set ogif $env(WOK_LIBRARY)/opencascade.gif
+    }
+    button $w.mdtv -image [image create photo -file $ogif] 
+
 
     tixForm $dis -left $lastbut  -bottom $top -top $w.mnu
 

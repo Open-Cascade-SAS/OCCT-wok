@@ -1,4 +1,17 @@
 
+proc iwokNotYetImplemented { } {
+puts stderr \
+	    {
+	This proc is not available on this version of Tcl/Tk.
+	The commands used to prepare, store and integrate as available as
+        respectively : wprepare , wstore , and wintegre.
+        See online help for these commands.
+    }
+}
+
+
+
+
 proc iwokUsage { } {
     puts stderr {Usage : iwok [-fh] }
     puts stderr ""
@@ -11,24 +24,33 @@ proc iwok { args } {
 
     global IWOK_GLOBALS
     global env
-    
+    global tcl_platform    
+    global tcl_version
+
     if { [lsearch $args -h] != -1 } {
 	iwokUsage
 	return
     }
 
+
+
+    regsub -all {\.[^.]*} $tcl_version "" major
+    if { $major == 8 } {
+	iwokNotYetImplemented 
+	return
+    }
+
+    if [catch {package require Tix} statix ] {
+	puts stderr "$statix"
+	return
+    }
+    
     set fast 0
     if { [lsearch $args -f] != -1 } { set fast 1 }
 
     catch {wokKillAll}
 
-    if {[wokparam -e %Station] == "lin"} {
-      package ifneeded Tk 8.0 "load [list /usr/lib/libtk8.0.so]"
-    }
-    package require Tk
 
-    package require Tix
-    
     set IWOK_GLOBALS(windows) {}
     set IWOK_GLOBALS(toplevel) .wok[join [split [id user][id host] .] _]
     set IWOK_GLOBALS(toplevel,geometry) 1200x80+10+30
@@ -53,7 +75,7 @@ proc iwok { args } {
     set IWOK_GLOBALS(boldfont) [tix option get bold_font]
 
     ;# ucreate -P dans factory/workshop/ => erreur ?!!!
-    set IWOK_GLOBALS(ucreate-P) [list {j jini} {p package} {s schema} {i interface} {C client} {e engine} {x executable} {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal} {d delivery} {I idl} {S server}  {m module}]
+    set IWOK_GLOBALS(ucreate-P) [list {j jini} {p package} {s schema} {i interface} {C client} {e engine} {x executable} {n nocdlpack} {t toolkit} {r resource} {O documentation} {c ccl} {f frontal} {d delivery} {I idl} {S server}  ]
 
     foreach type $IWOK_GLOBALS(ucreate-P) {
 	set st [lindex $type 0]

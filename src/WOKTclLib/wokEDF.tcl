@@ -66,7 +66,6 @@ proc wokEDF:EditFile { file } {
     switch -- $IWOK_GLOBALS(EDF,EDITOR) {
 	
 	connected_emacs {
-	    wokemacs findfile  $IWOK_GLOBALS(EDF,clients) $file
 	}
 	
 	iwok_editor {
@@ -96,20 +95,14 @@ proc wokEDF:EDITOR { } {
     global env
     global IWOK_GLOBALS
     global tcl_platform
-    set cnx [wokemacs clients]
-    if { $cnx != {} } {
-	set IWOK_GLOBALS(EDF,clients) $cnx
-	return connected_emacs
-    } else {
-	if { "$tcl_platform(platform)" == "unix" } {
-	    if {[info exists env(EDITOR)]} {
-		return $env(EDITOR)
-	    } else {
-		return iwok_editor
-	    }
+    if { "$tcl_platform(platform)" == "unix" } {
+	if {[info exists env(EDITOR)]} {
+	    return $env(EDITOR)
 	} else {
 	    return iwok_editor
 	}
+    } else {
+	return iwok_editor
     }
 }
 ;#

@@ -177,9 +177,12 @@ proc osutils:tk:close { ltk } {
 	    }
 	}
     }
-    if ![lempty $recurse] {
-	set result [concat $result [osutils:tk:close $recurse]]
-    }
+    ;#    if ![lempty $recurse] {
+	;#	set result [concat $result [osutils:tk:close $recurse]]
+	;#    }
+	if { $recurse != {} } {
+	    set result [concat $result [osutils:tk:close $recurse]]
+	}
     return $result
 }
 ;#
@@ -223,6 +226,12 @@ proc osutils:tk:units { tkloc {typed 0} } {
 	    }
 	    if { $typed == 2 } {
 		lappend l [list [uinfo -c $fu] $fu]
+	    }
+	    if { $typed == 3 } {
+		lappend l [list [uinfo -t $fu] [wokinfo -n $fu]]
+	    }
+	    if { $typed == 4 } {
+		lappend l [list [uinfo -t $fu] $fu]
 	    }
 	} else {
 	    puts stderr "Unit inconnue $u"
