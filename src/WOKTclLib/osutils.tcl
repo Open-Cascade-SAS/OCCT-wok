@@ -546,13 +546,14 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
         foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
-		set felem [file tail [lindex [wokparam -v "%$element"] 0]] 
-	      if {[lsearch $tkused $felem] == "-1"} {
-		if {$felem != "\{\}"} {
-                    #puts "was found $element $felem"	   
-		    set tkused [concat $tkused $felem]
-		}
-	      }   
+		set felem0 [wokparam -v "%$element"]
+		if {$felem0 != "\{\}"} {
+		    set felem [file tail [lindex $felem0 0]]
+		    if {[lsearch $tkused $felem] == "-1"} {
+			#puts "was found $element $felem"	   
+			set tkused [concat $tkused $felem]
+		    }
+		}  
 	    }
 	 }
        }
@@ -997,10 +998,12 @@ proc osutils:in:__AMDEPTRUE__ { l } {
 
 ;#############################################################
 ;#
-proc TESTAM { {root} } {
+proc TESTAM { {root} {ll {}} } {
 #    source [woklocate -p OS:source:OS.tcl]
 #    source [woklocate -p WOKTclLib:source:osutils.tcl]
-    foreach theModule [OS -lm] {
+    set lesmodules [OS -lm]
+    if { $ll != {} } {  set lesmodules $ll }
+    foreach theModule $lesmodules {
 	foreach unit [$theModule:toolkits] {
 	    puts " toolkit: $unit ==> [woklocate -p ${unit}:source:EXTERNLIB]"
 	    wokUtils:FILES:rmdir $root/$unit
