@@ -42,15 +42,12 @@ proc WOKStep_JavaCompile:ComputeIncludeDir { unit } {
  set result ""
     
  set themax [llength $allwb]
-    
  for { set i $themax } { [expr $i != 0] } { incr i -1 } {
-
   set awb [lindex $allwb [expr $i - 1]]
-
   if { $fJava } {
-   set addinc [UNC [wokparam -e WOKEntity_javadir ${awb}]]
+   set addinc [wokparam -e WOKEntity_javadir ${awb}]
   } else {
-   set addinc [UNC [wokparam -e WOKEntity_drvdir ${awb}]]
+   set addinc [wokparam -e WOKEntity_drvdir ${awb}]
   }
 
   set result ${addinc}$ps$result
@@ -79,9 +76,9 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
  wokparam -s%IncludeDir=$incdir
 
  if { $fJava } {
-  set outdir [UNC [wokparam -e WOKEntity_javadir [wokinfo -w]]]
+  set outdir [wokUtils:EASY:stobs2 [wokparam -e WOKEntity_javadir [wokinfo -w]]]
  } else {
-  set outdir [UNC [wokparam -e WOKEntity_drvdir [wokinfo -w]]]
+  set outdir [wokUtils:EASY:stobs2 [[wokparam -e WOKEntity_drvdir [wokinfo -w]]]
  }
 
  wokparam -s%OutDir=$outdir
@@ -89,7 +86,7 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
  foreach ID $args {
 
   scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
-  set infile [UNC [woklocate -p $ID]]
+  set infile [wokUtils:EASY:stobs2 [woklocate -p $ID]]
 
   if { $tcl_platform(platform) == "windows" } {
    regsub -all "/" $infile "\\\\\\" infile
@@ -103,7 +100,6 @@ proc WOKStep_JavaCompile:Execute { theunit args } {
   msgprint -i -c "WOKStep_JavaCompile:Execute" "Compiling $name"
 
   if { [catch {eval exec [lindex $thecommand 0]} res] } {
-
    msgprint -e -c "WOKStep_JavaCompile:Execute" $res
    set failed 1
 

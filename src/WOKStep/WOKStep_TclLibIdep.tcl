@@ -23,7 +23,6 @@ proc WOKStep_TclLibIdep:HandleInputFile { ID } {
 proc WOKStep_TclLibIdep:Execute { unit args } {
 
     msgprint -i -c "WOKStep_TclLibIdep:Execute" "Build ImplDep"
-
     set unitname [wokinfo -n $unit]
 
     set file [lindex $args 0]
@@ -34,7 +33,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
 	msgprint -e -c "WOKStep_TclLibIdep:Execute" "Could not locate PACKAGES for unit $unit"
 	return 1;
     } else {
-	for_file anud $packfile {
+	foreach  anud [wokUtils:FILES:FileToList $packfile] {
 	    set curud [string trim $anud]
 	    if {$curud != ""} {	
 		set alluds($curud) 1
@@ -42,7 +41,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
 		if {[string length $impin] == 0} {
 		    msgprint -i "No ImplDep file for unit $curud"
 		} else {
-		    for_file adep $impin {
+		     foreach adep [wokUtils:FILES:FileToList $impin] {
 			set curud [string trim $adep]
 			set alluds($curud) 1
 		    }
@@ -50,7 +49,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
 	    }
 	}
 # remove PACKAGES content from ImplDep
-	for_file anud $packfile {
+	foreach anud [wokUtils:FILES:FileToList $packfile] {
 	    set curud [string trim $anud]
 	    if {$curud != ""} {	
 		unset alluds($curud)
@@ -58,7 +57,7 @@ proc WOKStep_TclLibIdep:Execute { unit args } {
 	}
 	set impfile [wokinfo -p stadmfile:${unitname}.ImplDep $unit]
 	set impid [open $impfile "w"]
-	for_array_keys anud alluds {
+	foreach anud [array names alluds *] {
 	    puts $impid $anud
         }
 	close $impid
