@@ -45,6 +45,7 @@ void *alloca(unsigned int size){return (void *)0L;}
 
 #include <WOKUnix_regexp.h>
 #include <stdlib.h>
+#include <string.h>
 
 /***/
 /******************************************************************************/
