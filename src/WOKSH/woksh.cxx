@@ -7,21 +7,12 @@
 
 
 
+#include <tcl.h>
+
 #ifdef WNT
-# ifdef TCL_VERSION_75
-#  pragma comment( lib, "tcl75.lib" )
-#  pragma message( "Information: tcl75.lib is using as TCL library" )
-#  include <tcl75.h>
-# elif defined( TCL_VERSION_76 )
-#  pragma comment( lib, "tcl76.lib" )
-#  pragma message( "Information: tcl76.lib is using as TCL library" )
-# else
-#  pragma comment( lib, "tcl76i.lib" )
-#  pragma message( "Information: tcl76i.lib is using as TCL library" )
-# endif  // TCL75
+#  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
 #endif  // WNT
 
-#include <tcl.h>
 
 //extern "C" {
 //#ifdef NEED_MATHERR
@@ -104,14 +95,7 @@ int Wok_Init(WOKTclTools_PInterp interp)
 	}
     }
 
-# if defined( LIN )
-  WOKTclTools_Package tcl ( CurrentInterp, "Tcl", "8.0" );
-#elif defined( AIX )
-  WOKTclTools_Package tcl ( CurrentInterp, "Tcl", "8.1" );
-#else
-  WOKTclTools_Package tcl ( CurrentInterp, "Tcl", "7.5" );
-#endif 
-  
+  WOKTclTools_Package tcl ( CurrentInterp, "Tcl", TCL_VERSION );
   tcl.Require();
   
   OSD::SetSignal();                  //==== Armed the signals. =============
