@@ -24,6 +24,10 @@
 
 #define READBUF_SIZE 1024
 
+#ifdef LIN
+# include <iomanip.h>
+#endif  // LIN
+
 //=======================================================================
 //function : WOKOrbix_ExtractServerList
 //purpose  : 
