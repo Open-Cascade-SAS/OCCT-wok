@@ -5,18 +5,22 @@
 
 @template HandleClient(%Interface,%Class,%Inherits) is
 $// C++ Client 
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $//
 $#ifndef _Handle_%Class_HeaderFile
@@ -89,19 +93,23 @@ $%Interface_%Class\^
 
 @template TransientRootClientHXX(%Interface) is
 $// C++ Client  
-$//                     Copyright (C) 1991,1995 by
-$//  
-$//                      MATRA DATAVISION, FRANCE
-$//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
 $//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
+$//  
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
+$//  
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
+$
 $#ifndef _%Interface_Standard_Transient_HeaderFile
 $#define _%Interface_Standard_Transient_HeaderFile
 $#include <Handle_%Interface_Standard_Transient.hxx>
@@ -140,18 +148,22 @@ $#endif
 
 @template TransientRootClientCXX(%Interface) is
 $// C++ Client  
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Interface_Standard_Transient_HeaderFile
 $#include <%Interface_Standard_Transient.hxx>
@@ -215,18 +227,22 @@ $}
 
 @template PersistentRootClientHXX(%Interface) is
 $// C++ Client
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Interface_Standard_Persistent_HeaderFile
 $#define _%Interface_Standard_Persistent_HeaderFile
@@ -272,18 +288,22 @@ $#endif
 
 @template PersistentRootClientCXX(%Interface) is
 $// C++ Client  
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Interface_Standard_Persistent_HeaderFile
 $#include <%Interface_Standard_Persistent.hxx>
@@ -349,18 +369,22 @@ $
 
 @template StorableRootClientHXX(%Interface) is
 $// C++ Client
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _FrontEnd_EngineAdaptor_HeaderFile
 $#include <FrontEnd_EngineAdaptor.hxx>
@@ -399,18 +423,22 @@ $#endif
 
 @template StorableRootClientCXX(%Interface) is
 $// C++ Client
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Interface_Standard_Storable_HeaderFile
 $#include <%Interface_Standard_Storable.hxx>
@@ -483,18 +511,22 @@ $}
 
 @template MemoryRootClientHXX(%Interface) is
 $// C++ Client (%Interface_MMgt_TShared)
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Interface_MMgt_TShared_HeaderFile
 $#define _%Interface_MMgt_TShared_HeaderFile
@@ -548,18 +580,22 @@ $#endif
 @end;
 
 @template MemoryRootClientCXX(%Interface) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#ifndef _%Interface_MMgt_TShared_HeaderFile
 $#include <%Interface_MMgt_TShared.hxx>
@@ -626,18 +662,22 @@ $Handle(%Interface_MMgt_TShared)::~Handle(%Interface_MMgt_TShared)(){}
 
 @template RefClassClientHXX(%Class,%Inherits,%Includes,%Methods) is
 $// C++ Client (%Class)
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
@@ -685,18 +725,22 @@ $#endif
 @end;
 
 @template RefClassClientCXX(%Class,%Inherits,%Methods,%Includes,%TypeMgt) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#ifndef _%Class_HeaderFile
 $#include <%Class.hxx>
@@ -749,18 +793,22 @@ $%Methods
 
 @template ValueClassClientHXX(%InheritsTrick,%Class,%Inherits,%Includes,%Methods) is
 $// C++ Client (%Class)
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $//
 $#ifndef _%Class_HeaderFile
@@ -794,18 +842,22 @@ $#endif
 @end;
 
 @template ValueClassClientCXX(%Class,%Methods,%Includes) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#ifndef _%Class_HeaderFile
 $#include <%Class.hxx>
@@ -842,18 +894,22 @@ $%Methods
 
 @template PackageClientHXX(%Class,%Includes,%Methods) is
 $// C++ Client (%Class)
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
@@ -876,18 +932,22 @@ $#endif
 @end;
 
 @template PackageClientCXX(%Class,%Methods,%Includes) is
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $
 $#ifndef _%Class_HeaderFile
 $#include <%Class.hxx>
@@ -918,18 +978,22 @@ $%Methods
 
 @template EnumHXX(%Class,%Values) is
 $// C++ Client (%Class)
-$//                     Copyright (C) 1991,1995 by
+$//
+$//                     Copyright (C) 1991 - 2000 by  
+$//                      Matra Datavision SA.  All rights reserved.
 $//  
-$//                      MATRA DATAVISION, FRANCE
+$// This file is part of the Open CASCADE Technology software.
+$//
+$// This software may be distributed and/or modified under the terms and
+$// conditions of the Open CASCADE Public License as defined by Open CASCADE SA
+$// and appearing in the file LICENSE included in the packaging of this file.
 $//  
-$// This software is furnished in accordance with the terms and conditions
-$// of the contract and with the inclusion of the above copyright notice.
-$// This software or any other copy thereof may not be provided or otherwise
-$// be made available to any other person. No title to an ownership of the
-$// software is hereby transferred.
-$//  
-$// At the termination of the contract, the software and all copies of this
-$// software must be deleted.
+$// This software is distributed on an "AS IS" basis, without warranty of any
+$// kind, and Open CASCADE SA hereby disclaims all such warranties,
+$// including without limitation, any warranties of merchantability, fitness
+$// for a particular purpose or non-infringement. Please see the License for
+$// the specific terms and conditions governing rights and limitations under the
+$// License.
 $//
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
