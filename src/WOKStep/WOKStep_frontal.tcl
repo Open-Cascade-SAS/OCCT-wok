@@ -15,6 +15,8 @@ proc WOKStep_frontal:HandleInputFile { ID } {
 proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
     global WOK_GLOBALS
 
+    msgprint -i "WOKStep_frontal:ExecuteOldFrontal"
+
     set pk [wokinfo -n $unit]
     set nameFROMFRONT [woklocate -p ${pk}:source:FROM_FRONTAL]
     if {[string length $nameFROMFRONT] == 0} {
@@ -51,7 +53,7 @@ proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
 
     set exec [woklocate -p ${bin}:executable:${bin} $wb]
     if { $exec == {} } {
-	msgprint -e "Unable to locate the frontal file $bin"
+	msgprint -w "Unable to locate the frontal file $bin"
 	cd $savpwd
 	return 1
     }
@@ -174,6 +176,8 @@ proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
 proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
     global WOK_GLOBALS
 
+    msgprint -i "WOKStep_frontal:ExecuteNewFrontal"
+
     set pk [wokinfo -n $unit]
     set nameFROMFRONT [woklocate -p ${pk}:source:FROM_FRONTAL]
     if {[string length $nameFROMFRONT] == 0} {
@@ -185,8 +189,6 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 	msgprint -e "Unable to locate file COMPONENTS"
 	return 1
     }
-
-
 
     set wb [wokinfo -N $unit]
 
@@ -235,7 +237,14 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 	    stepinputadd ${ccl}:ccldrv:${ccl}.ccl
 	    stepaddexecdepitem -d ${ccl}:ccldrv:${ccl}.ccl ${pk}:ccldrv:${pk}.ccl
 	} else {
-	    msgprint -e "Could not locate file : ${ccl}:ccldrv:${ccl}.ccl"
+            set f [woklocate -p ${ccl}:ccldrv:${ccl}.ll $wb]
+            if { $f != {} } { 
+                wokUtils:FILES:concat $fileout $f
+                stepinputadd ${ccl}:ccldrv:${ccl}.ll
+                stepaddexecdepitem -d ${ccl}:ccldrv:${ccl}.ll ${pk}:ccldrv:${pk}.ccl
+            } else {
+                msgprint -e "Could not locate file : ${ccl}:ccldrv:${ccl}.ccl"
+            }
 	}
     }
 
@@ -265,11 +274,19 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
 	    chmod 0755 $resexe
 	}
     } else {
-	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
+	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $resexe"
 	msgprint -e -c "WOKStep_frontal:Execute" $res
 
 	return 1
     }
+
+    if {[wokparam -e %Station] == "wnt"} {
+	set execbinid CCL${pk}bin.cmd
+    } else {
+	set execbinid CCL${pk}bin
+    }
+
+
     # insert dependencies
 
     stepinputadd ${pk}:source:FROM_FRONTAL
@@ -285,6 +302,132 @@ proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
     stepaddexecdepitem -d ${pk}:source:FROM_FRONTAL ${pk}:ccldrv:${pk}.ccl
 
     stepaddexecdepitem -d ${pk}:source:COMPONENTS ${pk}:ccldrv:${pk}.ccl
+
+
+
+
+
+    set bin [wokUtils:FILES:FileToList $nameFROMFRONT]
+    if { $bin != {} } {
+        set dir [file dirname [wokinfo -p sttmpfile:missing $unit]]
+
+        set savpwd [pwd]
+        cd $dir
+
+        set from [woklocate -p ${bin}:executable:CCLinterpretor $wb]
+        set fromid ${bin}:executable:CCLinterpretor
+        if { $from == {} } {
+	    set from [woklocate -p CCL:executable:CCLinterpretor $wb]
+	    set fromid CCL:executable:CCLinterpretor
+	    if { $from == {}} {
+	        msgprint -e "Unable to locate the file CCLinterpretor."
+	        cd $savpwd
+	        return 1
+	    }
+        }
+
+        set exec [woklocate -p ${bin}:executable:CCL${bin} $wb]
+        if { $exec == {} } {
+	    msgprint -w "Unable to locate the frontal file ${bin}:executable:CCL${bin} from $nameFROMFRONT"
+	    cd $savpwd
+	    return 1
+        }
+
+        msgprint -c "WOKStep_frontal:Execute" -i "Building $pk"
+    
+        set resexe [wokinfo -p executable:CCL$pk $unit]
+        set rescore [wokinfo -p executable:CCL${pk}.bin $unit]
+
+        msgprint -i -c "WOKStep_frontal:Execute" "Updating $pk.bin"
+        wokparam -s "%InterpretorFile=$from"
+        wokparam -s "%CCLFile=$fileout"
+        wokparam -s "%CoreFile=$pk.bin"
+    
+        set thecommand [wokparam -e FRONTAL_NewFrontalScript]
+
+	wokUtils:FILES:ListToFile ${thecommand} tmp.ccl
+	chmod 0755 tmp.ccl
+        msgprint -i "Setting Environnement"
+        set WOK_GLOBALS(setenv_proc,tcl) 1
+        wokenv -s 
+        set WOK_GLOBALS(setenv_proc,tcl) 0
+
+        if [file exists $pk.bin ] {
+	    chmod 0755 $pk.bin
+            unlink $pk.bin
+	}
+        if {[catch {eval "exec tmp.ccl " } res]} {
+	    msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
+	    msgprint -e -c "WOKStep_frontal:Execute" $res
+
+	    return 1
+        }
+
+        msgprint -i -c "WOKStep_frontal:Execute" "Updating $rescore"
+        if [file exists $rescore ] {
+	    chmod 0755 $rescore
+            unlink $rescore
+	}
+        if [catch {eval "exec cp $pk.bin $rescore"} result] {
+	    msgprint -e -c "WOKStep_frontal:Execute" $result
+        }
+
+    
+        set resbinexe [wokinfo -p executable:$execbinid $unit]
+
+        set fileoutmsg [wokinfo -p cmpmsgfile:${pk}_Cmp.us $unit]
+        set fileoutoldmsg [wokinfo -p msgfile:${pk}.us $unit]
+
+        msgprint -i -c "WOKStep_frontal:Execute" "Updating $resbinexe"
+        wokparam -s "%BINFile=$rescore"
+        wokparam -s "%MsgCmpFile=$fileoutmsg"
+        wokparam -s "%MsgFile=$fileoutoldmsg"
+    
+        set thebincommand [wokparam -e FRONTAL_BINScript]
+
+        if {[catch {set fidexe [open $resbinexe "w"]} res] == 0} {
+	    puts $fidexe [lindex $thebincommand 0]
+	    close $fidexe
+	    if {[wokparam -e %Station] != "wnt"} {
+	        chmod 0755 $resbinexe
+	    }
+        } else {
+	    msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $resbinexe"
+	    msgprint -e -c "WOKStep_frontal:Execute" $res
+
+	    return 1
+        }
+
+        # insert dependencies
+        stepinputadd ${bin}:executable:CCL${bin}
+
+        stepinputadd $fromid
+
+        stepoutputadd -M -P -L -F $pk:executable:CCL$pk
+
+        stepaddexecdepitem -d ${bin}:executable:CCL${bin} $pk:executable:CCL$pk
+    
+        stepaddexecdepitem -d $fromid $pk:executable:CCL$pk
+
+        stepaddexecdepitem -d ${pk}:source:FROM_FRONTAL $pk:executable:CCL$pk
+
+        stepoutputadd -M -P -L -F $pk:executable:CCL${pk}.bin
+
+        stepaddexecdepitem -d $fromid $pk:executable:CCL${pk}.bin
+
+        stepaddexecdepitem -d ${pk}:source:FROM_FRONTAL $pk:executable:CCL${pk}.bin
+    
+        stepoutputadd -M -P -L -F $pk:executable:CCL${pk}bin
+
+        stepaddexecdepitem -d $fromid $pk:executable:CCL${pk}bin
+
+        stepaddexecdepitem -d ${pk}:source:FROM_FRONTAL $pk:executable:CCL${pk}bin
+    
+
+
+
+	cd $savpwd
+    }
 
     return 0;
 }
