@@ -31,22 +31,18 @@ $
 $class Handle(%HPName) : public Handle(%HPInherits) {
 $  public:
 $
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return StandardCSFDB_Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
-$//      }
 $
 $    Handle(%HPName)():Handle(%HPInherits)() {} 
 $    Handle(%HPName)(const Handle(%HPName)& aHandle) : Handle(%HPInherits)(aHandle) 
@@ -120,22 +116,18 @@ $class %Class : public %Inherits {
 $
 $
 $public:
-$ inline void* operator new(size_t,void* anAddress) 
+$ void* operator new(size_t,void* anAddress) 
 $   {
 $     return anAddress;
 $   }
-$ inline void* operator new(size_t size) 
+$ void* operator new(size_t size) 
 $   { 
 $     return StandardCSFDB_Allocate(size); 
 $   }
-$    inline void  operator delete(void *anAddress) 
+$ void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$// inline void  operator delete(void *anAddress, size_t size) 
-$//   { 
-$//     if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
-$//   }
 $
 $ // Methods PUBLIC
 $ // 
@@ -172,7 +164,7 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other inline functions and methods (like "C++: function call" methods)
+$// other Inline functions and methods (like "C++: function call" methods)
 $//
 $%TICSuppMethod
 $

@@ -48,22 +48,18 @@ $Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(%HTName);
 $
 $class Handle(%HTName) : public Handle(%HTInherits) {
 $  public:
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-$//      }
 $    Handle(%HTName)():Handle(%HTInherits)() {} 
 $    Handle(%HTName)(const Handle(%HTName)& aHandle) : Handle(%HTInherits)(aHandle) 
 $     {
@@ -152,22 +148,18 @@ $class %Class : public %Inherits {
 $
 $public:
 $
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-$//      }
 $ // Methods PUBLIC
 $ // 
 $%TICPublicmets
@@ -206,7 +198,7 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other inline functions and methods (like "C++: function call" methods)
+$// other Inline functions and methods (like "C++: function call" methods)
 $//
 $%TICSuppMethod
 $
@@ -289,22 +281,18 @@ $class %Class %Inherits {
 $
 $public:
 $
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-$//      }
 $ // Methods PUBLIC
 $ // 
 $%TICPublicmets
@@ -338,7 +326,7 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other inline functions and methods (like "C++: function call" methods)
+$// other Inline functions and methods (like "C++: function call" methods)
 $//
 $%TICSuppMethod
 $
@@ -416,22 +404,18 @@ $
 $class %Class %Inherits {
 $
 $public:
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-$//      }
 $
 $ // Methods PUBLIC
 $ // 
@@ -469,7 +453,7 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other inline functions and methods (like "C++: function call" methods)
+$// other Inline functions and methods (like "C++: function call" methods)
 $//
 $%TICSuppMethod
 $
@@ -663,22 +647,18 @@ $#endif
 $
 $class %Class : public %Inherits {
 $
-$    inline void* operator new(size_t,void* anAddress) 
+$    void* operator new(size_t,void* anAddress) 
 $      {
 $        return anAddress;
 $      }
-$    inline void* operator new(size_t size) 
+$    void* operator new(size_t size) 
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress) 
+$    void  operator delete(void *anAddress) 
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
-$//    inline void  operator delete(void *anAddress, size_t size) 
-$//      { 
-$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
-$//      }
 $public:
 $ Standard_EXPORT static void Raise(const Standard_CString aMessage = "");
 $ Standard_EXPORT static void Raise(Standard_SStream& aReason);
@@ -803,7 +783,7 @@ $%Method;
 @end;
 
 @template InlineMethodTemplateDec(%Method) is
-$inline %Method\^
+$%Method\^
 @end;
 
 @template MethodTemplateDef(%Method,%MBody) is

@@ -53,49 +53,49 @@ $class Handle_%HPName: public Handle_%HPInherits {
 $
 $public:
 $
-$ inline Handle_%HPName();
-$ inline Handle_%HPName(const Handle_%HPName& AnObject);
-$ inline Handle_%HPName(const %HPName_ptr AnObject);
+$ Handle_%HPName();
+$ Handle_%HPName(const Handle_%HPName& AnObject);
+$ Handle_%HPName(const %HPName_ptr AnObject);
 $ Standard_EXPORT ~Handle_%HPName();
-$ inline Handle_%HPName& operator=(const Handle_%HPName& AnObject);
+$ Handle_%HPName& operator=(const Handle_%HPName& AnObject);
 $ Standard_EXPORT Handle_%HPName& operator=(const %HPName_ptr AnObject);
 $ Standard_EXPORT static const Handle_%HPName DownCast(const Handle_Standard_Persistent&);
-$ inline Standard_Boolean   operator==(const Handle_%HPName& AnObject) const ;
-$ inline Standard_Boolean operator!=(const Handle_%HPName& AnObject) const;
-$ inline Oid_%HPName* operator->() const;
+$ Standard_Boolean   operator==(const Handle_%HPName& AnObject) const ;
+$ Standard_Boolean operator!=(const Handle_%HPName& AnObject) const;
+$ Oid_%HPName* operator->() const;
 $};
 $
 $
-$inline Handle_%HPName::Handle_%HPName()
+$Handle_%HPName::Handle_%HPName()
 ${
 $}
 $
-$inline Handle_%HPName::Handle_%HPName(const Handle_%HPName& AnObject) 
+$Handle_%HPName::Handle_%HPName(const Handle_%HPName& AnObject) 
 $ : Handle_%HPInherits(AnObject)
 ${
 $}
 $
-$inline Handle_%HPName::Handle_%HPName(const %HPName_ptr AnObject) 
+$Handle_%HPName::Handle_%HPName(const %HPName_ptr AnObject) 
 $ : Handle_%HPInherits((const %HPInherits_ptr)AnObject)
 ${
 $}
 $
-$inline Handle_%HPName& Handle_%HPName::operator=(const Handle_%HPName& AnObject) 
+$Handle_%HPName& Handle_%HPName::operator=(const Handle_%HPName& AnObject) 
 ${
 $  Identifier=AnObject.Identifier; return *this;
 $}
 $
-$inline Standard_Boolean Handle_%HPName::operator==(const Handle_%HPName& AnObject)const 
+$Standard_Boolean Handle_%HPName::operator==(const Handle_%HPName& AnObject)const 
 ${
 $  return Identifier==AnObject.Identifier;
 $}
 $
-$inline Standard_Boolean Handle_%HPName::operator!=(const Handle_%HPName& AnObject)const 
+$Standard_Boolean Handle_%HPName::operator!=(const Handle_%HPName& AnObject)const 
 ${
 $  return Identifier!=AnObject.Identifier;
 $}
 $
-$inline Oid_%HPName* Handle_%HPName::operator->() const 
+$Oid_%HPName* Handle_%HPName::operator->() const 
 ${
 $  return (Oid_%HPName*)(void*)&(((Handle_%HPName_ptr)this)->Identifier);
 $}
@@ -247,7 +247,7 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other inline functions and methods (like "C++: function call or Oid methods" methods)
+$// other Inline functions and methods (like "C++: function call or Oid methods" methods)
 $//
 $%TICSuppMethod
 $
