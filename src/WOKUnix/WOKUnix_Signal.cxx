@@ -1,4 +1,7 @@
 #ifndef WNT
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <WOKUnix_Signal.ixx>
 
@@ -7,10 +10,11 @@
 #include <signal.h>
 #include <stdio.h>
 
-#ifdef LIN
+#ifdef HAVE_BITS_SIGSET_H
 #include <bits/sigset.h>
-#include <signal.h>
-#elif !defined(HPUX)  && !defined(AIX)
+#endif
+
+#ifdef HAVE_SIGINFO_H
 #include <siginfo.h>
 #endif
 
@@ -62,13 +66,12 @@ void WOKUnix_Signal::Arm(const WOKUnix_SigHandler& ahandler)
     {
       act.sa_handler =  (WOKUnix_SigHandler) ahandler;
     }
-#ifdef SOLARIS
+#if defined(__sun) || defined(__sgi)
   act.sa_mask.__sigbits[0]    = 0;
   act.sa_mask.__sigbits[1]    = 0;
   act.sa_mask.__sigbits[2]    = 0;
   act.sa_mask.__sigbits[3]    = 0;
-  act.sa_flags                = SA_RESTART;
-#elif HPUX
+#elif defined(__hpux)
   act.sa_mask.sigset[0]    = 0;
   act.sa_mask.sigset[1]    = 0;
   act.sa_mask.sigset[2]    = 0;
@@ -77,24 +80,20 @@ void WOKUnix_Signal::Arm(const WOKUnix_SigHandler& ahandler)
   act.sa_mask.sigset[5]    = 0;
   act.sa_mask.sigset[6]    = 0;
   act.sa_mask.sigset[7]    = 0;
-  act.sa_flags   = 0;
-#elif IRIX
-  act.sa_mask.__sigbits[0]      = 0;
-  act.sa_mask.__sigbits[1]      = 0;
-  act.sa_mask.__sigbits[2]      = 0;
-  act.sa_mask.__sigbits[3]      = 0;
-  act.sa_flags             = 0;
-#elif defined(LIN)
+#elif defined(__FreeBSD__)
+  act.sa_mask.__bits[0]    = 0;
+  act.sa_mask.__bits[1]    = 0;
+  act.sa_mask.__bits[2]    = 0;
+  act.sa_mask.__bits[3]    = 0;
+#elif defined(linux)
   sigemptyset(&act.sa_mask) ;
-  act.sa_flags   = 0;
-#elif defined(AIX)
+#elif defined(_AIX)
   act.sa_mask.losigs   = 0;
   act.sa_mask.hisigs   = 0;
-  act.sa_flags                = 0;
- #else
+#else
   act.sa_mask    = 0;
-  act.sa_flags   = 0;
 #endif
+  act.sa_flags   = 0;
 
   //==== Always detected the signal "SIGFPE" =================================
   stat = sigaction(WOKUnix_Signal::GetSig(mysig),&act,&oact);   // ...... floating point exception 
@@ -127,7 +126,11 @@ int WOKUnix_Signal::GetSig(const WOKUnix_Signals asig)
     case WOKUnix_SIGKILL  : return SIGKILL;
     case WOKUnix_SIGBUS   : return SIGBUS;
     case WOKUnix_SIGSEGV  : return SIGSEGV;
+#if defined(SIGCLD)
     case WOKUnix_SIGCHILD : return SIGCLD;
+#elif defined(SIGCHLD)
+    case WOKUnix_SIGCHILD : return SIGCHLD;
+#endif
     }
  return 0;
 }

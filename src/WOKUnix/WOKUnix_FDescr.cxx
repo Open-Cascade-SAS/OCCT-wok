@@ -1,16 +1,30 @@
 #ifndef WNT
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include <sys/stat.h>
 
-
-#ifdef SOLARIS
-#include <sys/filio.h>
-#else 
-#include <sys/ioctl.h>
+#ifdef HAVE_SYS_FILIO_H
+# include <sys/filio.h>
 #endif
+
+#ifdef HAVE_SYS_IOCTL_H
+# include <sys/ioctl.h>
+#endif
+
+#if defined(HAVE_SYS_VNODE_H) && defined(__FreeBSD__) 
+# include <sys/vnode.h>
+#endif
+
 #include <fcntl.h>
 
 #include <WOKUnix_FDescr.ixx>
@@ -27,9 +41,9 @@ extern int errno;
 
 const OSD_WhoAmI Iam = OSD_WFile;
 
-#ifdef LIN
+#ifdef __GNUC__
 static FILE* _wokunix_fdopen ( int );
-#endif  // LIN
+#endif  // __GNUC__
 
 //=======================================================================
 //function : WOKUnix_FDescr
@@ -46,11 +60,11 @@ WOKUnix_FDescr::WOKUnix_FDescr()
 //=======================================================================
 WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd) {
  myFileChannel = afd;
-#ifndef LIN
+#ifndef __GNUC__
  myFILE = fdopen(afd, "r");
 #else
  myFILE = _wokunix_fdopen ( afd );
-#endif  // LIN
+#endif  // __GNUC__
 }
 
 //=======================================================================
@@ -60,11 +74,11 @@ WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd) {
 WOKUnix_FDescr::WOKUnix_FDescr(const Standard_Integer afd, const Handle(TCollection_HAsciiString)& apath)
 {
   myFileChannel = afd;
-#ifndef LIN
+#ifndef __GNUC__
   myFILE = fdopen(afd, "r");
 #else
   myFILE = _wokunix_fdopen ( afd );
-#endif  // LIN
+#endif  // __GNUC__
  SetPath(apath->String());
 }
 
@@ -114,7 +128,11 @@ Standard_Integer WOKUnix_FDescr::GetNbToRead()
 //=======================================================================
 void WOKUnix_FDescr::SetUnBuffered()  
 {
+#ifdef __FreeBSD__
+  if(fcntl(myFileChannel, F_SETFL, O_ASYNC) < 0)
+#else
   if(fcntl(myFileChannel, F_SETFL, O_SYNC) < 0)
+#endif
     {
       Perror();
       return;
@@ -405,7 +423,7 @@ WOKUnix_FDescr WOKUnix_FDescr::Stderr()
   return StderrFD;
 }
 
-#ifdef LIN
+#ifdef __GNUC__
 static FILE* _wokunix_fdopen ( int fd ) {
 
  char* fdMode = "r";
@@ -434,6 +452,6 @@ static FILE* _wokunix_fdopen ( int fd ) {
  return retVal;
 
 }  // end _wokunix_fdopen
-#endif  // LIN
+#endif  // __GNUC__
 
-#endif
+#endif // WNT

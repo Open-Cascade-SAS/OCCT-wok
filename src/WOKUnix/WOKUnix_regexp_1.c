@@ -1,3 +1,6 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 /******************************************************************************/
 /* Extended regular expression matching and search.                           */
 /* Copyright (C) 1985 Free Software Foundation, Inc.                          */
@@ -27,7 +30,7 @@
 
 /* JGA : to compile on Solaris */
 
-#if !defined(HPUX) && !defined (WNT) && !defined (AIX)
+#ifdef HAVE_ALLOCA_H
 #include <alloca.h>
 
 #else

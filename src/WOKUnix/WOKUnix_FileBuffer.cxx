@@ -1,6 +1,5 @@
 #ifndef WNT
 
-
 #include <OSD_Environment.hxx>
 #include <OSD_Path.hxx>
 
@@ -87,16 +86,16 @@ Handle(TColStd_HSequenceOfHAsciiString)  WOKUnix_FileBuffer::Echo()
 //=======================================================================
 void WOKUnix_FileBuffer::Acquit(const Standard_Integer astatus, const WOKUnix_FDSet& aset)  
 {
-#ifndef LIN
+#ifndef __GNUC__
   Standard_Integer nbtoread = GetFDescr().GetNbToRead();
-#endif  // LIN
-#if defined( WOK_VERBOSE ) && !defined( LIN )
+#endif  // __GNUC__
+#if defined( WOK_VERBOSE ) && !defined( __GNUC__ )
   VerboseMsg("WOK_PROCESS") << "WOKUnix_FileBuffer::Acquit"
                             << "There is " << nbtoread << " bytes to read on process output" << endm;
 #endif
-#ifndef LIN
+#ifndef __GNUC__
   if(nbtoread >= MAX_PIPE_SIZE)
-#endif  // LIN
+#endif  // __GNUC__
     {	  
       Dump();
     }
@@ -156,4 +155,4 @@ void WOKUnix_FileBuffer::Close()
   if( apath.Name().IsEmpty() != Standard_True && mybuffer.FileNo() >= 0) mybuffer.Close();
   WOKUnix_Buffer::Close();
 }
-#endif
+#endif // WNT

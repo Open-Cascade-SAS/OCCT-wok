@@ -3,14 +3,20 @@
 // Created:	Tue May 30 09:17:00 1995
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <sys/types.h>
-#include <unistd.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <stdio.h>
-#include <unistd.h>
 
 #include <WOKUnix_Path.ixx>
 
@@ -406,7 +412,7 @@ Handle(WOKUnix_Path) WOKUnix_Path::ReducedPath() const
 
   if(Exists())
     {
-#if !defined(DECOSF1) && !defined(HPUX)
+#if !defined(__osf__) && !defined(DECOSF1) && !defined(__hpux) && !defined(HPUX)
 
       char abuffer[PATH_MAX];
 
