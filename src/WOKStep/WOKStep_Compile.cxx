@@ -3,7 +3,11 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
+#ifdef WNT
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <fstream.h>
 
 #include <TCollection_HAsciiString.hxx>

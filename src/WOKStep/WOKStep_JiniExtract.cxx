@@ -314,7 +314,11 @@ void WOKStep_JiniExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& to
 		    outfile = new WOKernel_File(outent->Path()->FileName(), Unit(), sourcetype);
 		    istemplate = Standard_True;
 		    break;
+#ifdef WNT
+		  case WOKNT_UnknownFile:
+#else
 		  case WOKUnix_UnknownFile:
+#endif
 		    if (!strcmp(outent->Path()->ExtensionName()->ToCString(),".java")) {
 		      outfile = new WOKernel_File(outent->Path()->FileName(), Unit(), privincludetype);
 		    }

@@ -6,7 +6,11 @@
 #ifndef DONT_COMPENSATE
 
 #include <stdio.h>
+#ifdef WNT
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
