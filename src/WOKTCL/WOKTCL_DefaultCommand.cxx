@@ -51,8 +51,8 @@
 #define WOK_SESSION_KEEP 1
 #endif
 
-extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-//Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
+//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
+Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 
 Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *, 
 				Standard_Integer argc, char* argv[])
