@@ -141,6 +141,7 @@ srcinc:::README
 srcinc:::wokcvs.tcl
 srcinc:::ud2cvs_unix
 srcinc:::template.dsp
+srcinc:::template.dspx
 srcinc:::template.min
 srcinc:::template.mam
 srcinc:::osutils.tcl
