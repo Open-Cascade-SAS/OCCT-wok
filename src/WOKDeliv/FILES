@@ -7,4 +7,5 @@ WOKDeliv_ParseDelivery.cxx
 WOKDeliv_DelivExecSource.tcl
 WOKDeliv_FRONTALSCRIPT.edl
 WOKDeliv_LDSCRIPT.edl
-
+WOKDeliv_WOKSteps.edl
+WOKDeliv_Replace.tcl
