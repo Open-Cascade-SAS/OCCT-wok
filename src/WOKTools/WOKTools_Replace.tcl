@@ -1,15 +1,15 @@
 
 
-proc WOKTools_Replace::AdmFileType {} {
+proc WOKTools_Replace:AdmFileType {} {
     return "dbadmfile";
 }
 
-proc WOKTools_Replace::OutputDirTypeName {} {
+proc WOKTools_Replace:OutputDirTypeName {} {
     return "dbtmpfile";
 }
 
 
-proc WOKTools_Replace::HandleInputFile { ID } { 
+proc WOKTools_Replace:HandleInputFile { ID } { 
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
 
@@ -22,7 +22,7 @@ proc WOKTools_Replace::HandleInputFile { ID } {
     }
 }
 
-proc WOKTools_Replace::Execute { unit args } {
+proc WOKTools_Replace:Execute { unit args } {
     
     global tcl_interactive
 
@@ -51,16 +51,13 @@ proc WOKTools_Replace::Execute { unit args } {
 	regsub -all "/" " $source $target" $replstr  TheArgs
 
         if { [file exist $target] } {
-	  set A [catch {eval exec "wokcmp $TheArgs"} result ]
-	  if { $result != "" } {
-	    set result 0
-	  } else { set result 1 }
+	  set A [catch {eval "wokcmp $TheArgs"} result ]
 	} else {
           set result 0 }
-
+	
 	if { ! $result } {
 	    msgprint -i -c "WOKTools_Replace::Execute" "Copy $source to $target"
-	    if { [file exist $target] && [wokparam -e %Station $unit] != "wnt" } {
+	    if { [file exist $target] && [wokparam -e %Station] != "wnt" } {
 		eval exec "chmod u+w $target"
 	    }
 	    eval exec "$copycmd $TheArgs"

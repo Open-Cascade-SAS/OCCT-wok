@@ -16,8 +16,10 @@ template <class TheKey> class MapNode : public WOKTools_MapNode {
     MapNode(const TheKey& K, const Standard_Integer ahascode, MapNode* n) : WOKTools_MapNode(n),key(K), hashcode(ahascode) {}
   void* operator new(size_t aSize) 
     {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
   TheKey   key;
   Standard_Integer hashcode;
@@ -32,8 +34,10 @@ class Node : public WOKTools_MapNode {
     Node(const TheKey& K, const Standard_Integer ahascode, Node* n) : WOKTools_MapNode(n),key(K), hashcode(ahascode) {}
   void* operator new(size_t aSize) 
     {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
   TheKey   key;
   Standard_Integer hashcode;

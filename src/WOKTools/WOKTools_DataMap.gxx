@@ -17,8 +17,10 @@ template <class Item, class Key> class DataMapNode  : public WOKTools_MapNode {
       WOKTools_MapNode(n), key(K), hashcode(ahascode) { value = I; }
   void* operator new(size_t aSize) 
     {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
 
   Key           key;
@@ -36,8 +38,10 @@ class Node  : public WOKTools_MapNode {
       WOKTools_MapNode(n), key(K), hashcode(ahascode) { value = I; }
   void* operator new(size_t aSize) 
     {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
 
   TheKey           key;

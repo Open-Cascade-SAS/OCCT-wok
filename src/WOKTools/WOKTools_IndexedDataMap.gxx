@@ -21,8 +21,10 @@ template <class Key, class Item> class IndexedDataMapNode : public WOKTools_MapN
   void* operator new(size_t aSize) {
     return Standard::Allocate(aSize);
   }
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
 
   Key                 key;
@@ -44,8 +46,10 @@ class Node : public WOKTools_MapNode {
   void* operator new(size_t aSize) {
     return Standard::Allocate(aSize);
   }
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
+//  void  operator delete(void* aNode, size_t aSize) {
+  void  operator delete(void* aNode) {
+//    Standard::Free(aNode,aSize);
+    Standard::Free(aNode);
   }
 
   TheKey                key;
