@@ -42,7 +42,7 @@
 ;# choose.
 ;#
 global env tcl_platform
-set env(PATH) $env(Path)
+
 if { "$tcl_platform(platform)" == "unix" && ![info exists env(LD_LIBRARY_PATH)] } {
     puts stderr "You must set LD_LIBRARY_PATH to point where you have installed Wok"
     exit
@@ -168,7 +168,7 @@ set tcl_prompt1 {if {[info commands wokcd] != ""}  then \
 	{puts -nonewline stdout "[wokcd]> "} else \
 	{puts -nonewline stdout "tclsh> "}}
 if { "$tcl_platform(platform)" == "windows" } {
-   source $env(WOKHOME)/lib/cmd-input.tcl
+   source $env(WOKHOME)/site/cmd-input.tcl
 }
 cd $env(WOK_ROOTADMDIR)
 wokclose -a

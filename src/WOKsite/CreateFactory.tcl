@@ -111,10 +111,7 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
     if { ![wokinfo -x ${FNAM}:${WSNAM}] } {
 	puts "Creating the workshop : ${FNAM}:${WSNAM}"
 	if ![ catch {screate -DHome=$HOME_ENTITIES/${FNAM}/${WSNAM} -d ${WSNAM} } astatus] {
-	    wokcd -PAdm ${FNAM}:${WSNAM}
-	    catch { mkdir Repository }
-	    lreplace $env(WOK_LIBRARY)/VC.example [pwd]/VC.edl [list /dev/null [pwd]/Repository SCCS NOBASE]
-	    exec cp $env(WOK_LIBRARY)/VC.tcldef [pwd]/VC.tcl
+	    wokcd -PAdm ${FNAM}:${WSNAM} 
 	} else {
 	    puts $astatus
 	    cd $savpwd
@@ -127,20 +124,13 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
 	puts "Creating the workbench : ${FNAM}:${WSNAM}:${WBNAM}"
 	wokcd ${FNAM}:${WSNAM}
 	set WBROOT $HOME_ENTITIES/${FNAM}/${WSNAM}/${WBNAM}
-	#if { "$IMPORT_DIR" != {} } {
-	    #set WBROOT [file join [file dirname $IMPORT_DIR] ${WBNAM}]
-	    #puts "Renaming $IMPORT_DIR to $WBROOT"
-	    #frename $IMPORT_DIR $WBROOT
-	    #puts " the Home directory of your ${WBNAM} WorkBench is now : ${WBROOT}"
-	#}
 	if [ catch {wcreate -DHome=$IMPORT_DIR -d ${WBNAM} } astatus] {
 	    puts $astatus
 	    cd $savpwd
 	    exit
 	}
     }
-    
-    
+        
     if { "$IMPORT_DIR" != {} } {
 	wokcd -PAdm ${FNAM}:${WSNAM}:${WBNAM}
 	foreach udl [glob -nocomplain *.UDLIST] {
@@ -155,14 +145,11 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
     cd $savpwd
 }
 
-#set HOME_ENTITIES [lindex $argv 0]
-#set FNAM          [lindex $argv 1]
-#set WSNAM         [lindex $argv 2]
-#set WBNAM         [lindex $argv 3]
-#set IMPORT_DIR    [lindex $argv 4]
 set CASHOME [file dirname $env(CASROOT)/.]
 
 CreateFactory $env(WOK_ROOTADMDIR) OS OCC51 ros $CASHOME
+puts "WOK initialization was done"
+exit
 
-#exit
+
 

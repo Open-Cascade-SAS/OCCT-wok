@@ -6,26 +6,41 @@
 # 
 #
 set noglob ; set narg = $#argv 
-if ( $narg > 3 || $narg == 1 || $narg == 0 ) then
+if ( $narg > 3) then
   echo "Usage : wok.csh wok_home wok_entities [tclhome] "
-  echo "        wok_home(required)     is the path of directory for wok shareable (Ex: <root>/lib/sun) "
-  echo "        wok_entities(required) is the path of an ATLIST file."
+  echo "        wok_home(optional)     is the path of directory for wok shareable (Ex: <root>/lib/sun) "
+  echo "        wok_entities(optional) is the path of an ATLIST file."
   echo "        tclhome(optional)      is the home directory of a Tcl distribution."
   echo "   "
   exit
 endif
 
+if ( $narg == 0 && ! ($?CASROOT)) then
+echo -n "Please define CASROOT to the folder containing OpenCascade '"'src'"', '"'drv'"' and '"'inc'"' folders. :"
+set res = $<
+setenv CASROOT ${res}
+endif
+
+if ( $narg == 0) then
+  setenv WOKHOME $CASROOT/../wok
+  setenv WOK_ROOTADMDIR $WOKHOME/wok_entities
+endif
+
+if ( $narg == 1) then
+  setenv WOKHOME $argv[1]
+  setenv WOK_ROOTADMDIR $WOKHOME/wok_entities
+endif
+
 if ( $narg == 2 ) then
-  set  wokhome=$argv[1]
+  setenv WOKHOME $argv[1]
   setenv WOK_ROOTADMDIR $argv[2]
 endif
 
 
-set TCLHOME=/usr
 if ( $narg == 3 ) then
-   set wokhome=$argv[1]
+   setenv WOKHOME $argv[1]
    setenv WOK_ROOTADMDIR $argv[2]
-   set TCLHOME=$argv[3]
+   setenv TCLHOME $argv[3]
 endif
 
 
@@ -37,7 +52,20 @@ endif
 if ( ! ($?LD_LIBRARY_PATH) ) then
     setenv LD_LIBRARY_PATH ""
 endif
-setenv LD_LIBRARY_PATH "${TCLLIB}:${wokhome}:${LD_LIBRARY_PATH}:"
+
+switch ( `uname` )
+    case SunOS:
+	setenv WOKSTATION "sun"
+	breaksw
+    case Linux:
+	setenv WOKSTATION "lin"
+	breaksw
+    default:
+	echo "Error : unknown platform"
+	breaksw
+endsw
+
+setenv LD_LIBRARY_PATH "${TCLLIB}:${WOKHOME}/lib/${WOKSTATION}:${LD_LIBRARY_PATH}:"
 ${TCLBIN}/tclsh
 
 
