@@ -138,10 +138,13 @@ void WOKStep_TKReplace::LoadTKDefs()
   Handle(TCollection_HAsciiString)        aunitname;
   Handle(TCollection_HAsciiString)        afullname, abasename;
   Standard_Integer                        i,j;
-  
+#if 0  
   Handle(WOKernel_File) toolkits = Locator()->Locate(Unit()->Name(),
 						     new TCollection_HAsciiString("source"), 
 						     new TCollection_HAsciiString("TOOLKITS"));
+#else
+  Handle(WOKernel_File) toolkits;
+#endif
 
   if(toolkits.IsNull())
     {
@@ -285,6 +288,7 @@ void WOKStep_TKReplace::LoadTKDefs()
     }
 
 #ifdef WNT
+ if (  !mymatrix.IsNull ()  ) {
 
   // if faut enlever le tk qui contient eventuellement l'ud en cours de construction
   if(!WOKernel_IsToolkit(Unit()))
@@ -332,6 +336,7 @@ void WOKStep_TKReplace::LoadTKDefs()
 	    }
 	}
     }
+ }  // end if
 #endif
 }
 
@@ -371,8 +376,10 @@ _TEST_BREAK();
 		{
 		  WarningMsg << "WOKStep_TKReplace::GetTKForUnit"
 			     << "More than one toolkit contains " << aunit << " using " << result << " ignoring " << mytks(i) << endm;
+#if 0
 		  WarningMsg << "WOKStep_TKReplace::GetTKForUnit"
 			     << "You can specify the toolkit used using a TOOLKITS file" << endm;
+#endif
 		}
 	      else
 		{

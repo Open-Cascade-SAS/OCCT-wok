@@ -41,7 +41,9 @@
 
 #include <WOKStep_LinkList.ixx>
 
-
+//---> EUG4JR
+Standard_Boolean g_fForceLib;
+//<--- EUG4JR
 
 //=======================================================================
 //function : WOKStep_LinkList
@@ -194,13 +196,14 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
 	  Standard_Boolean mustExist = aunit->SearchInFileList(Locator(),libname);
 	  if (mustExist)
 	    {
-	      ErrorMsg << "WOKStep_LinkList::GetUnitLibrary" 
-		       << "No library (" << libname << ") found for unit " << aunit->Name() << endm;	      
-	      SetFailed();
+//	      ErrorMsg << "WOKStep_LinkList::GetUnitLibrary" 
+//		       << "No library (" << libname << ") found for unit " << aunit->Name() << endm;	      
+//	      SetFailed();
 	    }
-	  else
-	    WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
-		       << "No library (" << libname << ") in unit " << aunit->Name() << endm;
+	  else {
+//	    WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
+//		       << "No library (" << libname << ") in unit " << aunit->Name() << endm;
+	  }
 	}
       else
 	{
@@ -350,9 +353,15 @@ void WOKStep_LinkList::AddWorkbenchUnitContribution(const Handle(WOKMake_InputFi
 		  InfoMsg << "WOKStep_LinkList::GetUnitContribution" 
 		    << "Processing step " << step->UniqueName() << endm;
 
+//---> EUG4JR
+          if (   !strcmp (  DynamicType () -> Name (), "WOKStep_TransitiveLinkList"  )   )
 
+           g_fForceLib = Standard_True;
+//<--- EUG4JR
 		  Handle(WOKMake_HSequenceOfOutputFile) outfiles = step->OutputFileList();
-		  
+//---> EUG4JR
+          if ( g_fForceLib ) g_fForceLib = Standard_False;
+//<--- EUG4JR		  
 		  if(outfiles.IsNull())
 		    {
 		      ErrorMsg << "WOKStep_LinkList::GetUnitContribution" 
