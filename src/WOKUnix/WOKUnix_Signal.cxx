@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <signal.h>
+#include <stdio.h>
 
 #ifdef LIN
 #include <bits/sigset.h>
@@ -123,4 +124,5 @@ int WOKUnix_Signal::GetSig(const WOKUnix_Signals asig)
     case WOKUnix_SIGSEGV  : return SIGSEGV;
     case WOKUnix_SIGCHILD : return SIGCLD;
     }
+ return 0;
 }

@@ -44,6 +44,7 @@ void *alloca(unsigned int size){return (void *)0L;}
 
 
 #include <WOKUnix_regexp.h>
+#include <stdlib.h>
 
 /***/
 /******************************************************************************/
@@ -956,6 +957,8 @@ void re_compile_fastmap ( PRE_PATTERN_BUFFER bufp ) {
      }  /* end if */
 	  
    break;
+
+   default: break;
 	
   }  /* end switch */
 
@@ -1357,7 +1360,7 @@ int re_match_2 (
 
       d2 = string2, dend2 = regend[ regno ];  /* end of string1 => advance to string2. */
 		  
-     }  /* end while
+     }  /* end while */
 	
      /* At end of register contents => success */
      if ( d2 == dend2 ) break;
@@ -1678,6 +1681,8 @@ nofinalize:
     }  /* end else */
 
    break;
+
+   default: break;
 
   }  /* end switch */
 

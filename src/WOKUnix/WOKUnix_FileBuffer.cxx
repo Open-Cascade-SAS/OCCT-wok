@@ -55,7 +55,6 @@ Handle(TColStd_HSequenceOfHAsciiString)  WOKUnix_FileBuffer::Echo()
   if(mybuffer.FileNo() != -1)
     {
       Handle(TColStd_HSequenceOfHAsciiString) aseq = new TColStd_HSequenceOfHAsciiString;
-      Standard_Integer nbread;
 
       mybuffer.Reset();
 
@@ -65,7 +64,11 @@ Handle(TColStd_HSequenceOfHAsciiString)  WOKUnix_FileBuffer::Echo()
 
       while(mybuffer.IsAtEnd() == Standard_False)
 	{
-	  aseq->Append(mybuffer.ReadLine());
+          Handle( TCollection_HAsciiString ) str = mybuffer.ReadLine ();
+
+          if (  !str.IsNull () && !str -> IsEmpty ()  )
+
+ 	   aseq -> Append ( str );
 	}
       aseq->Append(WOKUnix_Buffer::Echo());
 
@@ -83,14 +86,16 @@ Handle(TColStd_HSequenceOfHAsciiString)  WOKUnix_FileBuffer::Echo()
 //=======================================================================
 void WOKUnix_FileBuffer::Acquit(const Standard_Integer astatus, const WOKUnix_FDSet& aset)  
 {
+#ifndef LIN
   Standard_Integer nbtoread = GetFDescr().GetNbToRead();
-  
-#ifdef WOK_VERBOSE
+#endif  // LIN
+#if defined( WOK_VERBOSE ) && !defined( LIN )
   VerboseMsg("WOK_PROCESS") << "WOKUnix_FileBuffer::Acquit"
                             << "There is " << nbtoread << " bytes to read on process output" << endm;
 #endif
-
+#ifndef LIN
   if(nbtoread >= MAX_PIPE_SIZE)
+#endif  // LIN
     {	  
       Dump();
     }

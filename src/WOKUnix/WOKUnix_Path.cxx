@@ -11,10 +11,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#ifndef PATH_MAX
-#define PATH_MAX 1024
-#endif
-
 #include <WOKUnix_Path.ixx>
 
 #include <WOKTools_Messages.hxx>
@@ -24,6 +20,10 @@
 #include <WOKUnix.hxx>
 
 #include <WOKUnix_PathIterator.hxx>
+
+#ifndef PATH_MAX
+# define PATH_MAX 1024
+#endif  // end PATH_MAX
 
 //=======================================================================
 //function : WOKUnix_Path

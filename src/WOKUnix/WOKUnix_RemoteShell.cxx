@@ -15,6 +15,8 @@
 #include <sys/param.h>
 #include <sys/time.h>
 #endif
+
+#include <stdio.h>
  
 #include <Standard_ProgramError.hxx>
 #include <WOKTools_Messages.hxx>

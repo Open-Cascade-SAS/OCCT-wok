@@ -5,7 +5,6 @@ WOKUnix_SigHandler.hxx
 WOKUnix_MaxPipeSize.hxx
 WOKUnix_regexp.h
 WOKUnix_regexp_1.c
-WOKUnix_WOKSteps.edl
 WOKUnix_CMPLRS.edl
 WOKUnix_StatBuf.hxx
 WOKUnix_Dir.hxx

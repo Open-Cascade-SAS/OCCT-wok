@@ -17,7 +17,7 @@
 
 
 WOKUnix_PathIterator::WOKUnix_PathIterator(const Handle(WOKUnix_Path)& apath, const Standard_Boolean abool, const Standard_CString amask) 
-: mypath(apath), myrecflag(abool), mymask(amask)
+: mymask(amask), mypath(apath), myrecflag(abool)
 {
   TCollection_HAsciiString mask;
   mask.AssignCat(apath->Name()->ToCString());

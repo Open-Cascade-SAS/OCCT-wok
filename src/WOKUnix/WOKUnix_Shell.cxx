@@ -13,6 +13,7 @@
 #endif
 
 #include <fstream.h>
+#include <stdio.h>
 
 #include <WOKTools_Messages.hxx>
 
@@ -41,7 +42,8 @@ static  char *ShellArgv[] = {"/bin/csh", "-f", NULL};
 WOKUnix_Shell::WOKUnix_Shell(const WOKUnix_ShellMode amode,
 			       const WOKUnix_PopenOutputMode outmode, 
 			       const WOKUnix_PopenBufferMode bufmode) 
-:  WOKUnix_Process(3, ShellArgv, outmode, bufmode, -1),  mymode(amode), myecho(Standard_False), mylocked(Standard_False)
+:  WOKUnix_Process(3, ShellArgv, outmode, bufmode, -1), 
+    mymode(amode), mylocked(Standard_False), myecho(Standard_False)
 {
   switch(amode)
     {
@@ -66,7 +68,7 @@ WOKUnix_Shell::WOKUnix_Shell(const TCollection_AsciiString& apath,
 			       const WOKUnix_ShellMode       amode,
 			       const WOKUnix_PopenOutputMode outmode, 
 			       const WOKUnix_PopenBufferMode bufmode) 
-:  WOKUnix_Process(3, ShellArgv, outmode, bufmode, -1),  mymode(amode), myecho(Standard_False), mylocked(Standard_False)
+:  WOKUnix_Process(3, ShellArgv, outmode, bufmode, -1),  mymode(amode), mylocked(Standard_False), myecho(Standard_False)
 {
   switch(amode)
     {

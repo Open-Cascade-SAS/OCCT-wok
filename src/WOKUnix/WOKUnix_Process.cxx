@@ -16,6 +16,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include <Standard_ProgramError.hxx>
 

@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 #include <WOKUnix_ShellStatus.ixx>
 

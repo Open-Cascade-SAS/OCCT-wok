@@ -291,9 +291,9 @@ Handle(TCollection_HAsciiString) WOKUnix_FDescr::ReadLine()
 {
   Handle(TCollection_HAsciiString) astr;
 
-  if(myFILE == NULL)
+  if(myFILE != NULL)
     {
-      TCollection_AsciiString abuf;
+      TCollection_AsciiString abuf ( 1024 );
       Standard_Integer nbread = 0;
 
       while(IsAtEnd() == Standard_False)
@@ -321,7 +321,7 @@ Handle(TCollection_HAsciiString) WOKUnix_FDescr::ReadLine()
     }
   else
     {
-      TCollection_AsciiString abuf;
+      TCollection_AsciiString abuf ( 1024 );
       Standard_Integer nbread = 0;
 
       while(GetNbToRead() != 0)
@@ -407,16 +407,10 @@ WOKUnix_FDescr WOKUnix_FDescr::Stderr()
 #ifdef LIN
 static FILE* _wokunix_fdopen ( int fd ) {
 
- char* fdMode;
- int   mode = fcntl ( fd, F_GETFL );
+ char* fdMode = "r";
+ int   mode   = fcntl ( fd, F_GETFL );
 
  switch ( mode & O_ACCMODE ) {
-
-  case O_RDONLY:
-
-   fdMode = "r";
-
-  break;
 
   case O_WRONLY:
 

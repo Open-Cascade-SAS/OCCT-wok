@@ -56,7 +56,7 @@ void WOKUnix_RegExp :: SetPattern (
                          const Standard_Integer aTblLen
                         ) {
 
- int     syntax;
+ int     syntax = RE_SYNTAX_AWK;
  _TCHAR* errMsg;
 
  Destroy ();
@@ -85,7 +85,7 @@ void WOKUnix_RegExp :: SetPattern (
  switch ( aSyntax ) {
  
   case WOKUnix_RESyntaxAWK:
-   syntax = RE_SYNTAX_AWK;
+  
   break;
 
   case WOKUnix_RESyntaxEGREP:
