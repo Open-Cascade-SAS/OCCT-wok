@@ -24,7 +24,6 @@
 #define CDL_EXTERNAL 6
 
 #include <stdlib.h>
-
 #include <cdl_rules.h>
 
 extern void CDLerror ( char* );
@@ -92,6 +91,7 @@ extern int  CDLlex   ( void  );
 %token 		','
 %token		'='
 %token		IDENTIFIER
+%token          JAVAIDENTIFIER
 %token		INTEGER
 %token		LITERAL
 %token		REAL
@@ -101,7 +101,7 @@ extern int  CDLlex   ( void  );
  char str[MAX_STRING];
 }
 
-%type  <str>    __Package_Name Package_Name Interface_Name __Interface_Name __Schema_Name __ExecFile_Name IDENTIFIER INTEGER REAL STRING LITERAL Schema_Name ExecFile_Name Empty_Str Engine_Name __Engine_Name Component_Name __Component_Name
+%type  <str>    __Package_Name Package_Name Interface_Name __Interface_Name __Schema_Name __ExecFile_Name IDENTIFIER JAVAIDENTIFIER INTEGER REAL STRING LITERAL Schema_Name ExecFile_Name Empty_Str Engine_Name __Engine_Name Component_Name __Component_Name Client_Name
 
 %start		__Cdl_Declaration_List
 %%
@@ -277,17 +277,28 @@ Component_Interface	: interface IDENTIFIER CDL_from IDENTIFIER ';' { Component_I
 /*==========================================================================*/
 /*==== Client definition  ==================================================*/
 /*==========================================================================*/
-Client_Declaration	: client Client_Name
+Client_Declaration	: client Client_Name { Client_Begin($2); }
+			     __Client_Uses 
                           is 
 			     __Client_Definitions
                           end __Client_End ';' 
 			;
 
-Client_Name		: IDENTIFIER  { Client_Begin($1); }
+Client_Name		: JAVAIDENTIFIER
+                        | IDENTIFIER
 			;
 
-__Client_End		: Empty 
-			| IDENTIFIER { Client_End(); }
+__Client_Uses		: Empty
+			| uses ClientUse_List 
+			;
+
+ClientUse_List	        : Client_Name { Client_Use ( $1 ); }
+			| ClientUse_List ',' Client_Name { Client_Use ( $3 ); }
+                        ;
+
+__Client_End		: Empty
+                        | IDENTIFIER     { Client_End(); }
+			| JAVAIDENTIFIER { Client_End(); }
 			;
 
 __Client_Definitions    : Empty

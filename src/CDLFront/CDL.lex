@@ -48,6 +48,7 @@ FUNCTIONCALL    [-][-][-][C][+][+][ \t]*[:][ \t]*[f][u][n][c][t][i][o][n][ \t]*[
 /* The identifiers without underscore at begining and end */
 
 IDENTIFIER	[A-Za-z][A-Za-z0-9_]*[A-Za-z0-9]
+JAVAIDENTIFIER	[A-Za-z][A-Za-z0-9_.]*[A-Za-z0-9]
 
 
 /* Integer and real */
@@ -139,6 +140,9 @@ as[ \t]*object          { return(object); }
 {IDENTIFIER} |
 [A-Za-z]	{ strncpy(CDLlval.str,CDLtext,MAX_CHAR);
 		  return(IDENTIFIER); }
+
+{JAVAIDENTIFIER} { strncpy(CDLlval.str,CDLtext,MAX_CHAR);
+		   return(JAVAIDENTIFIER); }
 
 {INTEGER}	{ strncpy (CDLlval.str,CDLtext,MAX_CHAR);
 		  return(INTEGER); }

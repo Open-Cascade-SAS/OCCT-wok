@@ -1081,6 +1081,15 @@ void Interface_Use(char*aPackageName)
   Interface->Use(aPackName);
 }
 
+void Client_Use ( char* aClientName ) {
+
+ Handle( TCollection_HAsciiString ) aCltName =
+  new TCollection_HAsciiString ( aClientName );
+
+ Client -> Use ( aCltName );
+
+}  // end Client_Use
+
 void Interface_Package(char *aPackageName)
 {
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
