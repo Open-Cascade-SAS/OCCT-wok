@@ -148,7 +148,8 @@ void CPPClient_WriteFile(const Handle(EDL_API)& api,
 
 // we test the type and dispatch it in the different lists
 //
-void CPPClient_DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+//void CPPClient_DispatchUsedType(const Handle(MS_MetaSchema)& aMeta,
+void CPPClient_DispatchUsedType(const Handle(MS_MetaSchema)& ,
 				const Handle(MS_Type)& thetype,
 				const Handle(TColStd_HSequenceOfHAsciiString)& List,
 				const Handle(TColStd_HSequenceOfHAsciiString)& Incp,
@@ -921,7 +922,8 @@ void CPPClient_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   }
 }
 
-void CPPClient_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
+//void CPPClient_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
+void CPPClient_ClassTypeMgt(const Handle(MS_MetaSchema)& ,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Class)& aClass,
 			    const Standard_CString var)
@@ -1097,7 +1099,8 @@ void CPPClient_AsynchronousMethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 					 const Handle(TCollection_HAsciiString)& className,
 					 const Handle(MS_Method)& m,
 					 const Handle(TCollection_HAsciiString)& methodName,
-					 const Standard_Boolean mustAddAncestorConstrucCall)
+//					 const Standard_Boolean mustAddAncestorConstrucCall)
+					 const Standard_Boolean )
 {
   Handle(TCollection_HAsciiString) metname = new TCollection_HAsciiString(CPPClient_InterfaceName);
   Handle(TCollection_HAsciiString) metbody = new TCollection_HAsciiString;

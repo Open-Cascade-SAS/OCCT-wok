@@ -16,7 +16,8 @@
 
 // Extraction of a transient class (inst or std)
 //
-void CPPClient_Enum(const Handle(MS_MetaSchema)& aMeta,
+//void CPPClient_Enum(const Handle(MS_MetaSchema)& aMeta,
+void CPPClient_Enum(const Handle(MS_MetaSchema)& ,
 		    const Handle(EDL_API)& api,
 		    const Handle(MS_Enum)& anEnum,
 		    const Handle(TColStd_HSequenceOfHAsciiString)& outfile)

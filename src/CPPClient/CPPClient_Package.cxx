@@ -52,7 +52,8 @@ void CPPClient_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 			     const Handle(MS_Method)& m,
 			     const Handle(TCollection_HAsciiString)& methodName,const Standard_Boolean);
 
-void CPPClient_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+//void CPPClient_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
+void CPPClient_PackageDerivated(const Handle(MS_MetaSchema)& ,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Package)& aPackage,			    
 			    const Handle(TColStd_HSequenceOfHAsciiString)& outfile,

@@ -60,7 +60,8 @@ Standard_Boolean CPPClient_AncestorHaveEmptyConstructor(const Handle(MS_MetaSche
 
 // Extraction of .cxx for handled object
 //
-void CPPClient_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
+//void CPPClient_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
+void CPPClient_MPVDerivated(const Handle(MS_MetaSchema)& ,
 				  const Handle(EDL_API)& api,
 				  const Handle(MS_Class)& aClass,			    
 				  const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
