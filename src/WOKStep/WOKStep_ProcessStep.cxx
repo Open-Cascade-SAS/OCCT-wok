@@ -51,6 +51,8 @@
 
 #include <WOKStep_ProcessStep.ixx>
 
+#include <WOKUtils_AdmFile.hxx>
+
 #define READBUF_SIZE 1024
 
 #ifndef WNT
@@ -166,7 +168,7 @@ Handle(TCollection_HAsciiString) WOKStep_ProcessStep::GetUnitName(const Handle(T
 	{
 	  break;
 	}
-      *ptr++;
+      ++ptr;
     }
 
   *unitptr = '\0';
@@ -460,6 +462,48 @@ Handle(WOKUtils_HSequenceOfPath) WOKStep_ProcessStep::ComputeIncDirectories() co
 	    }
 	}
     }
+
+  DOT   = Unit () -> Params ().Eval ( "%FILENAME_FILES" );
+  aname = new TCollection_HAsciiString ( "source" );
+  afile = Locator () -> Locate (  Unit () -> Name (), aname, DOT  );
+
+  if (  !afile.IsNull ()  ) {
+
+   WOKUtils_AdmFile                          afiles (  afile -> Path ()  );
+   Handle( TCollection_HAsciiString        ) p = new TCollection_HAsciiString ( "privinclude" );
+   Handle( TColStd_HSequenceOfHAsciiString ) s;
+
+   s = afiles.Read ();
+
+   if (  !s.IsNull ()  )
+
+    for (  i = 1; i <= s -> Length (); ++i  ) {
+
+     Standard_Integer j;
+
+     DOT = s -> Value ( i );
+	  
+     DOT -> LeftAdjust  ();
+     DOT -> RightAdjust ();
+
+     if (   (  j = DOT -> Search ( ":" )  ) != -1   ) {
+
+      aname = DOT -> SubString ( 1, j - 1 );
+      
+      afile = Locator () -> Locate (  aname, p, new TCollection_HAsciiString ( "" )  );
+
+      if (   !afile.IsNull () && !amap.Contains (  afile->Path () -> Name ()  )   ) {
+
+       aseq -> Append (  afile -> Path ()  );
+       amap.Add(  afile -> Path () -> Name ()  );
+
+      }  // end if
+
+     }  // end if
+     
+    }  // end for
+   
+  }  // end if
 
   return aseq;
 }

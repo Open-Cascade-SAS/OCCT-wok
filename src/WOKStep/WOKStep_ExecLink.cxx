@@ -113,6 +113,7 @@ void WOKStep_ExecLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
     case WOKMake_Failed:
     case WOKMake_Unprocessed:
       break;
+    default: break;
     }
   SetStatus(status);
   return;

@@ -273,6 +273,7 @@ _TEST_BREAK();
 	  fails->Append(infile);
 	  ErrorMsg << "WOKStep_Compile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
+        default: break;
 	}
     }
 

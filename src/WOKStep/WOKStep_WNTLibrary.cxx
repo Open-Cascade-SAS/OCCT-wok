@@ -147,6 +147,7 @@ void WOKStep_WNTLibrary::Execute (const Handle(WOKMake_HSequenceOfInputFile)& an
    case WOKBuilder_Failed:
      SetFailed();
      break;
+   default: break;
    }
 }
 

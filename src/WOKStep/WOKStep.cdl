@@ -39,6 +39,7 @@ is
     	    class ServerExtract;
     	    class ClientExtract;
     	    class EngineExtract;
+	    class JiniExtract;
 	
 	class ExtractExecList;
 	

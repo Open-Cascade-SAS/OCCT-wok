@@ -159,6 +159,7 @@ _TEST_BREAK();
 			     << "========> " << astep->SubCode() << " is still unprocessed" << endm;
 		  ok=Standard_False;
 		  break;
+                default: break;
 		}
 
 	      AddExecDepItem(infile,outfile, Standard_True);

@@ -198,8 +198,6 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
   outidep->SetLocateFlag(Standard_True);
 
 
-  WOKTools_MapOfHAsciiString& knownunits = BuildProcess()->KnownUnits();
-
   if(InternFile.IsNull() && InFiles->Length())
     { 
       for(Standard_Integer i=1; i<=InFiles->Length(); i++)

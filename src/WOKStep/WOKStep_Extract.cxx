@@ -198,6 +198,7 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 		    outfile = new WOKernel_File(outent->Path()->FileName(), Unit(), sourcetype);
 		    istemplate = Standard_True;
 		    break;
+                  default: break;
 		  }
 	      
 		outfile->GetPath();
@@ -262,6 +263,7 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
 	  ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
 	  break;
+         default: break;
 	}
     }
 

@@ -1,18 +1,18 @@
 
-proc WOKStep_frontal::AdmFileType {} {
+proc WOKStep_frontal:AdmFileType {} {
     return stadmfile;
 }
 
-proc WOKStep_frontal::OutputDirTypeName {} {
+proc WOKStep_frontal:OutputDirTypeName {} {
     return sttmpdir;
 }
 
-proc WOKStep_frontal::HandleInputFile { ID } {
+proc WOKStep_frontal:HandleInputFile { ID } {
     return 1;
 }
 
 
-proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
+proc WOKStep_frontal:ExecuteOldFrontal {unit args} {
     global WOK_GLOBALS
 
     set pk [wokinfo -n $unit]
@@ -58,7 +58,7 @@ proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
 
     msgprint -i "Copying binary file Lelisp from ${bin}"
     if [catch {eval "exec cp $from [pwd]"} res] {
-	msgprint -e -c "WOKStep_frontal::Execute" $res
+	msgprint -e -c "WOKStep_frontal:Execute" $res
 	return 1
     }
 
@@ -100,11 +100,11 @@ proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
     set licensefile [woklocate -p CCLFrontal:datafile:[wokparam -e %Ilog_File] $wb]
 
     if { $licensefile == "" } {
-	msgprint -c "WOKStep_frontal::Execute" -e "Unable to locate the Ilog license file"
+	msgprint -c "WOKStep_frontal:Execute" -e "Unable to locate the Ilog license file"
 	return 1;
     }
 
-    msgprint -c "WOKStep_frontal::Execute" -i "Building $pk"
+    msgprint -c "WOKStep_frontal:Execute" -i "Building $pk"
     
     if [catch {eval "exec /bin/env ILOG_LICENSE_FILE=$licensefile $exec -f tmp.ccl << (end)"} result] {
 	msgprint -e "$result"
@@ -113,7 +113,7 @@ proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
     set resexe [wokinfo -p executable:$pk $unit]
     set rescore [wokinfo -p corelisp:${pk}.core $unit]
 
-    msgprint -i -c "WOKStep_frontal::Execute" "Updating $resexe"
+    msgprint -i -c "WOKStep_frontal:Execute" "Updating $resexe"
     wokparam -s "%LeLispFile=$from"
     wokparam -s "%CoreFile=$rescore"
     
@@ -124,15 +124,15 @@ proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
 	close $fidexe
 	chmod 0755 $resexe
     } else {
-	msgprint -e -c "WOKStep_frontal::Execute" "Enable to generate $rescore"
-	msgprint -e -c "WOKStep_frontal::Execute" $res
+	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
+	msgprint -e -c "WOKStep_frontal:Execute" $res
 
 	return 1
     }
 
-    msgprint -i -c "WOKStep_frontal::Execute" "Updating $rescore"
+    msgprint -i -c "WOKStep_frontal:Execute" "Updating $rescore"
     if [catch {eval "exec cp $pk.core $rescore"} result] {
-	msgprint -e -c "WOKStep_frontal::Execute" $result
+	msgprint -e -c "WOKStep_frontal:Execute" $result
     }
 
     
@@ -171,7 +171,7 @@ proc WOKStep_frontal::ExecuteOldFrontal {unit args} {
 
 
 
-proc WOKStep_frontal::ExecuteNewFrontal { unit args } {
+proc WOKStep_frontal:ExecuteNewFrontal { unit args } {
     global WOK_GLOBALS
 
     set pk [wokinfo -n $unit]
@@ -251,7 +251,7 @@ proc WOKStep_frontal::ExecuteNewFrontal { unit args } {
     set fileoutmsg [wokinfo -p cmpmsgfile:${pk}_Cmp.us $unit]
     set fileoutoldmsg [wokinfo -p msgfile:${pk}.us $unit]
 
-    msgprint -i -c "WOKStep_frontal::Execute" "Updating $resexe"
+    msgprint -i -c "WOKStep_frontal:Execute" "Updating $resexe"
     wokparam -s "%CCLFile=$fileout"
     wokparam -s "%MsgCmpFile=$fileoutmsg"
     wokparam -s "%MsgFile=$fileoutoldmsg"
@@ -265,8 +265,8 @@ proc WOKStep_frontal::ExecuteNewFrontal { unit args } {
 	    chmod 0755 $resexe
 	}
     } else {
-	msgprint -e -c "WOKStep_frontal::Execute" "Enable to generate $rescore"
-	msgprint -e -c "WOKStep_frontal::Execute" $res
+	msgprint -e -c "WOKStep_frontal:Execute" "Enable to generate $rescore"
+	msgprint -e -c "WOKStep_frontal:Execute" $res
 
 	return 1
     }
@@ -289,7 +289,7 @@ proc WOKStep_frontal::ExecuteNewFrontal { unit args } {
     return 0;
 }
     
-proc WOKStep_frontal::ExecuteMessages { unit args } {
+proc WOKStep_frontal:ExecuteMessages { unit args } {
     
     set pk [wokinfo -n $unit]
 
@@ -443,20 +443,20 @@ proc WOKStep_frontal::ExecuteMessages { unit args } {
     return 0
 }
 
-proc WOKStep_frontal::Execute { unit args } {
+proc WOKStep_frontal:Execute { unit args } {
 
     set pk [wokinfo -n $unit]
     set resold 0
     catch {
 	if {$pk != "KernelFrontal"} {
 	    if {[wokparam -e %Station] != "wnt"} {
-		set resold [WOKStep_frontal::ExecuteOldFrontal $unit $args]
+		set resold [WOKStep_frontal:ExecuteOldFrontal $unit $args]
 	    } 
 	}
     }
-    set resnew [WOKStep_frontal::ExecuteNewFrontal $unit $args]
+    set resnew [WOKStep_frontal:ExecuteNewFrontal $unit $args]
 
-    set resmes [WOKStep_frontal::ExecuteMessages $unit $args]
+    set resmes [WOKStep_frontal:ExecuteMessages $unit $args]
 
     return [expr [expr $resold && $resnew] || $resmes]
 }

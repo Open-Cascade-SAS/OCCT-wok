@@ -82,6 +82,7 @@ _TEST_BREAK();
 	case WOKBuilder_NotDefined:
 	  SetFailed();
 	  return result;
+        default: break;
 	}
     }
   return result;

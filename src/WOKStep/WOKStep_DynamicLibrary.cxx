@@ -242,6 +242,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 	       << "Failed     : " <<   libname << endm;           
       SetFailed();
       break;
+    default: break;
     }
   
   ashell->UnLock();

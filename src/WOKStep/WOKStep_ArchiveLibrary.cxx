@@ -175,6 +175,7 @@ void WOKStep_ArchiveLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 	       << "Failed     : lib" <<   ar->TargetName() << ".a" << endm;           
       SetFailed();
       break;
+    default: break;
     }
   ashell->NoLog();
   ashell->UnLock();

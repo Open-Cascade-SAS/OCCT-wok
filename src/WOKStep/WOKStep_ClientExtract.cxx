@@ -218,7 +218,8 @@ Handle(WOKMake_HSequenceOfInputFile) WOKStep_ClientExtract::OutOfDateEntities()
 	case WOKBuilder_NotDefined:
 	  SetFailed();
 	  return result;
-	}
+        default: break;
+        }
     }
   return result;
 }
@@ -314,6 +315,7 @@ void WOKStep_ClientExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 		    outfile = new WOKernel_File(outent->Path()->FileName(), Unit(), sourcetype);
 		    istemplate = Standard_True;
 		    break;
+                   default: break;
 		  }
 	      
 		outfile->GetPath();
@@ -371,6 +373,7 @@ void WOKStep_ClientExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 	case WOKBuilder_Failed:
 	  ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
 	  break;
+        default: break;
 	}
     }
 

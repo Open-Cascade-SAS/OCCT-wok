@@ -232,6 +232,11 @@ void WOKStep_MSFill::Execute(const Handle(WOKMake_HSequenceOfInputFile)& )
     {
       anit.AddInStack(Unit()->Name(), WOKBuilder_Engine);
     }
+  else if (Unit()->TypeCode() == 'j')
+    {
+      anit.AddInStack(Unit()->Name(), WOKBuilder_Client);
+    }
+      
 
 
   while(anit.More() && !stop)

@@ -404,8 +404,6 @@ Handle(WOKMake_OutputFile) WOKStep_TKReplace::SubstituteInput(const Handle(WOKMa
       
       Handle(TCollection_HAsciiString) current = TheUnit->Name();
 
-      Standard_Integer udidx = myuds.FindIndex(current);
-      
       mytreated.Add(current);
 
       Handle(TCollection_HAsciiString) curtk = GetTKForUnit(current);

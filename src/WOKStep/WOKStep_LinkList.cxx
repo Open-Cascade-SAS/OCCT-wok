@@ -148,7 +148,7 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
   Handle(WOKMake_OutputFile)   alib;
   Handle(WOKernel_File)        afile;
   Handle(WOKernel_UnitNesting) anesting;
-  WOKBuilder_LibReferenceType  reftype;
+  WOKBuilder_LibReferenceType  reftype = WOKBuilder_FullPath;
   static Handle(TCollection_HAsciiString) libtype = new TCollection_HAsciiString("library");
   Handle(TCollection_HAsciiString) libname;
 
@@ -156,7 +156,6 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
 
   if(anesting->IsKind(STANDARD_TYPE(WOKernel_Workbench)))
     {
-      reftype = WOKBuilder_FullPath;
     }
   else
     {

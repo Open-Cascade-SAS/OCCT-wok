@@ -257,6 +257,7 @@ void WOKStep_LibLimit::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 			     << "========> " << astep->SubCode() << " is still unprocessed" << endm;
 		  ok=Standard_False;
 		  break;
+                 default: break;
 		}
 	      Handle(TCollection_HAsciiString) Theid = WOKMake_Step::StepOutputID(Unit()->Name(),
 									       astep->Code(),

@@ -1,16 +1,16 @@
 
 
 
-proc WOKStep_TclLibIdep::AdmFileType {} {
+proc WOKStep_TclLibIdep:AdmFileType {} {
     return "stadmfile";
 }
 
-proc WOKStep_TclLibIdep::OutputDirTypeName {} {
+proc WOKStep_TclLibIdep:OutputDirTypeName {} {
     return "sttmpfile";
 }
 
 
-proc WOKStep_TclLibIdep::HandleInputFile { ID } { 
+proc WOKStep_TclLibIdep:HandleInputFile { ID } { 
     
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     if {$name == "PACKAGES"} {
@@ -20,9 +20,9 @@ proc WOKStep_TclLibIdep::HandleInputFile { ID } {
     return 0
 }
 
-proc WOKStep_TclLibIdep::Execute { unit args } {
+proc WOKStep_TclLibIdep:Execute { unit args } {
 
-    msgprint -i -c "WOKStep_TclLibIdep::Execute" "Build ImplDep"
+    msgprint -i -c "WOKStep_TclLibIdep:Execute" "Build ImplDep"
 
     set unitname [wokinfo -n $unit]
 
@@ -31,7 +31,7 @@ proc WOKStep_TclLibIdep::Execute { unit args } {
     set packfile [woklocate -p $file $unit]
     
     if {[clength $packfile] == 0} {
-	msgprint -e -c "WOKStep_TclLibIdep::Execute" "Could not locate PACKAGES for unit $unit"
+	msgprint -e -c "WOKStep_TclLibIdep:Execute" "Could not locate PACKAGES for unit $unit"
 	return 1;
     } else {
 	for_file anud $packfile {

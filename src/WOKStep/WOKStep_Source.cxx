@@ -133,8 +133,12 @@ _TEST_BREAK();
 	  
 	      astr->LeftAdjust();
 	      astr->RightAdjust();
-	      
-	      afile = Locator()->Locate(Unit()->Name(), sourcetype, astr);
+
+              if (  astr -> Search ( ":" ) != -1  ) {
+
+               afile = Locator () -> Locate ( astr );
+
+              } else afile = Locator()->Locate(Unit()->Name(), sourcetype, astr);
 	      
 	      if(afile.IsNull() == Standard_True)
 		{

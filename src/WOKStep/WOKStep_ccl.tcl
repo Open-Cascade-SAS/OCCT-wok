@@ -1,14 +1,14 @@
 
-proc WOKStep_ccl::AdmFileType {} {
+proc WOKStep_ccl:AdmFileType {} {
     
     return admfile;
 }
 
-proc WOKStep_ccl::OutputDirTypeName {} {
+proc WOKStep_ccl:OutputDirTypeName {} {
     return tmpdir;
 }
 
-proc WOKStep_ccl::HandleInputFile { ID } {
+proc WOKStep_ccl:HandleInputFile { ID } {
 
     scan $ID "%\[^:\]:%\[^:\]:%\[^:\]"  unit type name
     
@@ -31,10 +31,10 @@ proc WOKStep_ccl::HandleInputFile { ID } {
     }
 }
 
-proc WOKStep_ccl::Execute { unit args } {
+proc WOKStep_ccl:Execute { unit args } {
 
-    msgprint -i -c "WOKStep_ccl::Execute" "Processing unit : $unit"
-    msgprint -i -c "WOKStep_ccl::Execute"
+    msgprint -i -c "WOKStep_ccl:Execute" "Processing unit : $unit"
+    msgprint -i -c "WOKStep_ccl:Execute"
 
     set unitname [wokinfo -n $unit]
     set targetid "$unitname:ccldrv:$unitname.ccl"

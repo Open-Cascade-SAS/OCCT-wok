@@ -62,7 +62,6 @@ void WOKStep_ToolkitSource::AddPACKAGES(const Handle(WOKMake_InputFile)& PACKAGE
 {
   Handle(WOKernel_File) afile;
   Handle(TCollection_HAsciiString) sourcetype = new TCollection_HAsciiString("source");
-  Standard_Integer i;
 
   // le fichier PACKAGES
   WOKUtils_Param params = Unit()->Params();

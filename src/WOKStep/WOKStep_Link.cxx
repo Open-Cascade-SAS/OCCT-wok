@@ -494,6 +494,7 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
       ErrorMsg << "WOKStep_Link::ExecuteLink" << "Failed    : " << mytarget << endm;
       SetFailed();
       break;
+    default: break;
     }
   
   ashell->UnsetEcho();

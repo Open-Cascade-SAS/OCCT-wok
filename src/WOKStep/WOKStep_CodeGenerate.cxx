@@ -236,6 +236,7 @@ void WOKStep_CodeGenerate::Execute(const Handle(WOKMake_HSequenceOfInputFile)& e
 	  fails->Append(infile);
 	  ErrorMsg << "WOKStep_CodeGenerate::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
+        default: break;
 	}
     }
 
