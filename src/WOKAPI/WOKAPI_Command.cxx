@@ -4,7 +4,15 @@
 //		<jga@cobrax>
 
 
-#include <fstream.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
+#endif
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
