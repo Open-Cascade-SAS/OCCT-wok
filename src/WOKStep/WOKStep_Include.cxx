@@ -135,6 +135,9 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
   for(i=1; i<=tobuild->Length(); i++)
     {
+#ifdef DEB
+    cout << " pubinctype  publication : include number "<< i << " from " << tobuild->Length() << endl;
+#endif
 #ifdef WNT
       _TEST_BREAK();
 #endif  // WNT
@@ -154,16 +157,24 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
             }
 	  symlink(infile->File()->Path()->Name()->ToCString(), pubincfile->Path()->Name()->ToCString());
 # else
-          if (  !pubincfile -> Path () -> Exists () ||
-                !pubincfile -> Path () -> IsSameFile (  infile -> File () -> Path ()  )
-          ) {
-
+          if ( ( !pubincfile -> Path () -> Exists () ||
+                 !pubincfile -> Path () -> IsSameFile (  infile -> File () -> Path ()  )) &&
+	       ( infile -> File () -> Path ()  -> Exists () )
+	     ) {
            OSD_Path pSrc (  infile -> File () -> Path () -> Name () -> String ()  );
            OSD_File fSrc (  pSrc                                                  );
            OSD_Path pDst (  pubincfile -> Path () -> Name () -> String ()         );
 
-           chmod (  pubincfile -> Path () -> Name () -> ToCString (), 00644  );
-
+           OSD_File fDst ( pDst ) ;
+#ifdef DEB
+	   cout << " pubinclude publication : before Chmod  " << endl;
+#endif
+	   if ( fDst.IsWriteable()) { 
+	     chmod (  pubincfile -> Path () -> Name () -> ToCString (), 00644  );
+	   }
+#ifdef DEB
+	   cout << " pubinclude publication : before copy  " << endl;
+#endif
            fSrc.Copy ( pDst );
 
            if (  fSrc.Failed ()  ) {
@@ -177,6 +188,12 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
             return;
 
+	   } else {
+
+            InfoMsg << "WOKStep_Include :: Execute"
+                     << "Copied : '" << infile->File()->Path()->Name()
+                     << "' to '" << pubincfile->Path()->Name()
+                     << "'" << endm;
            }  // end if
 
            struct utimbuf times;
@@ -188,6 +205,13 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
            times.modtime = buf.st_mtime; 
 
            utime (  pubincfile -> Path () -> Name () -> ToCString (), &times  ); 
+
+	   } else {
+
+           InfoMsg << "WOKStep_Include :: Execute"
+                     << "failed to copy '" << infile -> File () -> Path () -> Name ()
+                     << "' to '"           << pubincfile        -> Path () -> Name ()
+                     << "'" << endm;
 
           }  // end if
 # endif  // WOKStep_Incluse_SYMLINK
@@ -232,7 +256,9 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 	}
       else
        {
-	 pubincfile->Path()->RemoveFile();
+	 if ( pubincfile -> Path () -> Exists () ) {
+	   pubincfile->Path()->RemoveFile();
+	 }
        }
 
       
