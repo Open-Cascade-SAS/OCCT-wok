@@ -76,8 +76,10 @@ int Wok_Init(WOKTclTools_PInterp interp)
 
   
 
-#ifdef WNT
+#if defined( WNT )
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.6");
+#elif defined( LIN )
+  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "8.0");
 #else 
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.5");
 #endif
@@ -150,7 +152,6 @@ int Wok_Init(WOKTclTools_PInterp interp)
   WOKInter->Add("stepoutputadd",      "Trigger step output add",  WOKAPI_Command::AddOutputFile,  "WOK COMMAND\n");
   WOKInter->Add("stepoutputinfo",     "Trigger step output info", WOKAPI_Command::OutputFileInfo, "WOK COMMAND\n");
   WOKInter->Add("stepaddexecdepitem", "Adds a depitem to step",   WOKAPI_Command::AddExecDepItem, "WOK COMMAND\n");
-
   WOKUtils_ProcessManager::Arm();
 
   try {

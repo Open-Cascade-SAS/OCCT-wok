@@ -53,9 +53,11 @@ int Ms_Init(WOKTclTools_PInterp interp)
 	}
     }
 
-#ifdef WNT
+#if defined( WNT )
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.6");
-#else 
+#elif defined( LIN )
+  WOKTclTools_Package tcl(CurrentInterp, "Tcl", "8.0");
+#else
   WOKTclTools_Package tcl(CurrentInterp, "Tcl", "7.5");
 #endif
   tcl.Require();
