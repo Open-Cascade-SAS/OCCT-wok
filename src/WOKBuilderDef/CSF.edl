@@ -30,7 +30,7 @@
 -- %CSF_USE_EXTERNLIB      = "Yes"
 
 
-
+  @set %CSF_WOKHOME = "WOKHOME_TO_DEFINE" ;
 
 
 -- if "Yes" ===> WOK will "extract" cdl files listed in FILES
@@ -159,8 +159,8 @@
    @set %CSF_JavaHome = "";
    @set %CSF_JavaLibs = "";
 
-   @set %CSF_C_INCLUDE = "";
-   @set %CSF_CXX_INCLUDE = "";
+   @string %CSF_C_INCLUDE   = " -I" %CSF_WOKHOME "/lib ";
+   @string %CSF_CXX_INCLUDE = " -I" %CSF_WOKHOME "/lib " ;
 
    @set %CSF_TCL_HOME = "";
    @set %CSF_TCL_INCLUDE = "";
@@ -271,12 +271,11 @@
       @set %CSF_CXX_COMPILER = "/opt/DEV5_1/SUNWspro/bin/CC ";
       @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun " ;
       @set %CSF_CXX_Options  = "-DSOLARIS -DNO_CXX_EXCEPTION " ;
-      @set %CSF_CXX_INCLUDE = "-I/opt/DEV5_1/SUNWspro/SC4.2/include/CC ";
+      @string %CSF_CXX_INCLUDE += " -I/opt/DEV5_1/SUNWspro/SC4.2/include/CC ";
 
       @set %CSF_C_COMPILER   = "/opt/DEV5_1/SUNWspro/bin/cc ";
       @set %CSF_C_SysOptions    = "-K PIC -Usun ";
       @set %CSF_C_Options    = "-DSOLARIS ";
-      @set %CSF_C_INCLUDE    = "";
 
       @set %CSF_F77_COMPILER = "f77 ";
       @set %CSF_F77_SysOptions  = "-PIC";
@@ -306,7 +305,7 @@
       @string %CSF_JavaLibs = " -L" %CSF_JavaHome "/jre/lib/sparc/ -ljava ";
 
       @set %CSF_TCL_HOME = "/usr/tcltk";
-      @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
+      @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
 
       @set %CSF_X11_INCLUDE = "-I/usr/openwin/include/X11 ";
       @set %CSF_OPENGL_INCLUDE = "-I/usr/openwin/include ";
