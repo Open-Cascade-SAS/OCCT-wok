@@ -9,21 +9,21 @@ is
 
     executable wokcmd 
     uses
-        Tcl_Lib      as external
+        Tcl_Libs      as external
     is
     	wokcmd;
     end;
     
     executable woktoolscmd
     uses
-        Tcl_Lib   as external
+        Tcl_Libs   as external
     is
     	woktoolscmd;
     end;
 
     executable wokutilscmd
     uses
-        Tcl_Lib   as external
+        Tcl_Libs   as external
     is
     	wokutilscmd;
     end;
@@ -61,7 +61,7 @@ is
  
     executable mscmd
     uses
-	Tcl_Lib as external
+	Tcl_Libs as external
     is
     	mscmd;
     end;
