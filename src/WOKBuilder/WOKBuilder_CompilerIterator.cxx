@@ -3,7 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-#include <Standard_NotImplemented.hxx>
 
 #include <WOKBuilder_CompilerIterator.ixx>
 
@@ -13,6 +12,10 @@
 
 #include <WOKBuilder_Compilable.hxx>
 #include <WOKBuilder_Compiler.hxx>
+
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
@@ -88,12 +91,15 @@ void WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,
 		<< "Could not eval compiler " << acompiler->Name() << " options" << endm;
 	      return;
 	    }
-	  
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN	  
 	  InfoMsg << "WOKBuilder_CompilerIterator::Init" << optline << endm;
 	}
     }
 }
 
+  
 void WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,const Handle(WOKUtils_Path)& adir)
 {
 // Standard_NotImplemented::Raise("WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,const Handle(WOKUtils_Path)& adir) not implemented") ;
@@ -123,14 +129,18 @@ WOKBuilder_BuildStatus WOKBuilder_CompilerIterator::Execute(const Handle(WOKBuil
   myproduction.Nullify();
 
   acompiler = Handle(WOKBuilder_Compiler)::DownCast(AppropriateTool(acompilable));
-
+//---> EUG4YAN
+ if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN
   if(acompiler.IsNull())
     {
       ErrorMsg << "WOKBuilder_CompilerIterator::Execute" 
 	<< "Could not find appropriate Compiler for " << acompilable->Path()->Name() << endm;
       return WOKBuilder_Failed;
     }
-
+//---> EUG4YAN
+ } else if (  acompiler.IsNull ()  ) return WOKBuilder_Success;
+//<--- EUG4YAN
   // setter le .compilable
   acompiler->SetCompilable(acompilable);
 
@@ -138,8 +148,13 @@ WOKBuilder_BuildStatus WOKBuilder_CompilerIterator::Execute(const Handle(WOKBuil
 
   if(status == WOKBuilder_Success)
     {
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN	  
       myproduction = acompiler->Produces();
-
+//---> EUG4YAN
+ else
+//<--- EUG4YAN
       if (  !acompiler -> myCmdLine.IsNull ()  ) myCmdLine = new TCollection_HAsciiString ( acompiler -> myCmdLine );
 
     }
@@ -150,4 +165,16 @@ const Handle( TCollection_HAsciiString )& WOKBuilder_CompilerIterator :: CmdLine
 
  return myCmdLine;
 
-}  // end 
+}  // end WOKBuilder_CompilerIterator :: CmdLine
+#if 0
+WOKBuilder_BuildStatus
+ WOKBuilder_CompilerIterator ::
+  Execute (  const Handle(WOKMake_HSequenceOfInputFile )&  anExecList  ) {
+
+ WOKBuilder_BuildStatus retVal = WOKBuilder_Failed;
+
+
+ return retVal;
+
+}  // end WOKBuilder_CompilerIterator ::Execute
+#endif

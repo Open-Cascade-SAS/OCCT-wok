@@ -23,6 +23,12 @@
 
 #include <WOKBuilder_Linker.ixx>
 
+//---> EUG4YAN
+#include <OSD_Protection.hxx>
+#include <OSD_File.hxx>
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
+
 //=======================================================================
 //function : WOKBuilder_Linker
 //purpose  : 
@@ -454,48 +460,109 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   objstream.close();
 
   Params().Set("%LD_ObjList", objlistpath->Name()->ToCString()); 
-
-  Shell()->Send(EvalHeader());
-  Shell()->Send(EvalObjectList());
-  Shell()->Send(EvalLibraryList());
 #ifndef LIN
-  Shell()->Execute(EvalFooter());
+  Handle( TCollection_HAsciiString ) args[  4 ];
 #else
-  Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 0 );
+  Handle( TCollection_HAsciiString ) args[ 11 ];
+#endif  // LIN
 
-  Shell () -> Send (  EvalFooter ()  );
+  args[ 0 ] = EvalHeader      ();
+  args[ 1 ] = EvalObjectList  ();
+  args[ 2 ] = EvalLibraryList ();
+  args[ 3 ] = EvalFooter      ();
 
-  static Handle( TCollection_HAsciiString ) skipStr =
-   new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
+ if ( !g_fCompOrLnk ) {
 
-  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
+  Shell () -> Send ( args[ 0 ] );
+  Shell () -> Send ( args[ 1 ] );
+  Shell () -> Send ( args[ 2 ] );
+#ifndef LIN
+  Shell () -> Execute ( args[ 3 ] );
 
-  if (  !uType.IsNull () &&
-        (   !strcmp (  uType -> ToCString (), "toolkit"     ) ||
-            !strcmp (  uType -> ToCString (), "executable"  )
-        )
+ } else {
+#else
+  Shell () -> Send ( args[ 3 ] );
+
+ }  // end if
+
+ Handle( TCollection_HAsciiString ) target = Params ().Value ( "%Target", 0 );
+
+ static Handle( TCollection_HAsciiString ) skipStr =
+  new TCollection_HAsciiString ( "/usr/bin/ld: warning: cannot find entry symbol _start" );
+
+ Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
+
+ if (  !uType.IsNull () &&
+       (   !strcmp (  uType -> ToCString (), "toolkit"     ) ||
+           !strcmp (  uType -> ToCString (), "executable"  )
+       )
+ ) {
+
+  Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
+  Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
+
+  if (  !paramH.IsNull     () && !paramF.IsNull     () &&
+        !paramH -> IsEmpty () && !paramF -> IsEmpty ()
   ) {
 
-   Handle( TCollection_HAsciiString ) paramH = EvalToolTemplate ( "CheckUndefHeader" );
-   Handle( TCollection_HAsciiString ) paramF = EvalToolTemplate ( "CheckUndefFooter" );
+   args[ 4 ] = paramH;
+   args[ 5 ] = EvalLibSearchDirectives ();
+   args[ 6 ] = EvalDatabaseDirectives  ();
+   args[ 7 ] = target;
+   args[ 8 ] = EvalLibraryList         ();
+   args[ 9 ] = paramF;
 
-   if (  !paramH.IsNull     () && !paramF.IsNull     () &&
-         !paramH -> IsEmpty () && !paramF -> IsEmpty ()
-   ) {
+   if ( !g_fCompOrLnk ) {
 
-    Shell () -> Send ( paramH );
-    Shell () -> Send ( EvalLibSearchDirectives ()  );
-    Shell () -> Send ( EvalDatabaseDirectives  ()  );
-    Shell () -> Send ( target );
-    Shell () -> Send (  EvalLibraryList ()  );
-    Shell () -> Send ( paramF );
+    Shell () -> Send ( args[ 4 ] );
+    Shell () -> Send ( args[ 5 ] );
+    Shell () -> Send ( args[ 6 ] );
+    Shell () -> Send ( args[ 7 ] );
+    Shell () -> Send ( args[ 8 ] );
+    Shell () -> Send ( args[ 9 ] );
 
    }  // end if
 
   }  // end if
 
-  Shell () -> Execute (  new TCollection_HAsciiString ( "\n" )  );
+ }  // end if
+
+ args[ 10 ] = new TCollection_HAsciiString ( "\n" );
+
+ if ( !g_fCompOrLnk )
+
+  Shell () -> Execute ( args[ 10 ] );
+
+ else {
 #endif  // LIN
+
+//  OSD_File f (   OSD_Path (  Params ().Value ( "%LnkFileName" ) -> String ()  )   );
+  OSD_Path aPath = OSD_Path (  Params ().Value ( "%LnkFileName" ) -> String () ) ;
+  OSD_File f ( aPath );
+
+  f.Build (  OSD_WriteOnly, OSD_Protection ()  );
+
+  if (  !f.Failed ()  ) {
+#ifndef LIN
+   for ( i = 0; i < 4; ++i ) {
+#else
+   for ( i = 0; i < 11; ++i ) {
+#endif  // LIN
+    if (  !args[ i ].IsNull ()  )
+
+     f.Write (  args[ i ] -> String (), args[ i ] -> Length ()  );
+
+   }  // end for
+#ifndef LIN
+   f.Write ( "\n", 1 );
+#endif  // LIN
+   f.Close ();
+
+  }  // end if
+
+  return WOKBuilder_Success;
+
+ }  // end else
 
   if(Shell()->Status())
     {

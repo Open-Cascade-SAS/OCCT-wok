@@ -24,7 +24,9 @@
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
 #include <WOKUtils_AdmFile.hxx>
-
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 //=======================================================================
 //function : WOKBuilder_Compiler
 //purpose  : 
@@ -158,10 +160,13 @@ void WOKBuilder_Compiler::SetCompilable(const Handle(WOKBuilder_Compilable)& afi
 //=======================================================================
 WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
 {
-
+#ifndef WNT
   static Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( " \\\n " );
   static Handle( TCollection_HAsciiString ) LF = new TCollection_HAsciiString ( "\n"     );
-
+#else
+  static Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( " \\\r\n " );
+  static Handle( TCollection_HAsciiString ) LF = new TCollection_HAsciiString ( "\r\n"     );
+#endif  // WNT
   int start;
 
 #ifdef WNT
@@ -176,6 +181,9 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
   Handle(WOKBuilder_MFile)      mfile;
   
 
+//---> EUG4YAN
+ if ( !g_fCompOrLnk )
+//<--- EUG4YAN
   if(Shell()->IsLaunched() == Standard_False) Shell()->Launch();
 
   Load();
@@ -194,12 +202,18 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
     VerboseMsg("WOK_CMPLRS") << "WOKBuilder_Compiler::Execute" 
 			     << astr << endm;
   }
-
+//---> EUG4YAN
+ if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN
   Shell()->ClearOutput();
   Shell()->Execute(astr);
-
+//---> EUG4YAN
+ }  // end if
+//<--- EUG4YAN
   myCmdLine = new TCollection_HAsciiString ( astr );
-
+//---> EUG4YAN
+ if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN
   Handle(TColStd_HSequenceOfHAsciiString) resseq = Shell()->Errors();
 
   if(Shell()->Status())
@@ -300,7 +314,9 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
    }  // end if
 
   }  // end if
-
+//---> EUG4YAN
+ }  // end if
+//<--- EUG4YAN
   return WOKBuilder_Success;
 }
 

@@ -8,6 +8,8 @@
 #include <WOKBuilder_ExportLibrary.hxx>
 #include <WOKBuilder_HSequenceOfEntity.hxx>
 
+#include <WOKernel_FileType.hxx>
+
 #include <WOKUtils_Path.hxx>
 #include <WOKUtils_Param.hxx>
 #include <WOKUtils_Shell.hxx>
@@ -23,6 +25,9 @@
 
 static void FASTCALL _print_output ( Standard_CString, WOKBuilder_Tool* );
 static void FASTCALL _delete_file  (  const Handle( TCollection_HAsciiString )&  );
+//---> EUG4YAN
+Standard_IMPORT Standard_Boolean g_fCompOrLnk;
+//<--- EUG4YAN
 
 WOKBuilder_WNTCollector::WOKBuilder_WNTCollector (const Handle(TCollection_HAsciiString)& aName,
 						  const WOKUtils_Param&                   aParams)
@@ -47,13 +52,12 @@ Standard_Boolean WOKBuilder_WNTCollector::OpenCommandFile()
      ErrorMsg << "WOKBuilder_WNTCollector::OpenCommandFile"
        << "Could not evaluate extension for tool command file" << endm;
    }
- else 
-   {
-     Handle(TCollection_HAsciiString) fileName = new TCollection_HAsciiString(myTargetName);
-     fileName->AssignCat(ext);
+ else {
 
-     myCommandFile.SetPath(OSD_Path(fileName->String()));
-     myCommandFile.Build(OSD_WriteOnly, OSD_Protection());
+  Handle( TCollection_HAsciiString ) fileName = Params ().Value ( "%CmdFileName" );
+
+  myCommandFile.SetPath (   OSD_Path (  fileName -> String ()  )   );
+  myCommandFile.Build   (  OSD_WriteOnly, OSD_Protection ()  );
 
      if(myCommandFile.Failed())
        {
@@ -104,26 +108,33 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
   OSD_Path                                cmdPath;
   Handle(WOKUtils_Path)                   prodPath;
   Handle(TColStd_HSequenceOfHAsciiString) errmsgs;
-  Handle(TCollection_HAsciiString)        cmdFileName;
+//---> EUG4YAN
+  Handle( TCollection_HAsciiString ) args[ 5 ];
 
-  myCommandFile.Path(cmdPath);
-  cmdPath.SystemName(cmdFile);
-  
+  myCommandFile.Path ( cmdPath );
+  cmdPath.SystemName ( cmdFile );
+
+  args[ 0 ] = EvalHeader ();
+  args[ 1 ] =  new TCollection_HAsciiString ( "@"     );
+  args[ 2 ] =  new TCollection_HAsciiString ( cmdFile );
+  args[ 3 ] =  new TCollection_HAsciiString ( " "     );
+  args[ 4 ] = EvalFooter ();
+
+  if ( !g_fCompOrLnk ) {
+//<--- EUG4YAN  
   if(!Shell()->IsLaunched()) Shell()->Launch();
   
   Shell()->ClearOutput();
 
-  Shell()->Send(EvalHeader());
-  Shell()->Send(new TCollection_HAsciiString("@"));
-  Shell()->Send(cmdFileName = new TCollection_HAsciiString(cmdFile));
-  Shell()->Send(new TCollection_HAsciiString(" "));
-  Shell()->Send(EvalFooter());
+  Shell () -> Send ( args[ 0 ] );
+  Shell () -> Send ( args[ 1 ] );
+  Shell () -> Send ( args[ 2 ] );
+  Shell () -> Send ( args[ 3 ] );
+  Shell () -> Send ( args[ 4 ] );
 
   _print_output("Creating   : ", this);
 
   Shell()->Execute(new TCollection_HAsciiString(" "));
-
-  _delete_file(cmdFileName);
 
   if(Shell()->Status())
     {
@@ -184,7 +195,31 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
     }
   
   Shell()->ClearOutput();
-  
+//---> EUG4YAN
+ } else {
+
+  OSD_Path p;
+
+  myCommandFile.Path ( p );
+  p.SetExtension ( ".lnk" );
+
+  OSD_File f ( p );
+
+  f.Build (  OSD_WriteOnly, OSD_Protection ()  );
+
+  if (  !f.Failed ()  ) {
+
+   for ( i = 0; i < 5; ++i )
+
+    f.Write (  args[ i ] -> String (), args[ i ] -> Length ()  );
+   
+   f.Write ( "\r\n", 2 );
+   f.Close ();
+
+  }  // end if
+
+ }
+//<--- EUG4YAN
   return WOKBuilder_Success;
 }
 
