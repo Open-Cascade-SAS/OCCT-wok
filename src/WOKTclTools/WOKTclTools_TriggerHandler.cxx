@@ -22,6 +22,7 @@
 #include <tcl.h>
 
 extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
+//Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 
 Standard_EXPORT WOKUtils_TriggerStatus WOKTclTools_TriggerHandler(WOKUtils_Trigger &atrigger)
 {  
