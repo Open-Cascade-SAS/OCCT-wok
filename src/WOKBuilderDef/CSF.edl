@@ -1,0 +1,64 @@
+-- File:	CSF.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Mar 14 19:28:20 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %CSF_EDL) then
+@set %CSF_EDL = "";
+
+@set %CSF_SOCKETLibs  = "";
+
+@set %CSF_OODBLibs = "";
+@set %CSF_STANDARDDB = "StandardTRAN";
+
+@ifnotdefined ( %DBMS ) then
+  @set %DBMS = "DFLT";
+@endif;
+
+@set %CSF_SOCKETLibs  = "";
+
+@if ( %DBMS == "DFLT") then
+@set %CSF_STANDARDDB = "StandardCSFDB";
+@endif;
+
+@if ( %DBMS == "OBJY" ) then
+	@set %CSF_STANDARDDB = "StandardOBJY";
+@endif;
+
+@if ( %DBMS == "OBJS" ) then
+	@set %CSF_STANDARDDB = "StandardOBJS";
+@endif;
+
+@if ( %Station == "sun" ) then
+	@if ( %DBMS == "OBJS" ) then
+		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
+	@endif;
+	@set %CSF_SOCKETLibs  = " -lsocket -lnsl";
+	@set %CSF_TclLibs = "-L/usr/tcltk/lib -R /usr/tcltk/lib -ltcl7.5i"; 
+@endif;
+
+
+
+@if ( %Station == "ao1" ) then
+	@if ( %DBMS == "OBJS" ) then
+		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+	@endif;
+	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+@endif;
+
+@if ( %Station == "sil" ) then
+	@if ( %DBMS == "OBJS" ) then
+		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.3/lib/ -los -losths -loscol -losmop";
+	@endif;
+	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+@endif;
+
+@if ( %Station == "hp" ) then
+	@if ( %DBMS == "OBJS" ) then
+		@set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+	@endif;
+	@set %CSF_TclLibs = "-L/usr/tcltk/lib -rpath /usr/tcltk/lib -ltcl7.5i"; 
+@endif;
+
+
+@endif;

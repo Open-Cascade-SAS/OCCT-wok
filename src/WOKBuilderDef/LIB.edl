@@ -1,0 +1,51 @@
+-- File		:	LIB.edl
+-- Author	:	Eugeny PLOTNIKOV
+-- Date		:	24-OCT-1996
+-- Copyright	:	MATRA Datavision
+-- Purpose	:	Defines tools for library management
+--			( Microsoft Visual C/C++ V4.1 )
+
+@ifnotdefined ( %LIB_EDL ) then
+ @set %LIB_EDL = "";
+
+ @set %LIB_LibraryOutput = "-out:";
+
+-- filename extension for library manager command file
+ @set %LIB_LibraryCFExt = ".lbr";
+
+-- filename for static library
+ @template LIB_FileName ( %LIB_LibName ) is
+ 	$%LIB_LibName.lib \^
+ @end;
+
+-- filename for import library
+ @template LIB_ImplibFileName ( %LIB_ImplibName ) is
+ 	$%LIB_ImplibName.lib\^
+ @end;
+
+-- filename for export library
+ @template LIB_ExplibFileName ( %LIB_ExplibName ) is
+ 	$%LIB_ExplibName.exp\^
+ @end;
+
+ @template LIB_LibraryHeaderSTATIC ( %Station ) is
+ 	$D:/DevTools/VStudio/VC98/bin/lib -nologo \^
+ @end;
+
+ @template LIB_LibraryEXP ( %CollectorOutput ) is
+	$%CollectorOutput.exp\^
+ @end;
+
+ @template LIB_LibraryHeaderIMPORT ( %LibraryDEFile ) is
+	$D:/DevTools/VStudio/VC98/bin/lib -nologo -def:%LibraryDEFile \^
+ @end;
+
+ @template LIB_LibrarySTATLIB ( %CollectorOutput ) is
+	$%CollectorOutput.lib\^
+ @end;
+
+ @template LIB_LibraryIMPLIB ( %CollectorOutput ) is
+	$%CollectorOutput.lib\^
+ @end;
+
+@endif;

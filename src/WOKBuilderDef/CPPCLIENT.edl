@@ -1,0 +1,35 @@
+-- File:	CPPCLIENT.edl
+-- Author:	Jean GAUTIER
+-- History:	Wed Apr 10 17:44:37 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %CPPCLIENT_EDL) then
+@set %CPPCLIENT_EDL = "";
+
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @set %CPPCLIENT_SHARED   = "libCPPClient.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPCLIENT_SHARED   = "libCPPClient.sl";
+@endif;
+
+@set %CPPCLIENT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPClient/src";
+@set %CPPCLIENT_NAME     = "CPPClient";
+
+@if ( %LocalArch != "hp" ) then
+  @set %CPPCLIENT_Shared   = "libCPPClient.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPCLIENT_Shared   = "libCPPClient.sl";
+@endif;
+
+@else
+  @set %CPPCLIENT_Shared   = "CPPClient.dll";
+@endif;
+
+@set %CPPCLIENT_Name   = "CPPClient";
+
+@endif;

@@ -1,0 +1,520 @@
+-- File:	CMPLRS.edl
+-- Author:	Jean GAUTIER
+-- History:	Mon Feb 19 12:04:00 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+
+
+@ifnotdefined ( %CMPLRS_EDL ) then
+@set %CMPLRS_EDL = "";
+
+@set %CMPLRS_C_Template     = "CmdLine";
+@set %CMPLRS_C_Extensions   = "toto.c";
+
+@set %CMPLRS_Tools = "CMPLRS_C CMPLRS_CXX";
+
+@if ( %Station == "wnt" ) then
+
+	@set %CMPLRS_CXX_Extensions = "toto.cxx toto.cpp";
+	@template CMPLRS_C_Production ( %OutputDir, %BaseName ) is
+	$ %BaseName.obj %BaseName.m
+	@end;
+	@template CMPLRS_CXX_Production ( %OutputDir, %BaseName ) is
+	$ %BaseName.obj %BaseName.m
+	@end;
+@else
+
+        @string %CMPLRS_Tools += " CMPLRS_F77";
+
+	@set %CMPLRS_F77_Template = "CmdLine";
+
+	@set %CMPLRS_CXX_Extensions = "toto.cxx toto.C";
+
+	@template CMPLRS_C_Production ( %OutputDir, %BaseName ) is
+	$ %BaseName.o %BaseName.m
+	@end;
+	@template CMPLRS_CXX_Production ( %OutputDir, %BaseName ) is
+	$ %BaseName.o %BaseName.m
+	@end;
+	@set %CMPLRS_F77_Extensions = "toto.f ";
+	@template CMPLRS_F77_Production ( %OutputDir, %BaseName ) is
+	$ %BaseName.o %BaseName.m
+	@end;
+@endif;
+
+@set %CMPLRS_CXX_Template   = "CmdLine";
+
+-- Definition du Template -I
+--
+
+@template CMPLRS_IncDirective (%IncDirectory) is
+$ -I%IncDirectory \
+@end;
+
+@if( %Station == "sun" ) then
+  @template CMPLRS_DBDirective (%DBDirectory) is
+    $ -ptr%DBDirectory \
+  @end;
+@endif;
+
+@if( %Station == "ao1" ) then
+  @template CMPLRS_DBDirective (%DBDirectory) is
+    $ -ptr%DBDirectory/cxx_repository \
+  @end;
+@endif;
+
+@if( %Station == "hp" ) then
+  @template CMPLRS_DBDirective (%DBDirectory) is
+    $ -ptr%DBDirectory/ptrepository \
+  @end;
+@endif;
+
+@if (%DBMS == "DFLT") then
+@set %DBMSOpt = "-DCSFDB";
+@endif;
+
+@ifnotdefined ( %DebugMode ) then
+@set %DebugMode = "False";
+@endif;
+
+@template CMPLRS_F77_OptLine ( %CMPLRS_F77_Command, %CMPLRS_F77_Options, %CMPLRS_F77_ModeOpt, %IncDirectives ) is
+
+  $F77 compiler: \^
+  $%CMPLRS_F77_Command %CMPLRS_F77_Options   %CMPLRS_F77_ModeOpt \
+  $%IncDirectives -c <Source.f> -o <Object.o>
+@end;
+
+@template CMPLRS_F77_CmdLine ( %CMPLRS_F77_Command, %CMPLRS_F77_Options, %CMPLRS_F77_ModeOpt, %IncDirectives, 
+		      	       %Source,  %BaseName, %OutputDir, %TmpFile ) is 
+  $%CMPLRS_F77_Command %CMPLRS_F77_ModeOpt %CMPLRS_F77_Options -c %Source -o %OutputDir/%BaseName.o
+  $set cmplrs_status = $status
+  $if ( $status == 0 ) then
+  $ touch %OutputDir/%BaseName.m
+  $endif
+@end;
+
+
+-- Templates SUN/Solaris 2.4 Sparc Compilers 3.1
+
+@if ( %Station == "sun" ) then
+
+	@if ( %DebugMode == "True" ) then
+		@set %CMPLRS_CXX_ModeOpt = "-g0 -DDEB";
+		@set %CMPLRS_C_ModeOpt   = "-g0 -DDEB";
+		@set %CMPLRS_F77_ModeOpt = "-g";
+	@endif;
+
+
+	@if ( %DebugMode == "False" ) then
+		@set %CMPLRS_CXX_ModeOpt = "-O2 -DNo_Exception ";
+		@set %CMPLRS_C_ModeOpt   = "-O2 -DNo_Exception ";
+		@set %CMPLRS_F77_ModeOpt = "-O2";
+	@endif;
+
+	-- Options du Fortran 77
+	@set %CMPLRS_F77_Command = "f77 ";
+	@set %CMPLRS_F77_Options = "-PIC";
+
+	@if ( %DBMS == "OBJS" ) then
+		@set %CMPLRS_CXX_DBMSOpt = "-mt -vdelx -DOBJS -I/PRODUCTS/OS5.0/sunpro/include";
+	@endif;
+
+	@if ( %DBMS == "DFLT" ) then
+		@set %CMPLRS_CXX_DBMSOpt = "-mt -vdelx -DCSFDB";
+	@endif;
+
+	@set %CMPLRS_C_Command = "/opt/DEV5_1/SUNWspro/bin/cc -K PIC";
+	@set %CMPLRS_C_Options = "-Usun -DSOLARIS";
+
+	@template CMPLRS_C_OptLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives ) is
+
+	  $C compiler: \^
+	  $%CMPLRS_C_Command %CMPLRS_C_Options %CMPLRS_C_ModeOpt \
+	  $%IncDirectives -c <Source.c> -o <Object.o>
+	@end;
+
+	@template CMPLRS_C_CmdLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, 
+					%IncDirectives, %DBDirectives, %Source, %BaseName, %OutputDir, %TmpFile ) is
+
+	  $%CMPLRS_C_Command %CMPLRS_C_Options %DBMSOpt %ModeOpt %IncDirectives -c %Source -o %OutputDir/%BaseName.o
+	  $set stat = $status
+	  $if ( $stat == 0 ) then
+	  $	cpp  %IncDirectives %CMPLRS_C_Options -M  %Source \^
+	  $            | sed -e '1d' -e 's/.*://g' -e 's/[	 *]*//g' -e 's%/./%/%g' -e 's%//%/%g' \^
+	  $            | sort -u  >  %OutputDir/%BaseName.m
+	  $endif
+	  $set status = $stat
+	@end;
+
+	@set %CMPLRS_CXX_Command = "/opt/DEV5_1/SUNWspro/bin/CC -PIC ";
+	@set %CMPLRS_CXX_Options = "-xchip=ultra -xarch=v8 -Usun -DSOLARIS -DNO_CXX_EXCEPTION ";
+
+	@template CMPLRS_CXX_OptLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, 
+					%IncDirectives,  %DBDirectives) is
+
+	  $C++ compiler: \^
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options  %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt -I/opt/DEV5_1/SUNWspro/SC4.2/include/CC \
+	  $%IncDirectives %DBDirectives -c <Source.cxx> -o <Object.o>
+	@end;
+
+	@template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt,
+					 %IncDirectives, %DBDirectives, %Source,  %BaseName, %OutputDir, %TmpFile ) is 
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options -I/opt/DEV5_1/SUNWspro/SC4.2/include/CC \^
+	  $   %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives %DBDirectives -H -c %Source -o %OutputDir/%BaseName.o >& %TmpFile
+	  $set stat = $status
+	  $if ( $stat == 0 ) then
+	  $  sed -e 's/	//g' -e '/Compilation failed/d' -e '/:/d' -e 's%/\./%/%g'  -e 's%//%/%g' %TmpFile \^
+	  $        | grep -v 'detected.$' | sort -u  > %OutputDir/%BaseName.m
+	  $endif
+	  $if( -e %TmpFile ) grep ':' %TmpFile 
+	  $#/bin/rm -f %TmpFile
+	  $set status = $stat
+	@end;
+
+	
+
+@endif;
+
+--
+-- Templates Dec/OSF1 V3.2 Cxx V1.3
+--
+
+@if ( %Station == "ao1" ) then
+
+	-- Options du Fortran 77
+	@set %CMPLRS_F77_Command = "f77 ";
+	@set %CMPLRS_F77_Options = "-PIC";
+
+	@if ( %DebugMode == "True" ) then
+	  @set %CMPLRS_CXX_ModeOpt = "-g -DDEB";
+	  @set %CMPLRS_C_ModeOpt   = "-g -DDEB";
+	  @set %CMPLRS_F77_ModeOpt = "-g";
+	@endif;
+
+	@if ( %DebugMode == "False" ) then
+	  @set %CMPLRS_CXX_ModeOpt = "-O3 -DNo_Exception ";
+	  @set %CMPLRS_C_ModeOpt   = "-O3 -DNo_Exception ";
+	  @set %CMPLRS_F77_ModeOpt = "-O3";
+	@endif; 
+
+	@if ( %DBMS == "OBJS" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DOBJS -I/PRODUCTS/OS5.0/include";
+	@endif;
+
+	@if ( %DBMS == "DFLT" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
+	@endif;
+
+	@set %CMPLRS_C_Command = "cc";
+	@set %CMPLRS_C_Options = "-DDECOSF1";
+
+	@template CMPLRS_C_OptLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives ) is
+	  $C compiler: \^
+	  $%CMPLRS_C_Command %CMPLRS_C_ModeOpt  %CMPLRS_C_Options \
+	  $%IncDirectives -c <Source.c> -o <Object.o>
+	@end;
+	
+	@template CMPLRS_C_CmdLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt,
+					%IncDirectives, %Source, %BaseName, %OutputDir, %TmpFile ) is
+
+	  $%CMPLRS_C_Command %CMPLRS_C_Options %CMPLRS_C_ModeOpt %IncDirectives -c %Source -o %OutputDir/%BaseName.o
+	  $set cmplrs_status = $status
+	  $if ( $status == 0 ) then
+	  $	cpp %IncDirectives -M %CMPLRS_C_Options %Source \^
+	  $	 | sed -e '1d' -e 's/.*://g' -e 's/[	 *]*//g' -e 's%/\./%/%g' |  sort -u  >  %OutputDir/%BaseName.m 
+	  $endif
+	  $set status = $cmplrs_status
+	@end;
+
+	@set %CMPLRS_CXX_Command = "/usr/bin/cxx -shared -D__STDC__";
+	@set %CMPLRS_CXX_Options = "-I/usr/include/cxx -DDECOSF1";
+
+	@template CMPLRS_CXX_OptLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, 
+				       %IncDirectives, %DBDirectives ) is
+	  $C++ compiler: \^
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+	  $%IncDirectives %DBDirectives -c <Source.cxx> -o <Object.o>
+	@end;
+
+	@template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt,
+					%IncDirectives, %DBDirectives, %Source, %BaseName, %OutputDir, %TmpFile ) is
+
+	  $cd %OutputDir
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives -M -c %Source -o %Object  \^
+	  $  |  sed -e '1d' -e 's/.*://g' -e 's/[     *]*//g' > %TmpFile
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %IncDirectives %DBDirectives %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt -c %Source -o  %OutputDir/%BaseName.o
+	  $set cmplrs_status = $status
+	  $if ( $cmplrs_status  == 0 ) then
+	  $	sed -e 's/	//g' -e '/Compilation failed/d' -e '/:/d' -e 's%/\./%/%g' -e 's%//%/%g' %TmpFile \^
+	  $         | sort -u > %OutputDir/%BaseName.m
+	  $endif
+	  $rm %TmpFile
+	  $set status = $cmplrs_status
+	@end;
+
+@endif;
+
+--
+-- Templates Silicon IRIX V5.3 
+--
+@if ( %Station == "sil" ) then
+
+	-- Options du Fortran 77
+	@set %CMPLRS_F77_Command = "f77 ";
+	@set %CMPLRS_F77_Options = "-n32 -mips3";
+
+	@if ( %DebugMode == "True" ) then
+	  @set %CMPLRS_CXX_ModeOpt = "-g -gslim -DDEB";
+	  @set %CMPLRS_C_ModeOpt   = "-g -gslim -DDEB";
+	  @set %CMPLRS_F77_ModeOpt = "-g";
+	@endif;
+	@if ( %DebugMode == "False" ) then
+	  @set %CMPLRS_CXX_ModeOpt = "-O3 -DNo_Exception  -D__INLINE_INTRINSICS -TARG:processor=R10000 ";
+	  @set %CMPLRS_C_ModeOpt   = "-O3 -DNo_Exception -TARG:processor=R10000 ";
+	  @set %CMPLRS_F77_ModeOpt = "-O3";
+	@endif;
+
+	@if ( %DBMS == "OBJS" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DOBJS -I/PRODUCTS/OS5.0/include";
+	@endif;
+	@if ( %DBMS == "DFLT" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
+	@endif;
+
+
+	@set %CMPLRS_C_Command = "cc -signed -n32 -mips3 ";
+	@set %CMPLRS_C_Options = "-DIRIX";
+
+	@template CMPLRS_C_OptLine  ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives ) is
+	  $C compiler: \^
+	  $%CMPLRS_C_Command %CMPLRS_C_ModeOpt %CMPLRS_C_Options \
+	  $%IncDirectives -c <Source.c> -o <Object.o>
+	@end;
+
+	@template CMPLRS_C_CmdLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt,
+				     %IncDirectives, %Source, %BaseName, %OutputDir, %TmpFile ) is
+
+	  $%CMPLRS_C_Command %CMPLRS_C_Options %IncDirectives %CMPLRS_C_ModeOpt -c %Source -o %OutputDir/%BaseName.o
+	  $set cmplrs_status = $status
+	  $if ( $cmplrs_status == 0 ) then
+	  $	cpp %CMPLRS_C_Options %IncDirectives -M -DIRIX %Source | \^
+	  $         sed -e '1d' -e 's/.*://g' -e 's/[	 *]*//g' -e 's%/./%/%g' -e 's+//+/+g' |  sort -u  >  %OutputDir/%BaseName.m 
+	  $endif
+	  $set status = $cmplrs_status
+        @end;
+
+	@set %CMPLRS_CXX_Command = "/usr/bin/CC -signed -n32 -mips3 -no_prelink -woff 3115 -LANG:bool=OFF -LANG:wchar_t=OFF";
+	@set %CMPLRS_CXX_Options = "-I/usr/include/CC -DIRIX -DNO_CXX_EXCEPTION";
+
+	@template CMPLRS_CXX_OptLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, 
+				       %IncDirectives, %DBDirectives ) is
+	  $C++ compiler: \^
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+	  $%IncDirectives %DBDirectives -MDupdate -c <Source.cxx> -o <Object.o>
+	@end;
+
+	@template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, 
+					%IncDirectives, %DBDirectives, %Source, %BaseName, %OutputDir, %TmpFile ) is
+
+	  $cd %OutputDir
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+	  $ %IncDirectives %DBDirectives -MDupdate %TmpFile \
+	  $  -c %Source -o %OutputDir/%BaseName.o
+	  $set stat = $status
+	  $if ( $stat == 0 ) then
+	  $  cat %TmpFile  | tr ' ' '\012' | sed  -e '1d' -e 's%/./%/%g' | grep -v '^#'| sort -u > %OutputDir/%BaseName.m
+	  $endif
+	  $/bin/rm -f %TmpFile
+	  $set status = $stat
+	@end;
+
+@endif;
+
+--
+-- Templates HP-UX 
+--
+@if ( %Station == "hp" ) then
+
+	-- Options du Fortran 77
+	@set %CMPLRS_F77_Command = "f77 ";
+	@set %CMPLRS_F77_Options = "-PIC";
+
+
+
+	@if ( %DebugMode == "True" ) then
+	  @set %CMPLRS_CXX_ModeOpt = "-g -DDEB";
+	  @set %CMPLRS_C_ModeOpt   = "-g -DDEB";
+	  @set %CMPLRS_F77_ModeOpt = "-g";
+	@endif;
+	@if ( %DebugMode == "False" ) then
+ 	  @set %CMPLRS_CXX_ModeOpt = "+O2 +Onomoveflops -DNo_Exception ";
+	  @set %CMPLRS_C_ModeOpt   = "+O2 +Onomoveflops -DNo_Exception ";
+	  @set %CMPLRS_F77_ModeOpt = "+O2 +Onomoveflops ";
+	@endif;
+
+	@if ( %DBMS == "OBJS" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DOBJS -I/PRODUCTS/OS5.0/include";
+	@endif;
+	@if ( %DBMS == "DFLT" ) then
+	  @set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
+	@endif;
+
+	@set %CMPLRS_C_Command = "cc +Z +DAportable +DS2.0";
+	@set %CMPLRS_C_Options = "-DHPUX";
+
+	@template CMPLRS_C_OptLine  ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %IncDirectives ) is
+	  $C compiler: \^
+	  $%CMPLRS_C_Command %CMPLRS_C_ModeOpt %CMPLRS_C_Options \
+	  $%IncDirectives -c <Source.c> -o <Object.o>
+	@end;
+
+	@template CMPLRS_C_CmdLine ( %CMPLRS_C_Command, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt,
+				     %IncDirectives, %Source, %BaseName, %OutputDir ) is
+
+	  $%CMPLRS_C_Command %CMPLRS_C_Options %IncDirectives %CMPLRS_C_ModeOpt -c %Source -o %OutputDir/%BaseName.o
+	  $set stat = $status
+	  $if ( $stat == 0 ) then
+	  $  cc %IncDirectives -E %CMPLRS_C_Options  %Source | egrep -e '^#' | awk '{print $3}' \
+	  $    | sed -e 's/\"//g' -e '/^$/d'  -e 's%/./%/%g' | sort -u | grep -v %Source | grep '/' > %OutputDir/%BaseName.m
+	  $endif
+	  $set status = $stat
+        @end;
+
+	@set %CMPLRS_CXX_Command = "/opt/aCC/bin/aCC +Z +DAportable +DS2.0 +eh";
+	@set %CMPLRS_CXX_Options = " -w -DHPUX -D_IOSTREAM_INIT_NOT_NEEDED ";
+
+	@template CMPLRS_CXX_OptLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, %IncDirectives ) is
+	  $C++ compiler: \^
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \
+	  $%IncDirectives -c <Source.cxx> -o <Object.o>
+	@end;
+
+	@template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt, 
+				       %IncDirectives, %Source, %BaseName, %OutputDir ) is
+
+	  $cd %OutputDir
+	  $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt %IncDirectives  \
+	  $  -c %Source -o %OutputDir/%BaseName.o
+	  $set stat = $status
+	  $if ( $stat == 0 ) then
+	  $  /opt/aCC/bin/aCC -I/opt/aCC/include -I/opt/aCC/include/iostream %IncDirectives -E %CMPLRS_CXX_Options %CMPLRS_CXX_DBMSOpt %Source | egrep -e '^#' | awk '{print $3}' \
+	  $    | sed -e 's/\"//g' -e '/^$/d' -e 's%/./%/%g' | sort -u | grep -v %Source | grep '/' > %OutputDir/%BaseName.m
+	  $endif
+	  $set status = $stat
+	@end;
+
+@endif;
+
+--
+-- Templates Windows NT ( Microsoft Visual C/C++ 5.0 )
+--
+
+@if ( %Station == "wnt" ) then
+
+	@if ( %DebugMode == "True" ) then
+		@set %CMPLRS_CXX_ModeOpt = "-Zi -DDEB -D_DEBUG";
+		@set %CMPLRS_C_ModeOpt   = "-Zi -DDEB -D_DEBUG";
+		@set %CMPLRS_F77_ModeOpt = "-Zi -DDEB -D_DEBUG";
+        @else
+		@set %CMPLRS_CXX_ModeOpt = "-Zi -DNDEBUG -DNo_Exception";
+		@set %CMPLRS_C_ModeOpt   = "-Zi -DNDEBUG -DNo_Exception";
+		@set %CMPLRS_F77ModeOpt  = "-Zi -DNDEBUG -DNo_Exception";
+	@endif;
+
+	@if ( %DBMS == "OBJS" ) then
+		@set %CMPLRS_CXX_DBMSOpt = "-DOBJS";
+	@endif;
+
+	@if ( %DBMS == "DFLT" ) then
+		@set %CMPLRS_CXX_DBMSOpt = "-DCSFDB";
+	@endif;
+
+
+	--- SETS SYMBOL EXPORTATION BEHAVIOUR depending on the unit type
+
+	@ifdefined ( %UnitType ) then
+
+		@if (%UnitType != "executable") then
+			@string %CMPLRS_ExportBehaviour = " -D__" %Entity "_DLL";
+		@else
+			@set %CMPLRS_ExportBehaviour = " -DStandard_EXPORT= ";
+		@endif;
+	@endif;
+
+	@ifnotdefined ( %UnitType ) then
+		@set %CMPLRS_ExportBehaviour = "";
+	@endif;
+
+
+	@set %CMPLRS_C_Command = "D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1";
+	@set %CMPLRS_C_Options = "-DWNT -D_WINDOWS -DWIN32";
+
+	@set %CMPLRS_PDBPrefix = " -Fd";
+
+	@template CMPLRS_C_OptLine (
+		   %CMPLRS_C_Command, %CMPLRS_C_Options,
+		   %CMPLRS_C_ModeOpt, %IncDirectives, %CMPLRS_ExportBehaviour, %PDBName ) is
+	 $C compiler: \^
+	 $%CMPLRS_C_Command %CMPLRS_C_ModeOpt %CMPLRS_C_Options %CMPLRS_ExportBehaviour
+	 $%IncDirectives -c <source.c> -Fo<object.obj> -Fd%PDBName
+	@end;
+		
+	@template CMPLRS_C_CmdLine (
+		   %CMPLRS_C_Command, %CMPLRS_C_Options,
+		   %CMPLRS_C_ModeOpt, 
+		   %IncDirectives, %PDBName,
+		   %Source, %BaseName, %OutputDir, %TmpFile, %CMPLRS_ExportBehaviour
+		  ) is
+	 $cd %TEMP%;
+	 $%CMPLRS_C_Command %CMPLRS_C_Options %CMPLRS_ExportBehaviour %IncDirectives %CMPLRS_C_ModeOpt -P -Tc %Source;
+	 $@cmd /c "awk -f %WOKHOME%\lib\CMPLRS_wnt.awk %BaseName.i | grep -v %BaseName.c > %OutputDir%BaseName.m";
+	 $%CMPLRS_C_Command %CMPLRS_C_Options %CMPLRS_ExportBehaviour\^
+         $  %IncDirectives %CMPRS_C_ModeOpt \^
+	 $ -Fd%PDBName -c -Tc %Source -Fo%OutputDir%BaseName.obj;
+	 $@del %BaseName.i
+	@end;
+
+	@set %CMPLRS_CXX_Command = "D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -W3 -GX -Ob1";
+	@set %CMPLRS_CXX_Options = "-DWNT -D_WINDOWS -DWIN32";
+
+	@template CMPLRS_CXX_OptLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt,
+		 		       %IncDirectives, %CMPLRS_ExportBehaviour, %PDBName) is
+	 $C++ compiler: \^
+	 $%CMPLRS_CXX_Command %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour
+	 $%IncDirectives -c <source.c> -Fo<object.obj> -Fd %PDBName
+	@end;
+
+		
+
+	@template CMPLRS_CXX_CmdLine ( %CMPLRS_CXX_Command, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt, %CMPLRS_CXX_DBMSOpt,
+		   %IncDirectives, %PDBName, %Source, %BaseName, %OutputDir, %TmpFile, %CMPLRS_ExportBehaviour ) is
+	 $cd %TEMP%;
+	 $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour %IncDirectives %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_DBMSOpt \^
+	 $ -P -Tp %Source;
+	 $@cmd /c "awk -f %WOKHOME%\lib\CMPLRS_wnt.awk %BaseName.i | grep -v %BaseName.cxx > %OutputDir%BaseName.m";
+	 $%CMPLRS_CXX_Command %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
+         $  %IncDirectives %CMPLRS_CXX_ModeOpt %CMPLRS_CXX_DBMSOpt\^
+	 $ -Fd%PDBName -c -Tp %Source -Fo%OutputDir%BaseName.obj;
+	 $@del %BaseName.i
+	@end;
+
+@endif;
+
+@if ( defined( %UnitType ) )  then
+
+  @if ( (%UnitType == "idl" || %UnitType == "server" || %UnitType == "executable") && %Station != "wnt" ) then
+
+      @uses "ORBIX.edl";
+
+      @if ( %Station == "sun" ) then
+        @set %CMPLRS_CXX_Command = "/opt/DEV5_1/SUNWspro/bin/CC -PIC  ";
+      @endif;
+
+      @string %CMPLRS_CXX_Options += " -I" %ORBIX_Home "/include";
+
+  @endif;
+
+@endif;
+
+@endif;
+

@@ -1,0 +1,64 @@
+-- File		:	LINK.edl
+-- Author	:	Eugeny PLOTNIKOV
+-- Date		:	23-OCT-1996
+-- Copyright	:	MATRA Datavision
+-- Purpose	:	Defines tools for link and library management
+--			( Microsoft Visual C/C++ V4.1 )
+
+@ifnotdefined ( %LINK_EDL ) then
+ @set %LINK_EDL = "";
+
+-- filename extension for linker command file ( DLL )
+ @set %LINK_LinkerCFExtDLL = ".lnkDLL";
+
+-- filename extension for linker command file ( EXE )
+ @set %LINK_LinkerCFExtEXE = ".lnkEXE";
+
+-- switch for linker .def file
+ @set %LINK_LinkerDEFSwitch = " -def:";
+
+ @set %LINK_LinkerImplib    = " -implib:";
+ @set %LINK_LinkerOutput    = " -out:";
+ 
+
+ @set %LinkModeOpt  = "-debug";
+
+-- Selects wether you build a CONSOLE executable or WINDOWS one
+ @set %LINK_ExeType = "CONSOLE";
+
+-- Set %LINK_NoDefStub if you do not want tu link with stub objects
+ 
+
+
+ @set %LINK_LinkerPDBOption = " -pdb:";
+ 
+
+ @template LINK_LinkerIMP ( %CollectorOutput ) is
+	$%CollectorOutput.lib\^
+ @end;
+
+ @template LINK_LinkerEXP ( %CollectorOutput ) is
+	$%CollectorOutput.exp\^
+ @end;
+
+ @template LINK_LinkerDLL ( %CollectorOutput ) is
+	$%CollectorOutput.dll\^
+ @end;
+
+ @template LINK_LinkerPDB ( %CollectorOutput ) is
+	$%CollectorOutput.pdb\^
+ @end;
+
+ @template LINK_LinkerEXE ( %CollectorOutput ) is
+	$%CollectorOutput.exe\^
+ @end;
+
+ @template LINK_LinkerHeaderDLL ( %Station, %LinkModeOpt ) is
+	$D:/DevTools/VStudio/VC98/bin/link -nologo -subsystem:windows -dll -incremental:no -machine:IX86 %LinkModeOpt \^
+ @end;
+
+ @template LINK_LinkerHeaderEXE ( %Station, %LinkModeOpt, %LinkSubsystem ) is
+	$D:/DevTools/VStudio/VC98/bin/link -nologo -subsystem:%LinkSubsystem -incremental:no -machine:IX86 %LinkModeOpt \^
+ @end;
+
+@endif;

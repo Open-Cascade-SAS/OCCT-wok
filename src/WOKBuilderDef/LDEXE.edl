@@ -1,0 +1,61 @@
+-- File:	LDEXE.edl
+-- Author:	Jean GAUTIER
+-- History:	Fri Feb 16 17:06:40 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %LDEXE_EDL ) then
+@set %LDEXE_EDL = "";
+
+@ifnotdefined ( %LD_EDL ) then
+@uses "LD.edl";
+@endif;
+
+@set %LDEXE_Header          = "LDEXE_Header";
+@set %LDEXE_ObjectRef       = "LD_ObjectRef";
+@set %LDEXE_ShortRef        = "LD_ShortRef";
+@set %LDEXE_LongRef         = "LD_LongRef";
+@set %LDEXE_SharedFullPath  = "LD_SharedFullPath";
+@set %LDEXE_ArchiveFullPath = "LD_ArchiveFullPath";
+@set %LDEXE_ExternRef       = "LD_ExternRef";
+@set %LDEXE_Footer          = "LD_Footer";
+
+-- Definition du Link Sun/Solaris 2.4
+
+@if( %Station == "sun" ) then 
+
+@template LDEXE_Header ( %Target ) is
+$ /opt/DEV5_1/SUNWspro/bin/CC -xchip=ultra -xarch=v8 -dy -o %Target \
+@end;
+
+@endif;
+
+-- Definition du Link DEC/OSF1
+
+@if( %Station == "ao1") then
+
+@template LDEXE_Header ( %Target ) is
+$ /usr/bin/cxx -call_shared -msym -o %Target \
+@end;
+
+@endif;
+
+-- Definition du Link Silicon Graphics
+
+@if( %Station == "sil" ) then
+
+@template LDEXE_Header ( %Target ) is
+$ /usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -call_shared -o %Target \
+@end;
+
+@endif;
+
+@if ( %Station == "hp" ) then
+  
+ @template LDEXE_Header ( %Target ) is
+   $/opt/aCC/bin/aCC -Wl,+FPZO -Wl,-E -o %Target \
+ @end;
+
+@endif;
+
+@endif;
+

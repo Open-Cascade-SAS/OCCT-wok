@@ -1,0 +1,48 @@
+@ifnotdefined ( %STUBS_EDL ) then
+    @set %STUBS_EDL = "";
+
+@if ( %DebugMode == "True" ) then
+
+ @set %STUBS_Dir     = "%WOKHOME%/Rtk-Release/";
+ @template STUBS_FileNameSrc ( %StubDir ) is
+  $%StubDir/_debug_stub.c\^
+ @end;
+
+ @template STUBS_FileNameDst ( %StubDir ) is
+  $%StubDir/_debug_stub.obj\^
+ @end;
+
+ @template STUBS_COMPILE ( %StubInput, %StubOutput ) is
+   $D:/DevTools/VStudio/VC98/bin/cl -nologo -MDd -c -Tc %StubInput -Fo%StubOutput;
+   $set stat=%status%;
+   $wokRM -fq %StubInput;
+   $set status=%stat%;
+ @end;
+
+@else
+
+ @set %STUBS_Dir     = "%WOKHOME%/Rtk-Release/";
+
+ @template STUBS_FileNameSrc ( %StubDir ) is
+  $%StubDir/_release_stub.c\^
+ @end;
+
+ @template STUBS_FileNameDst ( %StubDir ) is
+  $%StubDir/_release_stub.obj\^
+ @end;
+
+ @template STUBS_COMPILE ( %StubInput, %StubOutput ) is
+   $D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -c -Tc %StubInput -Fo%StubOutput;
+   $set stat=%status%;
+   $wokRM -fq %StubInput;
+   $set status=%stat%;
+ @end;
+
+@endif;
+
+@string %STUBS_tkMain  = %STUBS_Dir "tkStub.obj";
+@string %STUBS_uMain   = %STUBS_Dir "uStub.obj";
+@string %STUBS_Library = %STUBS_Dir "Rtk.lib";
+
+
+@endif;

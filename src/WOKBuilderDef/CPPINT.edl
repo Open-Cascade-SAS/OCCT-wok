@@ -1,0 +1,33 @@
+-- File:	CPPINT.edl
+-- Author:	Jean GAUTIER
+-- History:	Fri Feb 16 16:38:54 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@if ( %Station != "wnt" ) then
+
+@if ( %LocalArch != "hp" ) then
+  @set %CPPINT_SHARED   = "libCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPINT_SHARED   = "libCPPIntExt.sl";
+@endif;
+
+@set %CPPINT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPIntExt/src";
+@set %CPPINT_NAME     = "CPPInt";
+
+@if ( %LocalArch != "hp" ) then
+  @set %CPPINT_Shared = "libCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPPINT_Shared = "libCPPIntExt.sl";
+@endif;
+
+@else
+
+  @set %CPPINT_Shared = "CPPIntExt.dll";
+
+@endif;
+
+@set %CPPINT_Name   = "CPPInt";

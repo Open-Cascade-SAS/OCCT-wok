@@ -1,0 +1,32 @@
+-- File:	CPPENG.edl
+-- Author:	Jean GAUTIER
+-- History:	Fri Feb 16 16:36:32 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @string %CPPENG_SHARED   = "libCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @string %CPPENG_SHARED   = "libCPPIntExt.sl";
+@endif;
+
+@set    %CPPENG_TMPLDIRS = "/home/wb/kl/nw/prod/CPPIntExt/src";
+@set    %CPPENG_NAME     = "CPPEng";
+
+@if ( %LocalArch != "hp" ) then
+  @string %CPPENG_Shared   = "libCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @string %CPPENG_Shared   = "libCPPIntExt.sl";
+@endif;
+
+
+@else
+  @string %CPPENG_Shared   = "CPPIntExt.dll";
+
+@endif;
+
+@set    %CPPENG_Name     = "CPPEng";

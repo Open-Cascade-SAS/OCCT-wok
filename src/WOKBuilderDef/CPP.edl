@@ -1,0 +1,23 @@
+-- File:	CPP.edl
+-- Author:	Jean GAUTIER
+-- History:	Thu Feb 29 12:17:05 1996	Jean GAUTIER	Creation
+-- Copyright:	 Matra Datavision 1996
+
+@ifnotdefined ( %CPP_EDL) then
+@set %CPP_EDL = "";
+
+@if ( %LocalArch != "hp" ) then
+  @set %CPP_Shared   = "libCPPExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  @set %CPP_Shared   = "libCPPExt.sl";
+@endif;
+
+@if ( %LocalArch == "wnt" ) then
+  @set %CPP_Shared   = "CPPExt.dll";
+@endif;
+
+@set %CPP_Name     = "CPP";
+
+@endif;
