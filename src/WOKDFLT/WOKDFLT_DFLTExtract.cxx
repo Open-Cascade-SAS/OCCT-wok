@@ -82,6 +82,7 @@ Handle(WOKBuilder_MSEntity) anent = Handle(WOKBuilder_MSEntity)::DownCast(infile
 	case WOKBuilder_NotDefined:
 	  SetFailed();
 	  return result;
+        default: break;
 	}
     }
   return result;

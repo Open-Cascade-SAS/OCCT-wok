@@ -63,6 +63,8 @@ WOKUtils_TimeStat WOKDFLT_MSDFLTExtractor::GetTypeMDate(const Handle(TCollection
 {
   WOKUtils_TimeStat atruc;
 
+  memset (  &atruc, 0, sizeof ( atruc )  );
+
   return atruc;
 }
 
