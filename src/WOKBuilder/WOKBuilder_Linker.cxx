@@ -499,6 +499,9 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 # elif defined ( HPUX )
  static Handle( TCollection_HAsciiString ) skipStr =
   new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
+# elif defined ( AIX )
+ static Handle( TCollection_HAsciiString ) skipStr =
+  new TCollection_HAsciiString ( "ld: fatal: Symbol referencing errors." );
 # endif  // LIN || SOLARIS
  Handle( TCollection_HAsciiString ) uType = Params ().Value ( "%UnitType", 0 );
 
