@@ -200,9 +200,12 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
 		       << "No library (" << libname << ") found for unit " << aunit->Name() << endm;	      
 	      SetFailed();
 	    }
-	  else
+	  else {
+#ifdef DEB
 	    WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
 		       << "No library (" << libname << ") in unit " << aunit->Name() << endm;
+#endif
+	  }
 	}
       else
 	{
