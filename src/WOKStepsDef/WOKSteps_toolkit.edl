@@ -17,7 +17,6 @@
 
   @if ( %Station == "ao1" ) then
 
-	-- @string %WOKSteps_LibGroup += " lib.uncomp ";
         @string %WOKSteps_LibGroup += " lib.limit ";
 	@string %WOKSteps_LibGroup += " lib.arch ";
 
@@ -123,6 +122,7 @@
   @set %WOKSteps_lib_arx    = "WOKStep_LibExtract(lib.list)";
 
 
+  @set %WOKSteps_toolkit_LinksWith = " lib.build ";
   @set %WOKSteps_executable_LinksWith = " lib.build ";
   @set %WOKSteps_engine_LinksWith     = " lib.build ";
   @set %WOKSteps_interface_LinksWith     = " lib.build ";
@@ -132,7 +132,7 @@
 	
   @set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep lib.build";
   @if (%Station == "hp") then 
-  @set %WOKSteps_delivery_lib_shared_list_extensions = ".ImplDep .sl";
+    @set %WOKSteps_delivery_lib_shared_list_extensions = ".ImplDep .sl";
   @else
     @if (%Station == "wnt") then
   	@set %WOKSteps_delivery_lib_shared_list_extensions = ".DLL .LIB .PDB .ImplDep";
