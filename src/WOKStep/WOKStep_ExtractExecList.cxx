@@ -126,6 +126,7 @@ _TEST_BREAK();
 	      outfile->SetPhysicFlag(Standard_False);
 	      outfile->SetStepID(Standard_True);
 
+//              cout << "WOKStep_ExtractExecList::Execute -> GetAndAddStep" << endl ;
 	      Handle(WOKMake_Step) astep = BuildProcess()->GetAndAddStep(Unit(), Code(), bent->Name());
 	      
 	      astep->DoExecute();

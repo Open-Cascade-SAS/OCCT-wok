@@ -188,8 +188,14 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
   Handle(WOKBuilder_WNTLinker) tool =  Handle(WOKBuilder_WNTLinker)::DownCast(ComputeTool());
   
   myTarget = new TCollection_HAsciiString(OutputDir()->Name());
-  
-  myTarget->AssignCat(SubCode().IsNull() ? Unit()->Name() : SubCode());
+
+  Handle( TCollection_HAsciiString ) uName = new TCollection_HAsciiString (
+                                                  SubCode ().IsNull () ? Unit () -> Name ()
+                                                                       : SubCode ()
+                                                 );
+  uName -> ChangeAll ( '.', '_' );
+
+  myTarget -> AssignCat ( uName );
   
   tool->SetTargetName(myTarget);
   

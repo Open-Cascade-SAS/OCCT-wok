@@ -63,7 +63,11 @@ void WOKStep_WNTLibrary::Execute (const Handle(WOKMake_HSequenceOfInputFile)& an
 
  Handle(TCollection_HAsciiString) target = OutputDir()->Name();
 
- target->AssignCat(Unit()->Name());
+ Handle( TCollection_HAsciiString ) uName = new TCollection_HAsciiString (  Unit () -> Name ()  );
+
+ uName -> ChangeAll ( '.', '_' );
+
+ target -> AssignCat ( uName );
                         
  Handle(WOKBuilder_WNTLibrarian) tool = Handle(WOKBuilder_WNTLibrarian)::DownCast(ComputeTool());
 

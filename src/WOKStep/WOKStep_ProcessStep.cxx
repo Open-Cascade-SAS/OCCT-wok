@@ -320,7 +320,9 @@ void WOKStep_ProcessStep::TreatOutput(const Handle(WOKMake_InputFile)& infile, c
 	      aoutfile->GetPath();
 //-> EUG4YAN
               TCollection_AsciiString s;
-              OSD_Path p (  outent -> Path () -> Name () -> ToCString ()  );
+//              OSD_Path p (  outent -> Path () -> Name () -> ToCString ()  );
+              TCollection_AsciiString atstr = outent -> Path () -> Name () -> ToCString () ;
+              OSD_Path p ( atstr );
 //<- EUG4YAN
 	      // je l'y deplace
 	      outent->Path()->MoveTo(aoutfile->Path());
@@ -336,7 +338,9 @@ void WOKStep_ProcessStep::TreatOutput(const Handle(WOKMake_InputFile)& infile, c
 
                if (  pp -> Exists ()  ) {
 
-                OSD_Path p (  aoutfile -> Path () -> Name () -> ToCString ()  );
+//                OSD_Path p (  aoutfile -> Path () -> Name () -> ToCString ()  );
+                TCollection_AsciiString atstr =  aoutfile -> Path () -> Name () -> ToCString () ;
+                OSD_Path p ( atstr );
 
                 p.SetExtension ( ".d" );
                 p.SystemName ( s );

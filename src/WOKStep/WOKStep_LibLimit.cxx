@@ -227,6 +227,7 @@ void WOKStep_LibLimit::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 	      outfile->SetPhysicFlag(Standard_False);
 	      outfile->SetStepID(Standard_True);
 	      
+//              cout << "WOKStep_LibLimit::Execute -> GetAndAddStep" << endl ;
 	      Handle(WOKMake_Step) astep = BuildProcess()->GetAndAddStep(Unit(), Code(), it.Key());
 	      
 	      astep->DoExecute();

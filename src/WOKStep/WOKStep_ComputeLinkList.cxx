@@ -250,8 +250,9 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 		    AddExecDepItem(infile, outfile, Standard_True);
 		  else
 		    {
-		      SetFailed();
-		      return;
+//                      cout << "WOKStep_ComputeLinkList::Execute GetUnitLibrary returns outfile.IsNull() ==> SetFailed()/return was suppressed(JR)" << endl ;
+//		      SetFailed();
+//		      return;
 		    }
 		}
 	    }

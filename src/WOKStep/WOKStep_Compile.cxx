@@ -333,7 +333,9 @@ _TEST_BREAK();
 
   stadm -> GetPath ();
 
-  OSD_Path p (  stadm -> Path () -> Name () -> ToCString ()  );
+//  OSD_Path p (  stadm -> Path () -> Name () -> ToCString ()  );
+  TCollection_AsciiString atstr = stadm -> Path () -> Name () -> ToCString () ;
+  OSD_Path p ( atstr );
   OSD_File f ( p );
 
   f.Build (
