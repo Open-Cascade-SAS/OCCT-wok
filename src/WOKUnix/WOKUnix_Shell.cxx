@@ -28,7 +28,12 @@
 # include <strings.h>
 #endif
 
-#include <fstream.h>
+#ifdef HAVE_FSTREAM
+# include <fstream>
+#elif defined (HAVE_FSTREAM_H)
+# include <fstream.h>
+#endif
+
 #include <stdio.h>
 
 #include <WOKTools_Messages.hxx>
