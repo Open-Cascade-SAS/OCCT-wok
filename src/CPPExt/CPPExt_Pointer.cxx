@@ -23,7 +23,6 @@ void CPP_Pointer(const Handle(MS_MetaSchema)& aMeta,
   if (aPointer.IsNull()) return;
 
   Handle(TCollection_HAsciiString)        aFileName;
-  Standard_Integer                        i;
 
   // Hxx extraction
   //

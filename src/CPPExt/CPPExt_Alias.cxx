@@ -25,7 +25,6 @@ void CPP_Alias(const Handle(MS_MetaSchema)& aMeta,
 
   Handle(TCollection_HAsciiString)        aFileName,
                                           realType;
-  Standard_Integer                        i;
   Handle(MS_Type)                         theType,tmpType;
 
   api->AddVariable(VClass,anAlias->FullName()->ToCString());

@@ -470,7 +470,7 @@ Handle(TCollection_HAsciiString) CPP_BuildFunctionCall(const Handle(MS_MetaSchem
   Handle(MS_Param)                 retType;
   Standard_Integer                 i;
   Handle(MS_Type)                  type;
-  Standard_CString                 calltype;
+  Standard_CString                 calltype = NULL;
 
   type = aMeta->GetType(method->Class());
 
