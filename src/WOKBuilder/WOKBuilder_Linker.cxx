@@ -534,7 +534,8 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
     Shell () -> Send ( args[ 4 ] );
     Shell () -> Send ( args[ 5 ] );
     Shell () -> Send ( args[ 6 ] );
-    Shell () -> Send ( args[ 7 ] );
+// JR : NO -lTKxxx while checking undefined symbols :
+//    Shell () -> Send ( args[ 7 ] );
     Shell () -> Send ( args[ 8 ] );
 
    }  // end if
