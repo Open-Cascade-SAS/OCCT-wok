@@ -39,10 +39,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return StandardCSFDB_Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
+$//      }
 $
 $    Handle(%HPName)():Handle(%HPInherits)() {} 
 $    Handle(%HPName)(const Handle(%HPName)& aHandle) : Handle(%HPInherits)(aHandle) 
@@ -124,10 +128,14 @@ $ inline void* operator new(size_t size)
 $   { 
 $     return StandardCSFDB_Allocate(size); 
 $   }
-$ inline void  operator delete(void *anAddress, size_t size) 
-$   { 
-$     if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
-$   }
+$    inline void  operator delete(void *anAddress) 
+$      { 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
+$      }
+$// inline void  operator delete(void *anAddress, size_t size) 
+$//   { 
+$//     if (anAddress) StandardCSFDB_Free((Standard_Address&)anAddress,size); 
+$//   }
 $
 $ // Methods PUBLIC
 $ // 

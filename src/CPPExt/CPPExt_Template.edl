@@ -56,10 +56,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$//      }
 $    Handle(%HTName)():Handle(%HTInherits)() {} 
 $    Handle(%HTName)(const Handle(%HTName)& aHandle) : Handle(%HTInherits)(aHandle) 
 $     {
@@ -156,10 +160,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$//      }
 $ // Methods PUBLIC
 $ // 
 $%TICPublicmets
@@ -289,10 +297,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$//      }
 $ // Methods PUBLIC
 $ // 
 $%TICPublicmets
@@ -412,10 +424,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$//      }
 $
 $ // Methods PUBLIC
 $ // 
@@ -655,10 +671,14 @@ $    inline void* operator new(size_t size)
 $      { 
 $        return Standard::Allocate(size); 
 $      }
-$    inline void  operator delete(void *anAddress, size_t size) 
+$    inline void  operator delete(void *anAddress) 
 $      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$//    inline void  operator delete(void *anAddress, size_t size) 
+$//      { 
+$//        if (anAddress) Standard::Free((Standard_Address&)anAddress,size); 
+$//      }
 $public:
 $ Standard_EXPORT static void Raise(const Standard_CString aMessage = "");
 $ Standard_EXPORT static void Raise(Standard_SStream& aReason);
