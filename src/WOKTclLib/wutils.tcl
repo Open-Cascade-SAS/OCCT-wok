@@ -1158,6 +1158,16 @@ proc wokUtils:LIST:selectpair { ll l } {
     return $rr
 }
 #
+# { a.x b.c c.v } => { a b c}
+#
+proc wokUtils:LIST:sanspoint { l } {
+    set rr {}
+    foreach x $l {
+	lappend rr [file root $x]
+    }
+    return $rr
+}
+#
 # sort elements of l, according to key 
 # key is the field number of an element considered as a string  
 # command is invoked and receive the 2 fields.
@@ -2191,5 +2201,121 @@ proc wokUtils:EASY:readdir { dir } {
 	lappend l [file tail $f]
     }
     return $l
+}
+
+;#
+;# "Nice letter: %s" { a b c } => {Nice letter: %a}  {Nice letter: %b} ..
+;# as a string without backslash
+;#
+proc wokUtils:EASY:FmtSimple1 { fmt l {backslh 1} } {
+    foreach e $l {
+	if { $backslh } {
+	    append str [format $fmt $e] "\n"
+	} else {
+	    append str [format $fmt $e]
+	}
+    }
+    return $str
+}
+;#
+;# 
+;# 
+proc wokUtils:EASY:FmtString1 { fmt l {yes_for_last 0} {edit_last {}} } {
+    set ldeb [lrange $l 0 [expr [llength $l] -2]]
+    set last [lrange $l end end]
+    foreach e $ldeb {
+	append str [format $fmt $e] " \\" "\n"
+    }
+
+    if {$edit_last != {} } {
+	set slast [$edit_last [format $fmt $last]]
+    } else {
+	set slast [format $fmt $last]
+    }
+
+    if { $yes_for_last } {
+	append str $slast " \\" "\n" 
+    } else {
+	append str $slast "\n"
+    }
+    return $str
+}
+;#
+;# 
+;# 
+;# edit_last is performed ONCE fmt has been applied.
+;#
+proc wokUtils:EASY:FmtString2 { fmt l {yes_for_last 0} {edit_last {}} } {
+    set ldeb [lrange $l 0 [expr [llength $l] -2]]
+    set last [lrange $l end end]
+    foreach e $ldeb {
+	append str [format $fmt $e $e] " \\" "\n"
+    }
+
+    if {$edit_last != {} } {
+	set slast [$edit_last [format $fmt $last $last]]
+    } else {
+	set slast [format $fmt $last $last]
+    }
+
+    if { $yes_for_last } {
+	append str $slast " \\" "\n" 
+    } else {
+	append str $slast "\n"
+    }
+
+    return $str
+}
+;#
+;# Apply fmt1 to the car of l, fmt2 to the cdr
+;#
+proc wokUtils:EASY:FmtFmtString1 { fmt1 fmt2 l {yes_for_last 0} {edit_last {}} } {
+    set car [lindex $l 0]
+    set ldeb [lrange $l 1 [expr [llength $l] -2]]
+    set last [lrange $l end end]
+    append str [format $fmt1 $car] " \\" "\n"
+    foreach e $ldeb {
+	append str [format $fmt2 $e] " \\" "\n"
+    }
+
+    if {$edit_last != {} } {
+	set slast [$edit_last [format $fmt2 $last]]
+    } else {
+	set slast [format $fmt2 $last]
+    }
+
+    if { $yes_for_last } {
+	append str $slast " \\" "\n" 
+    } else {
+	append str $slast  "\n"
+    }
+    return $str
+}
+;#
+;# Same as above. The first argument is treated with a specific format.
+;#
+proc wokUtils:EASY:FmtFmtString2 { fmt1 fmt2 l {yes_for_last 0} {edit_last {}} } {
+    set car [lindex $l 0]
+    set ldeb [lrange $l 1 [expr [llength $l] -2]]
+    set last [lrange $l end end]
+
+    append str [format $fmt1 $car $car] " \\" "\n"
+    foreach e $ldeb {
+	append str [format $fmt2 $e $e] " \\" "\n"
+    }
+
+    if {$edit_last != {} } {
+	set slast [$edit_last [format $fmt2 $last $last]]
+    } else {
+	set slast [format $fmt2 $last $last]
+    }
+
+
+    if { $yes_for_last } {
+	append str $slast " \\" "\n" 
+    } else {
+	append str $slast "\n"
+    }
+    return $str
 }
 
