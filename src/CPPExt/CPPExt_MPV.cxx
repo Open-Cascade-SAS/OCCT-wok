@@ -67,11 +67,7 @@ void CPP_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
   
   for (i = 1; i <= inclist->Length(); i++) {
     api->AddVariable(VIClass,inclist->Value(i)->ToCString());
-#ifdef WNT
-    api->Apply(VoutClass,"IncludeNoSafe");
-#else 
     api->Apply(VoutClass,"Include");
-#endif
     result->AssignCat(api->GetVariableValue(VoutClass));
   }
 
@@ -80,11 +76,7 @@ void CPP_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
     // include hxx of me
     //
     api->AddVariable(VIClass,aClass->FullName()->ToCString());
-#ifdef WNT
-    api->Apply(VoutClass,"IncludeNoSafe");
-#else 
     api->Apply(VoutClass,"Include");
-#endif
     result->AssignCat(api->GetVariableValue(VoutClass));
     
     api->AddVariable(VoutClass,result->ToCString());
@@ -348,11 +340,7 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     for (i = 1; i <= List->Length(); i++) {
       if (!List->Value(i)->IsSameString(theClass->FullName())) {
 	api->AddVariable(VIClass,List->Value(i)->ToCString());
-#ifdef WNT
-	api->Apply(VTICIncludes,"IncludeNoSafe");
-#else 
 	api->Apply(VTICIncludes,"Include");
-#endif
 	publics->AssignCat(api->GetVariableValue(VTICIncludes));
       }
     }

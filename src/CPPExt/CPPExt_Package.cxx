@@ -62,11 +62,7 @@ void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
   
   for (i = 1; i <= inclist->Length(); i++) {
     api->AddVariable(VIClass,inclist->Value(i)->ToCString());
-#ifdef WNT
-    api->Apply(VoutClass,"IncludeNoSafe");
-#else 
     api->Apply(VoutClass,"Include");
-#endif
     result->AssignCat(api->GetVariableValue(VoutClass));
   }
 
