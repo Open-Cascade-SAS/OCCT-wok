@@ -13,23 +13,23 @@ libwokdfltsteps.la libwokobjssteps.la libwokorbixsteps.la \
 libwoksteps.la libwoktoolscmd.la libwokutilscmd.la \
 libmscmd.la
 
-libwokdeliverysteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
+libwokdeliverysteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclTkLibs_LIB) 
 
-libwokcmd_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
+libwokcmd_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclTkLibs_LIB) 
 
-libwokdfltsteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
+libwokdfltsteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclTkLibs_LIB) 
 
-libwokobjssteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclLibs_LIB) 
+libwokobjssteps_la_LIBADD =../TKWOK/libTKWOK.la $(CSF_TclTkLibs_LIB) 
 
-libwokorbixsteps_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
+libwokorbixsteps_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclTkLibs_LIB)
 
-libwoksteps_la_LIBADD =../TKWOK/libTKWOK.la  ${CSF_TclLibs_LIB)
+libwoksteps_la_LIBADD =../TKWOK/libTKWOK.la  ${CSF_TclTkLibs_LIB)
 
-libwoktoolscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
+libwoktoolscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclTkLibs_LIB)
 
-libwokutilscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
+libwokutilscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclTkLibs_LIB)
 
-libmscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclLibs_LIB)
+libmscmd_la_LIBADD =../TKWOK/libTKWOK.la ${CSF_TclTkLibs_LIB)
 
 libwokdeliverysteps_la_SOURCES = wokdeliverysteps.cxx
 libwokcmd_la_SOURCES = wokcmd.cxx
