@@ -157,7 +157,19 @@ Handle(TCollection_HAsciiString) TCPP_BuildParameterList(const Handle(MS_MetaSch
       
 	if (aType->IsKind(STANDARD_TYPE(MS_Class))) {
 	  aClass = Handle(MS_Class)::DownCast(aType);
+//---> EUG BUC60592
+     if (   aClass -> IsKind (  STANDARD_TYPE( MS_InstClass )  ) &&
+           !aClass -> IsKind (  STANDARD_TYPE( MS_StdClass  )  )
+     ) {
 
+      Handle( MS_InstClass ) :: DownCast ( aClass ) -> InstToStd ();
+
+      aType = aMeta -> GetType (  aSeq -> Value ( i ) -> TypeName ()  );
+
+	  aClass = Handle( MS_Class ) :: DownCast ( aType );
+
+     }  // end if
+//<--- EUG BUC60592
 	  if (aClass->IsPersistent() || aClass->IsTransient()) {
 	    result->AssignCat("Handle(");
 	    result->AssignCat(aSeq->Value(i)->TypeName());
