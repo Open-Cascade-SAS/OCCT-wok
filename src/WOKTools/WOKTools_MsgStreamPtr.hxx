@@ -6,16 +6,7 @@
 
 #ifndef WOKTools_MsgStreamPtr_HeaderFile
 #define WOKTools_MsgStreamPtr_HeaderFile
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h>
-#endif
+#include <Standard_Stream.hxx>
 
 typedef ofstream* WOKTools_MsgStreamPtr;
 
