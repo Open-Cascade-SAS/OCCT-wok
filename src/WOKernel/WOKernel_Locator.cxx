@@ -24,6 +24,10 @@
 #include <windows.h>
 #endif
 
+//---> EUG4JR
+extern Standard_Boolean g_fForceLib;
+//<--- EUG4JR
+
 //=======================================================================
 //function : WOKernel_Locator
 //purpose  : 
@@ -171,7 +175,10 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
   Handle(WOKernel_File)    afile;
   Handle(TCollection_HAsciiString) astr;
   Standard_Integer i;
-
+//---> EUG4JR
+  static Handle( TCollection_HAsciiString ) libType = new TCollection_HAsciiString ( "library" );
+  Standard_Boolean fLibrary = atype -> IsSameString ( libType ) && g_fForceLib;
+//<--- EUG4JR
   WOK_TRACE {
     VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 			      << "Searching for " << locatorname << endm;
@@ -219,9 +226,9 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
 		  astr = aunit->GetFileType(atype)->ComputePath(aunit->Params(), aname);
 		  if (!astr.IsNull()) {
 #ifndef WNT
-		    if(!access(astr->ToCString(), F_OK))
+		    if(!access(astr->ToCString(), F_OK)||fLibrary)
 #else
-		      if ( GetFileAttributes(astr->ToCString()) != 0xFFFFFFFF )
+		      if ( (GetFileAttributes(astr->ToCString()) != 0xFFFFFFFF)||fLibrary )
 #endif
 			{
 			  WOK_TRACE {
