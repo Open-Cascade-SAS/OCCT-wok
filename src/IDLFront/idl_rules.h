@@ -11,5 +11,5 @@ void IDL_SetIdentifier(char *);
 void IDL_InterfaceDeclaration();
 void IDL_InterfaceDefinitionBegin();
 void IDL_InterfaceDefinitionEnd();
-};
+}
 
