@@ -217,7 +217,7 @@ proc wokIntegre:BASE:Execute { VERBOSE command {fileid stdout} } {
 ;# retourne une string  contenant le diff de Sfile dans les versions v1 et v2
 ;#;<
 proc wokIntegre:BASE:diff { sfile v1 v2 } {
-    return [exec sccsdiff -p $sfile -r$v1 -r$v2]
+    return [exec sccsdiff -p -b $sfile -r$v1 -r$v2]
 }
 ;#;>
 ;# retourne une string  contenant le contenu de la version v de sfile. 

@@ -134,6 +134,9 @@ proc wokWbtree:Tree { tree hli ent name ima } {
 	    }
 	}
     }
+    if { [info procs ${name}.wokhasq] == "${name}.wokhasq" } {
+	$hli entryconfigure ${ent}^${name} -image [${name}.wokhasq]
+    }
     return
 }
 

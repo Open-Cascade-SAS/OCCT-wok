@@ -1,3 +1,14 @@
+set __initenv__ [array get env]
+
+proc __restore_env__ {} {
+  global env __initenv__
+  set m [array size env]
+  for {set i 0} {$i < $m} {incr i} {
+    set k [array startsearch env]
+    unset env([array nextelement env $k])
+  }
+  array set env $__initenv__
+}
 
 auto_load wok_cd_proc
 auto_load wok_exit_proc
@@ -16,7 +27,7 @@ global WOK_GLOBALS;
 
 set WOK_GLOBALS(setenv_proc,term)  1
 set WOK_GLOBALS(setenv_proc,emacs) 1
-set WOK_GLOBALS(setenv_proc,tcl)   0
+set WOK_GLOBALS(setenv_proc,tcl)   1
 
 set WOK_GLOBALS(cd_proc,term)      1
 set WOK_GLOBALS(cd_proc,emacs)     1

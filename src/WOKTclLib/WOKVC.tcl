@@ -142,6 +142,7 @@ proc wokIntegrebase  { } {
             ;#
             ;# Lecture du report
             ;#  
+	    catch { unset table info notes }
             set stat [wokStore:Report:Process normal $REPORT table info notes]
             if { $stat == -1 } {
                 wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
