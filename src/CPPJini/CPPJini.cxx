@@ -210,7 +210,7 @@ Standard_Boolean CPPJini_Defined (
     if ( !fDefined ) {
 
      Standard_Integer maxVal = INT_MIN;
-     Standard_Integer index, j;
+     Standard_Integer index=0, j=0;
 
      for (  i = 1; i <= sLevels.Length (); ++i  )
 
@@ -242,7 +242,7 @@ Standard_Boolean CPPJini_Defined (
    if ( !fDefined ) {
 
     Standard_Integer minVal = INT_MAX;
-    Standard_Integer index, j;
+    Standard_Integer index=0, j=0;
 
     for (  i = 1; i <= sLevels.Length (); ++i  )
 
@@ -1872,13 +1872,10 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
 
   api->AddVariable("%Method",metstart->ToCString());
   api->AddVariable("%MBody",metbody->ToCString());
-
-  api -> Apply (
-          "%Method",
-          !strcmp (
-            api -> GetVariableValue ( "%CPPJiniEXTDBMS" ) -> ToCString (), "OBJS"
-           ) ? "MethodTemplateDefOBJS" : "MethodTemplateDef"
-         );
+  const char* theMethodTemplate = 
+    !strcmp (api -> GetVariableValue ( "%CPPJiniEXTDBMS" ) -> ToCString (), "OBJS"
+	     ) ? "MethodTemplateDefOBJS" : "MethodTemplateDef";
+  api -> Apply ("%Method",(char*) theMethodTemplate);
 
 }
 
