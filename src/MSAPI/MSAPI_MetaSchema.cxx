@@ -51,7 +51,8 @@
 #define MAX_ARGCHAR              512
 
 Standard_IMPORT void MS_ClearMapOfName();
-extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+//Standard_IMPORT MMgt_StorageManager aStorageManager;
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
@@ -657,7 +658,7 @@ Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKT
     {
       MS_ClearMapOfName();
       WOKBuilder_MSTool::GetMSchema()->Clear();
-      aStorageManager.Purge();
+      Standard::Purge();
     }
   else
     {
@@ -682,11 +683,12 @@ Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKT
 	}
       if(showmemory)
 	{
-	  aStorageManager.ShallowDump(cout);
+//	  Standard::ShallowDump(cout);
+          Standard::StorageManagerDump(cout);
 	}
       if(purge)
 	{
-	  aStorageManager.Purge();
+	  Standard::Purge();
 	}
     }
   
