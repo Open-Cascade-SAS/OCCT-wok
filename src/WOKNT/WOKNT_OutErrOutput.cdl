@@ -25,7 +25,7 @@ private class OutErrOutput from WOKNT inherits MixedOutput from WOKNT
   OpenStdErr ( me : out ) returns Integer from Standard is redefined static;
     ---Purpose: creates a pipe for reading a standard error output of sub-process
     --          and returns a pipe handle
-    ---Warning: returns INVALID_HANDLE_VALUE in case of failure 
+    --  Warning: returns INVALID_HANDLE_VALUE in case of failure 
 
   CloseStdErr ( me : out ) is redefined static;
     ---Purpose: closes write end of the 'STDERR' pipe
@@ -35,12 +35,12 @@ private class OutErrOutput from WOKNT inherits MixedOutput from WOKNT
 
   Errors ( me : out ) returns HSequenceOfHAsciiString from TColStd is redefined static;
     ---Purpose: returns standard error output of sub-process
-    ---Warning: returns NULL object if there is nothing to read
+    --  Warning: returns NULL object if there is nothing to read
 
   SyncStdErr ( me : out ) returns HSequenceOfHAsciiString from TColStd is redefined static;
     ---Purpose: waits for sub-process termination ( until the write end of pipe
     --          will be closed ).
-    ---Warning: write end of pipe MUST BE CLOSED by parent process immediately
+    --  Warning: write end of pipe MUST BE CLOSED by parent process immediately
     --          after creation of the child process else this method will
     --          NEVER return. Use ONLY 'CloseStdErr' method for this purpose.
 

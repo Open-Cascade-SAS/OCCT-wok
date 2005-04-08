@@ -33,7 +33,7 @@ private deferred class ShellOutput from WOKNT inherits File from OSD
   OpenStdOut ( me : out ) returns Integer from Standard is deferred;
     ---Purpose: creates an I/O object for reading a standard output of sub-process
     --          and returns this object handle.
-    ---Warning: returns INVALID_HANDLE_VALUE in case of failure
+    --  Warning: returns INVALID_HANDLE_VALUE in case of failure
 
   CloseStdOut ( me : out ) is deferred;
     ---Purpose: closes an I/O object's handle opened by 'OpenStdOut' method
@@ -41,7 +41,7 @@ private deferred class ShellOutput from WOKNT inherits File from OSD
   OpenStdErr ( me : out ) returns Integer from Standard is deferred;
     ---Purpose: creates an I/O object for reading a standard error output of sub-process
     --          and returns this object handle
-    ---Warning: returns INVALID_HANDLE_VALUE in case of failure
+    --  Warning: returns INVALID_HANDLE_VALUE in case of failure
 
   CloseStdErr ( me : out ) is deferred;
     ---Purpose: closes an I/O object's handle opened by 'OpenStdErr' method

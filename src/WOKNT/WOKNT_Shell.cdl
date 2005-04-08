@@ -94,7 +94,7 @@ class Shell from WOKNT inherits TShared from MMgt
   EnvironmentVariable ( me; aName : HAsciiString from TCollection )
    returns HAsciiString from TCollection;
     ---Purpose: returns a value for a given environment variable
-    ---Warning: returns a null string if specified variable does not exists
+    --  Warning: returns a null string if specified variable does not exists
 
   Echo ( me; aStr : HAsciiString from TCollection );
     ---Purpose: echoes a string
