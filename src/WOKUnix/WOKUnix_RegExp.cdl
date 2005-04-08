@@ -36,7 +36,7 @@ class RegExp from WOKUnix inherits TShared from MMgt
     	--          if no translation necessary. It is possible to set
     	--          syntax of the regular expression by meaning <aSyntax>
     	--          parameter.
-    	---Warning: raises if syntax of the regular expression given is incorrect
+    	--  Warning: raises if syntax of the regular expression given is incorrect
 
   Destroy ( me : mutable );
     	---Purpose: destroys all resources attached to the class instanse
@@ -50,7 +50,7 @@ class RegExp from WOKUnix inherits TShared from MMgt
    aTblLen   : Integer      from Standard = 0
   ) raises ProgramError from Standard;
     	---Purpose: sets a new match pattern and possibly a new pattern syntax
-    	---Warning: raises if the syntax given is incorrect
+    	--  Warning: raises if the syntax given is incorrect
 
   Search (
    me;
@@ -63,7 +63,7 @@ class RegExp from WOKUnix inherits TShared from MMgt
         --          Returns an index of the match position on success.
         --          Returns -1 if no match was found.
     	--          Returns -2 if error was occur.
-    	---Warning: raises if no search pattern was set
+    	--  Warning: raises if no search pattern was set
 
   Match (
    me;
@@ -78,7 +78,7 @@ class RegExp from WOKUnix inherits TShared from MMgt
     	--          Returns the length of the string matched on success.
     	--          Returns -1 if no match was found.
     	--          Returns -2 if error was occur.
-    	---Warning: raises if no search pattern was set
+    	--  Warning: raises if no search pattern was set
 
  fields
   
