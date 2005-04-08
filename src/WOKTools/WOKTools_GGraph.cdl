@@ -217,14 +217,14 @@ class GEdge
       raises NullObject;
     ---Level: Public
     ---Purpose: Remove a node from <me>.
-    ---Warning: All successors of me are also deleted.
+    --  Warning: All successors of me are also deleted.
 
     DelNode(me     : mutable;
     	    anItem : GraphItem)
       raises NullObject;
     ---Level: Public
     ---Purpose: Remove all nodes from <me> having an item <GraphItem>.
-    ---Warning: All successors of me are also deleted.
+    --  Warning: All successors of me are also deleted.
     
     DelEdge(me     : mutable;
     	    anEdge : GEdge from WOKTools)
@@ -244,7 +244,7 @@ class GEdge
       raises NullObject ;
     ---Level: Public
     ---Purpose: Returns a set of paths between two nodes.
-    ---Warning: It return a set in which all elements are displayed
+    --  Warning: It return a set in which all elements are displayed
     --          in <aView>.    
  
     BestPath(me                : mutable; 
@@ -255,7 +255,7 @@ class GEdge
     ---Purpose: Returns a set of the smallest paths between
     --          two nodes of <me>. (if there is more than one
     --          path, they had the same length)
-    ---Warning: It return a set in which all elements are displayed
+    --  Warning: It return a set in which all elements are displayed
     --          in <aView>.    
  
     Find(me     : mutable; 
@@ -292,7 +292,7 @@ class GEdge
       raises NullObject;
     ---Level: Public
     ---Purpose: Returns a sequence of the heirs of aNode at <aLevel> 
-    ---Warning: If <aLevel> is zero, returns a Sequence of all Heirs of aNode.
+    --  Warning: If <aLevel> is zero, returns a Sequence of all Heirs of aNode.
   
     Brothers(me     : mutable;
     	     aNode  : GNode from WOKTools)      

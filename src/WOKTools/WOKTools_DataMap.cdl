@@ -33,7 +33,7 @@ raises
     class DataMapIterator inherits BasicMapIterator from WOKTools
 	---Purpose: Provides iteration on the  content  of a map.  The
 	-- iteration  methods are inherited  from  the BasicMapIterator. 
-	---Warning: While using an iterator on a map if the content of
+	--  Warning: While using an iterator on a map if the content of
 	-- the map  is   modified  during the  iteration  the
 	-- result is unpredictable.
 
@@ -133,7 +133,7 @@ is
     Find(me; K : TheKey) returns any TheItem
 	---Level: Public
 	---Purpose: Returns  the Item stored  with the Key  <K> in the Map. 
-        ---Trigger: An exception is raised when <K> is not in the map.
+        --  Trigger: An exception is raised when <K> is not in the map.
     raises NoSuchObject from Standard  
 	---C++: alias operator()
 	---C++: return const &
@@ -144,7 +144,7 @@ is
 	---Purpose: Returns the  Item stored with  the Key  <K> in the
 	-- Map. This Item can be   modified with  the  syntax
 	-- aMap(K) = newItem; 
-        ---Trigger: An exception is raised when <K> is not in the map.
+        --  Trigger: An exception is raised when <K> is not in the map.
 	---C++: alias operator()
 	---C++: return &
     raises NoSuchObject from Standard 

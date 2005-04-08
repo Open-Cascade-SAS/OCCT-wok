@@ -18,7 +18,7 @@ raises
 	---Purpose: Provides iteration on  the content of  a map.  The
 	-- iteration    methods    are  inherited   from  the
 	-- BasicMapIterator.
-	---Warning: While using an iterator on a map if the content of
+	--  Warning: While using an iterator on a map if the content of
 	-- the map  is   modified  during the  iteration  the
 	-- result is unpredictable.
 	
