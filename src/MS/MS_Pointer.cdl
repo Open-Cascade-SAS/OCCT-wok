@@ -5,17 +5,16 @@
 ---Copyright:	 Matra Datavision 1994
 
 
-class Pointer 
+class Pointer from MS  
+
+    inherits NatType from MS 
 	---Purpose: Description of the "Pointer" type (Method or Class pointers).
 
-
-    from 
-    	MS 
-    inherits NatType from MS
     uses 
 	Common       from MS,
 	HAsciiString from TCollection
 
+    
 is
 
     Create(aName, aPackage, aContainer: HAsciiString from TCollection; 

@@ -65,7 +65,7 @@ is
     class ExecFile;
          
     class MetaSchema;
-          -- This class provides the methods and the informations for managing
+          ---Purpose: This class provides the methods and the informations for managing
           -- the packages, and the types used by MS.
           --     a) All The packages used by MS.
           --          1) A package can be created when analyzing a "cdl" text.
@@ -73,21 +73,21 @@ is
           --          1) A type can be created when analyzing a "cdl" text.
 
     deferred class Common;
-    	     -- The root of the other class of this package.
+    	     ---Purpose: The root of the other class of this package.
     	     --    It contains the "common" information:
     	     --       a) The Name of Object.
     	     --       b) If it has been loaded.
     	     --       d) The comment associated to the object.
 
         class Field;
-              -- The informations for a field.
+              ---Purpose: The informations for a field.
               --     a) Its Class.
               --     b) The Type of field.
               --     c) Its Dimensions.
               --     d) If it is protected.
 
         class Param;
-              -- The informations for a method parameter.
+              ---Purpose: The informations for a method parameter.
               --     a) Its Method.
               --     b) If it is a 'In' parameter.
               --     c) If it is a 'Out' parameter.
@@ -99,28 +99,28 @@ is
               --     i) The default value.
 
     	class ParamWithValue;
-	      -- Like Param with a default value
+	       ---Purpose: Like Param with a default value
 	
 	deferred class GlobalEntity;
-	      -- The abstract class, root of Package, Interface, Schema,
+	      ---Purpose: The abstract class, root of Package, Interface, Schema,
 	      -- Engine and Executable.
 
 	deferred class Exec;
-	      -- The abstract class, root of Engine and Executable.
+	       ---Purpose: The abstract class, root of Engine and Executable.
 
 	class Schema;
-	      -- The informations about a Schema.
+	       ---Purpose: The informations about a Schema.
 	      --    a) The used package.
 
 	class Executable;
-	      -- The informations about an executable.
+	       ---Purpose: The informations about an executable.
 	      --    a) The used Schema..
 	      --    b) The used packages.
 
     	class ExecPart;
 	
 	class Engine;
-	      -- The informations about an engine.
+	      ---Purpose: The informations about an engine.
 	      --    a) The used Schema..
               --    b) The used engine.
               --    c) The used Interfaces.
@@ -129,7 +129,7 @@ is
 
 
 	class Interface;
-	      -- The informations about an interface.
+	       ---Purpose: The informations about an interface.
 	      --    a) The used packages.
               --    b) The elements of Interface.
 	      --        The Packages.
@@ -138,12 +138,12 @@ is
 
 
     	class Client;
-	      -- The informations about a C++ client.
+	       ---Purpose: The informations about a C++ client.
               --    a) The interfaces used.
               --    b) The methods with asynchronous execution.
 
 	class Package;
-	      -- The informations a bout a package.
+	         ---Purpose: The informations a bout a package.
 	      --    a) The used package.
               --    b) The elements of package.
 	      --        The Classes.
@@ -152,7 +152,7 @@ is
 	      --        The Extern Methods.
 
         deferred class Method;
-                 -- The Informations for a method.
+                   ---Purpose: The Informations for a method.
                  --     a) The Parameters.
                  --     b) The Returned type.	
                  --     c) The Raises.
@@ -160,19 +160,19 @@ is
                  --     e) If it is private.
 
 	   class ExternMet;
-                 -- The informations for a package method.
+                  ---Purpose: The informations for a package method.
                  --     a) Its Package.
 
 	   deferred class MemberMet;
-	    	    -- The informations for the class methods.
+	    	     ---Purpose: The informations for the class methods.
 	    	    --     a) The Class of method.
 	    	    --     b) If it is protected.
 	        class Construc;
-                      -- The Constructor.
+                       ---Purpose: The Constructor.
 	        class ClassMet;
-                      -- The class method.
+                       ---Purpose: The class method.
 	        class InstMet;
-                      -- The information for a instance
+                        ---Purpose: The information for a instance
                       -- method.
                       --     a) The Instance parameter.
                       --     b) If it is static.
@@ -180,59 +180,59 @@ is
                       --     d) If it is redefined.
 
     	deferred class Type;
-       	    	 -- The informations for a Type.
+       	    	 ---Purpose: The informations for a Type.
        	    	 --   a) Its Package.
 
     	    class GenType;
-    	    	  -- The informations for a generic type.
+    	    	   ---Purpose: The informations for a generic type.
     	    	  --     a) Its generic class.
     	    	  --     b) If It can be any type.
     	    	  --     c) Its type. (If any is true, the type is Null.)
 			     
 		    
 	    deferred class NatType;
-		     -- The informations for a natural type.
+		        ---Purpose: The informations for a natural type.
 		     --       a)If it is private.
 	         class Alias;
-    	    	       -- The informations for an 
+    	    	         ---Purpose: The informations for an 
     	    	       -- alias
     	    	       --      a) Its type
 	         class Pointer;
-    	    	       -- The informations for a 
+    	    	          ---Purpose: The informations for a 
     	    	       -- pointer
     	    	       --      a) Its type
 	         class Enum;
-    	    	       -- The informations for a 
+    	    	          ---Purpose: The informations for a 
     	    	       -- enumeration
     	    	       --      a) Its elements.
 	         class Imported;
-    	    	       -- The informations for an 
+    	    	         ---Purpose: The informations for an 
     	    	       -- imported type
 	         class PrimType;
-		       -- A Primary Type.
+		         ---Purpose: A Primary Type.
 
     	    deferred class Class;
-    	    	     -- The informations for a Class.
+    	    	       ---Purpose: The informations for a Class.
     	    	     --     a) If it is complete or just declared.
     	    	     --     b) If it is deferred.
     	    	     --     c) If it is private.
 
 	         class GenClass;
-		       -- The informations for a Generic class
+		          ---Purpose: The informations for a Generic class
 		       --   a) The generique types.
 		       --   b) The Nesting classes.
 		       --   c) The Descreption class.
     	      	       --   d) if it has a Mother (a Nesting Class).
 
 	         class InstClass;
-    	    	       -- The informations for a Instanciated class
+    	    	         ---Purpose: The informations for a Instanciated class
     	    	       --    a) Its generic class.
     	    	       --    b) The Instanciated types.
     	    	       --    c) Its Nesting class.
     	    	       --    d) The generic class associated, if there is any.
 					      
     	         class StdClass;
-		       -- The informations for a Standard class:
+		          ---Purpose: The informations for a Standard class:
 		       --    a) The Ancestors
 		       --    b) The Used types.
 		       --    c) The Raises.
@@ -245,7 +245,7 @@ is
 		       --    j) The generic class associated, if there is any.
 
 		     class Error;
-    	    	    	   -- The information for a Exception.
+    	    	    	      ---Purpose: The information for a Exception.
     	    	    	   --     a) The Ancestors.
 
 
