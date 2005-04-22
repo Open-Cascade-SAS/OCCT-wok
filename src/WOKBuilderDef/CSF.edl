@@ -276,7 +276,7 @@
       @endif;
 
       @set %CSF_CXX_SysOptions  = "-nologo -MD -W3 -GX -Ob1 -Zi ";
-      @string %CSF_CXX_Options  = "-DWNT -D_WINDOWS -DWIN32 " %STLPortInclude;
+      @string %CSF_CXX_Options  = "-DWNT -D_WINDOWS -DWIN32  " %STLPortInclude;
 
       --<< TODO : If applicable , modify the root location where c compiler is installed (same as above).
       @set %CSF_C_COMPILER   = "D:/DevTools/VStudio/VC98/bin/cl ";
@@ -287,12 +287,12 @@
       @set %CSF_C_Options    = "-DWNT -D_WINDOWS -DWIN32 ";
 
       --<< TODO : If applicable , modify the root location where the Fortran compiler is installed.
-      @set %CSF_F77_COMPILER = "D:/DevTools/VStudio/DF98/bin/fl32 ";
+      @set %CSF_F77_COMPILER = "D:/DevTools/VStudio/DF/bin/fl32 ";
       -->> END TODO
 
       @set %CSF_F77_SysOptions  = "-nologo -libs:dll -Zi ";
 
-      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link ";
+      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link" ;
       @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER ;
       @set %CSF_VirtualDevice = "Q:";
       @set %CSF_LINKER_DBMSOpt = "";
@@ -307,20 +307,20 @@
       @set %CSF_LibraryHeaderOpt = "-nologo ";
 
       --<< TODO : If applicable , modify the root location where Java is installed.
-      @string %CSF_JavaHome     = "D:/AppTools/jdk1.2.2";
+      @string %CSF_JavaHome     = "D:/jdk1.3.1";
       -->> END TODO
 
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/win32 ";
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
 
-      @set %CSF_TCL_HOME = "D:/DevTools/TclTk";
+      @set %CSF_TCL_HOME = "D:/DevTools/Tcltk/tcl8.3";
       @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
       @string %CSF_TclLibs = %CSF_TCL_HOME "/lib/tcl83.lib";
-      @string %CSF_TclTkLibs = %CSF_TCL_HOME "/lib/tk83.lib";
-      @string %CSF_TclTlxLibs = %CSF_TCL_HOME "/lib/tkx83.lib";
-
-      @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib" ;
+      @string %CSF_TclTkLibs = %CSF_TCL_HOME"/lib/tk83.lib ";
+      @string %CSF_TclTkxLibs = %CSF_TCL_HOME"/lib/tkx83.lib ";
+ 
+      @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib msimg32.lib" ;
 
       @set %CSF_advapi32 = "advapi32.lib" ;
       @set %CSF_gdi32 = "gdi32.lib" ;
@@ -328,8 +328,7 @@
       @set %CSF_glu32 = "glu32.lib" ;
       @set %CSF_opengl32 = "opengl32.lib" ;
       @set %CSF_wsock32 = "wsock32.lib" ;
-      @set %CSF_netapi32 = "netapi32.lib" ;
-
+      @set %CSF_netapi32 = "netapi32.lib";
 
    @endif;
 
