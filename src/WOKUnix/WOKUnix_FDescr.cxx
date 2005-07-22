@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
@@ -37,9 +38,9 @@
 #include <OSD_OSDError.hxx>
 #include <Standard_ProgramError.hxx>
 
-//#ifndef DECOSF1
+#ifndef DECOSF1
 extern "C" { extern int  mknod (const char *, mode_t , dev_t ); }
-//#endif
+#endif
 
 extern int errno;
 
