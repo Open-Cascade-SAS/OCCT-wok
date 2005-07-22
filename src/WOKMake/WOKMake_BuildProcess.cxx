@@ -88,8 +88,8 @@ Standard_Boolean WOKMake_BuildProcess::ComputeSteps(const Handle(WOKernel_DevUni
 
   Standard_Integer i = 1;
   Handle(TCollection_HAsciiString) group = groups->Token(" \t", i);
-
-  myunits.Bind(aunit->Name(), TColStd_SequenceOfHAsciiString());
+  TColStd_SequenceOfHAsciiString thesequense;
+  myunits.Bind(aunit->Name(), thesequense);
 
   TColStd_SequenceOfHAsciiString& unitsteps = myunits(aunit->Name());
 
