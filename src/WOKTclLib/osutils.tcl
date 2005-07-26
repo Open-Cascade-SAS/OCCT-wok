@@ -1437,7 +1437,7 @@ proc osutils:am:PkCXXOption ppk {
 	set CXXStr  [lindex [wokparam -e %CMPLRS_CXX_Options [woklocate -u $pk]] 0]
 	set LastIndex [expr {[string length $CXXCOMMON ] - 1}]
 	if {[string equal $CXXCOMMON [string range $CXXStr 0 $LastIndex]]} {
-	  set CXXOption [string range  $CXXStr $LastIndex end ]
+	    set CXXOption " "
 	} else {
 	  set CXXOption [string range $CXXStr 0 [expr {[string last $CXXCOMMON $CXXStr] - 1}]]
 	}
