@@ -100,7 +100,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\__XQTNAM__.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=__TKDEP__ /nologo /subsystem:console /incremental:no  /machine:I386 /out:"$(OUTDIR)\__XQTNAMEX__" /implib:"$(LIBDIR)\__XQTNAM__.lib" /libpath:"$(LIBDIR)" 
+LINK32_FLAGS=__TKDEP__ /nologo /subsystem:console /incremental:no  /machine:IX86 /out:"$(OUTDIR)\__XQTNAMEX__" /implib:"$(LIBDIR)\__XQTNAM__.lib" /libpath:"$(LIBDIR)" 
 LINK32_OBJS= \
 	"$(INTDIR)\__XQTNAM__.obj" 
 
@@ -147,7 +147,7 @@ CLEAN :
 
 MTL=midl.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /W3 /GX /Zi /Od __COMPOPTD__ /D "WIN32" /D "DEB" /D "_DEBUG" /D "_WINDOWS" /D "WNT" /D "CSFDB" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /W3 /GX /Zi /Od __COMPOPTD__ /D "WIN32" /D "DEB" /D "_DEBUG" /D "_WINDOWS" /D "WNT" /D "CSFDB" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -185,7 +185,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\__XQTNAM__.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=__TKDEP__ /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\__XQTNAM__.pdb" /debug /machine:I386 /out:"$(OUTDIR)\__XQTNAMEX__" /implib:"$(LIBDIR)\__XQTNAM__.lib" /pdbtype:sept /libpath:"$(LIBDIR)" 
+LINK32_FLAGS=__TKDEP__ /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\__XQTNAM__.pdb" /debug /machine:IX86 /out:"$(OUTDIR)\__XQTNAMEX__" /implib:"$(LIBDIR)\__XQTNAM__.lib" /pdbtype:sept /libpath:"$(LIBDIR)" 
 LINK32_OBJS= \
 	"$(INTDIR)\__XQTNAM__.obj" 
 
