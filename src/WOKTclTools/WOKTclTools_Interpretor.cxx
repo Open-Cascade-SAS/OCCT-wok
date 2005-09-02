@@ -56,15 +56,26 @@ struct WOKCData {
 
 Standard_EXPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 
+// MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
+				    Standard_Integer argc, const char* argv[])
+#else
 static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
 				    Standard_Integer argc, char* argv[])
+#endif
 {
   CData* C = (CData*) clientData;
   
   // set de l'interprete en cours
   CurrentInterp = C->i;
 
+  // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+  if (C->f(C->i,argc,(char**)argv) == 0) 
+#else
   if (C->f(C->i,argc,argv) == 0) 
+#endif
     {
       CurrentInterp.Nullify();
       return TCL_OK;
@@ -76,8 +87,14 @@ static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
     }
 }
 
+// MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *, 
+				   Standard_Integer argc, const char* argv[])
+#else
 static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *, 
 				   Standard_Integer argc, char* argv[])
+#endif
 {
   WOKCData* C = (WOKCData*) clientData;
   
@@ -94,7 +111,12 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
       WOKUtils_ProcessManager::Arm();
       
       // appel de la fonction API
+      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+      if(!(*acmd)(argc, (char**)argv, returns))
+#else
       if(!(*acmd)(argc, argv, returns))
+#endif
 	{
 	  if(!C->i->TreatReturn(returns)) 
 	    {
@@ -110,7 +132,12 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
       
       Standard_SStream astream;
       astream << E << ends;
+      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+      ErrorMsg << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+#else
       ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+#endif
       WOKUtils_ProcessManager::UnArm();
       return TCL_ERROR;
     }
@@ -438,13 +465,23 @@ Standard_CString WOKTclTools_Interpretor::Result() const
 Standard_Boolean WOKTclTools_Interpretor::GetReturnValues(WOKTools_Return& retval) const
 {
   Standard_Integer  argc,i;
+  // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+  const char** argv;
+#else
   Standard_CString* argv;
+#endif
   
   if(Tcl_SplitList(myInterp, myInterp->result, &argc, &argv)) return Standard_True;
 
   for(i=0; i<argc; i++)
     {
+      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+      retval.AddStringValue((char*)argv[i]);
+#else
       retval.AddStringValue(argv[i]);
+#endif
     }
   if ( argc > 1 ) {
 #if defined( WNT ) && defined( _DEBUG )
@@ -663,7 +700,12 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 
   if(EndMessageProc() != NULL)
     {
+      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+      char* argv[5];
+#else
       Standard_Character* argv[5];
+#endif
       Standard_Character  tmp[2];
       int argc;
       argv[0]    = EndMessageProc();
@@ -685,7 +727,12 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 
       if (Tcl_GetCommandInfo(myInterp, argv[0], &infoPtr) != 0)
 	{
+	  // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+	  infoPtr.proc (infoPtr.clientData, myInterp, argc, (const char**)argv);
+#else
 	  infoPtr.proc (infoPtr.clientData, myInterp, argc, argv);
+#endif
 	  if (status==1)
 	    Tcl_AddErrorInfo(myInterp,"Invalid message");
 	}
@@ -706,7 +753,12 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 	  
 	  if (Tcl_GetCommandInfo(myInterp, argv[0], &infoPtr) != 0)
 	    {
+	      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+	      status = infoPtr.proc (infoPtr.clientData, myInterp, argc, (const char**)argv);
+#else
 	      status = infoPtr.proc (infoPtr.clientData, myInterp, argc, argv);
+#endif
 	      if (status==1)
 		Tcl_AddErrorInfo(myInterp,"Invalid message");
 	    }
@@ -724,7 +776,12 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 	  
 	  if (Tcl_GetCommandInfo(myInterp, argv[0], &infoPtr) != 0)
 	    {
+	      // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+	      status = infoPtr.proc (infoPtr.clientData, myInterp, argc, (const char**)argv);
+#else
 	      status = infoPtr.proc (infoPtr.clientData, myInterp, argc, argv);
+#endif
 	      if (status==1)
 		Tcl_AddErrorInfo(myInterp,"Invalid message");
 	    }
@@ -752,4 +809,3 @@ void Free ( void* ptr ) {
 
 }  // end Free
 #endif  // WNT && _DEBUG
-
