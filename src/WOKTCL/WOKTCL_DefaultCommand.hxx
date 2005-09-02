@@ -15,8 +15,14 @@ struct CData {
 };
 
 
+// MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+Standard_Integer DefaultCommand(ClientData , Tcl_Interp *, 
+				Standard_Integer ,const char* []);
+#else
 Standard_Integer DefaultCommand(ClientData , Tcl_Interp *, 
 				Standard_Integer , char* []);
+#endif
 
 void DefaultCommandDelete (ClientData );
 

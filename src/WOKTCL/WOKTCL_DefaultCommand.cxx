@@ -44,8 +44,14 @@
 //extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
 
+// MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *, 
+				Standard_Integer argc, const char* argv[])
+#else
 Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *, 
 				Standard_Integer argc, char* argv[])
+#endif
 {
   volatile Standard_Integer status = 0;
 
@@ -68,7 +74,12 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
     WOKUtils_ProcessManager::Arm();
 
     // appel de la fonction API
+    // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+    if(!(*acmd)(C->i->Session(), argc, (char**)argv, returns))
+#else
     if(!(*acmd)(C->i->Session(), argc, argv, returns))
+#endif
       {
 	if(!C->i->TreatReturn(returns)) 
 	  {
@@ -88,7 +99,12 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
     Standard_SStream astream;
     astream << E << ends;
 
+    // MKV 24.08.05
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
+    ErrorMsg << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+#else
     ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+#endif
 
     WOKAPI_Session* asess = (WOKAPI_Session *) &(C->i->Session());
     asess->GeneralFailure(E);
