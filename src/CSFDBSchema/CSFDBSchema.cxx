@@ -1015,7 +1015,7 @@ void CSFDBSchema_Extract(const Handle(MS_MetaSchema)& aMeta,
   api = CSFDBSchema_LoadTemplate(edlsfullpath,outdir,DBMS);
   
   api->AddVariable("%Schema",aName->ToCString());
-  
+  api->AddVariable("%SchemaComment",aSchema->Comment()->ToCString());
   classList    = aMeta->GetPersistentClassesFromSchema(aName,Standard_True);
   classListImp = aMeta->GetPersistentClassesFromClasses(classList,Standard_True);
 
