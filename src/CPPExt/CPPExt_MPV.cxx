@@ -1,3 +1,5 @@
+
+
 // CLE
 //    
 // 10/1995
@@ -61,8 +63,8 @@ void CPP_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
   //
   if (theClass.IsNull()) return;
 
-  api->AddVariable(VClass,aClass->FullName()->ToCString());
-
+  //api->AddVariable(VClass,aClass->FullName()->ToCString());
+  api->AddVariable(VClassComment,aClass->Comment()->ToCString());
   api->AddVariable(VSuffix,"hxx");
   
   for (i = 1; i <= inclist->Length(); i++) {
@@ -140,6 +142,7 @@ void CPP_MPVDerivated(const Handle(MS_MetaSchema)& aMeta,
   }
 
   api->AddVariable(VClass,aClass->FullName()->ToCString());
+  //api->AddVariable(VClassComment,aClass->Comment()->ToCString());
 
   api->Apply(VoutClass,"MPVIxx");
 
@@ -172,7 +175,6 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     Standard_Boolean                        HasInlineMethod = Standard_False,
                                             HasDestructor   = Standard_False;
 
-
     api->AddVariable(VTICIncludes,"");
     api->AddVariable(VTICPublicfriends,"");
     api->AddVariable(VTICProtectedfields,"");
@@ -196,6 +198,7 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     }
 
     api->AddVariable(VClass,theClass->FullName()->ToCString());
+    api->AddVariable(VClassComment,theClass->Comment()->ToCString());
 
     for (i = 1; i <= theClass->GetFriendsNames()->Length(); i++) {
       publics->AssignCat("friend ");
@@ -376,4 +379,5 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     Standard_NoSuchObject::Raise();
   }
 }
+
 

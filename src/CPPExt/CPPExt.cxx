@@ -333,6 +333,7 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
 
   // here we process all the common attributes of methods
   //
+  api->AddVariable(VMethodComment, m->Comment()->ToCString());
   api->AddVariable(VMethodName,methodName->ToCString());
   api->AddVariable(VVirtual,"");
   
@@ -841,6 +842,7 @@ void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& ,
   api->AddVariable(VInherits,str->ToCString());
   api->AddVariable(VAncestors,str1->ToCString());
   api->AddVariable(VClass,aClass->FullName()->ToCString());
+  //api->AddVariable(VClassComment,aClass->Comment()->ToCString());
 
   api->Apply(var,"TypeMgt");
 }

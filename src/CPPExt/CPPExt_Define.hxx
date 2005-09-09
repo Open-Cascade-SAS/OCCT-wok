@@ -2,6 +2,7 @@
 #define _CPPExt_Define_HeaderFile
 
 extern Standard_CString VClass,
+                 VClassComment,
                  VTICIncludes,
 		 VInherits,
 		 VTICPublicmets,
@@ -19,6 +20,7 @@ extern Standard_CString VClass,
                  VVirtual,
                  VReturn,
                  VAnd,
+                 VMethodComment,
                  VMethodName,
                  VArgument,
                  VMetSpec,

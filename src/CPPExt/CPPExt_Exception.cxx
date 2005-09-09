@@ -58,6 +58,8 @@ void CPP_ExceptionDerivated(const Handle(MS_MetaSchema)& aMeta,
   Handle(TCollection_HAsciiString)        result    = new TCollection_HAsciiString;
 
   api->AddVariable(VClass,aClass->FullName()->ToCString());
+  api->AddVariable(VClassComment,aClass->Comment()->ToCString());
+
   api->Apply(VSupplement,"ExceptionMethod");
   
   supplement->Append(api->GetVariableValue(VSupplement));

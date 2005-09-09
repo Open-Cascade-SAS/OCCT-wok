@@ -57,6 +57,7 @@ void CPP_BuildVArrayDeclarationCSFDB(const Handle(MS_MetaSchema)&,
 
     if (aGen->IsSameString(MS::GetVArrayRootName())) {
       api->AddVariable(VDName,aClass->FullName()->ToCString());
+      api->AddVariable(VClassComment,aClass->Comment()->ToCString());
       api->AddVariable(VDValue,anInst->InstTypes()->Value(1)->ToCString());
       api->Apply(VDValue,"VArrayDeclareCSFDB");
       Result->AssignCat(api->GetVariableValue(VDValue));
@@ -191,6 +192,7 @@ void CPP_PersistentDerivatedCSFDB(const Handle(MS_MetaSchema)& aMeta,
   if (theClass.IsNull()) return;
 
   api->AddVariable(VClass,aClass->FullName()->ToCString());
+  //api->AddVariable(VClassComment,aClass->Comment()->ToCString());
 
   api->AddVariable(VSuffix,"hxx");
   
@@ -339,6 +341,7 @@ void CPP_PersistentClassCSFDB(const Handle(MS_MetaSchema)& aMeta,
     api->AddVariable(VTICSuppMethod,"");
 
     api->AddVariable(VClass,theClass->FullName()->ToCString());
+    api->AddVariable(VClassComment,theClass->Comment()->ToCString());
     api->AddVariable(VInherits,theClass->GetInheritsNames()->Value(1)->ToCString());
 
     for (i = 1; i <= theClass->GetFriendsNames()->Length(); i++) {

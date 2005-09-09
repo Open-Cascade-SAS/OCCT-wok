@@ -16,7 +16,6 @@
 
 // Extraction of a transient class (inst or std)
 //
-//void CPP_Enum(const Handle(MS_MetaSchema)& aMeta,
 void CPP_Enum(const Handle(MS_MetaSchema)& ,
 			const Handle(EDL_API)& api,
 			const Handle(MS_Enum)& anEnum,
@@ -33,6 +32,7 @@ void CPP_Enum(const Handle(MS_MetaSchema)& ,
   
   api->AddVariable(VNb,result->ToCString());
   api->AddVariable(VClass,anEnum->FullName()->ToCString());
+  api->AddVariable("%EnumComment",anEnum->Comment()->ToCString());
   
   result->Clear();
 

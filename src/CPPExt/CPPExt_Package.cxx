@@ -1,3 +1,4 @@
+
 // CLE
 //    
 // 10/1995
@@ -45,7 +46,6 @@
 //   the supplement variable is used for non inline methods generated 
 //   by the extractor like destructor (added to .ixx ans _0.cxx
 //
-//void CPP_PackageDerivated(const Handle(MS_MetaSchema)& aMeta,
 void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
 			    const Handle(EDL_API)& api,
 			    const Handle(MS_Package)& aPackage,			    
@@ -58,6 +58,7 @@ void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
   Handle(TCollection_HAsciiString)        result    = new TCollection_HAsciiString;
 
   api->AddVariable(VClass,aPackage->Name()->ToCString());
+  //api->AddVariable(VClassComment,aPackage->Comment()->ToCString());
   api->AddVariable(VSuffix,"hxx");
   
   for (i = 1; i <= inclist->Length(); i++) {
@@ -113,6 +114,7 @@ void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
 
   CPP_WriteFile(api,aFileName,VoutClass); 
   
+
   outfile->Append(aFileName);
 }
 
@@ -155,6 +157,7 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
     api->AddVariable(VTICPrivatemets,"");
     api->AddVariable(VMethods,"");
     api->AddVariable(VClass,aPackage->FullName()->ToCString());
+    api->AddVariable(VClassComment,aPackage->Comment()->ToCString());
     api->AddVariable(VTICSuppMethod,"");
 
     // extraction of the methods
@@ -239,6 +242,9 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
     }
 
     for (i = 1; i <= packClass->Length(); i++) {
+      //Documentation
+
+
       // Declaration incomplete et
       //
       Handle(TCollection_HAsciiString) name = MS::BuildFullName(aPackage->Name(),packClass->Value(i));

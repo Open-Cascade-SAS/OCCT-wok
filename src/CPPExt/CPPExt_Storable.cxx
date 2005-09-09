@@ -178,6 +178,7 @@ void CPP_StorableDerivated(const Handle(MS_MetaSchema)& aMeta,
   if (theClass.IsNull()) return;
 
   api->AddVariable(VClass,aClass->FullName()->ToCString());
+  //api->AddVariable(VClassComment,aClass->Comment()->ToCString());
 
   api->AddVariable(VSuffix,"hxx");
   
@@ -330,6 +331,8 @@ void CPP_StorableClass(const Handle(MS_MetaSchema)& aMeta,
     }
 
     api->AddVariable(VClass,theClass->FullName()->ToCString());
+    api->AddVariable(VClassComment,theClass->Comment()->ToCString());
+
     api->AddVariable("%NameField",theClass->FullName()->ToCString());
 
     for (i = 1; i <= theClass->GetFriendsNames()->Length(); i++) {
