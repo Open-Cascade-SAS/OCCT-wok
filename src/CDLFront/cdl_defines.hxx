@@ -11,3 +11,8 @@
 #define CDL_REF          6
 #define CDL_HARDALIAS    7
 #define CDL_FUNCTIONCALL 8
+#define CDL_COMMENT      9
+
+
+
+

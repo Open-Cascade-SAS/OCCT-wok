@@ -13,7 +13,10 @@
 #endif  /* WNT */
 
 #include <cdl_defines.hxx>
-void add_cpp_comment(int,char*);
+void add_cpp_comment(int, char*);
+void add_documentation(char*);
+void add_documentation1(char*);
+
 #define yylval CDLlval
 #include <CDL.tab.h>
 int CDLlineno;
@@ -30,6 +33,8 @@ extern void CDLerror ( char* );
 /* The specials key words */
 
 COMMENTER	[-][-]
+DOCUMENTATION   [-][-][-][ \t]?[P][u][r][p][o][s][e].*[\n]
+DOCUMENTATION1  [-]{2,}[ \t]{1,}.*[\n]
 FCPLUSPLUS      [-][-][-][C][+][+][ \t]*
 CPLUSPLUS       [-][-][-][C][+][+][ \t]*[:][ \t]*
 FCPLUSPLUSD     [-][-][-][C][+][+][ \t]*[2][.][0][ \t]*
@@ -68,54 +73,56 @@ STRING		\"(\\\"|[^"])*\"
 /* %o		10000 */
 
 /* The rules section execfile	{ return(execfile); }*/
+%s DOC_BLOCK 
 
 %%
 
-{REF}\n          { add_cpp_comment(CDL_REF,CDLtext); CDLlineno++; }
-{CONSTREF}\n     { add_cpp_comment(CDL_CONSTREF,CDLtext); CDLlineno++; }
-{CONSTRET}\n     { add_cpp_comment(CDL_CONSTRET,CDLtext); CDLlineno++; }
-{DESTRUCTOR}\n   { add_cpp_comment(CDL_DESTRUCTOR,CDLtext); CDLlineno++; }
-{INLINE}\n       { add_cpp_comment(CDL_INLINE,CDLtext); CDLlineno++; }
-{OPERATOR}.*\n   { add_cpp_comment(CDL_OPERATOR,CDLtext); CDLlineno++; }
-{HARDALIAS}\n    { add_cpp_comment(CDL_HARDALIAS,CDLtext); CDLlineno++; }
-{FUNCTIONCALL}\n { add_cpp_comment(CDL_FUNCTIONCALL,CDLtext); CDLlineno++; }
-{CPLUSPLUSD}.*\n    { CDLlineno++; CDLerror("C++2.0 directive no more supported."); } 
-{FCPLUSPLUSD}.*\n   { CDLlineno++; CDLerror("C++2.0 directive no more supported (':' missing)."); } 
-{CPLUSPLUSD1}.*\n   { CDLlineno++; CDLerror("C++2.1 directive no more supported."); } 
-{FCPLUSPLUSD1}.*\n  { CDLlineno++; CDLerror("C++2.1 directive no more supported (':' missing)."); } 
-{CPLUSPLUS}\n       { CDLlineno++; CDLerror("Empty C++ directive."); } 
-{FCPLUSPLUS}.*\n    { CDLlineno++; CDLerror("C++ directive without ':'."); } 
-{COMMENTER}.*\n	 { CDLlineno++; }
+{DOCUMENTATION}     { add_documentation(CDLtext); BEGIN(DOC_BLOCK);  CDLlineno++; }
+<DOC_BLOCK>{DOCUMENTATION1}    { add_documentation1(CDLtext);  CDLlineno++; }
+{REF}\n             { add_cpp_comment(CDL_REF,CDLtext); CDLlineno++; BEGIN(0);}
+{CONSTREF}\n        { add_cpp_comment(CDL_CONSTREF,CDLtext); CDLlineno++; BEGIN(0); }
+{CONSTRET}\n        { add_cpp_comment(CDL_CONSTRET,CDLtext); CDLlineno++; BEGIN(0); }
+{DESTRUCTOR}\n      { add_cpp_comment(CDL_DESTRUCTOR,CDLtext); CDLlineno++;  BEGIN(0);}
+{INLINE}\n          { add_cpp_comment(CDL_INLINE,CDLtext); CDLlineno++;  BEGIN(0);}
+{OPERATOR}.*\n      { add_cpp_comment(CDL_OPERATOR,CDLtext); CDLlineno++; BEGIN(0); }
+{HARDALIAS}\n       { add_cpp_comment(CDL_HARDALIAS,CDLtext); CDLlineno++; BEGIN(0); }
+{FUNCTIONCALL}\n    { add_cpp_comment(CDL_FUNCTIONCALL,CDLtext); CDLlineno++; BEGIN(0); }
+{CPLUSPLUSD}.*\n    { CDLlineno++; CDLerror("C++2.0 directive no more supported."); BEGIN(0); } 
+{FCPLUSPLUSD}.*\n   { CDLlineno++; CDLerror("C++2.0 directive no more supported (':' missing).");  BEGIN(0);} 
+{CPLUSPLUSD1}.*\n   { CDLlineno++; CDLerror("C++2.1 directive no more supported."); BEGIN(0);} 
+{FCPLUSPLUSD1}.*\n  { CDLlineno++; CDLerror("C++2.1 directive no more supported (':' missing).");  BEGIN(0);} 
+{CPLUSPLUS}\n       { CDLlineno++; CDLerror("Empty C++ directive."); BEGIN(0); } 
+{FCPLUSPLUS}.*\n    { CDLlineno++; CDLerror("C++ directive without ':'.");  BEGIN(0);} 
+{COMMENTER}.*\n	    { CDLlineno++; BEGIN(0); }
 
-
-alias		{ return(alias); }
-any		{ return(any); }
-asynchronous    { return(asynchronous); }
-as		{ return(as); }
-class		{ return(class); }
-client          { return(client); }
-component       { return(component); }
-deferred  	{ return(deferred); }
-schema  	{ return(schema); }
-end		{ return(end); }
-engine		{ return(engine); }
-enumeration	{ return(enumeration); }
-exception	{ return(exception); }
-executable	{ return(executable); }
-fields		{ return(fields); }
-friends		{ return(friends); }
-from		{ return(CDL_from); }
-generic		{ return(generic); }
-immutable	{ return(immutable); }
-imported	{ return(imported); }
-in		{ return(in); }
-inherits	{ return(inherits); }
-instantiates	{ return(instantiates); }
-interface	{ return(interface); }
-is		{ return(is); }
-like		{ return(like); }
-me		{ return(me); }
-mutable		{ return(mutable); }
+alias		{ BEGIN(0); return(alias); }
+any		{ BEGIN(0); return(any); }
+asynchronous    { BEGIN(0); return(asynchronous); }
+as		{ BEGIN(0); return(as); }
+class		{ BEGIN(0); return(class); }
+client          { BEGIN(0); return(client); }
+component       { BEGIN(0); return(component); }
+deferred  	{ BEGIN(0); return(deferred); }
+schema  	{ BEGIN(0); return(schema); }
+end		{ BEGIN(0); return(end); }
+engine		{ BEGIN(0); return(engine); }
+enumeration	{ BEGIN(0); return(enumeration); }
+exception	{ BEGIN(0); return(exception); }
+executable	{ BEGIN(0); return(executable); }
+fields		{ BEGIN(0); return(fields); }
+friends		{ BEGIN(0); return(friends); }
+from		{ BEGIN(0); return(CDL_from); }
+generic		{ BEGIN(0); return(generic); }
+immutable	{ BEGIN(0); return(immutable); }
+imported	{ BEGIN(0); return(imported); }
+in		{ BEGIN(0); return(in); }
+inherits	{ BEGIN(0); return(inherits); }
+instantiates	{ BEGIN(0); return(instantiates); }
+interface	{ BEGIN(0); return(interface); }
+is		{ BEGIN(0); return(is); }
+like		{ BEGIN(0); return(like); }
+me		{ BEGIN(0); return(me); }
+mutable		{ BEGIN(0); return(mutable); }
 myclass		{ return(myclass); }
 out		{ return(out); }
 package		{ return(package); }
@@ -132,7 +139,7 @@ uses		{ return(uses); }
 virtual         { return(virtual); }
 library	        { return(library); }
 external	{ return(external); }
-as[ \t]*[c][+][+]       { return(cpp); }
+as[ \t]*[c][+][+]       { BEGIN(0); return(cpp); }
 as[ \t]*c	{ return(krc); }
 as[ \t]*fortran         { return(fortran); }
 as[ \t]*object          { return(object); }
@@ -167,7 +174,7 @@ as[ \t]*object          { return(object); }
 "="		{ return('='); }
 
 [ \t]		{ /* We don't take care of line feed, space or tabulation */ }
-[\n]            { CDLlineno++; }
+[\n]            { CDLlineno++;  BEGIN(0);}
 .		{ return(INVALID); }
 
 %%
@@ -189,6 +196,7 @@ static Comment()
      strcpy(&comment[comment_nb],CDLtext);
      comment_nb += size;
      new_comment = 1;
+     cout << comment << endl;
   }
 }
 

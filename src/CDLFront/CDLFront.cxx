@@ -157,7 +157,13 @@ extern int CDLlineno;
 #else
 extern "C" int CDLlineno;
 #endif  // WNT
-   
+
+#ifndef WNT
+extern FILE             *CDLin;
+#else
+extern "C" FILE             *CDLin;
+#endif  // WNT
+  
 // The Flags
 //
 static Standard_Boolean Private        = Standard_False,      
@@ -329,6 +335,7 @@ Handle(TColStd_HSequenceOfHAsciiString) ListOfPackages  = new TColStd_HSequenceO
 Handle(TColStd_HSequenceOfHAsciiString) ListOfItem      = new TColStd_HSequenceOfHAsciiString;
 Handle(TColStd_HSequenceOfHAsciiString) ListOfName      = new TColStd_HSequenceOfHAsciiString;
 Handle(TColStd_HSequenceOfHAsciiString) ListOfCplusplus = new TColStd_HSequenceOfHAsciiString;
+Handle(TColStd_HSequenceOfHAsciiString) ListOfComments  = new TColStd_HSequenceOfHAsciiString;
 Handle(TColStd_HSequenceOfInteger)      ListOfCPPType   = new TColStd_HSequenceOfInteger;
 Handle(TColStd_HSequenceOfHAsciiString) ListOfInteger   = new TColStd_HSequenceOfHAsciiString;
 
@@ -421,6 +428,7 @@ void CDL_InitVariable()
   ListOfItem      = new TColStd_HSequenceOfHAsciiString;
   ListOfName      = new TColStd_HSequenceOfHAsciiString;
   ListOfCplusplus = new TColStd_HSequenceOfHAsciiString;
+  ListOfComments  = new TColStd_HSequenceOfHAsciiString;
   ListOfCPPType   = new TColStd_HSequenceOfInteger;
   ListOfInteger   = new TColStd_HSequenceOfHAsciiString;
   ListOfGlobalUsed.Nullify();
@@ -521,6 +529,10 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
        }
      }  
     
+      //for (i = 1; i <= ListOfComments->Length(); i++ ) {
+      //   SimpleClass->SetComment(ListOfComments->Value(i));
+      //}  
+
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has no declaration of : " << thetypename << endm;
     YY_nb_error++;
   }
@@ -538,10 +550,15 @@ Standard_Boolean VerifyUses(char* used)
     Handle(MS_Engine)                        anEngine;
     Handle(MS_Component)                     aComponent;
     Standard_Boolean                         status = Standard_False;
-    
+    Standard_Integer                         i;
+
     if (theMetaSchema->IsPackage(Container)) {
       aPackage = theMetaSchema->GetPackage(Container);
       aSeqOfPackage = aPackage->Uses();
+      //for (i = 1; i <= ListOfComments->Length(); i++ ) {
+         //aPackage->SetComment(ListOfComments->Value(i));
+      //}  
+
     } 
     else if (theMetaSchema->IsInterface(Container)) {
       anInterface = theMetaSchema->GetInterface(Container);
@@ -556,12 +573,13 @@ Standard_Boolean VerifyUses(char* used)
       aSeqOfPackage = aComponent->Uses();
     }
     
-    for (Standard_Integer i = 1; i <= aSeqOfPackage->Length() && (status == 0); i++) {
+    for (i = 1; i <= aSeqOfPackage->Length() && (status == 0); i++) {
       if (strcmp(aSeqOfPackage->Value(i)->ToCString(),used) == 0) {
 	status = Standard_True;
       }
     }
-    
+    ListOfComments->Clear();
+
     return status;
   }
   else return Standard_True;
@@ -576,6 +594,7 @@ void Type_Pack(char *aName)
     msg->AssignCat(Container);
     CDLerror(msg->ToCString());
   }
+
   strncpy(Pack_Name,aName,MAX_CHAR);
 }
 
@@ -589,12 +608,11 @@ char *TypeCompletion(char *aName)
     Handle(TCollection_HAsciiString) aPackageName, thethetypename = new TCollection_HAsciiString(aName);
     
 
-     if (SimpleClass->Name()->IsSameString(thethetypename)) {
+    if (SimpleClass->Name()->IsSameString(thethetypename)) {
        return Container->ToCString();
-     }
+    }
 
     aSeqOfPackage = SimpleClass->GetUsesNames();
-
     for (i = 1; i <= aSeqOfPackage->Length(); i++) {
       aPackageName = aSeqOfPackage->Value(i)->Token("_");
       if (aSeqOfPackage->Value(i)->IsSameString(MS::BuildFullName(aPackageName,thethetypename))) {
@@ -697,6 +715,7 @@ void Type_Pack_Blanc()
   else {
     Type_Pack(Container->ToCString());
   }
+
 }
 
 void Add_Type() 
@@ -706,6 +725,37 @@ void Add_Type()
 
   ListOfTypes->Append(athetypename);
   ListOfPackages->Append(aPackName);
+}
+
+void add_documentation(char *comment)
+{ 
+  Handle(TCollection_HAsciiString) aComment;
+  Handle(TCollection_HAsciiString) aRealComment;
+  Standard_Integer pos;
+  aComment = new TCollection_HAsciiString(comment);
+  pos = aComment->Location(1,':',1,aComment->Length());
+  aRealComment = aComment->SubString(pos + 1, aComment->Length());
+  aRealComment->LeftAdjust();
+  if (!aRealComment->IsEmpty()) {
+    aRealComment->Insert(aRealComment->Length(), "<br>");
+    aRealComment->Insert(1,"///");
+    ListOfComments->Append(aRealComment);
+  }
+}
+
+void add_documentation1(char *comment)
+{ 
+  Handle(TCollection_HAsciiString) aComment;
+  Handle(TCollection_HAsciiString) aRealComment;
+  aComment = new TCollection_HAsciiString(comment);
+  aRealComment = aComment;
+  aRealComment->RemoveAll('-');
+  aRealComment->Insert(aRealComment->Length(), "<br>");
+  aRealComment->Insert(1,"///");
+  if (!aRealComment->IsEmpty()) {
+    aRealComment->LeftAdjust();
+    ListOfComments->Append(aRealComment);
+  }
 }
 
 void add_cpp_comment(int cpptype, char *comment)
@@ -718,10 +768,10 @@ void add_cpp_comment(int cpptype, char *comment)
     YY_nb_warning++;
   }
   else {
-    //    cout << Method->Name()->ToCString() << " " << comment << endl;
+    //cout << Method->Name()->ToCString() << " " << comment << endl;
     if (cpptype == CDL_HARDALIAS || cpptype == CDL_OPERATOR) {
       Standard_Integer pos;
-      aComment = new TCollection_HAsciiString(comment),
+      aComment = new TCollection_HAsciiString(comment);
       
       pos = aComment->Location(1,':',1,aComment->Length());
       aRealComment = aComment->SubString(pos + 1,aComment->Length());
@@ -760,7 +810,7 @@ void Make_List_Int(char *anInt)
 void Schema_Begin(char *name)
 {
   Handle(TCollection_HAsciiString) aSchemaName = new TCollection_HAsciiString(name);
-  
+
   Schema = new MS_Schema(aSchemaName);
   Schema->MetaSchema(theMetaSchema);
   Container = aSchemaName;
@@ -769,13 +819,18 @@ void Schema_Begin(char *name)
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Schema : " << aSchemaName << " is already defined." << endm;
     YY_nb_error++;
   }
+ ListOfComments->Clear();
 }
 
 void Schema_Package(char *name)
 {
+  Standard_Integer i;
   Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(name);
-  
   Schema->Package(aName);
+  for(i = 1; i <= ListOfComments->Length(); i++) {
+     Schema->SetComment(ListOfComments->Value(i));
+  }
+  ListOfComments->Clear();
 }
 
 void Schema_Class()
@@ -1158,6 +1213,9 @@ void Interface_End()
 //
 void Pack_Begin(char *aPackageName)
 {
+  
+  Standard_Integer i;
+
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
 
   Container = aPackName;
@@ -1165,22 +1223,34 @@ void Pack_Begin(char *aPackageName)
   Package = new MS_Package(aPackName);
  
   Package->MetaSchema(theMetaSchema);
-  
+
+  for (i = 1; i <= ListOfComments->Length(); i++) {
+    Package->SetComment(ListOfComments->Value(i));
+  }  
+
   if (!theMetaSchema->AddPackage(Package)) {
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Package : " << aPackageName << " is already defined." << endm;
     YY_nb_error++;
   }
   Package->Use(MS::GetPackageRootName());
+
+
   Current_Entity = CDL_PACKAGE;
+  ListOfComments->Clear();
+
 }
 
 void Pack_Use(char *aPackageName)
 {
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
+  for (Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
+    Package->SetComment(ListOfComments->Value(i));
+  }  
 
   ListOfGlobalUsed->Append(aPackName);
   Package->Use(aPackName);
-  
+  ListOfComments->Clear();
+
 }
 
 void Pack_End()
@@ -1189,6 +1259,8 @@ void Pack_End()
   Package.Nullify();
   ListOfTypes->Clear();
   ListOfPackages->Clear();
+  ListOfComments->Clear();
+
 }
 
 // The actions for the classes
@@ -1262,7 +1334,7 @@ void Pointer_End()
 void Imported_Begin()
 {
   Handle(TCollection_HAsciiString) anImportedName = new TCollection_HAsciiString(thetypename);
-  
+
   Imported = new MS_Imported(anImportedName,Container,Container,Private);
 
   Imported->MetaSchema(theMetaSchema);
@@ -1285,7 +1357,7 @@ void Imported_End()
 void Prim_Begin()
 {  
   Handle(TCollection_HAsciiString) aPrimName = new TCollection_HAsciiString(thetypename);
-  
+
   Primitive = new MS_PrimType(aPrimName,Container,Container,Private);
 
   Primitive->MetaSchema(theMetaSchema);
@@ -1371,11 +1443,15 @@ void Except_End()
 
 void Inc_Class_Dec()
 {
+  Standard_Integer i;
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
 
   StdClass = new MS_StdClass(aClassName,Container);
 
   StdClass->MetaSchema(theMetaSchema);
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     //StdClass->SetComment(ListOfComments->Value(i));
+  }
 
   if (!theMetaSchema->AddType(StdClass)) {
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << StdClass->FullName() << " is already defined." << endm;
@@ -1398,6 +1474,7 @@ void Inc_Class_Dec()
   Deferred  = Standard_False;
   Redefined = Standard_False;
   Like      = Standard_False;
+  ListOfComments->Clear();
 }
 
 void Inc_GenClass_Dec()
@@ -1519,6 +1596,7 @@ void GenClass_Begin()
   Deferred  = Standard_False;
   Redefined = Standard_False;
   Like      = Standard_False;
+  ListOfComments->Clear();
 }
 
 void Add_GenType()
@@ -1573,7 +1651,8 @@ void InstClass_Begin()
 {
   Handle(TCollection_HAsciiString) aPackName  = Container;
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
-  
+  Standard_Integer i;
+
   if (Current_Entity == CDL_GENCLASS) {
     aPackName  = GenClass->Package()->Name();
   }
@@ -1595,6 +1674,10 @@ void InstClass_Begin()
   }
   
   InstClass->MetaSchema(theMetaSchema);  
+
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     //InstClass->SetComment(ListOfComments->Value(i));
+  }
 
   if (!theMetaSchema->IsDefined(InstClass->FullName()) || Current_Entity == CDL_GENCLASS) {
     if (Current_Entity == CDL_GENCLASS && theMetaSchema->IsDefined(InstClass->FullName())) {
@@ -1640,6 +1723,7 @@ void InstClass_Begin()
   
   ListOfTypes->Clear();
   ListOfPackages->Clear();
+  ListOfComments->Clear();
 }
 
 void Add_Gen_Class()
@@ -1730,7 +1814,6 @@ void DynaType_Begin()
   SaveState      = Current_Entity;
   Current_Entity = CDL_GENTYPE;
   
-
   if (! ListOfItem->IsEmpty()) {
     Standard_Integer i;
     Handle(TCollection_HAsciiString) aPackName;
@@ -1768,24 +1851,23 @@ void StdClass_Begin()
 {
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackName  = new TCollection_HAsciiString(Pack_Name);
+  Standard_Integer i;
 
   if (Current_Entity == CDL_GENCLASS) {
     aPackName  = GenClass->Package()->Name();
   }
 
   Container  = aPackName;
-  
+
   if (!theMetaSchema->IsPackage(Container)) {
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Unknown package " << Container << endm;
     YY_nb_error++;
     CDL_InitVariable();
     MS_TraductionError::Raise("Unknown package.");
   }
-
   // si la classe n a pas ete cree par une dec incomplete
   //
   StdClass = new MS_StdClass(aClassName,aPackName);
-
   StdClass->MetaSchema(theMetaSchema);
 
   if (!theMetaSchema->IsDefined(StdClass->FullName()) || Current_Entity == CDL_GENCLASS) {    
@@ -1853,9 +1935,12 @@ void StdClass_Begin()
   if (Current_Entity != CDL_GENCLASS) {
     Current_Entity = CDL_STDCLASS;
   }
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     StdClass->SetComment(ListOfComments->Value(i));
+  }
 
   SimpleClass = StdClass;
-  
+
   Private   = Standard_False;
   Protected = Standard_False;
   Static    = Standard_True;
@@ -1865,6 +1950,8 @@ void StdClass_Begin()
 
   ListOfTypes->Clear();
   ListOfPackages->Clear();
+  ListOfComments->Clear();
+
 }
 
 void Add_Std_Ancestors()
@@ -1903,15 +1990,26 @@ void Add_Std_Ancestors()
       YY_nb_error++;
     }
   }
-  
+  //SimpleClass->MetaSchema(theMetaSchema);
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     SimpleClass->SetComment(ListOfComments->Value(i));
+  }
+
   ListOfTypes->Clear();
   ListOfPackages->Clear();
+  ListOfComments->Clear();
 }
 
 void Add_Std_Uses()
 {
-  Standard_Integer                 i;
-  
+  Standard_Integer  i;
+
+
+  //SimpleClass->MetaSchema(theMetaSchema);
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     SimpleClass->SetComment(ListOfComments->Value(i));
+  }
+
   for (i = 1; i <= ListOfTypes->Length(); i++) {
     Handle(TCollection_HAsciiString) aFullName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
 
@@ -1931,6 +2029,7 @@ void Add_Std_Uses()
     ListOfTypeUsed->Append(aFullName);
   }
 
+  ListOfComments->Clear();
   ListOfTypes->Clear();
   ListOfPackages->Clear();
 }
@@ -1946,6 +2045,7 @@ void StdClass_End()
   StdClass.Nullify();
   ListOfTypes->Clear();
   ListOfPackages->Clear();
+  ListOfComments->Clear();
 }
 
 
@@ -2052,14 +2152,18 @@ WOKTools_MapOfHAsciiString anEnumMap;
 void Enum_Begin()
 {
   Handle(TCollection_HAsciiString) anEnumName = new TCollection_HAsciiString(thetypename);
-  
+  Standard_Integer i;
+
   anEnumMap.Clear();
 
   Enum = new MS_Enum(anEnumName,Container,Container,Private);
 
   Enum->MetaSchema(theMetaSchema);
   Enum->Package(Package->FullName());
-
+  for(i = 1; i <= ListOfComments->Length(); i++) {
+     Enum->SetComment(ListOfComments->Value(i));
+  }  
+  ListOfComments->Clear();
   if (!theMetaSchema->AddType(Enum)) {
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Enumeration : " << Enum->FullName() << " is already defined." << endm;
     YY_nb_error++;
@@ -2070,7 +2174,11 @@ void Enum_Begin()
 void Add_Enum(char *aValue)
 {
   Handle(TCollection_HAsciiString) anEnumValue = new TCollection_HAsciiString(aValue);
-  
+  for(Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
+     Enum->SetComment(ListOfComments->Value(i));
+  }  
+  ListOfComments->Clear();
+
   if (!anEnumMap.Contains(anEnumValue)) {
     anEnumMap.Add(anEnumValue);
     Enum->Enum(anEnumValue);
@@ -2085,6 +2193,10 @@ void Enum_End()
 {
   //Enum->Check();
   Package->Enum(Enum->Name());
+  for(Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
+     Enum->SetComment(ListOfComments->Value(i));
+  }  
+  ListOfComments->Clear();
   Enum.Nullify();
   anEnumMap.Clear();
 
@@ -2121,6 +2233,9 @@ void add_cpp_comment_to_method()
     Standard_Integer                  i;
     Handle(TCollection_HAsciiString)  aCP;
     
+    for(i = 1; i <= ListOfComments->Length(); i++) {
+        Method->SetComment(ListOfComments->Value(i));
+    }  
     for(i = 1; i <= ListOfCplusplus->Length(); i++) {
       aCommentType = ListOfCPPType->Value(i);
 
@@ -2184,6 +2299,7 @@ void add_cpp_comment_to_method()
 	break;
       }
     }
+    ListOfComments->Clear();
     ListOfCplusplus->Clear();
     ListOfCPPType->Clear();
     theMetaSchema->AddMethod(Method);
@@ -2635,11 +2751,6 @@ void CDL_Main()
 extern "C" {
 void CDLrestart(FILE*);
 }
-#ifndef WNT
-extern FILE             *CDLin;
-#else
-extern "C" FILE             *CDLin;
-#endif  // WNT
 
 int TraductionMain(char *FileName)
 {
@@ -2712,7 +2823,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
   ListOfTypeUsed.Nullify();
   ListOfInst.Nullify();
   ListOfGen.Nullify();
-
+  ListOfComments.Nullify();
   return ErrorLevel;
 }
 

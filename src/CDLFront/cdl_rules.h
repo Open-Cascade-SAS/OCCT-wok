@@ -17,6 +17,8 @@ void Make_List_Int(char*);
 void set_inc_state();
 void restore_state();
 void add_cpp_comment(int,char*);
+void add_documentation(char*);
+void add_documentation1(char*);
 
 /*=-=-=-=-=-=-=-=-= The actions for the Package  =-=-=-=-=-=-=-=-=-=-=-=-=-=*/
 void Pack_Begin(char*);	       
