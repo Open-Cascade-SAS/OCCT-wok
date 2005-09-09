@@ -53,6 +53,7 @@ is
     GenType(me: mutable; aItem: GenType from MS);
     GenTypes(me)
     	returns mutable HSequenceOfGenType from MS;
+
 	
 fields
 
@@ -60,6 +61,8 @@ fields
     myNestStd  : HSequenceOfHAsciiString from TColStd;
     myNestIns  : HSequenceOfHAsciiString from TColStd;
     myNested   : HSequenceOfHAsciiString from TColStd;
+    myComment  : HAsciiString            from TCollection;   -- Comment to class declaration 
+
     
 end GenClass from MS;
 

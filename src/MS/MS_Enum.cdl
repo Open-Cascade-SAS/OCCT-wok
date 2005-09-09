@@ -28,9 +28,15 @@ is
 	
     Check(me);
 
+    Comment(me)
+         returns HAsciiString from TCollection;
+    
+    SetComment(me : mutable; aComment : HAsciiString from TCollection);
+
 fields
 
     myEnums        : HSequenceOfHAsciiString from TColStd;
+    myEnumComment      : HAsciiString from TCollection;   -- Comment to enumeration declaration 
 
 end Enum from MS;
 

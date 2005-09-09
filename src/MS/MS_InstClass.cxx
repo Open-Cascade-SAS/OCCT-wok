@@ -14,6 +14,7 @@ MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName,
   myGenType(new TColStd_HSequenceOfHAsciiString),myNestStd(new TColStd_HSequenceOfHAsciiString),
   myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False)
 {
+    myComment        = new TCollection_HAsciiString(""); 
 }
 
 MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName, 
@@ -26,10 +27,9 @@ MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName,
   myGenType(new TColStd_HSequenceOfHAsciiString),myNestStd(new TColStd_HSequenceOfHAsciiString),
   myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False)
 {
+    myComment        = new TCollection_HAsciiString(""); 
 }
 
-//void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& aName, 
-//			    const Handle(TCollection_HAsciiString)& aPackage) const 
 void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& , 
 			    const Handle(TCollection_HAsciiString)& ) const 
 {
@@ -434,3 +434,4 @@ void MS_InstClass::Initialize()
     myInstType->Append(myBasicInsType->Value(i));
   }
 }
+

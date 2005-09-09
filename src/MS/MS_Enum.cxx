@@ -8,7 +8,8 @@ MS_Enum::MS_Enum(const Handle(TCollection_HAsciiString)& aName,
 		 const Handle(TCollection_HAsciiString)& aContainer, 
 		 const Standard_Boolean aPrivate) : MS_NatType(aName,aPackage,aContainer,aPrivate) 
 {
-  myEnums = new TColStd_HSequenceOfHAsciiString;
+  myEnums   = new TColStd_HSequenceOfHAsciiString;
+  myEnumComment = new TCollection_HAsciiString("");
 }
 
 void MS_Enum::Enum(const Handle(TCollection_HAsciiString)& anEnum)
@@ -43,3 +44,12 @@ void MS_Enum::Check() const
   }
 }
 
+Handle(TCollection_HAsciiString)  MS_Enum::Comment() const
+{
+  return myEnumComment;
+}
+
+void MS_Enum::SetComment(const Handle(TCollection_HAsciiString)& aComment)
+{
+  myEnumComment->AssignCat(aComment);
+}

@@ -96,7 +96,8 @@ is
     ---Purpose: test or set the flag when the instantiation has been done
 
     Initialize(me : mutable);
-    ---Purpose: Prepare a instclass for a second instantiates pass 
+    ---Purpose: Prepare a instclass for a second instantiates pass
+ 
       
 fields
 
@@ -107,6 +108,7 @@ fields
      myNestStd       : HSequenceOfHAsciiString from TColStd;
      myNestIns       : HSequenceOfHAsciiString from TColStd;
      myNestNeu       : HSequenceOfHAsciiString from TColStd;
+     myComment       : HAsciiString            from TCollection; -- Comment to class declaration 
      myInstFlag      : Boolean from Standard;
      
 end InstClass from MS;

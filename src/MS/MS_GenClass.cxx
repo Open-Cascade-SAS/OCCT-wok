@@ -11,6 +11,7 @@ MS_GenClass::MS_GenClass(const Handle(TCollection_HAsciiString)& aName, const Ha
   myNestStd  = new TColStd_HSequenceOfHAsciiString;
   myNestIns  = new TColStd_HSequenceOfHAsciiString;
   myNested   = new TColStd_HSequenceOfHAsciiString;
+  myComment  = new TCollection_HAsciiString("");
 }
 
 MS_GenClass::MS_GenClass(const Handle(TCollection_HAsciiString)& aName, 
@@ -23,6 +24,8 @@ MS_GenClass::MS_GenClass(const Handle(TCollection_HAsciiString)& aName,
   myNestStd  = new TColStd_HSequenceOfHAsciiString;
   myNestIns  = new TColStd_HSequenceOfHAsciiString;
   myNested   = new TColStd_HSequenceOfHAsciiString;
+  myComment  = new TCollection_HAsciiString("");
+
   Private(aPrivate);
   Deferred(aDeferred);
   Incomplete(aInComplete);
@@ -211,5 +214,8 @@ Handle(MS_HSequenceOfGenType) MS_GenClass::GenTypes() const
 void MS_GenClass::CheckNested() const 
 {
 }
+
+
+
 
 

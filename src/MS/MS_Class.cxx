@@ -21,6 +21,7 @@ MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName,
     myFields         = new MS_HSequenceOfField;
     myFriendMets     = new TColStd_HSequenceOfHAsciiString;
     myFriends        = new TColStd_HSequenceOfHAsciiString;
+    myComment        = new TCollection_HAsciiString("");
     myIncomplete     = Standard_True;
     myPrivate        = Standard_False;
     myDeferred       = Standard_False;
@@ -55,7 +56,8 @@ MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName,
     myFields         = new MS_HSequenceOfField;
     myFriendMets     = new TColStd_HSequenceOfHAsciiString;
     myFriends        = new TColStd_HSequenceOfHAsciiString;
-    
+    myComment        = new TCollection_HAsciiString("");
+
     FullName(aFullName);
   }
   else {
@@ -83,7 +85,6 @@ Standard_Boolean MS_Class::Private() const
   return myPrivate;
 }
 
-//void MS_Class::Check(const Handle(TCollection_HAsciiString)& aName, const Handle(TCollection_HAsciiString)& aPackage) const 
 void MS_Class::Check(const Handle(TCollection_HAsciiString)& , const Handle(TCollection_HAsciiString)& ) const 
 {
 }
@@ -408,4 +409,16 @@ Standard_Boolean MS_Class::IsStorable()
   else return Standard_False;
 }
 
+Handle(TCollection_HAsciiString)  MS_Class::Comment() const
+{
+//  const Handle(TCollection_HAsciiString)& startComment  = new TCollection_HAsciiString("///");
+
+//  if (myComment->IsSameString(startComment)) myComment->Clear();
+  return myComment;
+}
+
+void MS_Class::SetComment(const Handle(TCollection_HAsciiString)& aComment)
+{
+  myComment->AssignCat(aComment);
+}
 

@@ -77,6 +77,10 @@ is
     Method(me: mutable; aMethod: ExternMet from MS);
     Methods(me) 
      	returns mutable HSequenceOfExternMet from MS;
+    Comment(me)
+         returns HAsciiString from TCollection;
+    SetComment(me : mutable; aComment : HAsciiString from TCollection);
+
 	
 fields
 
@@ -89,7 +93,8 @@ fields
     myImports  : HSequenceOfHAsciiString from TColStd;
     myPrims    : HSequenceOfHAsciiString from TColStd;
     
-    myMethods : HSequenceOfExternMet from MS;
+    myMethods  : HSequenceOfExternMet from MS;
+    myPackComment  : HAsciiString from TCollection;   -- Comment to Package declaration 
 
 end Package from MS;
 

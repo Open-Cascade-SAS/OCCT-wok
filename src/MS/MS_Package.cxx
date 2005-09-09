@@ -13,6 +13,8 @@ MS_Package::MS_Package(const Handle(TCollection_HAsciiString)& aPackage) : MS_Gl
   myImports  = new TColStd_HSequenceOfHAsciiString;
   myPrims    = new TColStd_HSequenceOfHAsciiString;
 
+  myPackComment  = new TCollection_HAsciiString("");
+
   myMethods  = new MS_HSequenceOfExternMet;
 
   myUses->Append(Name());
@@ -285,6 +287,21 @@ void MS_Package::Method(const Handle(MS_ExternMet)& aMethod)
 Handle(MS_HSequenceOfExternMet) MS_Package::Methods() const 
 {
   return myMethods;
+}
+
+Handle(TCollection_HAsciiString)  MS_Package::Comment() const
+{
+  //Handle(TCollection_HAsciiString) aRetComment = myComment;
+  //myComment->Clear();
+  //return aRetComment;
+  //const Handle(TCollection_HAsciiString)& startComment  = new TCollection_HAsciiString("///");
+  //if (myPackComment->IsSameString(startComment)) myPackComment->Clear();
+  return myPackComment;
+}
+
+void MS_Package::SetComment(const Handle(TCollection_HAsciiString)& aComment)
+{
+  myPackComment -> AssignCat(aComment);
 }
 
 

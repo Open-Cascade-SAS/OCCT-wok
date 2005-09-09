@@ -115,7 +115,13 @@ is
 	
     IsStorable(me : mutable)
     	returns Boolean from Standard;
-       
+    
+    Comment(me)
+         returns HAsciiString from TCollection;
+    
+    SetComment(me : mutable; aComment : HAsciiString from TCollection);
+
+        
 fields
 
     myIncomplete : Boolean                 from Standard;
@@ -129,8 +135,9 @@ fields
     myFriendMets : HSequenceOfHAsciiString from TColStd;
     myFriends    : HSequenceOfHAsciiString from TColStd;
     myMother     : HAsciiString            from TCollection;
-    myNestingClass : HAsciiString            from TCollection;
-    
+    myNestingClass : HAsciiString          from TCollection;
+    myComment    : HAsciiString            from TCollection;   -- Comment to class declaration 
+
 end Class from MS;
 
 

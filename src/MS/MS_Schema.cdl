@@ -23,11 +23,16 @@ is
     	
     Class(me : mutable; aClass : HAsciiString from TCollection);
     GetClasses(me) returns HSequenceOfHAsciiString from TColStd;
+  
+    Comment(me)  returns HAsciiString from TCollection;
+    SetComment(me : mutable; aComment : HAsciiString from TCollection);
+
     
 fields
 
     myPackages    : HSequenceOfHAsciiString from TColStd;
     myClasses     : HSequenceOfHAsciiString from TColStd;
-    
+    mySchemaComment  : HAsciiString from TCollection;   -- Comment to Schema declaration
+   
 end Schema from MS;
 

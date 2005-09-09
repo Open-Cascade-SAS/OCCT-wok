@@ -9,8 +9,9 @@
 #define MET_INLINE   0x10
 #define MET_OPERATOR 0x20
 #define MET_FUNCCALL 0x40
+#define MET_COMMENT  0x05
 
-MS_Method::MS_Method(const Handle(TCollection_HAsciiString)& aName) : MS_Common(aName),myAttribute(0),myRaises(new TColStd_HSequenceOfHAsciiString)
+MS_Method::MS_Method(const Handle(TCollection_HAsciiString)& aName) : MS_Common(aName),myAttribute(0),myRaises(new TColStd_HSequenceOfHAsciiString),myComment(new TCollection_HAsciiString(""))
 {
 }
 
@@ -323,6 +324,18 @@ void MS_Method::SetAliasType(const Standard_Boolean aType)
   else {
     myAttribute &= (MET_OPERATOR ^ myAttribute);
   }  
+}
+
+Handle(TCollection_HAsciiString)  MS_Method::Comment() const
+{
+  //const Handle(TCollection_HAsciiString)& startComment  = new TCollection_HAsciiString("///");
+  //if (myComment->IsSameString(startComment)) myComment->Clear();
+  return myComment;
+}
+
+void MS_Method::SetComment(const Handle(TCollection_HAsciiString)& aComment)
+{
+  myComment->AssignCat(aComment);
 }
 
 Standard_Boolean MS_Method::IsOperator() const 

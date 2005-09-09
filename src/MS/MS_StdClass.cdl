@@ -35,10 +35,17 @@ is
 	returns Boolean from Standard;
     ---Purpose: if <me> has not been instantiated return True
     --          Because <me> may be defined in a generic class.
-    
+
+    --Comment(me)
+    --    returns HAsciiString from TCollection;
+
+    --SetComment(me : mutable; aComment : HAsciiString from TCollection);
+ 
+
 fields
-    myInstClass      : InstClass                 from MS;
-    myNestingState   : Boolean from Standard;   -- True if <me> is a generic stdclass (not created by insttostd - see InstClass)
+    myInstClass      : InstClass     from MS;
+    myNestingState   : Boolean       from Standard;      -- True if <me> is a generic stdclass (not created by insttostd - see InstClass)
+    myComment        : HAsciiString  from TCollection;   -- Comment to class declaration
     
 end StdClass from MS;
 

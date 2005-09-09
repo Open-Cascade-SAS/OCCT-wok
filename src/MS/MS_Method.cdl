@@ -55,6 +55,10 @@ is
     	returns HAsciiString from TCollection;
 	
     SetAliasType(me : mutable; aType : Boolean from Standard);
+
+    Comment(me)
+         returns HAsciiString from TCollection;
+    SetComment(me : mutable; aComment : HAsciiString from TCollection);
     
     IsOperator(me) 
     	returns Boolean from Standard;
@@ -83,6 +87,7 @@ fields
     myReturns   : Param from MS;                   -- return parameter
     myRaises    : HSequenceOfHAsciiString from TColStd;        -- list of exceptions it raises
     myAlias     : HAsciiString from TCollection;   -- alias method of me
+    myComment   : HAsciiString from TCollection;   -- Comment to method 
     
 end Method from MS;
 
