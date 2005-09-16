@@ -3,12 +3,6 @@
 // Author:	Remi LEQUETTE
 //		<rle@phylox>
 
-#include <MMgt_StorageManager.hxx>
-
-//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
-//Standard_IMPORT MMgt_StorageManager aStorageManager;
-
-
 //=======================================================================
 //function : NbBuckets
 //purpose  : 

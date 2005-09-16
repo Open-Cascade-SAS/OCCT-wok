@@ -86,10 +86,12 @@ void  WOKTools_BasicMap::EndResize(const Standard_Integer NbBuckets,
 				      const Standard_Address data1,
 				      const Standard_Address data2)
 {
-  if (myData1)
-    Standard::Free(myData1,(myNbBuckets+1)*sizeof(void*));
-  if (myData2)
-    Standard::Free(myData2,(myNbBuckets+1)*sizeof(void*));
+  if (myData1) {
+    Standard::Free(myData1);
+  }
+  if (myData2) {
+    Standard::Free(myData2);
+  }
   myNbBuckets = N;
   mySaturated = myNbBuckets <= NbBuckets;
   myData1 = data1;
@@ -106,11 +108,13 @@ void  WOKTools_BasicMap::Destroy()
 {
   mySize = 0;
   mySaturated = Standard_False;
-  if (myData1)
-    Standard::Free(myData1,(myNbBuckets+1)*sizeof(void*));
+  if (myData1) {
+    Standard::Free(myData1);
+  }
   if (isDouble) {
-    if (myData2)
-      Standard::Free(myData2,(myNbBuckets+1)*sizeof(void*));
+    if (myData2) {
+      Standard::Free(myData2);
+    }
   }
   myData1 = myData2 = NULL;
 }
