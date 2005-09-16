@@ -313,7 +313,7 @@ idl_escape_reader(
       case 'x':
 	{
 	    
-	    for (i = 2; str[i] != '\0' && isxdigit(str[i]); i++) {
+	    for (i = 2; str[i] != '\0' && isxdigit((unsigned char)str[i]); i++) {
 		continue;
 	    }
 	    save = str[i];
@@ -339,3 +339,4 @@ idl_escape_reader(
 	break;
     }
 }
+
