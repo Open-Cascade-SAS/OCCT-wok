@@ -43,7 +43,7 @@ proc WOKDeliv_Replace:Execute { unit args } {
     set name       DELIVERY.tab.c
 
     set source    [woklocate -p WOKDeliv:source:$sourcename     [wokinfo -N $unit]]
-    set vistarget [woklocate -p WOKDeliv:privinclude:$name [wokinfo -N $unit]]
+    set vistarget [woklocate -p WOKDeliv:privinclude [wokinfo -N $unit]]$name
 #	set target    [wokinfo   -p WOKDeliv:privinclude:$name [wokinfo -N $unit]]
     msgprint -i -c "$source "
     regsub -all "/" " $source $vistarget" $replstr  TheArgs
