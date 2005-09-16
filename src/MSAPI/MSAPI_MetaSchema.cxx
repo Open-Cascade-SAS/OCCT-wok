@@ -51,8 +51,6 @@
 #define MAX_ARGCHAR              512
 
 Standard_IMPORT void MS_ClearMapOfName();
-//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
-//Standard_IMPORT MMgt_StorageManager aStorageManager;
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
@@ -619,9 +617,9 @@ void MSAPI_MetaSchema_Clear_Usage(char *cmd)
 //=======================================================================
 Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKTools_ArgTable& argv, WOKTools_Return& )
 {
-  WOKTools_Options opts(argc, argv, "awmnpS", MSAPI_MetaSchema_Clear_Usage);
+  WOKTools_Options opts(argc, argv, "awmnp", MSAPI_MetaSchema_Clear_Usage);
   Standard_Boolean
-    autotypes = Standard_False, woksd = Standard_False, meta = Standard_False, names = Standard_False, showmemory = Standard_False, purge = Standard_False;
+    autotypes = Standard_False, woksd = Standard_False, meta = Standard_False, names = Standard_False, purge = Standard_False;
   
 
   while(opts.More())
@@ -640,9 +638,6 @@ Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKT
 	case 'n':
 	  names = Standard_True;
 	  break;
-	case 'S':
-	  showmemory = Standard_True;
-	  break;
 	case 'P':
 	  purge = Standard_True;
 	  break;
@@ -654,7 +649,7 @@ Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKT
   
   if(opts.Failed() == Standard_True) return 1;
 
-  if(!autotypes && !woksd && !meta && !names && !showmemory && !purge)
+  if(!autotypes && !woksd && !meta && !names && !purge)
     {
       MS_ClearMapOfName();
       WOKBuilder_MSTool::GetMSchema()->Clear();
@@ -680,11 +675,6 @@ Standard_Integer MSAPI_MetaSchema::Clear(const Standard_Integer argc, const WOKT
       if(names)
 	{
 	  MS_ClearMapOfName();
-	}
-      if(showmemory)
-	{
-//	  Standard::ShallowDump(cout);
-          Standard::StorageManagerDump(cout);
 	}
       if(purge)
 	{
