@@ -1,8 +1,6 @@
 
 #define STRICT
 
-#include <MMgt_StorageManager.hxx>
-
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 
 #include <WOKUtils_Path.hxx>
@@ -30,8 +28,6 @@
 
 #include <WOKStep_WNTLink.ixx>
 
-// ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
-//extern MMgt_StorageManager aStorageManager;
 
 #ifdef WNT
 #include <windows.h>
@@ -300,8 +296,8 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 	  buff     = new TCollection_HAsciiString(buffer);
 
 //POP
-	  Standard::Free((void*&)buffer,dwLen+1);
-//	  aStorageManager.Free((void*&)buffer,dwLen+1);
+	  //Standard::Free((void*&)buffer,dwLen+1);
+	  Standard::Free((void*&)buffer);
 //POP
 	  seq->Append(buff);
 
@@ -326,8 +322,7 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 
 	  buff  = new TCollection_HAsciiString(buffer);
 //POP
-	  Standard::Free((void*&)buffer,dwLen+1);
-//	  aStorageManager.Free((void*&)buffer,dwLen+1);
+	  Standard::Free((void*&)buffer);
 //POP
 	  seq->Append(buff);
       
