@@ -23,19 +23,6 @@
 /******************************************************************************/
 /***/
 
-/* JGA : to compile on Solaris */
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-/* alloca() non disponible sur HPUX 9.07 */
-#ifdef __cplusplus
-extern "C" {
-#endif  
-void *alloca(unsigned int);
-# ifdef __cplusplus
-}
-#endif
 
 #include <WOKNT_regexp.h>
 
@@ -1351,7 +1338,7 @@ int re_match_2 (
 
       d2 = string2, dend2 = regend[ regno ];  /* end of string1 => advance to string2. */
 		  
-     }  /* end while
+     }  /* end while */
 	
      /* At end of register contents => success */
      if ( d2 == dend2 ) break;

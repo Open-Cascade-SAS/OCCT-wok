@@ -11,7 +11,7 @@
 #include <OSD_Path.hxx>
 #include <OSD_SharedLibrary.hxx>
 
-#include <Standard_regexp.h>
+#include <WOKNT_regexp.h>
 #include <stdio.h>
 
 typedef int ( *EXT_FUNC ) ( int, TCHAR** );
