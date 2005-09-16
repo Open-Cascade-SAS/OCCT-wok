@@ -42,7 +42,7 @@ proc IDLFront_Replace:Execute { unit args } {
 	set name       IDL.tab.c
 
 	set source    [woklocate -p IDLFront:source:$sourcename     [wokinfo -N $unit]]
-	set vistarget [woklocate -p IDLFront:privinclude:$name [wokinfo -N $unit]]
+	set vistarget [woklocate -p IDLFront:privinclude [wokinfo -N $unit]]$name
 #	set target    [wokinfo   -p IDLFront:privinclude:$name [wokinfo -N $unit]]
 msgprint -i -c "$source "
 	regsub -all "/" " $source $vistarget" $replstr  TheArgs
