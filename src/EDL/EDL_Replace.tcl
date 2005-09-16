@@ -42,7 +42,7 @@ proc EDL_Replace:Execute { unit args } {
 	set name       EDL.tab.c
 
 	set source    [woklocate -p EDL:source:$sourcename     [wokinfo -N $unit]]
-	set vistarget [woklocate -p EDL:privinclude:$name [wokinfo -N $unit]]
+	set vistarget [woklocate -p EDL:privinclude [wokinfo -N $unit]]$name
 #	set target    [wokinfo   -p EDL:privinclude:$name [wokinfo -N $unit]]
         msgprint -i -c "$source "
         regsub -all "/" " $source $vistarget" $replstr  TheArgs

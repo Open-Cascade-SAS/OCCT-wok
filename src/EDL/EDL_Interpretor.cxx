@@ -525,7 +525,6 @@ void EDL_Interpretor::EvalTemplate(const Standard_CString aTemplate, const Stand
     nbByte = nbByte + aNewResult->Value(i).Length();
   }
 
-//  aValue = (Standard_CString) aStorageManager.Allocate(nbByte + 1);
   aValue = (Standard_CString) Standard::Allocate(nbByte + 1);
   aValue[0] = '\0';
   Standard_Integer idx=0;
@@ -538,10 +537,13 @@ void EDL_Interpretor::EvalTemplate(const Standard_CString aTemplate, const Stand
 
   AddVariable(aResult,aValue);
 
-//  aStorageManager.Free((void*&)aValue, nbByte + 1);
-  Standard::Free((void*&)aValue, nbByte + 1);
+  Standard::Free((void*&)aValue);
 }
 
+//=======================================================================
+//function : RemoveTemplate
+//purpose  : 
+//=======================================================================
 void EDL_Interpretor::RemoveTemplate(const Standard_CString aTemplate)
 {
   if (aTemplate != NULL) {
@@ -827,8 +829,7 @@ void EDL_Interpretor::AddToArgList(const Standard_CString aVariable, const Stand
 void edl_add_include_directory(const edlstring adirectory)
 {
   GlobalInter->AddIncludeDirectory(adirectory.str);
-//  if (adirectory.str) aStorageManager.Free((void*&)adirectory.str, adirectory.length+1);
-  if (adirectory.str) Standard::Free((void*&)adirectory.str, adirectory.length+1);
+  if (adirectory.str) Standard::Free((void*&)adirectory.str);
 }
 
 // set type of parameter to varname
@@ -959,10 +960,8 @@ void edl_set_pvarevalvar(const edlstring varname, const edlstring value)
 void edl_test_condition(const edlstring varname, int ope, const edlstring value)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&) varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&) varname.str, varname.length+1);
-//    if (value.str) aStorageManager.Free((void*&)value.str, value.length+1);
-    if (value.str) Standard::Free((void*&)value.str, value.length+1);
+    if (varname.str) Standard::Free((void*&) varname.str);
+    if (value.str) Standard::Free((void*&)value.str);
     return;
   }
 
@@ -995,10 +994,8 @@ void edl_test_condition(const edlstring varname, int ope, const edlstring value)
   // we add the evaluation of the expression to the stack
   //
   GlobalInter->AddExpressionMember(aMember);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
-//  if (value.str)   aStorageManager.Free((void*&)value.str, value.length+1);
-  if (value.str)   Standard::Free((void*&)value.str, value.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
+  if (value.str)   Standard::Free((void*&)value.str);
 }
 
 // evaluation of a complex expression
@@ -1057,15 +1054,13 @@ void edl_isvardefined(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_isvardefinedm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1075,8 +1070,7 @@ void edl_isvardefinedm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_fileexist(const edlstring varname) 
@@ -1091,15 +1085,13 @@ void edl_fileexist(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_fileexistm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1109,8 +1101,7 @@ void edl_fileexistm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_fileexist_var(const edlstring varname) 
@@ -1126,15 +1117,13 @@ void edl_fileexist_var(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_fileexist_varm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1145,8 +1134,7 @@ void edl_fileexist_varm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_filenotexist(const edlstring varname) 
@@ -1161,15 +1149,13 @@ void edl_filenotexist(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_filenotexistm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1179,8 +1165,7 @@ void edl_filenotexistm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_filenotexist_var(const edlstring varname) 
@@ -1196,15 +1181,13 @@ void edl_filenotexist_var(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_filenotexist_varm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1215,8 +1198,7 @@ void edl_filenotexist_varm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_isvarnotdefined(const edlstring varname) 
@@ -1231,15 +1213,13 @@ void edl_isvarnotdefined(const edlstring varname)
     //
     GlobalInter->AddExecutionStatus(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_isvarnotdefinedm(const edlstring varname) 
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   else {
@@ -1249,8 +1229,7 @@ void edl_isvarnotdefinedm(const edlstring varname)
     //
     GlobalInter->AddExpressionMember(Result);
   }
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // remove one level of execution status
@@ -1282,8 +1261,7 @@ void edl_cout()
 void edl_create_string_var(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
   const TCollection_AsciiString& asciistr = GlobalInter->GetPrintList();
@@ -1291,8 +1269,7 @@ void edl_create_string_var(const edlstring varname)
   astr.str    = asciistr.ToCString();
   astr.length = asciistr.Length();
   edl_set_var(varname,astr);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // add the value of a variable to the print list
@@ -1300,8 +1277,7 @@ void edl_create_string_var(const edlstring varname)
 void edl_printlist_add_var(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
@@ -1310,8 +1286,7 @@ void edl_printlist_add_var(const edlstring varname)
   char* aString = GlobalInter->GetVariable(varname.str).GetValue();
     
   GlobalInter->GetPrintList().AssignCat(aString);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // add the value of a variable to the print list
@@ -1334,14 +1309,12 @@ void edl_printlist_addps_var(const edlstring varname)
 void edl_printlist_add_str(const edlstring str)
 {
   if (!edl_must_execute()) {
-//    if (str.str) aStorageManager.Free((void *&)str.str,str.length+1);
-    if (str.str) Standard::Free((void *&)str.str,str.length+1);
+    if (str.str) Standard::Free((void *&)str.str);
     return;
   }
 
   GlobalInter->GetPrintList().AssignCat(str.str);
-//  if (str.str) aStorageManager.Free((void *&)str.str,str.length+1);
-  if (str.str) Standard::Free((void *&)str.str,str.length+1);
+  if (str.str) Standard::Free((void *&)str.str);
 }
 
 // create a new template var
@@ -1349,40 +1322,34 @@ void edl_printlist_add_str(const edlstring str)
 void edl_create_template(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
   GlobalInter->AddTemplate(varname.str);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_set_template(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
   GlobalInter->AddToTemplate(varname.str);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 void edl_clear_template(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
   GlobalInter->ClearTemplate(varname.str);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // add a line to a template in construction
@@ -1390,16 +1357,14 @@ void edl_clear_template(const edlstring varname)
 void edl_add_to_template(const edlstring line)
 {
   if (!edl_must_execute()) {
-//    if (line.str) aStorageManager.Free((void*&)line.str, line.length+1);
-    if (line.str) Standard::Free((void*&)line.str, line.length+1);
+    if (line.str) Standard::Free((void*&)line.str);
     return;
   }
 
   // we remove the $
   //
   GlobalInter->GetTemplate(GlobalInter->GetCurrentTemplate().ToCString()).AddLine(&(line.str[1]));
-//  if (line.str) aStorageManager.Free((void*&)line.str, line.length+1);
-  if (line.str) Standard::Free((void*&)line.str, line.length+1);
+  if (line.str) Standard::Free((void*&)line.str);
 }
 
 // close a template
@@ -1416,8 +1381,7 @@ void edl_end_template()
 void edl_apply_template(const edlstring tempname)
 {
   if (!edl_must_execute()) {
-//    if (tempname.str) aStorageManager.Free((void*&)tempname.str, tempname.length+1);
-    if (tempname.str) Standard::Free((void*&)tempname.str, tempname.length+1);
+    if (tempname.str) Standard::Free((void*&)tempname.str);
     return;
   }
 
@@ -1435,8 +1399,7 @@ void edl_apply_template(const edlstring tempname)
     GlobalInter->AddToVariableList(listvar->Value(i)->ToCString());
   }
        
-//  if (tempname.str) aStorageManager.Free((void*&)tempname.str, tempname.length+1);
-  if (tempname.str) Standard::Free((void*&)tempname.str, tempname.length+1);
+  if (tempname.str) Standard::Free((void*&)tempname.str);
 }
 
 // add the variables used in the template
@@ -1444,8 +1407,7 @@ void edl_apply_template(const edlstring tempname)
 void edl_add_to_varlist(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
@@ -1453,8 +1415,7 @@ void edl_add_to_varlist(const edlstring varname)
 
   GlobalInter->GetTemplate(GlobalInter->GetCurrentTemplate().ToCString()).AddToVariableList(aVarName);
 
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // evaluation of the template
@@ -1462,16 +1423,14 @@ void edl_add_to_varlist(const edlstring varname)
 void edl_end_apply(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
   GlobalInter->EvalTemplate(GlobalInter->GetCurrentTemplate().ToCString(),varname.str);
   GlobalInter->ClearVariableList();
 
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // load and open a shared library
@@ -1479,14 +1438,12 @@ void edl_end_apply(const edlstring varname)
 void edl_open_library(const edlstring library)
 {
   if (!edl_must_execute()) {
-//    if (library.str) aStorageManager.Free((void*&)library.str, library.length+1);
-    if (library.str) Standard::Free((void*&)library.str, library.length+1);
+    if (library.str) Standard::Free((void*&)library.str);
     return;
   }
 
   GlobalInter->AddLibrary(library.str);
-//  if (library.str) aStorageManager.Free((void*&)library.str, library.length+1);
-  if (library.str) Standard::Free((void*&)library.str, library.length+1);
+  if (library.str) Standard::Free((void*&)library.str);
 }
 
 // close a shared library
@@ -1494,14 +1451,12 @@ void edl_open_library(const edlstring library)
 void edl_close_library(const edlstring library)
 {
   if (!edl_must_execute()) {
-//    if (library.str) aStorageManager.Free((void*&)library.str, library.length+1);
-    if (library.str) Standard::Free((void*&)library.str, library.length+1);
+    if (library.str) Standard::Free((void*&)library.str);
     return;
   }
 
   GlobalInter->RemoveLibrary(library.str);
-//  if (library.str) aStorageManager.Free((void*&)library.str, library.length+1);
-  if (library.str) Standard::Free((void*&)library.str, library.length+1);
+  if (library.str) Standard::Free((void*&)library.str);
 }
 
 // add a variable to arguments list
@@ -1509,14 +1464,12 @@ void edl_close_library(const edlstring library)
 void edl_arglist_add_var(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
   GlobalInter->AddToArgList(varname.str);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // add a string to arguments list
@@ -1526,14 +1479,12 @@ void edl_arglist_add_var(const edlstring varname)
 void edl_arglist_add_str(const edlstring string)
 {
   if (!edl_must_execute()) {
-//    if (string.str) aStorageManager.Free((void*&)string.str, string.length+1);
-    if (string.str) Standard::Free((void*&)string.str, string.length+1);
+    if (string.str) Standard::Free((void*&)string.str);
     return;
   }
 
   GlobalInter->AddToArgList(".",string.str);
-//  if (string.str) aStorageManager.Free((void*&)string.str, string.length+1);
-  if (string.str) Standard::Free((void*&)string.str, string.length+1);
+  if (string.str) Standard::Free((void*&)string.str);
 }
 
 // call a function in a library opened before
@@ -1541,19 +1492,16 @@ void edl_arglist_add_str(const edlstring string)
 void edl_call_procedure_library(const edlstring libname, const edlstring funcname)
 {
   if (!edl_must_execute()) {
-//    if (libname.str) aStorageManager.Free((void*&)libname.str, libname.length+1);
-    if (libname.str) Standard::Free((void*&)libname.str, libname.length+1);
-//    if (funcname.str) aStorageManager.Free((void*&)funcname.str, funcname.length+1);
-    if (funcname.str) Standard::Free((void*&)funcname.str, funcname.length+1);
+    if (libname.str) Standard::Free((void*&)libname.str);
+
+    if (funcname.str) Standard::Free((void*&)funcname.str);
     return;
   }
 
   EDL_Error aResult = GlobalInter->CallFunction(libname.str,funcname.str,0L);
 
-//  if (libname.str) aStorageManager.Free((void*&)libname.str, libname.length+1);
-  if (libname.str) Standard::Free((void*&)libname.str, libname.length+1);
-//  if (funcname.str) aStorageManager.Free((void*&)funcname.str, funcname.length+1);
-  if (funcname.str) Standard::Free((void*&)funcname.str, funcname.length+1);
+  if (libname.str) Standard::Free((void*&)libname.str);
+  if (funcname.str) Standard::Free((void*&)funcname.str);
 
   if (aResult != EDL_NORMAL) {
     Standard_NoSuchObject::Raise();
@@ -1565,23 +1513,17 @@ void edl_call_procedure_library(const edlstring libname, const edlstring funcnam
 void edl_call_function_library(const edlstring libname, const edlstring funcname, const edlstring resname)
 {
   if (!edl_must_execute()) {
-//    if (libname.str) aStorageManager.Free((void*&)libname.str, libname.length+1);
-    if (libname.str) Standard::Free((void*&)libname.str, libname.length+1);
-//    if (funcname.str) aStorageManager.Free((void*&)funcname.str, funcname.length+1);
-    if (funcname.str) Standard::Free((void*&)funcname.str, funcname.length+1);
-//    if (resname.str) aStorageManager.Free((void*&)resname.str, resname.length+1);
-    if (resname.str) Standard::Free((void*&)resname.str, resname.length+1);
+    if (libname.str) Standard::Free((void*&)libname.str);
+    if (funcname.str) Standard::Free((void*&)funcname.str);
+    if (resname.str) Standard::Free((void*&)resname.str);
     return;
   }
 
   EDL_Error aResult = GlobalInter->CallFunction(libname.str,funcname.str,resname.str);
 
-//  if (libname.str) aStorageManager.Free((void*&)libname.str, libname.length+1);
-  if (libname.str) Standard::Free((void*&)libname.str, libname.length+1);
-//  if (funcname.str) aStorageManager.Free((void*&)funcname.str, funcname.length+1);
-  if (funcname.str) Standard::Free((void*&)funcname.str, funcname.length+1);
-//  if (resname.str) aStorageManager.Free((void*&)resname.str, resname.length+1);
-  if (resname.str) Standard::Free((void*&)resname.str, resname.length+1);
+  if (libname.str) Standard::Free((void*&)libname.str);
+  if (funcname.str) Standard::Free((void*&)funcname.str);
+  if (resname.str) Standard::Free((void*&)resname.str);
 
   if (aResult != EDL_NORMAL) {
     Standard_NoSuchObject::Raise();
@@ -1593,19 +1535,15 @@ void edl_call_function_library(const edlstring libname, const edlstring funcname
 void edl_open_file(const edlstring varname, const edlstring filename)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
-//    if (filename.str) aStorageManager.Free((void*&)filename.str, filename.length+1);
-    if (filename.str) Standard::Free((void*&)filename.str, filename.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
+    if (filename.str) Standard::Free((void*&)filename.str);
     return;
   }
 
   EDL_Error aResult = GlobalInter->AddFile(varname.str,filename.str);
 
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
-//  if (filename.str) aStorageManager.Free((void*&)filename.str, filename.length+1);
-  if (filename.str) Standard::Free((void*&)filename.str, filename.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
+  if (filename.str) Standard::Free((void*&)filename.str);
 
   if (aResult != EDL_NORMAL) {
     Standard_NoSuchObject::Raise();
@@ -1617,10 +1555,8 @@ void edl_open_file(const edlstring varname, const edlstring filename)
 void edl_write_file(const edlstring varname, const edlstring buffername)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
-//    if (buffername.str) aStorageManager.Free((void*&)buffername.str, buffername.length+1);
-    if (buffername.str) Standard::Free((void*&)buffername.str, buffername.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
+    if (buffername.str) Standard::Free((void*&)buffername.str);
     return;
   }
 
@@ -1629,10 +1565,8 @@ void edl_write_file(const edlstring varname, const edlstring buffername)
 
   aFile.Write(aVar.GetValue());
 
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
-//  if (buffername.str) aStorageManager.Free((void*&)buffername.str, buffername.length+1);
-  if (buffername.str) Standard::Free((void*&)buffername.str, buffername.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
+  if (buffername.str) Standard::Free((void*&)buffername.str);
 }
 
 // close a file
@@ -1640,8 +1574,7 @@ void edl_write_file(const edlstring varname, const edlstring buffername)
 void edl_close_file(const edlstring varname)
 {
   if (!edl_must_execute()) {
-//    if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-    if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+    if (varname.str) Standard::Free((void*&)varname.str);
     return;
   }
 
@@ -1649,8 +1582,7 @@ void edl_close_file(const edlstring varname)
   
   aFile.Close();
   GlobalInter->RemoveFile(varname.str);
-//  if (varname.str) aStorageManager.Free((void*&)varname.str, varname.length+1);
-  if (varname.str) Standard::Free((void*&)varname.str, varname.length+1);
+  if (varname.str) Standard::Free((void*&)varname.str);
 }
 
 // include and process a file
@@ -1675,15 +1607,13 @@ void edl_uses_var(const edlstring var)
     TCollection_AsciiString anAscName = aVar.GetValue();
 
     edlstring fname;
-//    fname.str = (char *)  aStorageManager.Allocate(anAscName.Length() + 1);
     fname.str = (char *)  Standard::Allocate(anAscName.Length() + 1);
     memcpy(fname.str, anAscName.ToCString(), anAscName.Length()+1);
     fname.length = anAscName.Length();
     edl_uses(fname);
   }
 
-//  if (var.str) aStorageManager.Free((void*&)var.str, var.length+1);
-  if (var.str) Standard::Free((void*&)var.str, var.length+1);
+  if (var.str) Standard::Free((void*&)var.str);
 }
 
 void edl_uses(const edlstring filename) 
@@ -1744,16 +1674,14 @@ void edl_uses(const edlstring filename)
     
     if (EDLin == NULL) {
       EDL::PrintError(EDL_FILENOTOPENED,filename.str);
-//      if (filename.str) aStorageManager.Free((void*&)filename.str, filename.length+1);
-      if (filename.str) Standard::Free((void*&)filename.str, filename.length+1);
+      if (filename.str) Standard::Free((void*&)filename.str);
       EDLin = FileDesc[numFileDesc];
       EDLlineno = LineStack[numFileDesc];
       numFileDesc--;
       Standard_NoSuchObject::Raise();
     }
   }
-//  if (filename.str) aStorageManager.Free((void*&)filename.str, filename.length+1);
-  if (filename.str) Standard::Free((void*&)filename.str, filename.length+1);
+  if (filename.str) Standard::Free((void*&)filename.str);
 }
 
 void edl_else_execution_status()
@@ -1776,7 +1704,6 @@ void EDL_SetCurrentFile(const edlstring fname)
 edlstring edl_strdup(const char* buf, const int length)
 {
   edlstring ret;
-//  ret.str = (char *) aStorageManager.Allocate(length+1);
   ret.str = (char *) Standard::Allocate(length+1);
   memcpy(ret.str, buf,length+1);
   ret.length = length;
@@ -1786,7 +1713,6 @@ edlstring edl_strdup(const char* buf, const int length)
 edlstring edl_string(const char* buf, const int length)
 {
   edlstring ret;
-//  ret.str = (char *)  aStorageManager.Allocate(length-1);
   ret.str = (char *)  Standard::Allocate(length-1);
   memcpy(ret.str, &buf[1], length-1);
   ret.str[length - 2] = '\0';
@@ -1796,7 +1722,6 @@ edlstring edl_string(const char* buf, const int length)
 
 void edlstring_free(const edlstring buf)
 {
-//  if(buf.str) aStorageManager.Free((void*&)buf.str, buf.length+1);
-  if(buf.str) Standard::Free((void*&)buf.str, buf.length+1);
+  if(buf.str) Standard::Free((void*&)buf.str);
 }
 
