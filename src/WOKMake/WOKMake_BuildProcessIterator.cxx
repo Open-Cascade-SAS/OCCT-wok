@@ -6,8 +6,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Macro.hxx>
 
-#include <MMgt_StorageManager.hxx>
-
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
@@ -44,8 +42,7 @@
 
 #include <WOKMake_BuildProcessIterator.ixx>
 
-// ###### REFERENCER LE STORAGE MANAGER DES COLLECTIONS ######
-//extern Standard_IMPORT MMgt_StorageManager aStorageManager;
+
 
 //=======================================================================
 //Author   : Jean Gautier (jga)
