@@ -694,12 +694,9 @@ proc osutils:mkdspx { dir tkloc {tmplat {} } {fmtcpp {} } } {
        }
        if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
            set tkused [concat $tkused "\/dll"]
-           regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
-           regsub -all -- {__COMPOPTD__} $temp1 "\/MDd" temp2 
-       } else {
-	   regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
-	   regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
        }
+       regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
+       regsub -all -- {__COMPOPTD__} $temp1 "\/MDd" temp2 
        puts "$tf requires  $tkused"
        regsub -all -- {__TKDEP__} $temp2  $tkused temp3
        set files ""
@@ -760,15 +757,11 @@ proc osutils:vcprojx { dir tkloc {tmplat {} } {fmtcpp {} } } {
        if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
            set tkused [concat $tkused "\/dll"]
            set binext 2
-           regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1 
-           regsub -all -- {__COMPOPTD__} $temp1 "/\MDd" temp2 
        } else {
-	   regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
-	   regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
            set binext 1
        }
        #puts "$tf requires  $tkused"
-       regsub -all -- {__TKDEP__} $temp2  $tkused temp3
+       regsub -all -- {__TKDEP__} $temp0  $tkused temp3
        set files ""
        ;#set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
        ;#foreach f $lsrc {
@@ -1107,11 +1100,11 @@ proc osutils:mkmakx { dir tkloc {tmplat {} } {fmtcpp {} } } {
            regsub -all -- {__XQTNAMEX__} $temp2 "$tf.dll" temp3
        } else {
            if {$tclused != 1} {
-	     regsub -all -- {__COMPOPT__} $temp0 "\/MT" temp1
-	     regsub -all -- {__COMPOPTD__} $temp1 "\/MTd" temp2 
+	     regsub -all -- {__COMPOPT__} $temp0 "\/MD" temp1
+	     regsub -all -- {__COMPOPTD__} $temp1 "\/MDd" temp2 
            } else {
-	     regsub -all -- {__COMPOPT__} $temp0 "\/MT \/I \"\$(TCLHOME)\\include\"" temp1
-	     regsub -all -- {__COMPOPTD__} $temp1 "\/MTd \/I \"\$(TCLHOME)\\include\"" temp2 
+	     regsub -all -- {__COMPOPT__} $temp0 "\/MD \/I \"\$(TCLHOME)\\include\"" temp1
+	     regsub -all -- {__COMPOPTD__} $temp1 "\/MDd \/I \"\$(TCLHOME)\\include\"" temp2 
            }
            regsub -all -- {__XQTNAMEX__} $temp2 "$tf.exe" temp3
        }
@@ -1437,7 +1430,7 @@ proc osutils:am:PkCXXOption ppk {
 	set CXXStr  [lindex [wokparam -e %CMPLRS_CXX_Options [woklocate -u $pk]] 0]
 	set LastIndex [expr {[string length $CXXCOMMON ] - 1}]
 	if {[string equal $CXXCOMMON [string range $CXXStr 0 $LastIndex]]} {
-	    set CXXOption " "
+	  set CXXOption " "
 	} else {
 	  set CXXOption [string range $CXXStr 0 [expr {[string last $CXXCOMMON $CXXStr] - 1}]]
 	}
