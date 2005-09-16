@@ -44,7 +44,7 @@ proc CDLFront_Replace:Execute { unit args } {
     set name       CDL.tab.c
 
     set source    [woklocate -p CDLFront:source:$sourcename     [wokinfo -N $unit]]
-    set vistarget [woklocate -p CDLFront:privinclude:$name [wokinfo -N $unit]]
+    set vistarget [woklocate -p CDLFront:privinclude [wokinfo -N $unit]]$name
 #	set target    [wokinfo   -p CDLFront:privinclude:$name [wokinfo -N $unit]]
     msgprint -i -c "$source "
     regsub -all "/" " $source $vistarget" $replstr  TheArgs
@@ -59,7 +59,7 @@ proc CDLFront_Replace:Execute { unit args } {
 
     set name       CDL.tab.h
     set source    [woklocate -p CDLFront:source:$name     [wokinfo -N $unit]]
-    set vistarget [woklocate -p CDLFront:pubinclude:$name [wokinfo -N $unit]]
+    set vistarget [woklocate -p CDLFront:pubinclude [wokinfo -N $unit]]$name
     msgprint -i -c "$source "
     regsub -all "/" " $source $vistarget" $replstr  TheArgs
 
