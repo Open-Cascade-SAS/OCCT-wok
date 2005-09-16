@@ -735,27 +735,26 @@ void add_documentation(char *comment)
   aComment = new TCollection_HAsciiString(comment);
   pos = aComment->Location(1,':',1,aComment->Length());
   aRealComment = aComment->SubString(pos + 1, aComment->Length());
-  aRealComment->LeftAdjust();
+  aRealComment->RightAdjust();
   if (!aRealComment->IsEmpty()) {
-    aRealComment->Insert(aRealComment->Length(), "<br>");
-    aRealComment->Insert(1,"///");
+    aRealComment->AssignCat (" <br>");
+    aRealComment->Insert(1,"//!");
     ListOfComments->Append(aRealComment);
   }
 }
 
 void add_documentation1(char *comment)
 { 
-  Handle(TCollection_HAsciiString) aComment;
+  while ( *comment && IsSpace(*comment)) comment++;
+  while ( *comment == '-' ) comment++;
+  if ( ! *comment ) return;
+
   Handle(TCollection_HAsciiString) aRealComment;
-  aComment = new TCollection_HAsciiString(comment);
-  aRealComment = aComment;
-  aRealComment->RemoveAll('-');
-  aRealComment->Insert(aRealComment->Length(), "<br>");
-  aRealComment->Insert(1,"///");
-  if (!aRealComment->IsEmpty()) {
-    aRealComment->LeftAdjust();
-    ListOfComments->Append(aRealComment);
-  }
+  aRealComment = new TCollection_HAsciiString(comment);
+  aRealComment->RightAdjust();
+  aRealComment->AssignCat (" <br>");
+  aRealComment->Insert(1,"\n//!");
+  ListOfComments->Append(aRealComment);
 }
 
 void add_cpp_comment(int cpptype, char *comment)
@@ -768,7 +767,6 @@ void add_cpp_comment(int cpptype, char *comment)
     YY_nb_warning++;
   }
   else {
-    //cout << Method->Name()->ToCString() << " " << comment << endl;
     if (cpptype == CDL_HARDALIAS || cpptype == CDL_OPERATOR) {
       Standard_Integer pos;
       aComment = new TCollection_HAsciiString(comment);
@@ -1343,6 +1341,9 @@ void Imported_Begin()
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Imported : " << Imported->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
+  for (i =1; i <= ListOfComments->Length(); i++) {
+     Imported->SetComment(ListOfComments->Value(i));
+  }
 
   Private = Standard_False;
 }
@@ -1674,10 +1675,6 @@ void InstClass_Begin()
   }
   
   InstClass->MetaSchema(theMetaSchema);  
-
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     //InstClass->SetComment(ListOfComments->Value(i));
-  }
 
   if (!theMetaSchema->IsDefined(InstClass->FullName()) || Current_Entity == CDL_GENCLASS) {
     if (Current_Entity == CDL_GENCLASS && theMetaSchema->IsDefined(InstClass->FullName())) {
