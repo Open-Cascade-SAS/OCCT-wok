@@ -154,4 +154,4 @@ srcinc:::osutils.tcl
 srcinc:::config.h
 srcinc:::opencascade.gif
 srcinc:::woksh.el
-
+srcinc:::DocGenerate.tcl
