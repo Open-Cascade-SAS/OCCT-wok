@@ -93,9 +93,6 @@ lappend auto_path $wok_library
 package require Wok
 package require Ms
 package require Tclx
-if { "$tcl_platform(os)" == "SunOS" } {
-   package require Expect
-}
 ;#
 ;# Where tcl and edl file of wok reside.
 ;#
