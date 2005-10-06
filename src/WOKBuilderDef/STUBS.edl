@@ -1,6 +1,7 @@
 @ifnotdefined ( %STUBS_EDL ) then
     @set %STUBS_EDL = "";
-
+    @uses "CSF.edl";
+    
 @if ( %DebugMode == "True" ) then
 
  @set %STUBS_Dir     = "%WOKHOME%/Rtk-Release/";
@@ -12,8 +13,8 @@
   $%StubDir/_debug_stub.obj\^
  @end;
 
- @template STUBS_COMPILE ( %StubInput, %StubOutput ) is
-   $D:/DevTools/VStudio/VC98/bin/cl -nologo -MDd -c -Tc %StubInput -Fo%StubOutput;
+ @template STUBS_COMPILE ( %CSF_CXX_COMPILER, %StubInput, %StubOutput ) is
+   $%CSF_CXX_COMPILER -nologo -MDd -c -Tc %StubInput -Fo%StubOutput;
    $set stat=%status%;
    $wokRM -fq %StubInput;
    $set status=%stat%;
@@ -31,8 +32,8 @@
   $%StubDir/_release_stub.obj\^
  @end;
 
- @template STUBS_COMPILE ( %StubInput, %StubOutput ) is
-   $D:/DevTools/VStudio/VC98/bin/cl -nologo -MD -c -Tc %StubInput -Fo%StubOutput;
+ @template STUBS_COMPILE ( %CSF_CXX_COMPILER, %StubInput, %StubOutput ) is
+   $%CSF_CXX_COMPILER -nologo -MD -c -Tc %StubInput -Fo%StubOutput;
    $set stat=%status%;
    $wokRM -fq %StubInput;
    $set status=%stat%;
