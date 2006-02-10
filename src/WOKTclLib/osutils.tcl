@@ -1298,7 +1298,7 @@ proc osutils:tk:mkamx { dir tkloc } {
 	set MakeFile_am "$MakeFile_am lib${entity}_la_SOURCES = @top_srcdir@/src/${tkloc}/${entity}.cxx \n"
     }
     foreach entity $CXXList {
-        set MakeFile_am "$MakeFile_am lib${entity}_la_LIB_ADD = $libadd $externlib \n"
+        set MakeFile_am "$MakeFile_am lib${entity}_la_LIBADD = $libadd $externlib \n"
     }
     wokUtils:FILES:StringToFile "$MakeFile_am" [set fmam [file join $dir Makefile.am]]
 
