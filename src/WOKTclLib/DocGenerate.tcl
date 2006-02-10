@@ -29,7 +29,7 @@ proc DocGenerate {theModule outDir} {
          return 0
       } 
    } 
- if {$tcl_platform == "windows"} {
+ if {$tcl_platform(platform) == "windows"} {
     set filename "$env(TMP)/Doxybuffer"
  } else {
     set filename "/tmp/Doxybuffer"
@@ -39,7 +39,7 @@ proc DocGenerate {theModule outDir} {
 
  puts $fileid "PROJECT_NAME 	= Open CASCADE"
  puts $fileid "OUTPUT_DIRECTORY = $outDir/${theModule}"
- puts $fileid "CREATE_SUBDIRS   = YES"
+ puts $fileid "CREATE_SUBDIRS   = NO"
  puts $fileid "OUTPUT_LANGUAGE  = English"
  puts $fileid "DETAILS_AT_TOP   = YES"
  puts $fileid "MULTILINE_CPP_IS_BRIEF = YES"
