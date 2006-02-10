@@ -33,7 +33,7 @@ extern void CDLerror ( char* );
 /* The specials key words */
 
 COMMENTER	[-][-]
-DOCUMENTATION   [-][-][-][ \t]?[P][u][r][p][o][s][e].*[\n]
+DOCUMENTATION   [-][-][-][ \t]*[P][u][r][p][o][s][e].*[\n]
 DOCUMENTATION1  [-]{2,}[ \t]{1,}.*[\n]
 FCPLUSPLUS      [-][-][-][C][+][+][ \t]*
 CPLUSPLUS       [-][-][-][C][+][+][ \t]*[:][ \t]*
