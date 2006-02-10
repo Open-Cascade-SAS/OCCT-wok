@@ -163,6 +163,9 @@
       @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I"  %CSF_JavaHome "/include/linux ";
       @set %CSF_JAVA_COMPILER   = "javac";
       @set %CSF_JAVA_JNI        = "javah";
+      
+      @set %CSF_DOXIGEN          = "/PRODUCTS/maintenance/Linux/doxygen-1.4.1/bin/doxygen";
+      @set %CSF_GRAPHVIZ_HOME    = "/PRODUCTS/maintenance/Linux/graphviz";
 
       @set %CSF_X11_INCLUDE = "-I/usr/X11R6/include ";
       @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
