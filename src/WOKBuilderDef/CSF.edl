@@ -172,9 +172,9 @@
 
       @set %X11_LIB = "/usr/X11R6/lib";
 
-      @string %CSF_XwLibs = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi -ldps";
+      @string %CSF_XwLibs = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
 
-      @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL -dps" ;
+      @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " ;
 
       @string %CSF_TclLibs = "-L" %CSF_TCL_HOME "/lib  -ltcl "; 
       @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib  -ltk -L" %X11_LIB " -lX11";
