@@ -29,11 +29,24 @@ proc DocGenerate {theModule outDir} {
          return 0
       } 
    } 
- if {$tcl_platform(platform) == "windows"} {
-    set filename "$env(TMP)/Doxybuffer"
- } else {
-    set filename "/tmp/Doxybuffer"
+# if {$tcl_platform(platform) == "windows"} {
+#    set filename "$env(TMP)/Doxybuffer"
+# } else {
+#    set filename "/tmp/Doxybuffer"
+# }
+ set FileName [ clock seconds ]
+ set TempDirName ""
+ set CatchValue [ catch { set TempDirName $env(TMP) } ]
+ if { $CatchValue == 1 } {
+     if { $tcl_platform(platform) == "windows" } {
+         set TempDirName "$env(SYSTEMDRIVE)\\"
+     } else {
+         set TempDirName "/tmp/"
+     }
  }
+ set filename ""
+ append filename $TempDirName
+ append filename $FileName
  set fileid [open $filename "w"]
  set failed 0
 
@@ -41,7 +54,7 @@ proc DocGenerate {theModule outDir} {
  puts $fileid "OUTPUT_DIRECTORY = $outDir/${theModule}"
  puts $fileid "CREATE_SUBDIRS   = NO"
  puts $fileid "OUTPUT_LANGUAGE  = English"
- puts $fileid "DETAILS_AT_TOP   = YES"
+ puts $fileid "DETAILS_AT_TOP   = NO"
  puts $fileid "MULTILINE_CPP_IS_BRIEF = YES"
  puts $fileid "INHERIT_DOCS           = YES"
  puts $fileid "REPEAT_BRIEF           = NO"
@@ -89,5 +102,6 @@ proc DocGenerate {theModule outDir} {
  close $fileid
  msgprint -i -c "WOKStep_DocGenerate:Execute" "Processing $entity : $theModule. Writting to $outDir "
  catch {eval exec [lindex [wokparam -v %CSF_DOXIGEN] 0] $filename}
+ exec rm $filename
  return $failed
 }
