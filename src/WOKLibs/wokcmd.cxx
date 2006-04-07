@@ -149,6 +149,7 @@ int Wok_Init(WOKTclTools_PInterp interp)
   WOKUtils_ProcessManager::Arm();
 
   try {
+    OCC_CATCH_SIGNALS
     WOKInter->ChangeSession().Open();
   }
   catch(Standard_Failure) {
