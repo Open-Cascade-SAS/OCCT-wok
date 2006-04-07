@@ -1341,9 +1341,9 @@ void Imported_Begin()
     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Imported : " << Imported->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     Imported->SetComment(ListOfComments->Value(i));
-  }
+  //for (i =1; i <= ListOfComments->Length(); i++) {
+  //     Imported->SetComment(ListOfComments->Value(i));
+  //}
 
   Private = Standard_False;
 }
@@ -2804,6 +2804,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
     CDLFileName = aFileName;
 
     try {
+      OCC_CATCH_SIGNALS
       ErrorLevel = TraductionMain(aFileName->ToCString());
     }
     catch(Standard_Failure) {
