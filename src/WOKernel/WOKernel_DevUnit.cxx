@@ -996,6 +996,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
   Standard_Integer                         i;
 
   try {
+    OCC_CATCH_SIGNALS
 
     IsCyclic = Standard_False;
 
@@ -1099,6 +1100,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
   Standard_Integer                         i;
 
   try {
+    OCC_CATCH_SIGNALS
 
     IsCyclic = Standard_False;
 
