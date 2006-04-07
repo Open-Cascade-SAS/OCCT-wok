@@ -302,6 +302,7 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
   WOKUtils_Signal::Arm(WOKUtils_SIGINT,    (WOKUtils_SigHandler) NULL);
 #endif  // WNT  
   try {
+    OCC_CATCH_SIGNALS
 
     
     
