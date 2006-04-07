@@ -105,6 +105,7 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
 
   {
     try {
+      OCC_CATCH_SIGNALS
       
       WOKTools_Return returns;
       
