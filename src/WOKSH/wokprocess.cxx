@@ -109,6 +109,7 @@ int main(int argc, char **argv)
   WOKInter->AddExitHandler(Wok_ExitHandler);
 
   try {
+    OCC_CATCH_SIGNALS
     WOKTools_Return returns;
     
     WOKInter->ChangeSession().Open();
