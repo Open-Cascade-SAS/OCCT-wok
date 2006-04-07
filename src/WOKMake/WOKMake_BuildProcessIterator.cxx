@@ -200,6 +200,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	}
 
       try {
+        OCC_CATCH_SIGNALS
 	
 	step->Make();
 
