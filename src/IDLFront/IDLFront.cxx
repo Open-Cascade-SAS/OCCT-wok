@@ -170,6 +170,7 @@ int IDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
     IDLFileName = aFileName;
     
     try {
+      OCC_CATCH_SIGNALS
       ErrorLevel = TraductionMain(aFileName->ToCString());
     }
     catch(Standard_Failure) {
