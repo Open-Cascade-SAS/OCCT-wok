@@ -748,12 +748,15 @@ $    void  operator delete(void *anAddress)
 $      { 
 $        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
 $      }
+$#ifndef NO_CXX_EXCEPTION
+$ Standard_EXPORT virtual void Throw() const;
+$#endif
 $public:
+$ Standard_EXPORT %Class():%Inherits(){}
+$ Standard_EXPORT %Class(const Standard_CString AString):%Inherits(AString){}
 $ Standard_EXPORT static void Raise(const Standard_CString aMessage = "");
 $ Standard_EXPORT static void Raise(Standard_SStream& aReason);
-$#ifndef NO_CXX_EXCEPTION
-$ Standard_EXPORT virtual void Throw() const ;
-$#endif
+$ Standard_EXPORT static Handle(%Class) NewInstance(const Standard_CString aMessage); 
 $
 $ Standard_EXPORT ~%Class();
 $
@@ -784,10 +787,15 @@ ${
 $  Handle(%Class) _E (new %Class);
 $  _E->Reraise(AString);
 $}
+$
+$Handle(%Class) %Class::NewInstance(const Standard_CString aMessage)
+${
+$  return new %Class(aMessage);
+$}
 $#ifndef NO_CXX_EXCEPTION
 $void %Class::Throw() const
 ${
-$  throw %Class() ;
+$  throw *this;
 $}
 $#endif
 @end;
