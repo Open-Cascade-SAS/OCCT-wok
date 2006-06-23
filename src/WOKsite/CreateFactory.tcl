@@ -147,7 +147,7 @@ proc CreateFactory { HOME_ENTITIES FNAM WSNAM WBNAM IMPORT_DIR } {
 
 set CASHOME [file dirname $env(CASROOT)/.]
 
-CreateFactory $env(WOK_ROOTADMDIR) OS OCC51 ros $CASHOME
+CreateFactory [file normalize $env(WOK_ROOTADMDIR)] OS OCC51 ros [file normalize $CASHOME]
 puts "WOK initialization was done"
 exit
 

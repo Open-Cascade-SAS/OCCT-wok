@@ -105,7 +105,7 @@ set woksite          [file join $env(WOKHOME) site]
 ;# Where the files ATLIST , DEFAULT.edl and SESSION.edl reside
 ;#
 if {![info exists env(WOK_ROOTADMDIR)] } { 
-    set env(WOK_ROOTADMDIR) $env(WOKHOME)/wok_entities
+    set env(WOK_ROOTADMDIR) [file normalize $env(WOKHOME)/wok_entities]
     if ![file exists $env(WOK_ROOTADMDIR)] {
 	if [file writable $env(WOKHOME)] {
 	    puts stderr "Creating directory $env(WOK_ROOTADMDIR) for wok entities..."
@@ -137,7 +137,7 @@ if {![info exists env(WOK_ROOTADMDIR)] } {
 ;#
 if ![file exists  [set woksession [file join $env(WOK_ROOTADMDIR) WOKSESSION.edl]]] {
     set str1 [wokUtils:FILES:FileToString [file join $woksite WOKSESSION.edl]]
-    regsub -all -- {TOSUBSTITUTE} "$str1" "$env(WOK_ROOTADMDIR)" result1
+    regsub -all -- {TOSUBSTITUTE} "$str1" "[file normalize $env(WOK_ROOTADMDIR)]" result1
     wokUtils:FILES:StringToFile $result1 $woksession
     if [file exists $woksession] {
 	puts stderr "File $woksession has been created. "
@@ -148,7 +148,7 @@ if ![file exists  [set woksession [file join $env(WOK_ROOTADMDIR) WOKSESSION.edl
 ;#
 if ![file exists [set default [file join $env(WOK_ROOTADMDIR) DEFAULT.edl]]] {
     set str2 [wokUtils:FILES:FileToString [file join $woksite DEFAULT.edl]]
-    regsub -all -- {/dp_xx} "$str2" "$env(WOK_ROOTADMDIR)" result2
+    regsub -all -- {/dp_xx} "$str2" "[file normalize $env(WOK_ROOTADMDIR)]" result2
     wokUtils:FILES:StringToFile $result2 $default
     if [file exists $default] {
 	puts stderr "File $default has been created. "
