@@ -34,19 +34,33 @@ proc DocGenerate {theModule outDir} {
 # } else {
 #    set filename "/tmp/Doxybuffer"
 # }
- set FileName [ clock seconds ]
- set TempDirName ""
- set CatchValue [ catch { set TempDirName $env(TMP) } ]
- if { $CatchValue == 1 } {
-     if { $tcl_platform(platform) == "windows" } {
-         set TempDirName "$env(SYSTEMDRIVE)\\"
+## set FileName [ clock seconds ]
+## set TempDirName ""
+## set CatchValue [ catch { set TempDirName $env(TMP) } ]
+## if { $CatchValue == 1 } {
+##     if { $tcl_platform(platform) == "windows" } {
+##         set TempDirName "$env(SYSTEMDRIVE)\\"
+##     } else {
+##         set TempDirName "/tmp/"
+##     }
+## }
+## set filename ""
+## append filename $TempDirName
+## append filename $FileName
+
+ set admDir ""
+ if {[file exists $outDir/adm] == 1} {
+     if {[file isdirectory $outDir/adm] == 0} {
+         set admDir "."
      } else {
-         set TempDirName "/tmp/"
+         set admDir "adm"
      }
+ } else {
+     mkdir $outDir/adm
+     set admDir "adm"
  }
- set filename ""
- append filename $TempDirName
- append filename $FileName
+ 
+ set filename "$outDir/$admDir/$theModule"
  set fileid [open $filename "w"]
  set failed 0
 
@@ -102,6 +116,6 @@ proc DocGenerate {theModule outDir} {
  close $fileid
  msgprint -i -c "WOKStep_DocGenerate:Execute" "Processing $entity : $theModule. Writting to $outDir "
  catch {eval exec [lindex [wokparam -v %CSF_DOXIGEN] 0] $filename}
- exec rm $filename
+## exec rm $filename
  return $failed
 }

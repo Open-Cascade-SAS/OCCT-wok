@@ -97,7 +97,7 @@
 /* #undef HAVE_LIBINKS */
 
 /* Define to 1 if you have the <limits> header file. */
-#define HAVE_LIMITS 1
+#define HAVE_LIMITS_H 1
 
 /* Define if we have a function called "mallinfo" in -lmalloc. */
 /* #undef HAVE_MALLINFO */
@@ -711,7 +711,7 @@
 #define HAVE_FINITE 
 
 /* Define if you have the <floatingpoint.h> header file. */
-#undef HAVE_FLOATINGPOINT_H 1
+/*#undef HAVE_FLOATINGPOINT_H */
 
 /* Define if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
