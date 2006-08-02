@@ -1,6 +1,6 @@
 
 
-proc DocGenerate {theModule outDir} {
+proc DocGenerate {theModule outDir isSearch} {
 
  global tcl_platform
  global env
@@ -94,7 +94,10 @@ proc DocGenerate {theModule outDir} {
  puts $fileid "GENERATE_HTML	= YES"
  puts $fileid "GENERATE_LATEX   = NO"
  puts $fileid "SEARCH_INCLUDES  = YES"
- puts $fileid "GENERATE_TAGFILE = $outDir/${theModule}.tag"
+# puts $fileid "GENERATE_TAGFILE = $outDir/${theModule}.tag"
+ if {[string compare $isSearch "TRUE"] == 0} {
+     puts $fileid "SEARCHENGINE     = YES"
+ }
  puts $fileid "HAVE_DOT		= YES"
  puts $fileid "DOT_PATH		= [wokparam -v %CSF_GRAPHVIZ_HOME]"
  puts $fileid "COLLABORATION_GRAPH = NO"
