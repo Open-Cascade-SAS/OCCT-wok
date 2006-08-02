@@ -112,11 +112,21 @@
    $\^
   @end;
 
-  @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt, %CSF_CXX_COMPILERLINKER, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_LINKER_SysOpt ) is
-   --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
-   $%CSF_CXX_COMPILERLINKER %CSF_LINKER_SysShared %CSF_LINKER_SysOpt %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
-   $  -all -objectlist %LD_ObjList -none \
-  @end;
+    @set LINKSHR_Opt = "-64 -mips4 -Wl,-mmap -multigot -no_prelink";
+    @set LINKSHR_Check = "-64 -mips4 -mmap -multigot -no_unresolved";
+    @set LINKSHR_Linker = "/usr/bin/ld";
+
+-- @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt, %CSF_CXX_COMPILERLINKER, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_LINKER_SysOpt ) is
+-- --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+-- $%CSF_CXX_COMPILERLINKER %CSF_LINKER_SysShared %CSF_LINKER_SysOpt %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+-- $  -all -objectlist %LD_ObjList -none \
+-- @end;
+     @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_CXX_COMPILER, %LINKSHR_Opt ) is
+         $set %CSF_CXX_COMPILER = "%CSF_CXX_COMPILER"
+	 $set %LINKSHR_Opt = "%LINKSHR_Opt"
+         $${CSF_CXX_COMPILER} ${LINKSHR_Opt} %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
+         $  -all -objectlist %LD_ObjList -none \
+     @end;
 
   @template LINKSHR_Footer ( %Station ) is
     $-lm ;
@@ -127,16 +137,24 @@
     --$ endif
   @end;
 
-  @template LINKSHR_CheckUndefHeader (%CSF_LINKER, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt, %CSF_LINKER_CheckOut ) is
-   --$if ( $?LD_LIBRARY_PATH ) then
-   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:$LD_LIBRARY_PATH
-   --$else
-   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
-   --$endif
-   $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-   $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
-   $%CSF_LINKER %CSF_LINKER_CheckOpt %CSF_LINKER_CheckOut \
-  @end;
+--  @template LINKSHR_CheckUndefHeader (%CSF_LINKER, %LD_LIBRARY_PATH, %CSF_LINKER_CheckOpt, %CSF_LINKER_CheckOut ) is
+--   --$if ( $?LD_LIBRARY_PATH ) then
+--   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+--   --$else
+--   --$ setenv LD_LIBRARY_PATH %LD_LIBRARY_PATH
+--   --$endif
+--   $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+--   $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
+--   $%CSF_LINKER %CSF_LINKER_CheckOpt %CSF_LINKER_CheckOut \
+--  @end;
+
+     @template LINKSHR_CheckUndefHeader ( %LD_LIBRARY_PATH, %LINKSHR_Linker, %LINKSHR_Check ) is
+         $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+         $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
+	 $set %LINKSHR_Linker = "%LINKSHR_Linker"
+	 $set %LINKSHR_Check = "%LINKSHR_Check"
+         $${LINKSHR_Linker} ${LINKSHR_Check} -o /dev/null \
+     @end;
 
   @template LINKSHR_CheckUndefFooter () is
     $ ;

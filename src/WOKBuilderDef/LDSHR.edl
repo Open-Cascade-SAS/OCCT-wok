@@ -133,14 +133,27 @@
  @endif;
 
  @if( %Station == "sil" ) then
-  @template LDSHR_Header ( %LDSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList,%CSF_LINKER_SysShared ) is
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -ignore_unresolved %CSF_LINKER_SysShared %LDSHR_DBMSOpt -o %Target \
-   $  -all -none \
-  @end;
+     @set %LDSHR_Opt = "-64 -mips4 -Wl,-mmap -multigot -ignore_unresolved -shared";
+     @set %LDSHR_Check = "-64 -mips4 -Wl,-mmap -multigot -no_prelink";
+--@template LDSHR_Header ( %LDSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList,%CSF_LINKER_SysShared ) is
+--$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -ignore_unresolved %CSF_LINKER_SysShared %LDSHR_DBMSOpt -o %Target \
+--$  -all -none \
+--@end;
+     @template LDSHR_Header ( %LDSHR_DBMSOpt, %CSF_CXX_COMPILER, %LDSHR_Opt, %Target, %LogicalName, %LD_ObjList,%CSF_LINKER_SysShared ) is
+         $set CSF_CXX_Compiler = "%CSF_CXX_COMPILER"
+	 $set LDSHR_Opt = "%LDSHR_Opt"
+         $${CSF_CXX_COMPILER} ${LDSHR_Opt} %LDSHR_DBMSOpt -o %Target \
+         $  -all -none \
+     @end;
 
-  @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
-   $/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %LDSHR_DBMSOpt -o %Target -soname %LogicalName \
-  @end;
+--@template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt ) is
+--$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %LDSHR_DBMSOpt -o %Target -soname %LogicalName \
+--@end;
+     @template LDSHR_CheckUndefHeader ( %Target, %LDSHR_DBMSOpt, %CSF_CXX_COMPILER, %LDSHR_Check ) is
+         $set CSF_CXX_Compiler = "%CSF_CXX_COMPILER"
+	 $set LDSHR_Check = "%LDSHR_Check"
+         $${CSF_CXX_COMPILER} ${LDSHR_Check} %LDSHR_DBMSOpt -o %Target -soname %LogicalName \
+     @end;
 
   @template LDSHR_CheckUndefFooter () is
    $ ;

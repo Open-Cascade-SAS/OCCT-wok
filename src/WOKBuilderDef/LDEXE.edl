@@ -61,10 +61,15 @@
 -- Definition du Link Silicon Graphics
 
  @if( %Station == "sil" ) then
-
-  @template LDEXE_Header ( %Target ) is
-   $ /usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -call_shared -o %Target \
-  @end;
+     @set %LDEXE_Opt = "-64 -mips4 -Wl,-mmap -multigot -call_shared";
+--@template LDEXE_Header ( %Target ) is
+--$ /usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -call_shared -o %Target \
+--@end;
+     @template LDEXE_Header ( %Target, %CSF_CXX_COMPILER, %LDEXE_Opt ) is
+         $set CSF_CXX_COMPILER = "%CSF_CXX_COMPILER"
+	 $set LDEXE_Opt = "%LDEXE_Opt"
+         $${CSF_CXX_COMPILER} ${LDEXE_Opt} -o %Target \
+     @end;
 
  @endif;
 
