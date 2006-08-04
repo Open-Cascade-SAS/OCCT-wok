@@ -112,9 +112,9 @@
    $\^
   @end;
 
-    @set LINKSHR_Opt = "-64 -mips4 -Wl,-mmap -multigot -no_prelink";
-    @set LINKSHR_Check = "-64 -mips4 -mmap -multigot -no_unresolved";
-    @set LINKSHR_Linker = "/usr/bin/ld";
+    @set %LINKSHR_Opt = "-64 -mips4 -Wl,-mmap -multigot -no_prelink";
+    @set %LINKSHR_Check = "-64 -mips4 -mmap -multigot -no_unresolved";
+    @set %LINKSHR_Linker = "/usr/bin/ld";
 
 -- @template LINKSHR_Header ( %Target, %LINKSHR_DBMSOpt, %CSF_CXX_COMPILERLINKER, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_LINKER_SysOpt ) is
 -- --$/usr/bin/CC -n32 -mips3 -Wl,-mmap -multigot -no_prelink %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
