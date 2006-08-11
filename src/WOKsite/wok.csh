@@ -60,6 +60,12 @@ switch ( `uname` )
     case Linux:
 	setenv WOKSTATION "lin"
 	breaksw
+    case IRIX:
+	setenv WOKSTATION "sil"
+	breaksw
+    case IRIX64:
+	setenv WOKSTATION "sil"
+	breaksw
     default:
 	echo "Error : unknown platform"
 	breaksw
