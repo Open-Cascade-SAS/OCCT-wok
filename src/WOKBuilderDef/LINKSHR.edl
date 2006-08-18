@@ -122,8 +122,8 @@
 -- $  -all -objectlist %LD_ObjList -none \
 -- @end;
      @template LINKSHR_Header ( %LINKSHR_DBMSOpt, %Target, %LogicalName, %LD_ObjList, %CSF_LINKER_SysShared, %CSF_CXX_COMPILER, %LINKSHR_Opt ) is
-         $set %CSF_CXX_COMPILER = "%CSF_CXX_COMPILER"
-	 $set %LINKSHR_Opt = "%LINKSHR_Opt"
+         $set CSF_CXX_COMPILER = "%CSF_CXX_COMPILER"
+	 $set LINKSHR_Opt = "%LINKSHR_Opt"
          $${CSF_CXX_COMPILER} ${LINKSHR_Opt} %CSF_LINKER_SysShared %LINKSHR_DBMSOpt -no_unresolved -o %Target -soname %LogicalName \
          $  -all -objectlist %LD_ObjList -none \
      @end;
@@ -151,8 +151,8 @@
      @template LINKSHR_CheckUndefHeader ( %LD_LIBRARY_PATH, %LINKSHR_Linker, %LINKSHR_Check ) is
          $echo "Check of undefined symbols with LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
          $echo "Does not run on SGI : -no_unresolved does give unresolved symbols of a shareable image ..."
-	 $set %LINKSHR_Linker = "%LINKSHR_Linker"
-	 $set %LINKSHR_Check = "%LINKSHR_Check"
+	 $set LINKSHR_Linker = "%LINKSHR_Linker"
+	 $set LINKSHR_Check = "%LINKSHR_Check"
          $${LINKSHR_Linker} ${LINKSHR_Check} -o /dev/null \
      @end;
 
