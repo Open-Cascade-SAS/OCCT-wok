@@ -54,18 +54,6 @@ $Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(%HTName);
 $
 $class Handle(%HTName) : public Handle(%HTInherits) {
 $  public:
-$    void* operator new(size_t,void* anAddress) 
-$      {
-$        return anAddress;
-$      }
-$    void* operator new(size_t size) 
-$      { 
-$        return Standard::Allocate(size); 
-$      }
-$    void  operator delete(void *anAddress) 
-$      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-$      }
 $    Handle(%HTName)():Handle(%HTInherits)() {} 
 $    Handle(%HTName)(const Handle(%HTName)& aHandle) : Handle(%HTInherits)(aHandle) 
 $     {
@@ -87,17 +75,12 @@ $      Assign((Standard_Transient *)anItem);
 $      return *this;
 $     }
 $
-$    %HTName* operator->() 
+$    %HTName* operator->() const
 $     {
 $      return (%HTName *)ControlAccess();
 $     }
 $
-$    %HTName* operator->() const 
-$     {
-$      return (%HTName *)ControlAccess();
-$     }
-$
-$   Standard_EXPORT ~Handle(%HTName)();
+$//   Standard_EXPORT ~Handle(%HTName)();
 $ 
 $   Standard_EXPORT static const Handle(%HTName) DownCast(const Handle(Standard_Transient)& AnObject);
 $};
@@ -162,19 +145,6 @@ $%ClassComment
 $class %Class : public %Inherits {
 $
 $public:
-$
-$    void* operator new(size_t,void* anAddress) 
-$      {
-$        return anAddress;
-$      }
-$    void* operator new(size_t size) 
-$      { 
-$        return Standard::Allocate(size); 
-$      }
-$    void  operator delete(void *anAddress) 
-$      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-$      }
 $ // Methods PUBLIC
 $ // 
 $%TICPublicmets
@@ -183,9 +153,8 @@ $%TICPublicfriends
 $
 $ // Type management
 $ //
-$ Standard_EXPORT friend Handle_Standard_Type& %Class_Type_();
 $ Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
-$ Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
+$ //Standard_EXPORT Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
 $
 $protected:
 $
@@ -736,18 +705,6 @@ $#endif
 $
 $class %Class : public %Inherits {
 $
-$    void* operator new(size_t,void* anAddress) 
-$      {
-$        return anAddress;
-$      }
-$    void* operator new(size_t size) 
-$      { 
-$        return Standard::Allocate(size); 
-$      }
-$    void  operator delete(void *anAddress) 
-$      { 
-$        if (anAddress) Standard::Free((Standard_Address&)anAddress); 
-$      }
 $#ifndef NO_CXX_EXCEPTION
 $ Standard_EXPORT virtual void Throw() const;
 $#endif
@@ -758,13 +715,13 @@ $ Standard_EXPORT static void Raise(const Standard_CString aMessage = "");
 $ Standard_EXPORT static void Raise(Standard_SStream& aReason);
 $ Standard_EXPORT static Handle(%Class) NewInstance(const Standard_CString aMessage); 
 $
-$ Standard_EXPORT ~%Class();
+$// Standard_EXPORT ~%Class();
 $
 $ // Type methods
 $ //
 $ Standard_EXPORT friend Handle_Standard_Type& %Class_Type_();
 $ Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;			
-$ Standard_EXPORT Standard_Boolean             IsKind(const Handle(Standard_Type)&) const;
+$// Standard_EXPORT Standard_Boolean             IsKind(const Handle(Standard_Type)&) const;
 $};
 $
 $#endif
@@ -774,7 +731,7 @@ $#endif
 $#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
 $#endif
-$%Class::~%Class(){}
+$//%Class::~%Class(){}
 $
 $void %Class::Raise(Standard_SStream& aReason) 
 ${
@@ -898,15 +855,15 @@ $
 @end;
 
 @template EmptyDestructorTemplate(%Class) is
-$Standard_EXPORT ~%Class();
+$//Standard_EXPORT ~%Class();
 @end;
 
 @template FullEmptyHandleDestructorTemplate(%Class) is
-$Handle_%Class::~Handle_%Class() {}
+$//Handle_%Class::~Handle_%Class() {}
 @end;
 
 @template FullEmptyDestructorTemplate(%Class) is
-$%Class::~%Class() {}
+$//%Class::~%Class() {}
 @end;
 
 -- ===============
@@ -921,7 +878,6 @@ $aType%Nb\^
 
 @template TypeMgtAncestor(%Nb,%Ancestors) is
 $  static Handle_Standard_Type %Nb = STANDARD_TYPE(%Ancestors);
-$  if ( %Nb.IsNull()) %Nb = STANDARD_TYPE(%Ancestors);
 @end;
 
 @template TypeMgt(%Class,%Inherits,%Ancestors) is
@@ -970,8 +926,8 @@ $}
 @end;
 
 @template IsKind(%Class,%IClass) is
-$Standard_Boolean %Class::IsKind(const Handle(Standard_Type)& AType) const 
-${ 
-$  return (STANDARD_TYPE(%Class) == AType || %IClass::IsKind(AType)); 
-$}
+$//Standard_Boolean %Class::IsKind(const Handle(Standard_Type)& AType) const 
+$//{ 
+$//  return (STANDARD_TYPE(%Class) == AType || %IClass::IsKind(AType)); 
+$//}
 @end;

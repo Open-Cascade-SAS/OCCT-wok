@@ -82,12 +82,6 @@ $    ~Handle(Standard_Transient)();
 $
 $     void  ShallowDump(Standard_OStream&) const;
 $     
-$    Standard_Boolean IsImmutable() const {
-$      return(Standard_False);
-$    };
-$
-$    void SetImmutable() {};
-$
 $    int operator==(const Handle(Standard_Transient)& right) const
 $      {
 $       return entity == right.entity;
