@@ -14,7 +14,7 @@ void                                      __fastcall _WOKNT_clear_pipe ( HANDLE 
 DWORD                                     __fastcall _WOKNT_nb_to_read ( HANDLE );
 Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe ( OSD_File*, HANDLE );
 void                                      __fastcall _WOKNT_create_pipe (
-                                                      Standard_Integer*, Standard_Integer*
+                                                      Standard_Size*, Standard_Integer*
                                                      );
 
 WOKNT_MixedOutput :: WOKNT_MixedOutput () {
@@ -172,7 +172,7 @@ Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe (
 }  // end _WOKNT_read_pipe
 
 void __fastcall _WOKNT_create_pipe (
-                 Standard_Integer* readPipe, Standard_Integer* writePipe
+                 Standard_Size* readPipe, Standard_Integer* writePipe
                 ) {
                 
  SECURITY_ATTRIBUTES sa;
