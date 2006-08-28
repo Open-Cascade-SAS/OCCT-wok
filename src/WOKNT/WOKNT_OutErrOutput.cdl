@@ -22,7 +22,7 @@ private class OutErrOutput from WOKNT inherits MixedOutput from WOKNT
     ---Purpose: closes read end of the 'STDERR' handle
     ---C++:     alias ~
 
-  OpenStdErr ( me : out ) returns Integer from Standard is redefined static;
+  OpenStdErr ( me : out ) returns Address from Standard is redefined static;
     ---Purpose: creates a pipe for reading a standard error output of sub-process
     --          and returns a pipe handle
     --  Warning: returns INVALID_HANDLE_VALUE in case of failure 
@@ -46,8 +46,8 @@ private class OutErrOutput from WOKNT inherits MixedOutput from WOKNT
 
  fields
  
-  myErrHandleR : Integer                 from Standard;
-  myErrHandleW : Integer                 from Standard;
+  myErrHandleR : Address                 from Standard;
+  myErrHandleW : Address                 from Standard;
   myStdErr     : HSequenceOfHAsciiString from TColStd;
 
 end OutErrOutput;

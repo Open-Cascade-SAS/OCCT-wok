@@ -30,7 +30,7 @@ private deferred class ShellOutput from WOKNT inherits File from OSD
   Errors ( me : out ) returns HSequenceOfHAsciiString from TColStd is deferred;
     ---Purpose: returns standard error output of sub-process
 
-  OpenStdOut ( me : out ) returns Integer from Standard is deferred;
+  OpenStdOut ( me : out ) returns Address from Standard is deferred;
     ---Purpose: creates an I/O object for reading a standard output of sub-process
     --          and returns this object handle.
     --  Warning: returns INVALID_HANDLE_VALUE in case of failure
@@ -38,7 +38,7 @@ private deferred class ShellOutput from WOKNT inherits File from OSD
   CloseStdOut ( me : out ) is deferred;
     ---Purpose: closes an I/O object's handle opened by 'OpenStdOut' method
 
-  OpenStdErr ( me : out ) returns Integer from Standard is deferred;
+  OpenStdErr ( me : out ) returns Address from Standard is deferred;
     ---Purpose: creates an I/O object for reading a standard error output of sub-process
     --          and returns this object handle
     --  Warning: returns INVALID_HANDLE_VALUE in case of failure
