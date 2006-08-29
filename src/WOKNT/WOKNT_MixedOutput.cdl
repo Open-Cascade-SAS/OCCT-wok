@@ -22,7 +22,7 @@ private class MixedOutput from WOKNT inherits ShellOutput from WOKNT
     ---Purpose: dummy method to be used in derived class
     ---C++:     alias ~
 
-  OpenStdOut ( me : out ) returns Address from Standard is redefined static;
+  OpenStdOut ( me : out ) returns Integer from Standard is redefined static;
     ---Purpose: creates a pipe for reading a standard output of sub-process
     --          and returns a pipe handle.
     --  Warning: returns INVALID_HANDLE_VALUE in case of failure
@@ -30,7 +30,7 @@ private class MixedOutput from WOKNT inherits ShellOutput from WOKNT
   CloseStdOut ( me : out ) is redefined static;
     ---Purpose: closes write end of the 'STDOUT' pipe
 
-  OpenStdErr ( me : out ) returns Address from Standard is virtual;
+  OpenStdErr ( me : out ) returns Integer from Standard is virtual;
     ---Purpose: creates a pipe for reading a standard error output of sub-process
     --          and returns a pipe handle
     --  Warning: this method is simply calling 'OpenStdOut' method
@@ -63,7 +63,7 @@ private class MixedOutput from WOKNT inherits ShellOutput from WOKNT
 
  fields
  
-  myOutHandle : Address                 from Standard is protected;
+  myOutHandle : Integer                 from Standard is protected;
   myStdOut    : HSequenceOfHAsciiString from TColStd  is protected;
   
 end MixedOutput;

@@ -14,7 +14,7 @@ void                                      __fastcall _WOKNT_clear_pipe ( HANDLE 
 DWORD                                     __fastcall _WOKNT_nb_to_read ( HANDLE );
 Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe ( OSD_File*, HANDLE );
 void                                      __fastcall _WOKNT_create_pipe (
-                                                      Standard_Address*, Standard_Address*
+                                                      Standard_Integer*, Standard_Integer*
                                                      );
 
 WOKNT_MixedOutput :: WOKNT_MixedOutput () {
@@ -28,9 +28,9 @@ void WOKNT_MixedOutput :: Cleanup () {
 
 }  // end WOKNT_MixedOutput :: Cleanup
 
-Standard_Address WOKNT_MixedOutput :: OpenStdOut () {
+Standard_Integer WOKNT_MixedOutput :: OpenStdOut () {
 
- _WOKNT_create_pipe ((Standard_Address *)&myFileChannel, &myOutHandle);
+ _WOKNT_create_pipe ( &myFileChannel, &myOutHandle );
  myIO |= ( FLAG_PIPE | FLAG_READ_PIPE );
 
  return myOutHandle;
@@ -42,13 +42,13 @@ void WOKNT_MixedOutput :: CloseStdOut () {
  if (  ( HANDLE )myOutHandle != INVALID_HANDLE_VALUE  ) {
  
   CloseHandle (  ( HANDLE )myOutHandle  );
-  myOutHandle = (Standard_Address) INVALID_HANDLE_VALUE;
+  myOutHandle = ( Standard_Integer )INVALID_HANDLE_VALUE;
 
  }  // end if
 
 }  // end WOKNT_MixedOutput :: CloseStdOut
 
-Standard_Address WOKNT_MixedOutput :: OpenStdErr () {
+Standard_Integer WOKNT_MixedOutput :: OpenStdErr () {
 
  return (  ( HANDLE )myOutHandle == INVALID_HANDLE_VALUE  ) ?
          OpenStdOut () : myOutHandle;
@@ -171,15 +171,10 @@ Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe (
 
 }  // end _WOKNT_read_pipe
 
-//=======================================================================
-//function : _WOKNT_create_pipe
-//purpose  : 
-//=======================================================================
-
-void __fastcall _WOKNT_create_pipe (Standard_Address* readPipe,
-                                    Standard_Address* writePipe)
-{
-               
+void __fastcall _WOKNT_create_pipe (
+                 Standard_Integer* readPipe, Standard_Integer* writePipe
+                ) {
+                
  SECURITY_ATTRIBUTES sa;
 
  sa.nLength              = sizeof ( SECURITY_DESCRIPTOR );  // structure size
@@ -192,7 +187,7 @@ void __fastcall _WOKNT_create_pipe (Standard_Address* readPipe,
          &sa,                   // protection/inheritance
          4096                   // buffer size
         )
- ) *writePipe = ( Standard_Address )INVALID_HANDLE_VALUE;
+ ) *writePipe = ( Standard_Integer )INVALID_HANDLE_VALUE;
                 
 }  // end _WOKNT_create_pipe
 #endif

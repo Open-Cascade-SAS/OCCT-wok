@@ -11,7 +11,7 @@ void                                      __fastcall _WOKNT_clear_pipe ( HANDLE 
 DWORD                                     __fastcall _WOKNT_nb_to_read ( HANDLE );
 Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe ( OSD_File*, HANDLE );
 void                                      __fastcall _WOKNT_create_pipe (
-                                                      Standard_Address*, Standard_Address*
+                                                      Standard_Integer*, Standard_Integer*
                                                      );
 
 WOKNT_OutErrOutput :: WOKNT_OutErrOutput () {
@@ -26,7 +26,7 @@ void WOKNT_OutErrOutput :: Cleanup () {
  if (  ( HANDLE )myErrHandleR != INVALID_HANDLE_VALUE  ) {
  
   CloseHandle (  ( HANDLE )myErrHandleR  );
-  myErrHandleR = (Standard_Address) INVALID_HANDLE_VALUE;
+  myErrHandleR = ( Standard_Integer )INVALID_HANDLE_VALUE;
 
  }  // end if
 
@@ -34,7 +34,7 @@ void WOKNT_OutErrOutput :: Cleanup () {
 
 }  // end WOKNT_OutErrOutput :: Cleanup
 
-Standard_Address WOKNT_OutErrOutput :: OpenStdErr () {
+Standard_Integer WOKNT_OutErrOutput :: OpenStdErr () {
 
  _WOKNT_create_pipe ( &myErrHandleR, &myErrHandleW );
  myIO |= ( FLAG_PIPE | FLAG_READ_PIPE );
@@ -48,7 +48,7 @@ void WOKNT_OutErrOutput :: CloseStdErr () {
  if (  ( HANDLE )myErrHandleW != INVALID_HANDLE_VALUE  ) {
  
   CloseHandle (  ( HANDLE )myErrHandleW  );
-  myErrHandleW = ( Standard_Address )INVALID_HANDLE_VALUE;
+  myErrHandleW = ( Standard_Integer )INVALID_HANDLE_VALUE;
 
  }  // end if
 
@@ -65,11 +65,12 @@ void WOKNT_OutErrOutput :: Clear () {
 Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_OutErrOutput :: Errors () {
 
  Handle( TColStd_HSequenceOfHAsciiString ) retVal;
- const Standard_Size                       handle (myFileChannel);
+ Standard_Integer                          handle;
 
- myFileChannel = (Standard_Size) myErrHandleR;
+ handle        = myFileChannel;
+ myFileChannel = myErrHandleR;
 
- retVal = _WOKNT_read_pipe (  this, ( HANDLE )myErrHandleR  );
+ retVal = _WOKNT_read_pipe (  this, ( HANDLE )myFileChannel  );
 
  myFileChannel = handle;
 
