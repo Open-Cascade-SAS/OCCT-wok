@@ -65,6 +65,8 @@ switch ( `uname` )
 	breaksw
     case IRIX64:
 	setenv WOKSTATION "sil"
+	setenv TCLLIBPATH "${TCLLIB}/itcl ${TCLLIB} ${WOKHOME}/lib ${WOKHOME}/lib/${WOKSTATION}"
+	setenv TRAP_FPE "UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT"
 	breaksw
     default:
 	echo "Error : unknown platform"
@@ -73,5 +75,3 @@ endsw
 
 setenv LD_LIBRARY_PATH "${TCLLIB}:${WOKHOME}/lib/${WOKSTATION}:${LD_LIBRARY_PATH}:"
 ${TCLBIN}/tclsh
-
-
