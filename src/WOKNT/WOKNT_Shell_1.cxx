@@ -108,10 +108,12 @@ extern "C" __declspec( dllexport ) int __fastcall __TKWOK_INIT__ (
 class _regExpInit {  // provides initialisation in case of UNICODE environment
 
  public:
-
+  
   _regExpInit () {
 
-   for (  int i = ( 1 << CHAR_BIT ); i < ( 1 << BYTEWIDTH ); ++i  )
+   int i;
+
+   for ( i = ( 1 << CHAR_BIT ); i < ( 1 << BYTEWIDTH ); ++i  )
 
     caseTrans[ i ] = ( _TUCHAR )i;
 

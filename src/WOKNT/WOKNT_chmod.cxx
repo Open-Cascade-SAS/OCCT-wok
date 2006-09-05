@@ -44,7 +44,7 @@ static BOOL _chmod_func ( LPTSTR, BOOL, void* );
 
 static int nFiles;
 
-extern "C" __declspec( dllexport ) wokCHMOD ( int, char** );
+extern "C" __declspec( dllexport ) int wokCHMOD ( int, char** );
 
 int wokCHMOD ( int argc, char** argv ) {
 
