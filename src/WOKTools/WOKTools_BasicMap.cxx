@@ -24,8 +24,12 @@
 # include <malloc.h>
 #endif
 
-#ifdef HAVE_IOMANIP_H
+#ifdef HAVE_IOMANIP
+#include <iomanip>
+#elif defined (HAVE_IOMANIP_H)
 # include <iomanip.h>
+#else
+  #error "check config.h file or compilation options: either HAVE_IOMANIP or HAVE_IOMANIP_H should be defined"
 #endif
 
 //=======================================================================
