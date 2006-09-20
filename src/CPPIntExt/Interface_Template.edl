@@ -38,7 +38,8 @@ $#include <Standard_ShortReal.hxx>
 $#include <Standard_ErrorHandler.hxx>               
 $#include <Standard_NullObject.hxx>                 
 $                                                   
-$#include <Engine.hxx>                              
+$#include <Engine.hxx>
+$#include <Engine_TypeTool.hxx>                              
 $#include <Engine_Handle.hxx>                    
 $#include <Engine_Signature.hxx>                    
 $#include <Engine_Argument.hxx>                     
@@ -345,7 +346,7 @@ $Handle_Standard_Type&  %CLName_Type_(){
 $
 $static Handle_Standard_Type _aType;
 $if (_aType.IsNull()) {
-$   _aType = Standard_Type::Find("%CLName");
+$   _aType = Engine_TypeTool::Find("%CLName");
 $   if (_aType.IsNull()) {
 $%InhDeclar 
 $static Handle_Standard_Transient _Ancestors[]= {
@@ -394,7 +395,7 @@ $Handle_Standard_Type& %CLName_Type_();
 @end;
 
 @template InterfInitTypeCall(%CLName) is
-$   %CLName_Type_();
+$   Engine_TypeTool::Register(%CLName_Type_());
 @end;
 
 
