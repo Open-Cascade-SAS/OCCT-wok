@@ -353,13 +353,21 @@
     @end;
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-g -O0 -DDEB -D_DEBUG";
-       @set %CMPLRS_C_ModeOpt   = "-g -O0 -DDEB -D_DEBUG";
-       @set %CMPLRS_F77_ModeOpt = "-g     -DDEB -D_DEBUG";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-g -O0 -DDEB -D_DEBUG";
+--  @set %CMPLRS_C_ModeOpt   = "-g -O0 -DDEB -D_DEBUG";
+--  @set %CMPLRS_F77_ModeOpt = "-g     -DDEB -D_DEBUG";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOptDeb ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOptDeb ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOptDeb ;
     @else
-       @set %CMPLRS_CXX_ModeOpt = "-O3 -DNDEBUG -DNo_Exception";
-       @set %CMPLRS_C_ModeOpt   = "-O3 -DNDEBUG -DNo_Exception";
-       @set %CMPLRS_F77_ModeOpt = "-O3 -DNDEBUG -DNo_Exception";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-O3 -DNDEBUG -DNo_Exception";
+--  @set %CMPLRS_C_ModeOpt   = "-O3 -DNDEBUG -DNo_Exception";
+--  @set %CMPLRS_F77_ModeOpt = "-O3 -DNDEBUG -DNo_Exception";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOpt ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOpt ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOpt ;
     @endif;
 
     @set %CMPLRS_CXX_WOKDirectives = "-MD ";
@@ -510,13 +518,21 @@
     @end;
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-g0 -DDEB +w";
-       @set %CMPLRS_C_ModeOpt   = "-g0 -DDEB +w";
-       @set %CMPLRS_F77_ModeOpt = "-g";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-g0 -DDEB +w";
+--  @set %CMPLRS_C_ModeOpt   = "-g0 -DDEB +w";
+--  @set %CMPLRS_F77_ModeOpt = "-g";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOptDeb ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOptDeb ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOptDeb ;
     @else
-       @set %CMPLRS_CXX_ModeOpt = "-O2 -DNo_Exception +w ";
-       @set %CMPLRS_C_ModeOpt   = "-O2 -DNo_Exception +w ";
-       @set %CMPLRS_F77_ModeOpt = "-O2";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-O2 -DNo_Exception +w ";
+--  @set %CMPLRS_C_ModeOpt   = "-O2 -DNo_Exception +w ";
+--  @set %CMPLRS_F77_ModeOpt = "-O2";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOpt ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOpt ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOpt ;
     @endif;
 
     @set %CMPLRS_CXX_WOKDirectives = "-H ";
@@ -661,17 +677,25 @@
     @end;
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-DDEB -D_DEBUG";
-       @set %CMPLRS_C_ModeOpt   = "-DDEB -D_DEBUG";
-       @set %CMPLRS_CXX_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
-       @set %CMPLRS_C_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
-       @set %CMPLRS_F77_ModeOpt = "-DDEB -D_DEBUG";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-DDEB -D_DEBUG";
+--  @set %CMPLRS_C_ModeOpt   = "-DDEB -D_DEBUG";
+--  @set %CMPLRS_CXX_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
+--  @set %CMPLRS_C_SysOptions = "-nologo -MDd -W3 -Gm -GX -Od -Zi";
+--  @set %CMPLRS_F77_ModeOpt = "-DDEB -D_DEBUG";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOptDeb ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOptDeb ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOptDeb ;
     @else
-       @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception";
-       @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception";
-       @set %CMPLRS_CXX_SysOptions = "-nologo -MD -W3 -GX -O2 ";
-       @set %CMPLRS_C_SysOptions = "-nologo -MD -W3 -GX -O2 ";
-       @set %CMPLRS_F77_ModeOpt = "-DNDEBUG -DNo_Exception";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-DNDEBUG -DNo_Exception";
+--  @set %CMPLRS_C_ModeOpt   = "-DNDEBUG -DNo_Exception";
+--  @set %CMPLRS_CXX_SysOptions = "-nologo -MD -W3 -GX -O2 ";
+--  @set %CMPLRS_C_SysOptions = "-nologo -MD -W3 -GX -O2 ";
+--  @set %CMPLRS_F77_ModeOpt = "-DNDEBUG -DNo_Exception";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOpt ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOpt ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOpt ;
     @endif;
 
     @set %CMPLRS_CXX_WOKDirectives = "";
@@ -810,15 +834,21 @@
     @set %CMPLRS_F77_Options = "-n32 -mips3";
 
     @if ( %DebugMode == "True" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-g -gslim -DDEB";
-       @set %CMPLRS_C_ModeOpt   = "-g -gslim -DDEB";
-       @set %CMPLRS_F77_ModeOpt = "-g";
-    @endif;
-
-    @if ( %DebugMode == "False" ) then
-       @set %CMPLRS_CXX_ModeOpt = "-O3 -DNo_Exception  -D__INLINE_INTRINSICS -TARG:processor=R10000 ";
-       @set %CMPLRS_C_ModeOpt   = "-O3 -DNo_Exception -TARG:processor=R10000 ";
-       @set %CMPLRS_F77_ModeOpt = "-O3";
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-g -gslim -DDEB";
+--  @set %CMPLRS_C_ModeOpt   = "-g -gslim -DDEB";
+--  @set %CMPLRS_F77_ModeOpt = "-g";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOptDeb ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOptDeb ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOptDeb ;
+    @else
+--  Corrected by APV: *_SysOptions, *_ModeOpt and *_ModeOptDeb
+--  @set %CMPLRS_CXX_ModeOpt = "-O3 -DNo_Exception  -D__INLINE_INTRINSICS -TARG:processor=R10000 ";
+--  @set %CMPLRS_C_ModeOpt   = "-O3 -DNo_Exception -TARG:processor=R10000 ";
+--  @set %CMPLRS_F77_ModeOpt = "-O3";
+	@set %CMPLRS_CXX_ModeOpt = %CSF_CXX_ModeOpt ;
+	@set %CMPLRS_C_ModeOpt   = %CSF_C_ModeOpt ;
+	@set %CMPLRS_F77_ModeOpt = %CSF_F77_ModeOpt ;
     @endif;
 
     @set %CMPLRS_CXX_WOKDirectives = "-MDupdate ";
