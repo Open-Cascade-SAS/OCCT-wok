@@ -28,16 +28,21 @@
 #   include <string.h>
 #  endif  /* _INC_STRING */
 /***/
-#  ifdef __WOKNT_DLL
-#   define REGEXP_API __declspec( dllexport )
+#  if !defined(HAVE_NO_DLL)
+#   ifdef __WOKNT_DLL
+#    define REGEXP_API __declspec( dllexport )
+#   else
+#    define REGEXP_API __declspec( dllimport )
+#   endif  /* __WOKNT_DLL */
 #  else
-#   define REGEXP_API __declspec( dllimport )
-#  endif  /* __OSD_DLL */
+#   define REGEXP_API
+#  endif
 # else
 #  define _TEXT( arg ) arg
 #  define REGEXP_API
 #  include <stdio.h>
 #  include <limits.h>
+#  include <regexp.h>
 typedef char          _TCHAR;
 typedef char          TCHAR;
 typedef unsigned char _TUCHAR;
