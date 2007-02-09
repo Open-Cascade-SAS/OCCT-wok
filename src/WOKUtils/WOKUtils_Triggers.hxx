@@ -10,7 +10,7 @@
 #include <WOKUtils_Trigger.hxx>
 
 #ifndef __WOKUTILS_API
-# ifdef WNT
+# if defined(WNT) && !defined(HAVE_NO_DLL)
 #  ifdef __WOKUtils_DLL
 #   define __WOKUTILS_API __declspec( dllexport )
 #  else
