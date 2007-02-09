@@ -31,6 +31,10 @@
  	$%LIB_ExplibName.exp\^
  @end;
 
+ @template LIB_ManifestFileName ( %LIB_ManifestName ) is
+ 	$%LIB_ManifestName.manifest\^
+ @end;
+
  @template LIB_LibraryHeaderSTATIC (
                          %CSF_LibraryHeaderLib ,
                          %CSF_LibraryHeaderOpt ,
@@ -42,6 +46,10 @@
 	$%CollectorOutput.exp\^
  @end;
 
+ @template LIB_LibraryMAN ( %CollectorOutput ) is
+ 	$%CollectorOutput.manifest\^
+ @end;
+ 
  @template LIB_LibraryHeaderIMPORT ( 
                          %CSF_LibraryHeaderLib ,
                          %CSF_LibraryHeaderOpt ,

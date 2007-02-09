@@ -53,6 +53,14 @@
 	$%CollectorOutput.exp\^
  @end;
 
+ @template LINK_DLLMAN ( %CollectorOutput ) is
+	$%CollectorOutput.dll.manifest\^
+ @end;
+
+ @template LINK_EXEMAN ( %CollectorOutput ) is
+	$%CollectorOutput.exe.manifest\^
+ @end;
+
  @template LINK_LinkerDLL ( %CollectorOutput ) is
 	$%CollectorOutput.dll\^
  @end;
