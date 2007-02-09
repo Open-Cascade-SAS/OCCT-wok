@@ -4,4 +4,4 @@ WOKStep_TclLibIdep.tcl
 WOKStep_JavaCompile.tcl
 WOKStep_JavaHeader.tcl
 WOKStep_LibRename.tcl
-
+WOKStep_ManifestEmbed.tcl
