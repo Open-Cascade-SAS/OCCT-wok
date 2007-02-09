@@ -10,7 +10,7 @@
 #include <WOKTclTools_Interpretor.hxx>
 
 #ifndef __WOKTCLTOOLS_API
-# ifdef WNT
+# if defined(WNT) && !defined(HAVE_NO_DLL)
 #  ifdef __WOKTclTools_DLL
 #   define __WOKTCLTOOLS_API __declspec( dllexport )
 #  else
