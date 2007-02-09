@@ -147,9 +147,15 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
   if (aFile != NULL) {
     FILE *fic = 0L;
     DirCount  = 1;
-
-    if (   (  fic = fopen ( aFile, "r" )  ) != NULL   ) {
-      IsFound = Standard_True;
+#ifndef WNT
+    if( !access(aFile, F_OK) ) 
+#else
+    if ( GetFileAttributes(aFile) != 0xFFFFFFFF ) 
+#endif
+    {
+      if (   (  fic = fopen ( aFile, "r" )  ) != NULL   ) {
+        IsFound = Standard_True;
+      }
     }
 
     while (!IsFound && DirCount <= IncludeDirectory->Length()) {
