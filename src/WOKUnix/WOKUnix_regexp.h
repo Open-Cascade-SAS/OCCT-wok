@@ -28,11 +28,15 @@
 #   include <string.h>
 #  endif  /* _INC_STRING */
 /***/
-#  ifdef __WOKUnix_DLL
-#   define REGEXP_API __declspec( dllexport )
+#  if !defined(HAVE_NO_DLL)
+#   ifdef __WOKUnix_DLL
+#    define REGEXP_API __declspec( dllexport )
+#   else
+#    define REGEXP_API __declspec( dllimport )
+#   endif  /* __WOKUnix_DLL */
 #  else
-#   define REGEXP_API __declspec( dllimport )
-#  endif  /* __OSD_DLL */
+#   define REGEXP_API
+#  endif
 # else
 #  define _TEXT( arg ) arg
 #  define REGEXP_API
