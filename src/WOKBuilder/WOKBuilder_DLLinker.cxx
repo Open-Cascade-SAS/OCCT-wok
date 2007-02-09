@@ -3,6 +3,7 @@
 #include <WOKBuilder_ImportLibrary.hxx>
 #include <WOKBuilder_SharedLibrary.hxx>
 #include <WOKBuilder_ExportLibrary.hxx>
+#include <WOKBuilder_ManifestLibrary.hxx>
 #include <WOKBuilder_HSequenceOfEntity.hxx>
 
 #include <WOKTools_Messages.hxx>
@@ -43,7 +44,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalCFExt()
 
 Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
 {
-  Handle(WOKBuilder_Entity)        outEnt[4];
+  Handle(WOKBuilder_Entity)        outEnt[5];
   Handle(TCollection_HAsciiString) tmp;
   Handle(TCollection_HAsciiString) retVal = EvalToolParameter("LinkerOutput");
  
@@ -66,7 +67,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
   tmp = EvalToolTemplate ( "LinkerPDB" );
   retVal -> AssignCat ( tmp );
   outEnt[3] = new WOKBuilder_SharedLibrary(new WOKUtils_Path(tmp));
-
+  outEnt[4] = new WOKBuilder_ManifestLibrary(new WOKUtils_Path(EvalToolTemplate("DLLMAN")));
   SetProduction(new WOKBuilder_HSequenceOfEntity());
 
   Produces()->Append(outEnt[0]);
@@ -74,6 +75,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
   Produces()->Append(outEnt[2]);
 
   Produces()->Append(outEnt[3]);
+  Produces()->Append(outEnt[4]);
   return retVal;
 }
 

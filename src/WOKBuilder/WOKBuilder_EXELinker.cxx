@@ -5,6 +5,7 @@
 
 #include <WOKBuilder_Executable.hxx>
 #include <WOKBuilder_SharedLibrary.hxx>
+#include <WOKBuilder_ManifestLibrary.hxx>
 #include <WOKBuilder_HSequenceOfEntity.hxx>
 
 #include <WOKTools_Messages.hxx>
@@ -45,7 +46,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_EXELinker::EvalCFExt()
 
 Handle(TCollection_HAsciiString) WOKBuilder_EXELinker::EvalFooter()
 {
- Handle(WOKBuilder_Entity)        outEnt[2];
+ Handle(WOKBuilder_Entity)        outEnt[3];
  Handle(TCollection_HAsciiString) tmp;
  Handle(TCollection_HAsciiString) retVal = EvalToolParameter("LinkerOutput");
  //Standard_Boolean                 fDebug;
@@ -65,12 +66,14 @@ Handle(TCollection_HAsciiString) WOKBuilder_EXELinker::EvalFooter()
  retVal->AssignCat(tmp);
  outEnt[1] = new WOKBuilder_SharedLibrary(new WOKUtils_Path(tmp));
  //  }
- 
+ outEnt[2] = new WOKBuilder_ManifestLibrary(new WOKUtils_Path(EvalToolTemplate("EXEMAN")));
  SetProduction(new WOKBuilder_HSequenceOfEntity);
  Produces()->Append(outEnt[0]);
  
  //if(fDebug) 
  Produces()->Append(outEnt[1]);
+ Produces()->Append(outEnt[2]);
+
  return retVal;
 }
 

@@ -87,6 +87,8 @@ is
 	    class ImportLibrary;  --
 	    class StaticLibrary;  --
 	    class ExportLibrary;  --
+	    --class ManifestEXE;    --
+	    class ManifestLibrary;--
 	                          --
 	      ----------------------
 
