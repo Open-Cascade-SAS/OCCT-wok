@@ -15,11 +15,12 @@
 	@set %WOKSteps_lib_implib = "WOKStep_ImportLibrary(lib.list)";
 
 
-	@set %WOKSteps_LibGroup   = " lib.libs lib.tks lib.build ";
+	@set %WOKSteps_LibGroup   = " lib.libs lib.tks lib.build lib.embed ";
 
 	@set %WOKSteps_lib_libs   = "*WOKStep_DirectLinkList(lib.list)";
 	@set %WOKSteps_lib_tks    = "WOKStep_DirectTKReplace(lib.libs)";
 	@set %WOKSteps_lib_build  = "WOKStep_DLLink(lib.implib,lib.tks)";
+	@set %WOKSteps_lib_embed  = "*WOKStep_ManifestEmbed(lib.build)";
 
 	@set %WOKSteps_executable_LinksWith = " lib.implib ";
 	@set %WOKSteps_engine_LinksWith     = " lib.implib ";
