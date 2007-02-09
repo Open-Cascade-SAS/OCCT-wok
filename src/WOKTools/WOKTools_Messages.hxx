@@ -12,7 +12,7 @@
 #include <WOKTools_Verbose.hxx>
 
 #ifndef __WOKTools_API
-# ifdef WNT
+# if defined(WNT) && !defined(HAVE_NO_DLL)
 #  ifdef __WOKTools_DLL
 #   define __WOKTools_API __declspec( dllexport )
 #  else
