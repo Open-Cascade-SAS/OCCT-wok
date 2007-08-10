@@ -6,22 +6,18 @@
 @ifnotdefined ( %TCPP_EDL) then
 @set %TCPP_EDL = "";
 
-@if ( %Station != "wnt" ) then
-
-@if ( %LocalArch != "hp" ) then
-  --@set %TCPP_Shared   = "libTCPPExt.so";
-  @set %TCPP_Shared   = "libTKTCPPExt.so";
-@endif;
+@set %TCPP_Shared   = "libTKTCPPExt.so";
 
 @if ( %LocalArch == "hp" ) then
-  --@set %TCPP_Shared   = "libTCPPExt.sl";
   @set %TCPP_Shared   = "libTKTCPPExt.sl";
 @endif;
 
-@else
-  --@set %TCPP_Shared   = "TCPPExt.dll";
-  @set %TCPP_Shared   = "TKTCPPExt.dll";
+@if ( %LocalArch == "mac" ) then
+  @set %TCPP_Shared   = "libTKTCPPExt.dylib";
+@endif;
 
+@if ( %Station == "wnt" ) then
+  @set %TCPP_Shared   = "TKTCPPExt.dll";
 @endif;
 
 @set %TCPP_Name     = "TCPP";
