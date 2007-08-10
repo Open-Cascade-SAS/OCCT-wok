@@ -45,10 +45,14 @@
 
   @set %OBJS_OSSG_ArchDirective = "";
 
-  @if ( %Station != "hp" ) then
-	@set %LDPATHVAR = "LD_LIBRARY_PATH";
-  @else
+  @if ( %Station != "hp" && %Station != "mac" ) then
+  	@set %LDPATHVAR = "LD_LIBRARY_PATH";
+  @endif;
+  @if ( %Station == "hp" ) then
         @set %LDPATHVAR = "SHLIB_PATH";
+  @endif;
+  @if ( %Station == "mac" ) then
+        @set %LDPATHVAR = "DYLD_LIBRARY_PATH";
   @endif;
 
   @set %OBJS_OSSG_Suffix = " >& /tmp/ossg.$$";
