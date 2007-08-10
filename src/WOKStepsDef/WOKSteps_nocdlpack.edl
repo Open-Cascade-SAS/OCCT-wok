@@ -38,16 +38,16 @@
 
   --@set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep obj.lib";
   @set %WOKSteps_delivery_lib_shared_list_steps ="obj.idep";
+  @set %WOKSteps_delivery_lib_shared_list_extensions = ".so .ImplDep";
   @if (%Station == "hp") then 
     @set %WOKSteps_delivery_lib_shared_list_extensions = ".sl .ImplDep";
-  @else 
-    @if (%Station == "wnt") then
-  	@set %WOKSteps_delivery_lib_shared_list_extensions = ".DLL .PDB .LIB .ImplDep";
-        --@string %WOKSteps_delivery_lib_shared_list_steps += " obj.implib";
-        @string %WOKSteps_delivery_lib_shared_list_steps += "";
-    @else
-        @set %WOKSteps_delivery_lib_shared_list_extensions = ".so .ImplDep";
-    @endif;
+  @endif;
+  @if (%Station == "mac") then 
+    @set %WOKSteps_delivery_lib_shared_list_extensions = ".dylib .ImplDep";
+  @endif;
+  @if (%Station == "wnt") then
+    @set %WOKSteps_delivery_lib_shared_list_extensions = ".DLL .PDB .LIB .ImplDep";
+--    @string %WOKSteps_delivery_lib_shared_list_steps += " obj.implib";
   @endif;
 
 @endif;
