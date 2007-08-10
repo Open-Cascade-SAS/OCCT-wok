@@ -42,7 +42,7 @@ $NULL};
 $
 $static Handle_Standard_Type _aType = 
 $       new Standard_Type("Engine_Handle",
-$	                  0, // size is useless
+$	                  sizeof(Engine_Handle),
 $                         0,
 $                         (Standard_Address)_Ancestors,
 $                         (Standard_Address)NULL);

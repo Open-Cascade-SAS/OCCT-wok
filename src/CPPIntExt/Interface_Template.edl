@@ -355,7 +355,7 @@ $NULL};
 $
 $_aType = 
 $       new Standard_Type("%CLName",
-$	                  0, // size is useless
+$	                  sizeof(%CLName),
 $                         %NbInh,
 $                         (Standard_Address)_Ancestors,
 $                         (Standard_Address)NULL);
@@ -380,7 +380,7 @@ $NULL};
 $
 $static Handle_Standard_Type _aType = 
 $       new Standard_Type("%CLName",
-$	                  0, // size is useless
+$	                  sizeof(%CLName),
 $                         0,
 $                         0,
 $                         (Standard_Address)_Ancestors,
