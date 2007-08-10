@@ -623,6 +623,7 @@ WOKUnix_Extension WOKUnix_Path::Extension() const
 
       if(!strcmp(ptr, "so"))        return WOKUnix_DSOFile;
       if(!strcmp(ptr, "sl"))        return WOKUnix_DSOFile;
+      if(!strcmp(ptr, "dylib"))     return WOKUnix_DSOFile;
       
       // WNT Externsions
       if(!strcmp(ptr, "lib"))       return WOKUnix_LIBFile;
