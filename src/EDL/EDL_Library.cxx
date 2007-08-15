@@ -13,9 +13,6 @@
 # define HEADWORD "lib"
 # ifdef __hpux
 #  define TAILWORD ".sl"
-# elif defined(__APPLE__)
-#  define TAILWORD ".dylib"
-#  define TAILLEN 6
 # else
 #  define TAILWORD ".so"
 # endif
