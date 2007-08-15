@@ -7,20 +7,17 @@
 @set %IDLFRONT_EDL = "";
 
 @if ( %Station != "wnt" ) then
-
-  @if ( %LocalArch != "hp" && %LocalArch != "mac" ) then
+  @if ( %LocalArch != "hp" ) then
+    --@set %IDLFRONT_SHARED = "libIDLFront.so";
     @set %IDLFRONT_SHARED = "libTKIDLFront.so";
   @endif;
 
   @if ( %LocalArch == "hp" ) then
+    --@set %IDLFRONT_SHARED = "libIDLFront.sl";
     @set %IDLFRONT_SHARED = "libTKIDLFront.sl";
   @endif;
-
-  @if ( %LocalArch == "mac" ) then
-    @set %IDLFRONT_SHARED = "libTKIDLFront.dylib";
-  @endif;
-
 @else
+  --@set %IDLFRONT_SHARED = "IDLFront.dll";
   @set %IDLFRONT_SHARED = "TKIDLFront.dll";
 @endif;
 
