@@ -4,27 +4,34 @@
 -- Copyright:	 Matra Datavision 1996
 
 @if ( %Station != "wnt" ) then
-
-@if ( %LocalArch != "hp" && %LocalArch != "mac" ) then
+@if ( %LocalArch != "hp" ) then
+  --@string %CPPENG_SHARED   = "libCPPIntExt.so";
   @string %CPPENG_SHARED   = "libTKCPPIntExt.so";
-  @string %CPPENG_Shared   = "libTKCPPIntExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
+  --@string %CPPENG_SHARED   = "libCPPIntExt.sl";
   @string %CPPENG_SHARED   = "libTKCPPIntExt.sl";
-  @string %CPPENG_Shared   = "libTKCPPIntExt.sl";
-@endif;
-
-@if ( %LocalArch == "mac" ) then
-  @string %CPPENG_SHARED   = "libTKCPPIntExt.dylib";
-  @string %CPPENG_Shared   = "libTKCPPIntExt.dylib";
 @endif;
 
 @set    %CPPENG_TMPLDIRS = "/home/wb/kl/nw/prod/CPPIntExt/src";
 @set    %CPPENG_NAME     = "CPPEng";
 
+@if ( %LocalArch != "hp" ) then
+  --@string %CPPENG_Shared   = "libCPPIntExt.so";
+  @string %CPPENG_Shared   = "libTKCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  --@string %CPPENG_Shared   = "libCPPIntExt.sl";
+  @string %CPPENG_Shared   = "libTKCPPIntExt.sl";
+@endif;
+
+
 @else
+  --@string %CPPENG_Shared   = "CPPIntExt.dll";
   @string %CPPENG_Shared   = "TKCPPIntExt.dll";
+
 @endif;
 
 @set    %CPPENG_Name     = "CPPEng";

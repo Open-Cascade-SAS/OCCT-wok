@@ -6,18 +6,17 @@
 @ifnotdefined ( %CSFDBSCHEMA_EDL) then
 @set %CSFDBSCHEMA_EDL = "";
 
+--@set %CSFDBSCHEMA_Shared   = "libCSFDBSchema.so";
 @set %CSFDBSCHEMA_Shared   = "libTKCSFDBSchema.so";
 
 @if ( %Station == "hp" ) then
+        --@set %CSFDBSCHEMA_Shared   = "libCSFDBSchema.sl";
         @set %CSFDBSCHEMA_Shared   = "libTKCSFDBSchema.sl";
 @endif;
 
 @if ( %Station == "wnt" ) then
+        --@set %CSFDBSCHEMA_Shared   = "CSFDBSchema.dll";
         @set %CSFDBSCHEMA_Shared   = "TKCSFDBSchema.dll";
-@endif;
-
-@if ( %Station == "mac" ) then
-        @set %CSFDBSCHEMA_Shared   = "libTKCSFDBSchema.dylib";
 @endif;
 
 @set %CSFDBSCHEMA_Name     = "CSFDBSchema";

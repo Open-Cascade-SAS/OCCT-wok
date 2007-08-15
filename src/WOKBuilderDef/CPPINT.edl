@@ -5,28 +5,34 @@
 
 @if ( %Station != "wnt" ) then
 
-@if ( %LocalArch != "hp" && %LocalArch != "mac" ) then
-  @set %CPPINT_SHARED = "libTKCPPIntExt.so";
-  @set %CPPINT_Shared = "libTKCPPIntExt.so";
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPINT_SHARED   = "libCPPIntExt.so";
+  @set %CPPINT_SHARED   = "libTKCPPIntExt.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
-  @set %CPPINT_SHARED = "libTKCPPIntExt.sl";
-  @set %CPPINT_Shared = "libTKCPPIntExt.sl";
-@endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %CPPINT_SHARED = "libTKCPPIntExt.dylib";
-  @set %CPPINT_Shared = "libTKCPPIntExt.dylib";
+  --@set %CPPINT_SHARED   = "libCPPIntExt.sl";
+  @set %CPPINT_SHARED   = "libTKCPPIntExt.sl";
 @endif;
 
 @set %CPPINT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPIntExt/src";
 @set %CPPINT_NAME     = "CPPInt";
 
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPINT_Shared = "libCPPIntExt.so";
+  @set %CPPINT_Shared = "libTKCPPIntExt.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  --@set %CPPINT_Shared = "libCPPIntExt.sl";
+  @set %CPPINT_Shared = "libTKCPPIntExt.sl";
 @endif;
 
 @else
+
+  --@set %CPPINT_Shared = "CPPIntExt.dll";
   @set %CPPINT_Shared = "TKCPPIntExt.dll";
+
 @endif;
 
 @set %CPPINT_Name   = "CPPInt";

@@ -7,25 +7,30 @@
 @set %CPPJINI_EDL = "";
 
 @if ( %Station != "wnt" ) then
-
-@if ( %LocalArch != "hp" && %LocalArch != "mac" ) then
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPJINI_SHARED   = "libCPPJini.so";
   @set %CPPJINI_SHARED   = "libTKCPPJini.so";
-  @set %CPPJINI_Shared   = "libTKCPPJini.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
+  --@set %CPPJINI_SHARED   = "libCPPJini.sl";
   @set %CPPJINI_SHARED   = "libTKCPPJini.sl";
-  @set %CPPJINI_Shared   = "libTKCPPJini.sl";
-@endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %CPPJINI_SHARED   = "libTKCPPJini.dylib";
-  @set %CPPJINI_Shared   = "libTKCPPJini.dylib";
 @endif;
 
 @set %CPPJINI_NAME     = "CPPJini";
 
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPJINI_Shared   = "libCPPJini.so";
+  @set %CPPJINI_Shared   = "libTKCPPJini.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  --@set %CPPJINI_Shared   = "libCPPJini.sl";
+  @set %CPPJINI_Shared   = "libTKCPPJini.sl";
+@endif;
+
 @else
+  --@set %CPPJINI_Shared   = "CPPJini.dll";
   @set %CPPJINI_Shared   = "TKCPPJini.dll";
 @endif;
 

@@ -7,24 +7,28 @@
 @set %CPPCLIENT_EDL = "";
 
 @if ( %Station != "wnt" ) then
-
-@if ( %LocalArch != "hp" && %LocalArch != "mac" ) then
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPCLIENT_SHARED   = "libCPPClient.so";
   @set %CPPCLIENT_SHARED   = "libTKCPPClient.so";
-  @set %CPPCLIENT_Shared   = "libTKCPPClient.so";
 @endif;
 
 @if ( %LocalArch == "hp" ) then
+  --@set %CPPCLIENT_SHARED   = "libCPPClient.sl";
   @set %CPPCLIENT_SHARED   = "libTKCPPClient.sl";
-  @set %CPPCLIENT_Shared   = "libTKCPPClient.sl";
-@endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %CPPCLIENT_SHARED   = "libTKCPPClient.dylib";
-  @set %CPPCLIENT_Shared   = "libTKCPPClient.dylib";
 @endif;
 
 @set %CPPCLIENT_TMPLDIRS = "/home/wb/kl/nw/prod/CPPClient/src";
 @set %CPPCLIENT_NAME     = "CPPClient";
+
+@if ( %LocalArch != "hp" ) then
+  --@set %CPPCLIENT_Shared   = "libCPPClient.so";
+  @set %CPPCLIENT_Shared   = "libTKCPPClient.so";
+@endif;
+
+@if ( %LocalArch == "hp" ) then
+  --@set %CPPCLIENT_Shared   = "libCPPClient.sl";
+  @set %CPPCLIENT_Shared   = "libTKCPPClient.sl";
+@endif;
 
 @else
   --@set %CPPCLIENT_Shared   = "CPPClient.dll";

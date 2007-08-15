@@ -6,17 +6,18 @@
 @ifnotdefined ( %CDLTranslate_EDL) then
 @set %CDLTranslate_EDL = "";
 
-@set %CDLTranslate_SHARED = "libTKCDLFront.so";
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  --@set %CDLTranslate_SHARED = "libCDLFront.so";
+  @set %CDLTranslate_SHARED = "libTKCDLFront.so";
+@endif;
 
 @if ( %LocalArch == "hp" ) then
+  --@set %CDLTranslate_SHARED = "libCDLFront.sl";
   @set %CDLTranslate_SHARED = "libTKCDLFront.sl";
 @endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %CDLTranslate_SHARED = "libTKCDLFront.dylib";
-@endif;
-
-@if ( %LocalArch == "wnt" ) then
+@else
+  --@set %CDLTranslate_SHARED = "CDLFront.dll";
   @set %CDLTranslate_SHARED = "TKCDLFront.dll";
 @endif;
 
