@@ -6,18 +6,16 @@
 @ifnotdefined ( %WOKStepsOBJS_EDL) then
 @set %WOKStepsOBJS_EDL = "";
 
-@set %WOKStepsOBJS_LibPath = "libwokobjssteps.so";
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @set %WOKStepsOBJS_LibPath = "libwokobjssteps.so";
+@endif;
 
 @if ( %LocalArch == "hp" ) then
   @set %WOKStepsOBJS_LibPath = "libwokobjssteps.sl";
 @endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %WOKStepsOBJS_LibPath = "libwokobjssteps.dylib";
-@endif;
-
-@if ( %LocalArch == "wnt" ) then
-  @set %WOKStepsOBJS_LibPath = "wokobjssteps.dll";
+@else
+	@set %WOKStepsOBJS_LibPath = "wokobjssteps.dll";
 @endif;
 
 @set %WOKStepsOBJS_DefinedSteps = " WOKOBJS_SchExtract WOKOBJS_SchGen WOKOBJS_EngLinkList ";

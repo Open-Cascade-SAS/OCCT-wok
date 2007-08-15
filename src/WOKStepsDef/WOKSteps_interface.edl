@@ -31,15 +31,14 @@
 
   @set %WOKSteps_delivery_cdl_list_steps = "src";
   @set %WOKSteps_delivery_cdl_list_extensions = ".cdl";
-  @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .so .dat";
   @if (%Station == "hp") then 
-    @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .sl .dat";
-  @endif;
-  @if (%Station == "mac") then 
-    @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .dylib .dat";
-  @endif;
-  @if (%Station == "wnt") then
-    @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .DLL .PDB .dat";
+  @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .sl .dat";
+  @else 
+    @if (%Station == "wnt") then
+  	@set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .DLL .PDB .dat";
+    @else
+        @set %WOKSteps_delivery_lib_server_list_extensions = ".ImplDep .so .dat";
+    @endif;
   @endif;
 
   @set %WOKSteps_delivery_lib_server_list_steps = "xcpp.server exec.link";

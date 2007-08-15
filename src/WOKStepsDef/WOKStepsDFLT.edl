@@ -6,18 +6,16 @@
 @ifnotdefined ( %WOKStepsDFLT_EDL) then
 @set %WOKStepsDFLT_EDL = "";
 
-@set %WOKStepsDFLT_LibPath = "libwokdfltsteps.so";
+@if ( %Station != "wnt" ) then
+@if ( %LocalArch != "hp" ) then
+  @set %WOKStepsDFLT_LibPath = "libwokdfltsteps.so";
+@endif;
 
 @if ( %LocalArch == "hp" ) then
   @set %WOKStepsDFLT_LibPath = "libwokdfltsteps.sl";
 @endif;
-
-@if ( %LocalArch == "mac" ) then
-  @set %WOKStepsDFLT_LibPath = "libwokdfltsteps.dylib";
-@endif;
-
-@if ( %LocalArch == "wnt" ) then
-  @set %WOKStepsDFLT_LibPath = "wokdfltsteps.dll";
+@else
+	@set %WOKStepsDFLT_LibPath = "wokdfltsteps.dll";
 @endif;
 
 @set %WOKStepsDFLT_DefinedSteps = " WOKDFLT_DFLTExtract ";
