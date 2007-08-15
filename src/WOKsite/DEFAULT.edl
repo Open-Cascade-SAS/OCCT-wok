@@ -17,7 +17,7 @@ $BAG\^
 @end;
 
 @template DEFAULT_Stations ( %Entity ) is
-$sun sil lin hp aix wnt mac bsd\^
+$sun sil lin hp aix wnt\^
 @end;
 
 @template DEFAULT_DBMSystems ( %Entity ) is
@@ -61,14 +61,6 @@ $%Entity_Home\^
 @end;
 
 @template DEFAULT_DFLT_wnt  ( %Entity_Home ) is
-$%Entity_Home\^
-@end;
-
-@template DEFAULT_DFLT_mac  ( %Entity_Home ) is
-$%Entity_Home\^
-@end;
-
-@template DEFAULT_DFLT_bsd  ( %Entity_Home ) is
 $%Entity_Home\^
 @end;
 

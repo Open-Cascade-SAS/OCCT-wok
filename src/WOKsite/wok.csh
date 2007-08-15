@@ -68,17 +68,6 @@ switch ( `uname` )
 	setenv TCLLIBPATH "${TCLLIB}/itcl ${TCLLIB} ${WOKHOME}/lib ${WOKHOME}/lib/${WOKSTATION}"
 	setenv TRAP_FPE "UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT"
 	breaksw
-    case HP-UX:
-        setenv WOKSTATION "hp"
-	setenv SHLIB_PATH "${TCLLIB}:${WOKHOME}/lib/${WOKSTATION}:${SHLIB_PATH}:"
-        breaksw
-    case Darwin:
-        setenv WOKSTATION "mac"
-	setenv DYLD_LIBRARY_PATH "${TCLLIB}:${WOKHOME}/lib/${WOKSTATION}:${DYLD_LIBRARY_PATH}:"
-        breaksw
-    case FreeBSD:
-        setenv WOKSTATION "bsd"
-        breaksw
     default:
 	echo "Error : unknown platform"
 	breaksw
