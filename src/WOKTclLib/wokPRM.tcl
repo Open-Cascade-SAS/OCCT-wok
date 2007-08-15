@@ -188,7 +188,7 @@ proc wokPRM:Modify { adr nb page } {
     tixForm $IWOK_GLOBALS(PRM,Modify,wrkst,but,all) -top 2
     
     set prev {} ; set curr {} ;set curwrkst [wokprofile -s]
-    foreach x [list sun sil ao1 hp wnt lin bsd mac] {
+    foreach x [list sun sil ao1 hp wnt lin] {
 	set curr [string tolower ${wrkst}.${x}]
 	
 	checkbutton $curr -text $x -variable IWOK_GLOBALS(PRM,Modify,wrkst,$x) -command wokPRM:wrkst
