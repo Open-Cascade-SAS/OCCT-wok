@@ -42,7 +42,7 @@ void WOKUnix_RegExp :: Destroy () {
   if (  BUFFER -> fastmap   != NULL  ) delete [] BUFFER -> fastmap;
   if (  BUFFER -> buffer    != NULL  ) free (  ( void* )( BUFFER -> buffer )  );
   
-  delete BUFFER;
+  delete myBuffer;
 
   myBuffer = NULL;
  
