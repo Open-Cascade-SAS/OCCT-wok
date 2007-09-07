@@ -6,16 +6,18 @@
 @ifnotdefined ( %WOKStepsOBJY_EDL) then
 @set %WOKStepsOBJY_EDL = "";
 
-@if ( %Station != "wnt" ) then
-@if ( %LocalArch != "hp" ) then
-  @set %WOKStepsOBJY_LibPath = "libwokobjysteps.so";
-@endif;
+@set %WOKStepsOBJY_LibPath = "libwokobjysteps.so";
 
 @if ( %LocalArch == "hp" ) then
   @set %WOKStepsOBJY_LibPath = "libwokobjysteps.sl";
 @endif;
-@else
-	@set %WOKStepsOBJY_LibPath = "wokobjysteps.dll";
+
+@if ( %LocalArch == "mac" ) then
+  @set %WOKStepsOBJY_LibPath = "libwokobjysteps.dylib";
+@endif;
+
+@if ( %LocalArch == "wnt" ) then
+  @set %WOKStepsOBJY_LibPath = "wokobjysteps.dll";
 @endif;
 
 @set %WOKStepsOBJY_DefinedSteps = " WOKOBJY_SchDDLList WOKOBJY_DDLStep ";

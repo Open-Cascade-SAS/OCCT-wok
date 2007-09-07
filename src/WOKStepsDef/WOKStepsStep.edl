@@ -7,14 +7,15 @@
 @ifnotdefined ( %WOKStepsStep_EDL) then
 @set %WOKStepsStep_EDL = "";
 
-  @if ( %LocalArch != "hp" ) then
-    @set    %WOKStepsStep_LibPath      = "libwoksteps.so";
-  @endif;
+  @set    %WOKStepsStep_LibPath      = "libwoksteps.so";
 
   @if ( %LocalArch == "hp" ) then
     @set    %WOKStepsStep_LibPath      = "libwoksteps.sl";
   @endif;
 
+  @if ( %LocalArch == "mac" ) then
+    @set    %WOKStepsStep_LibPath      = "libwoksteps.dylib";
+  @endif;
 
   @set    %WOKStepsStep_DefinedSteps  = " WOKStep_Source             WOKStep_CDLUnitSource ";
   @string %WOKStepsStep_DefinedSteps += " WOKStep_ExecutableSource   WOKStep_ResourceSource ";

@@ -7,20 +7,18 @@
 @set %WOKStepsOrbix_EDL = "";
 
 
-@if ( %Station != "wnt" ) then
+@set %WOKStepsOrbix_LibPath = "libwokorbixsteps.so";
 
-  @if ( %LocalArch != "hp" ) then
-    @set %WOKStepsOrbix_LibPath = "libwokorbixsteps.so";
-  @endif;
+@if ( %LocalArch == "hp" ) then
+  @set %WOKStepsOrbix_LibPath = "libwokorbixsteps.sl";
+@endif;
 
-  @if ( %LocalArch == "hp" ) then
-    @set %WOKStepsOrbix_LibPath = "libwokorbixsteps.sl";
-  @endif;
+@if ( %LocalArch == "mac" ) then
+  @set %WOKStepsOrbix_LibPath = "libwokorbixsteps.dylib";
+@endif;
 
-@else
-
+@if ( %LocalArch == "wnt" ) then
   @set %WOKStepsOrbix_LibPath = "wokorbixsteps.dll";
-
 @endif;
 
 @set    %WOKStepsOrbix_DefinedSteps = " WOKOrbix_IDLSource WOKOrbix_IDLSourceExtract WOKOrbix_IDLCompile WOKOrbix_IDLFill ";
