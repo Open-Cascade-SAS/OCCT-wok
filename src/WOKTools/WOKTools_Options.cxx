@@ -50,7 +50,7 @@ WOKTools_Options::WOKTools_Options(const Standard_Integer argc,
   mydefines = new WOKTools_HSequenceOfDefine;
   myargs    = new TColStd_HSequenceOfHAsciiString;
   myerrflg  = Standard_False;
-#if !defined( WNT ) && !defined( __GNUC__ )
+#if ( !defined( WNT ) && !defined( __GNUC__ ) ) || defined(__APPLE__) || defined(__FreeBSD__)
   optind    = 1;
 #else
   optind    = 0;
