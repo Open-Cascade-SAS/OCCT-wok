@@ -3,7 +3,6 @@
 // Author:	Jean GAUTIER
 //		<jga@cobrax>
 
-
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Macro.hxx>
 
@@ -23,11 +22,13 @@
 #include <WOKUtils_SearchList.hxx>
 #include <WOKUtils_ParamItem.hxx>
 #ifndef WNT
+
 # include <WOKUtils_ProcessManager.hxx>
 # include <WOKUtils_Signal.hxx>
 #else
 # include <WOKUtils_ShellManager.hxx>
 # define WOKUtils_ProcessManager WOKUtils_ShellManager
+
 #endif  // WNT
 
 #include <WOKernel_StationID.hxx>
