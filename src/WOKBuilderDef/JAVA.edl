@@ -44,6 +44,14 @@
     @string %CXX_JAVA += " -I" %CSF_JavaHome "/include/hpux ";
 @endif;
 
+@if ( %Station == "mac" ) then
+    @string %CXX_JAVA += " -I" %CSF_JavaHome "/include ";
+@endif;
+
+@if ( %Station == "bsd" ) then
+    @string %CXX_JAVA += " -I" %CSF_JavaHome "/include/freebsd ";
+@endif;
+
 @if ( %Station == "aix" ) then
     @string %CXX_JAVA += "" ;
 @endif;

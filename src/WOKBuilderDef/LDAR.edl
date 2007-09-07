@@ -20,7 +20,7 @@ $lib%LDAR_LibName.a\^
 @if( %Station != "sun" ) then
 
   @set %RmCmd = "/usr/bin/rm"; 
-  @if ( %Station == "hp" || %Station == "lin" ) then
+  @if ( %Station == "hp" || %Station == "lin" || %Station == "mac" || %Station == "bsd" ) then
     @set %RmCmd = "/bin/rm"; 
   @endif;
 

@@ -88,5 +88,17 @@
   @end;
  @endif;
 
+ @if( %Station == "mac" ) then
+  @template LDEXE_Header ( %Target , %STLPortLib ) is
+   $/usr/bin/g++ -o %Target %STLPortLib \
+  @end;
+ @endif;
+
+ @if( %Station == "bsd" ) then
+  @template LDEXE_Header ( %Target , %STLPortLib ) is
+   $c++ -o %Target %STLPortLib \
+   @end;
+ @endif;
+
 @endif;
 

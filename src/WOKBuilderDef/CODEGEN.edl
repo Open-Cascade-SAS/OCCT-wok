@@ -16,10 +16,14 @@
 
 @if ( %Station != "wnt" ) then
 
- @if ( %Station != "lin" ) then
-  @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125";
- @else
+ @if ( %Station == "lin" ) then
   @set %CODEGEN_FlexBisHome = "/usr";
+ @else
+  @if ( %Station == "mac" ) then
+   @set %CODEGEN_FlexBisHome = "/sw";
+  @else
+   @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125";
+  @endif;
  @endif;
 
 @template CODEGEN_LEX_Production ( %BaseName ) is

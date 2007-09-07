@@ -7,15 +7,14 @@
 @set %COMMAND_EDL = ""; 
 
 @if ( %Station != "wnt" ) then
-@if ( %Station != "hp" && %Station != "lin") then
+
+@if ( %Station != "hp" && %Station != "lin" && %Station != "mac" ) then
   @set %COMMAND_CPCmd = "/usr/bin/cp";
   @set %COMMAND_CHMODCmd = "/usr/bin/chmod";
   @set %COMMAND_MVCmd = "/usr/bin/mv";
   @set %COMMAND_RMCmd = "/usr/bin/rm";
   @set %COMMAND_CMPCmd = "/usr/bin/cmp";
-@endif;
-
-@if ( %Station == "hp" || %Station == "lin") then
+@else
   @set %COMMAND_CPCmd = "/bin/cp";
   @set %COMMAND_CHMODCmd = "/bin/chmod";
   @set %COMMAND_MVCmd = "/bin/mv";
