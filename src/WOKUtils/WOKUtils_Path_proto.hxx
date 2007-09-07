@@ -10,7 +10,13 @@
 #include <Handle_WOKUtils_Path.hxx>
 
 #ifdef WNT
+#ifdef CreateFile
+# undef CreateFile
+#endif 
 
+#ifdef CreateDirectory
+# undef CreateDirectory
+#endif
 #include <WOKNT_Path.hxx>
 #define  WOKUtils_Path WOKNT_Path 
 
