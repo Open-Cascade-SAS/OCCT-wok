@@ -63,7 +63,7 @@ Handle(WOKUtils_Path) SearchFile(const Handle(TCollection_HAsciiString)& afile, 
   Handle(WOKUtils_Path) apath;
   Handle(TCollection_HAsciiString) astr;
 
-  // d'abord regarder si on ne le trouve pas
+  // dabord regarder si on ne le trouve pas
   apath = new WOKUtils_Path(afile);
   if(apath->Exists() == Standard_True)
     {
@@ -126,7 +126,7 @@ Standard_Integer MSAPI_MetaSchema::Translate(const Standard_Integer argc, const 
   Standard_Boolean averbose = Standard_False;
   Handle(TColStd_HSequenceOfHAsciiString) incdirectives = new TColStd_HSequenceOfHAsciiString;
   Handle(TCollection_HAsciiString) package;
-  Handle(TCollection_HAsciiString) interface;
+  Handle(TCollection_HAsciiString) inter;
   Handle(TCollection_HAsciiString) allentity;
   Handle(TCollection_HAsciiString) type;
   Handle(TCollection_HAsciiString) afile;
@@ -152,7 +152,7 @@ Standard_Integer MSAPI_MetaSchema::Translate(const Standard_Integer argc, const 
 	  package  = opts.OptionArgument();
 	  break;
 	case 'i':
-	  interface  = opts.OptionArgument();
+	  inter  = opts.OptionArgument();
 	  break;
 	case 't':
 	  type    = opts.OptionArgument();
@@ -200,9 +200,9 @@ Standard_Integer MSAPI_MetaSchema::Translate(const Standard_Integer argc, const 
     {
       anit.AddInStack(package, WOKBuilder_Package);
     }
-  if(!interface.IsNull())
+  if(!inter.IsNull())
     {
-      anit.AddInStack(interface, WOKBuilder_Interface);
+      anit.AddInStack(inter, WOKBuilder_Interface);
     }
   if(!type.IsNull())
     {
