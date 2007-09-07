@@ -43,9 +43,18 @@
 ;#
 global env tcl_platform
 
-if { "$tcl_platform(platform)" == "unix" && ![info exists env(LD_LIBRARY_PATH)] } {
-    puts stderr "You must set LD_LIBRARY_PATH to point where you have installed Wok"
-    exit
+if { "$tcl_platform(platform)" == "unix" } {
+    if { "$tcl_platform(os)" == "HP-UX" } {
+	set ldpathvar SHLIB_PATH
+    } elseif { "$tcl_platform(os)" == "Darwin" } {
+	set ldpathvar DYLD_LIBRARY_PATH
+    } else {
+	set ldpathvar LD_LIBRARY_PATH
+    }
+    if { ![info exists env($ldpathvar)] } {
+        puts stderr "You must set $ldpathvar to point where you have installed Wok"
+        exit
+    }
 }
 
 if { "$tcl_platform(platform)" == "windows" && ![info exists env(Path)] } {
@@ -58,9 +67,10 @@ if [info exists wm] {
 if { "$tcl_platform(platform)" == "unix" } {
     set sprtor ":"
     set fmtshr "lib%s.so"
-    set wrk [split $env(LD_LIBRARY_PATH) $sprtor]
-    if { $tcl_platform(os) == "HP-UX" } { set fmtshr "lib%s.sl" }
-    set msgnotfound "Please check your variable LD_LIBRARY_PATH"
+    set wrk [split $env($ldpathvar) $sprtor]
+    if { $tcl_platform(os) == "HP-UX"  } { set fmtshr "lib%s.sl" }
+    if { $tcl_platform(os) == "Darwin" } { set fmtshr "lib%s.dylib" }
+    set msgnotfound "Please check your variable $ldpathvar"
 } 
 if { "$tcl_platform(platform)" == "windows" } {
     set sprtor ";"

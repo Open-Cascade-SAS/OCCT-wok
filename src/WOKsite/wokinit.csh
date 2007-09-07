@@ -7,6 +7,12 @@ if ( $OS_NAME == "SunOS" ) then
    set OS_PLATFORM="sun"
 else if ( $OS_NAME == "Linux" ) then
    set OS_PLATFORM="lin"
+else if ( $OS_NAME == "HP-UX" ) then
+   set OS_PLATFORM="hp"
+else if ( $OS_NAME == "Darwin" ) then
+   set OS_PLATFORM="mac"
+else if ( $OS_NAME == "FreeBSD" ) then
+   set OS_PLATFORM="bsd"
 endif
 
 setenv WOKHOME ${CASROOT}/../wok
