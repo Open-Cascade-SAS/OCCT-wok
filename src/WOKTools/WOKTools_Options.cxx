@@ -13,6 +13,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h> /* EOF */
 
 #include <WOKTools_Options.ixx>
 
