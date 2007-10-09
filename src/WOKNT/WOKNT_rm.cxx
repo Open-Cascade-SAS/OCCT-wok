@@ -188,7 +188,7 @@ static void _print_error ( LPCTSTR fName ) {
         )
  ) {
  
-  wsprintf ( buffer, "error code %d", errCode );
+  sprintf ( buffer, "error code %d", (Standard_Integer)errCode );
   SetLastError ( errCode );
 
  }  // end if
