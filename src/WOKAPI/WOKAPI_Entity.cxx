@@ -1171,6 +1171,33 @@ void WOKAPI_Entity::GetInterpFiles(Handle(WOKTools_HSequenceOfReturnValue)& scri
 }
 
 //=======================================================================
+//function : CompletePath
+//purpose  : auxiliary; completes the path by items found in its old value
+//           without duplications with new items
+//=======================================================================
+
+static void CompletePath (WOKTools_MapOfHAsciiString &theMap,
+			  const Handle(TCollection_HAsciiString) &thePrevPath,
+			  Handle(TCollection_HAsciiString) &thePath)
+{      
+  // iterate by elements in previous value of the path
+  Standard_Integer i=1;
+  Handle(TCollection_HAsciiString) item = thePrevPath->Token(PATH_SEPARATOR,i);
+  while ( ! item->IsEmpty() )
+  {
+    // if item is not yet in new value, add it
+    if ( ! theMap.Contains(item) ) {
+      theMap.Add(item);
+      if ( thePath->Length() >0 )
+	thePath->AssignCat ( PATH_SEPARATOR );
+      thePath->AssignCat ( item );
+    }
+    i++;
+    item = thePrevPath->Token(PATH_SEPARATOR,i);
+  }
+}
+
+//=======================================================================
 //Author   : Jean Gautier (jga)
 //function : GetEnvActions
 //purpose  : 
@@ -1275,21 +1302,6 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
       WarningMsg << "WOKAPI_Entity::GetEnvActions" 
 	         << "Environment variable " << pathvarname << " is not setted" << endm;
     }
-  else
-    {
-      Handle(TCollection_HAsciiString) pathitem;
-      
-      i=1;
-      pathitem = prev_pathvalue->Token(PATH_SEPARATOR,i);
-      
-      while(!pathitem->IsEmpty())
-	{
-	  if(!pathmap.Contains(pathitem))
-	    pathmap.Add(pathitem);
-	  i++;
-	  pathitem = prev_pathvalue->Token(PATH_SEPARATOR,i);
-	}
-    }
   
   // Calcul du LD_LIBRARY_PATH
   static Handle(TCollection_HAsciiString) ldpathparamname = new TCollection_HAsciiString("%ENV_LDPATH");
@@ -1319,21 +1331,6 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
     {
       WarningMsg << "WOKAPI_Entity::GetEnvActions" 
 	         << "Environment variable " << ldpathvarname << " is not setted" << endm;    
-    }
-  else if(!samevars)
-    {
-      Handle(TCollection_HAsciiString) lditem;
-      
-      i=1;
-      lditem = prev_ldpathvalue->Token(PATH_SEPARATOR,i);
-      
-      while(!lditem->IsEmpty())
-	{
-	  if(!ldmap.Contains(lditem))
-	    ldmap.Add(lditem);
-	  i++;
-	  lditem = prev_ldpathvalue->Token(PATH_SEPARATOR,i);
-	}
     }
 
   // Ajout des WBs au PATH et LD_LIBRARY_PATH
@@ -1444,14 +1441,10 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 	}
     }
 
-  ldpathvalue->AssignCat(PATH_SEPARATOR);
-  ldpathvalue->AssignCat(prev_ldpathvalue);
+  if ( ! samevars )
+    CompletePath ( ldmap, prev_ldpathvalue, ldpathvalue );
+  CompletePath ( pathmap, prev_pathvalue, pathvalue );
 
-  pathvalue->AssignCat(PATH_SEPARATOR);
-  pathvalue->AssignCat(prev_pathvalue);
-  
-  
-	  
   if(!samevars) returns.AddSetEnvironment(ldpathvarname, ldpathvalue);
 
   returns.AddSetEnvironment(pathvarname, pathvalue);
