@@ -6,7 +6,7 @@
 ;;; Variables
 
 (defconst wok-comm-AtFS-Header
-  "$Header: /disk4/QA/cvsroot/test/ros/src/WOKTclLib/wok-comm.el,v 1.1 1998-09-09 18:21:42 kernel Exp $")
+  "$Header: /disk4/QA/cvsroot/test/ros/src/WOKTclLib/wok-comm.el,v 1.2 2007-11-29 18:49:36 cascade Exp $")
 
 (defvar wok-comm-initialized nil
   "If non-nil, the Wok communication module has already been initialized.")
@@ -151,7 +151,6 @@ wok-controller-return-buffer."
 	  (buffer-substring 1 end)
 	(delete-region 1 end)))))
 
-
 ;;; Functions etc. to set up, continue, and shut down communication
 ;;; to the WokEmacs widget
 
@@ -355,7 +354,6 @@ perhaps this is a bug, we'll see."
 		(if wok-signal-errors
 		    (signal (car error-message) (cdr error-message))))))))
 
-
 ;;; Functions to synchronize termination and redisplay
 
 (defun wok-kill-emacs ()
@@ -385,7 +383,6 @@ shutdown of the WokEmacs widget."
   (wok-shutdown-controller))
 
 
-
 ;;; Functions to implement the protocol between Emacs and the widget
 
 (defun wok-send-command (string)
@@ -465,7 +462,6 @@ See also wok-log-buffer and wok-log-buffer-name."
 	(goto-char (point-max))
 	(insert (format "##%s: %s##\n" where string)))))
 
-
 ;;; init
 
 (defun wok-connectedp ()

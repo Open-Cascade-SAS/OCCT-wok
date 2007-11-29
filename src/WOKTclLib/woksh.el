@@ -6,7 +6,6 @@
 (require 'shell)
 (require 'wok-comm)
 
-;;(defvar woksh-program "ntsh.exe"
 (defvar woksh-program "wish84"
   "*Name of program to invoke woksh")
 
@@ -58,10 +57,24 @@ re-synching of directories.")
   (define-key woksh-mode-map "\C-d" 'woksh-delchar-or-send-Ctrl-D)
   (define-key woksh-mode-map "\C-i" 'woksh-tab-or-complete)))
 
-
 ;;(add-hook 'same-window-regexps "^\\*woksh-.*\\*\\(\\|<[0-9]+>\\)")
 
 (defvar woksh-history nil)
+
+(defvar woksh-set-emacs-env nil
+"Defines whether modifications in WOK environment variables made,
+for instance, by 'wokenv -s' command, should be reflected in Emacs
+process environment. 
+
+Default value is nil, i.e. WOK environment changes will not affect 
+Emacs variables"
+)
+
+(defun woksh-setenv (variable &optional value unset)
+"If variable woksh-set-emacs-env is t, calls (setenv) with the 
+same arguments, otherwise does nothing."
+  (if woksh-set-emacs-env (setenv variable value unset))
+)
 
 ;;;###autoload
 (defun woksh (input-args &optional buffer)
@@ -120,7 +133,7 @@ re-synching of directories.")
 	      (send-string nil (format "wokemacs_init %d\n" iport))
 	      (wok-connect-to-controller "localhost" iport)
 	      (send-string nil "auto_load wok_cd_proc\n")
-	      ;(erase-buffer)
+	      (erase-buffer)
 	  )))))
  
 (defun woksh-mode ()
@@ -184,7 +197,6 @@ local one share the same directories (through NFS)."
             (goto-char (- (point-max) offset))
           (goto-char orig-point)))))))
 
-
 ;; Parse a line into its constituent parts (words separated by
 ;; whitespace).  Return a list of the words.
 (defun woksh-parse-words (line)

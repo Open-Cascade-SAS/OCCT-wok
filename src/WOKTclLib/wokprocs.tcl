@@ -66,7 +66,7 @@ proc wok_setenv_cmd { format var value } {
 	    return [list "$var=\"$value\"\nexport $var\n"]
 	}
 	emacs {
-	    return [list "(setenv \"$var\" \"$value\")"]
+	    return [list "(woksh-setenv \"$var\" \"$value\")"]
 	}
 	cmd {
 	    return [list "set $var=\"$value\"\n"]
