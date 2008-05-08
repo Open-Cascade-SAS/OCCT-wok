@@ -57,12 +57,16 @@ void WOKTCL_Interpretor::Add(const Standard_CString Command,
 			     const Standard_CString Group)
 {
   CData* C = new CData(Function,this);
-   
-  Tcl_CreateCommand(Interp(), Command, DefaultCommand, (ClientData) C, DefaultCommandDelete);
+  Standard_PCharacter pCommand, pHelp, pGroup;
+  //
+  pCommand=(Standard_PCharacter)Command;
+  pHelp=(Standard_PCharacter)Help;
+  pGroup=(Standard_PCharacter)Group;
+  Tcl_CreateCommand(Interp(), pCommand, DefaultCommand, (ClientData) C, DefaultCommandDelete);
   
   // add the help
-  Tcl_SetVar2(Interp(),"WOKTCL_Helps", Command,Help,TCL_GLOBAL_ONLY);
-  Tcl_SetVar2(Interp(),"WOKTCL_Groups",Group,Command,
+  Tcl_SetVar2(Interp(),"WOKTCL_Helps", pCommand,pHelp,TCL_GLOBAL_ONLY);
+  Tcl_SetVar2(Interp(),"WOKTCL_Groups",pGroup,pCommand,
 	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
 }
 
