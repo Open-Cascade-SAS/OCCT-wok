@@ -8,7 +8,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <EDL_FunctionSignature.hxx>
 #include <EDL_ProcedureSignature.hxx>
-
+#include <Standard_PCharacter.hxx>
 #include <stdio.h>
 
 #ifdef HAVE_CONFIG_H
@@ -18,6 +18,7 @@
 #include <edl_rule.h>
 
 #include <EDL.tab.h>
+
 
 #ifdef WNT
 # include <windows.h>
@@ -182,7 +183,7 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
     
     if (fic) {
       edlstring edlstr;
-      edlstr.str = aFile;
+      edlstr.str = (char *)aFile;
       edlstr.length = strlen(aFile);
       EDL_SetCurrentFile(edlstr);
       EDLin           = fic;
@@ -225,7 +226,7 @@ Handle(TColStd_HSequenceOfAsciiString) EDL_Interpretor::GetIncludeDirectory() co
 EDL_Error EDL_Interpretor::AddFile(const Standard_CString aVariable, const Standard_CString filename)
 {
   TCollection_AsciiString  anAscName(aVariable);
-  char                    *realFilename = filename;
+  char                    *realFilename = (char *)filename;
   
   // we can open a file with a name defined by a string or a variable
   //
@@ -233,7 +234,7 @@ EDL_Error EDL_Interpretor::AddFile(const Standard_CString aVariable, const Stand
     TCollection_AsciiString  aFileName(filename);
 
     if (mySymbolTable.IsBound(aFileName)) {
-      realFilename = mySymbolTable.Find(aFileName).GetValue();
+      realFilename = (char *)mySymbolTable.Find(aFileName).GetValue();
     }
     else {
       EDL::PrintError(EDL_VARNOTFOUND,filename);
@@ -524,14 +525,14 @@ void EDL_Interpretor::EvalTemplate(const Standard_CString aTemplate, const Stand
   myTemplateTable.ChangeFind(anAscName).Eval(myVariableList);
 
   Handle(TColStd_HSequenceOfAsciiString) aNewResult = myTemplateTable.Find(anAscName).GetEval();
-  Standard_CString                       aValue;
+  Standard_PCharacter                    aValue;
   Standard_Integer                       nbByte = 0,
                                          i;
   for (i = 1; i <= aNewResult->Length(); i++) {
     nbByte = nbByte + aNewResult->Value(i).Length();
   }
 
-  aValue = (Standard_CString) Standard::Allocate(nbByte + 1);
+  aValue = (Standard_PCharacter) Standard::Allocate(nbByte + 1);
   aValue[0] = '\0';
   Standard_Integer idx=0;
   for (i = 1; i <= aNewResult->Length(); i++) {
@@ -575,7 +576,7 @@ EDL_Error EDL_Interpretor::AddLibrary(const Standard_CString aLibrary)
     }
     else {
       EDL_Library aLib(aLibrary);
-      char        *aStatus = aLib.GetStatus();
+      char        *aStatus = (char *)aLib.GetStatus();
       
       if (aStatus != NULL) {
 	EDL::PrintError(EDL_LIBNOTOPEN,aStatus);
@@ -874,7 +875,7 @@ void edl_unset_var(const edlstring varname)
 void edl_unset_pvar(const edlstring varname) 
 { 
   if (!edl_must_execute()) return;
-  char *aString = GlobalInter->GetVariable(varname.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
   
   GlobalInter->RemoveVariable(aString);
 }
@@ -898,7 +899,7 @@ void edl_set_varvar(const edlstring varname, const edlstring value)
 
   // we need to erase the quote
   //
-  char *aString = GlobalInter->GetVariable(value.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(value.str).GetValue();
 
   GlobalInter->AddVariable(varname.str,aString);
 }
@@ -912,8 +913,8 @@ void edl_set_varevalvar(const edlstring varname, const edlstring value)
 
   // we need to erase the quote
   //
-  char *aVarPointer = GlobalInter->GetVariable(value.str).GetValue();
-  char *aString = GlobalInter->GetVariable(aVarPointer).GetValue();
+  char *aVarPointer = (char *)GlobalInter->GetVariable(value.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(aVarPointer).GetValue();
   GlobalInter->AddVariable(varname.str,aString);
 }
 
@@ -923,7 +924,7 @@ void edl_set_varevalvar(const edlstring varname, const edlstring value)
 void edl_set_pvar(const edlstring varname, const edlstring value) 
 { 
   if (!edl_must_execute()) return;
-  char *aString = GlobalInter->GetVariable(varname.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
   
   GlobalInter->AddVariable(aString,value.str);
 }
@@ -937,8 +938,8 @@ void edl_set_pvarvar(const edlstring varname, const edlstring value)
 
   // we need to erase the quote
   //
-  char *aString = GlobalInter->GetVariable(value.str).GetValue();
-  char *aString2 = GlobalInter->GetVariable(varname.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(value.str).GetValue();
+  char *aString2 =(char *) GlobalInter->GetVariable(varname.str).GetValue();
 
   GlobalInter->AddVariable(aString2,aString);
 }
@@ -952,9 +953,9 @@ void edl_set_pvarevalvar(const edlstring varname, const edlstring value)
 
   // we need to erase the quote
   //
-  char *aVarPointer = GlobalInter->GetVariable(value.str).GetValue();
-  char *aString = GlobalInter->GetVariable(aVarPointer).GetValue();
-  char *aString2 = GlobalInter->GetVariable(varname.str).GetValue();
+  char *aVarPointer = (char *)GlobalInter->GetVariable(value.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(aVarPointer).GetValue();
+  char *aString2 = (char *)GlobalInter->GetVariable(varname.str).GetValue();
 
   GlobalInter->AddVariable(aString2,aString);
 }
@@ -971,7 +972,7 @@ void edl_test_condition(const edlstring varname, int ope, const edlstring value)
     return;
   }
 
-  char             *aString1 = GlobalInter->GetVariable(varname.str).GetValue(),
+  char             *aString1 = (char *)GlobalInter->GetVariable(varname.str).GetValue(),
                    *aString2 = value.str;
   
   Standard_Integer  aResult = strcmp(aString1,aString2);
@@ -1272,7 +1273,7 @@ void edl_create_string_var(const edlstring varname)
   }
   const TCollection_AsciiString& asciistr = GlobalInter->GetPrintList();
   edlstring astr;
-  astr.str    = asciistr.ToCString();
+  astr.str    = (char *)asciistr.ToCString();
   astr.length = asciistr.Length();
   edl_set_var(varname,astr);
   if (varname.str) Standard::Free((void*&)varname.str);
@@ -1289,7 +1290,7 @@ void edl_printlist_add_var(const edlstring varname)
 
   // we need to erase the quote
   //
-  char* aString = GlobalInter->GetVariable(varname.str).GetValue();
+  char* aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
     
   GlobalInter->GetPrintList().AssignCat(aString);
   if (varname.str) Standard::Free((void*&)varname.str);
@@ -1305,7 +1306,7 @@ void edl_printlist_addps_var(const edlstring varname)
 
   // we need to erase the quote
   //
-  char *aString = GlobalInter->GetVariable(varname.str).GetValue();
+  char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
     
   GlobalInter->GetPrintList().AssignCat(aString);
 }
