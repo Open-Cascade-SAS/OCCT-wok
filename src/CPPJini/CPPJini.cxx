@@ -530,7 +530,7 @@ Handle( TCollection_HAsciiString ) CPPJini_UnderScoreReplace (
                                    ) {
 
  char  str[ 5000 ];
- char* from = name -> ToCString ();
+ char* from = (char *)name -> ToCString ();
  int   cur = 0;
  
  for (  int i = 0; i < name -> Length (); ++i )
@@ -814,7 +814,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildType (
 
 Standard_Boolean CPPJini_IsCasType (  const Handle( TCollection_HAsciiString )& typname  ) {
 
- char* typeName = typname -> ToCString ();
+ char* typeName = (char *)typname -> ToCString ();
 
  if (  !strcmp ( typeName, "Object" )  ) return Standard_True;
 
@@ -841,7 +841,7 @@ Handle( TCollection_HAsciiString ) CPPJini_CheckPrimParam (
                                     const Standard_Boolean                    isout
                                    ) {
 
- char* typeName = parname -> ToCString ();
+ char* typeName = (char *)parname -> ToCString ();
 
  if (  !strcmp ( typeName, "Standard_Address" )  ) return CPPJini_ErrorArgument;
 
@@ -1187,7 +1187,7 @@ Handle(TCollection_HAsciiString) CPPJini_ConvertToJavaType(const Handle(MS_MetaS
     }
 
 
-    char* typeName = parname->ToCString();
+    char* typeName = (char *)parname->ToCString();
 
     if (!strcmp(typeName,"Standard_Address")) {
       return CPPJini_ErrorArgument;
@@ -1316,7 +1316,7 @@ void   CPPJini_ArgumentBuilder(const Handle(MS_MetaSchema)& aMeta,
               api -> AddVariable (
                       "%FromInterface",
                       CPPJini_DotReplace (
-                       iName -> ToCString (), '/'
+                       (char *)iName -> ToCString (), '/'
                       ) -> ToCString ()
                      );
 	      api->Apply("%MetOut","TransientSetValue");
@@ -1589,7 +1589,7 @@ void CPPJini_ReturnBuilder (
 
    } else {
 
-    objType = RetInDecl -> ToCString ();
+    objType = (char *)RetInDecl -> ToCString ();
     RetInCall -> AssignCat ( " thejret = " );
     RetInCall -> AssignCat ( MethodCall    );
     RetInCall -> AssignCat ( ";\n"         );
@@ -1623,7 +1623,7 @@ void CPPJini_ReturnBuilder (
      api -> AddVariable (
              "%FromInterface",
              CPPJini_DotReplace (
-              iName -> ToCString (), '/'
+              (char *)iName -> ToCString (), '/'
              ) -> ToCString ()
             );
 
@@ -1677,8 +1677,8 @@ void CPPJini_ReturnBuilder (
      api -> AddVariable (
              "%FromInterface",
              CPPJini_DotReplace (
-               iName -> ToCString (), '/'
-             ) -> ToCString ()
+				 (char *)iName -> ToCString (), '/'
+				 ) -> ToCString ()
             );
 
     }  // end else
@@ -1783,7 +1783,7 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
   api->AddVariable("%ClassName",className->ToCString());
   api -> AddVariable (
           "%MethodName",
-          CPPJini_DotReplace (  methodName -> ToCString ()  ) -> ToCString ()
+          CPPJini_DotReplace (  (char *)methodName -> ToCString ()  ) -> ToCString ()
          );;
   
   if ((m->IsKind(STANDARD_TYPE(MS_InstMet))) ||
@@ -1849,7 +1849,7 @@ void CPPJini_MethodBuilder(const Handle(MS_MetaSchema)& aMeta,
   
   api -> AddVariable (
           "%MethodName",
-          CPPJini_DotReplace (  metname -> ToCString ()  ) -> ToCString ()
+          CPPJini_DotReplace (  (char *)metname -> ToCString ()  ) -> ToCString ()
          );
   api->AddVariable("%Return",RetInDecl->ToCString());
 

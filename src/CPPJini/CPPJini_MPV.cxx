@@ -256,7 +256,7 @@ void CPPJini_MPVClass (
 
   api -> AddVariable (
           "%MethodName",
-          CPPJini_DotReplace (  namefinal -> ToCString ()  ) -> ToCString ()
+          CPPJini_DotReplace (  (char *)namefinal -> ToCString ()  ) -> ToCString ()
          );
   api -> Apply ( VJMethod, "FinalizeForValue" );
   Supplement -> Append (  api -> GetVariableValue ( VJMethod )  );
