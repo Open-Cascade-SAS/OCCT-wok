@@ -23,6 +23,7 @@
 #include <WOKernel_FileTypeKeyWords.hxx>
 
 #include <WOKernel_FileType.ixx>
+#include <Standard_PCharacter.hxx>
 
 
 //=======================================================================
@@ -63,7 +64,7 @@ Handle( TCollection_HAsciiString )
   new TCollection_HAsciiString ( "javafile" );
 
  Standard_Boolean                   fJava = Standard_False;
- Standard_CString                   s;
+ Standard_PCharacter                s;
  Handle( TCollection_HAsciiString ) result;
  Handle( EDL_HSequenceOfVariable  ) vars = new EDL_HSequenceOfVariable ();
 
@@ -84,7 +85,7 @@ Handle( TCollection_HAsciiString )
    ) {
 
     EDL_Variable     v = params.myapi -> GetVariable ( name );
-    Standard_CString p = s = v.GetValue ();
+    Standard_PCharacter p = s = (Standard_PCharacter)v.GetValue ();
 
     while ( *p ) { if ( *p == '.' ) *p = '/'; ++p; }
 
