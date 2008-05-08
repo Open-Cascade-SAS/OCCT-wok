@@ -592,7 +592,7 @@ void Type_Pack(char *aName)
     msg->AssignCat(aName);
     msg->AssignCat(" is not in the 'uses' clause of ");
     msg->AssignCat(Container);
-    CDLerror(msg->ToCString());
+    CDLerror((char *)msg->ToCString());
   }
 
   strncpy(Pack_Name,aName,MAX_CHAR);
@@ -609,7 +609,7 @@ char *TypeCompletion(char *aName)
     
 
     if (SimpleClass->Name()->IsSameString(thethetypename)) {
-       return Container->ToCString();
+       return (char *)Container->ToCString();
     }
 
     aSeqOfPackage = SimpleClass->GetUsesNames();
@@ -664,7 +664,7 @@ char *TypeCompletion(char *aName)
     aFullName->AssignCat(aName);
     
     if (theMetaSchema->IsDefined(aFullName)) {
-      return aSeqOfPackage->Value(i)->ToCString();
+      return (char *)aSeqOfPackage->Value(i)->ToCString();
     }
     
     aFullName->Clear();
@@ -696,7 +696,7 @@ void Type_Pack_Blanc()
 	Handle(TCollection_HAsciiString) msg = new TCollection_HAsciiString("the type '");
 	msg->AssignCat(thetypename);	
 	msg->AssignCat("' must be followed by a package name.");
-	CDLerror(msg->ToCString());
+	CDLerror((char *)msg->ToCString());
       }
     }
   }
@@ -713,7 +713,7 @@ void Type_Pack_Blanc()
     }
   }
   else {
-    Type_Pack(Container->ToCString());
+    Type_Pack((char *)Container->ToCString());
   }
 
 }
@@ -1750,7 +1750,7 @@ void Add_InstType()
       aType = theMetaSchema->GetType(aFullName);
     }
     else {
-      char *athetypename = TypeCompletion(ListOfTypes->Value(i)->ToCString());
+      char *athetypename = TypeCompletion((char *)ListOfTypes->Value(i)->ToCString());
 
       if (athetypename == aDummyPackageName) {
 	ListOfPackages->Value(i)->Clear();
@@ -2805,7 +2805,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 
     try {
       OCC_CATCH_SIGNALS
-      ErrorLevel = TraductionMain(aFileName->ToCString());
+      ErrorLevel = TraductionMain((char *)aFileName->ToCString());
     }
     catch(Standard_Failure) {
       fclose(CDLin);
