@@ -31,7 +31,7 @@ Standard_Integer WOKTclTools_Package::Require(const Standard_Boolean exact)
 {
   if(!myinterp.IsNull()) 
     {
-      if (Tcl_PkgRequire(myinterp->Interp(), myname.ToCString(), myversion.ToCString(),exact) != TCL_OK) {
+      if (Tcl_PkgRequire(myinterp->Interp(), (char*)myname.ToCString(), (char*)myversion.ToCString(),exact) != TCL_OK) {
 	return TCL_ERROR;
       }
     }
@@ -47,7 +47,7 @@ Standard_Integer WOKTclTools_Package::Provide()
 {
   if(!myinterp.IsNull()) 
     {
-      if (Tcl_PkgProvide(myinterp->Interp(), myname.ToCString(), myversion.ToCString()) != TCL_OK) {
+      if (Tcl_PkgProvide(myinterp->Interp(), (char*)myname.ToCString(), (char*)myversion.ToCString()) != TCL_OK) {
 	return TCL_ERROR;
       }
     }
@@ -103,7 +103,7 @@ error $msg\n\
 	  cmd.AssignCat("\n");
 	}
       
-      if(Tcl_Eval(myinterp->Interp(), cmd.ToCString()) != TCL_OK)
+      if(Tcl_Eval(myinterp->Interp(), (char*)cmd.ToCString()) != TCL_OK)
 	return TCL_ERROR;
     }
   return TCL_OK;

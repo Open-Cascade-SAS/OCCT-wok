@@ -13,7 +13,7 @@
 #include <WOKTools_InterpFileValue.hxx>
 #include <WOKTools_HSequenceOfReturnValue.hxx>
 #include <WOKTools_Messages.hxx>
-
+#include <Standard_PCharacter.hxx>
 #include <tcl.h>
 
 #ifdef WNT
@@ -31,6 +31,7 @@ void Free ( void* );
 
 #include <Standard_RangeError.hxx>
 #include <Standard_ErrorHandler.hxx>
+
 
 #ifdef WNT
 #  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
@@ -178,17 +179,22 @@ WOKTclTools_Interpretor::WOKTclTools_Interpretor(const WOKTclTools_PInterp& p) :
 //purpose  : 
 //=======================================================================
 void WOKTclTools_Interpretor::Add(const Standard_CString n,
-			   const Standard_CString help,
-			   const WOKTclTools_CommandFunction f,
-			   const Standard_CString group)
+				  const Standard_CString help,
+				  const WOKTclTools_CommandFunction f,
+				  const Standard_CString group)
 {
   CData* C = new CData(f,this);
-
-  Tcl_CreateCommand(myInterp,n,CommandCmd, (ClientData) C, CommandDelete);
+  Standard_PCharacter pN, pHelp, pGroup;
+  //
+  pN=(Standard_PCharacter)n;
+  pHelp=(Standard_PCharacter)help;
+  pGroup=(Standard_PCharacter)group;
+  //
+  Tcl_CreateCommand(myInterp,pN,CommandCmd, (ClientData) C, CommandDelete);
 
   // add the help
-  Tcl_SetVar2(myInterp,"WOKTclTools_Helps",n,help,TCL_GLOBAL_ONLY);
-  Tcl_SetVar2(myInterp,"WOKTclTools_Groups",group,n,
+  Tcl_SetVar2(myInterp,"WOKTclTools_Helps",pN,pHelp,TCL_GLOBAL_ONLY);
+  Tcl_SetVar2(myInterp,"WOKTclTools_Groups",pGroup,pN,
 	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
 }
 
@@ -203,12 +209,17 @@ void WOKTclTools_Interpretor::Add(const Standard_CString n,
 				  const Standard_CString group)
 {
   WOKCData* C = new WOKCData(f,this);
-
-  Tcl_CreateCommand(myInterp,n,WOKCommand, (ClientData) C, CommandDelete);
+  Standard_PCharacter pN, pHelp, pGroup;
+  //
+  pN=(Standard_PCharacter)n;
+  pHelp=(Standard_PCharacter)help;
+  pGroup=(Standard_PCharacter)group;
+  //
+  Tcl_CreateCommand(myInterp,pN,WOKCommand, (ClientData) C, CommandDelete);
 
   // add the help
-  Tcl_SetVar2(myInterp,"WOKTclTools_Helps",n,help,TCL_GLOBAL_ONLY);
-  Tcl_SetVar2(myInterp,"WOKTclTools_Groups",group,n,
+  Tcl_SetVar2(myInterp,"WOKTclTools_Helps",pN,pHelp,TCL_GLOBAL_ONLY);
+  Tcl_SetVar2(myInterp,"WOKTclTools_Groups",pGroup,pN,
 	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
 }
 
@@ -241,7 +252,10 @@ void WOKTclTools_Interpretor::DeleteExitHandler(const WOKTclTools_ExitHandler f)
 Standard_Boolean WOKTclTools_Interpretor::IsCmdName(Standard_CString const n)
 {
   Tcl_CmdInfo Info;
-  return (Tcl_GetCommandInfo(myInterp, n, &Info)) != 0;
+  Standard_PCharacter pN;
+  //
+  pN=(Standard_PCharacter)n;
+  return (Tcl_GetCommandInfo(myInterp, pN, &Info)) != 0;
 }
 
 //=======================================================================
@@ -250,7 +264,10 @@ Standard_Boolean WOKTclTools_Interpretor::IsCmdName(Standard_CString const n)
 //=======================================================================
 Standard_Boolean WOKTclTools_Interpretor::Remove(Standard_CString const n)
 {
-  Standard_Integer result = Tcl_DeleteCommand(myInterp,n);
+  Standard_PCharacter pN;
+  //
+  pN=(Standard_PCharacter)n;
+  Standard_Integer result = Tcl_DeleteCommand(myInterp,pN);
   return (result == 0);
 }
 
@@ -470,7 +487,7 @@ Standard_Boolean WOKTclTools_Interpretor::GetReturnValues(WOKTools_Return& retva
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
   const char** argv;
 #else
-  Standard_CString* argv;
+  Standard_PCharacter* argv;
 #endif
   
   if(Tcl_SplitList(myInterp, myInterp->result, &argc, &argv)) return Standard_True;
@@ -549,7 +566,10 @@ void WOKTclTools_Interpretor::AppendElement(const Standard_CString s)
 //=======================================================================
 Standard_Integer WOKTclTools_Interpretor::Eval(const Standard_CString line)
 {
-  return Tcl_Eval(myInterp,line);
+  Standard_PCharacter pLine;
+  //
+  pLine=(Standard_PCharacter)line;
+  return Tcl_Eval(myInterp,pLine);
 }
 
 
@@ -558,9 +578,12 @@ Standard_Integer WOKTclTools_Interpretor::Eval(const Standard_CString line)
 //purpose  : 
 //=======================================================================
 Standard_Integer WOKTclTools_Interpretor::RecordAndEval(const Standard_CString line,
-						 const Standard_Integer flags)
+							const Standard_Integer flags)
 {
-  return Tcl_RecordAndEval(myInterp,line,flags);
+  Standard_PCharacter pLine;
+  //
+  pLine=(Standard_PCharacter)line;
+  return Tcl_RecordAndEval(myInterp,pLine,flags);
 }
 
 //=======================================================================
@@ -569,7 +592,10 @@ Standard_Integer WOKTclTools_Interpretor::RecordAndEval(const Standard_CString l
 //=======================================================================
 Standard_Integer WOKTclTools_Interpretor::EvalFile(const Standard_CString fname)
 {
-  return Tcl_EvalFile(myInterp,fname);
+  Standard_PCharacter pFname;
+  //
+  pFname=(Standard_PCharacter)fname;
+  return Tcl_EvalFile(myInterp,pFname);
 }
 
 //=======================================================================
@@ -577,8 +603,11 @@ Standard_Integer WOKTclTools_Interpretor::EvalFile(const Standard_CString fname)
 //purpose  : 
 //=======================================================================
 Standard_Boolean WOKTclTools_Interpretor::Complete(const Standard_CString line)
-{
-  return Tcl_CommandComplete(line);
+{ 
+  Standard_PCharacter pLine;
+  //
+  pLine=(Standard_PCharacter)line;
+  return Tcl_CommandComplete(pLine);
 }
 
 //=======================================================================
@@ -709,11 +738,11 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 #endif
       Standard_Character  tmp[2];
       int argc;
-      argv[0]    = EndMessageProc();
+      argv[0]    = (Standard_PCharacter)EndMessageProc();
       argv[1]    = tmp;
       argv[1][0] = achar;
       argv[1][1] = '\0';
-      argv[2]    = astr;
+      argv[2]    = (Standard_PCharacter)astr;
       if(EndMessageArgs() == NULL)
 	{
 	  argc       = 3;
@@ -722,7 +751,7 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
       else
 	{
 	  argc       = 4;
-	  argv[3]    = EndMessageArgs();
+	  argv[3]    = (Standard_PCharacter)EndMessageArgs();
 	  argv[4]    = NULL;
 	}
 
@@ -749,7 +778,7 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 	  argv[0]    = "puts";
 	  argv[2]    = "stderr";
 	  argv[1]    = "-nonewline";
-	  argv[3]    = astr;
+	  argv[3]    = (Standard_PCharacter)astr;
 	  argv[4]    = NULL;
 	  
 	  if (Tcl_GetCommandInfo(myInterp, argv[0], &infoPtr) != 0)
@@ -772,7 +801,7 @@ void WOKTclTools_Interpretor::TreatMessage(const Standard_Boolean newline,
 	  int argc   = 3;
 	  argv[0]    = "puts";
 	  argv[1]    = "stderr";
-	  argv[2]    = astr;
+	  argv[2]    = (Standard_PCharacter)astr;
 	  argv[3]    = NULL;
 	  
 	  if (Tcl_GetCommandInfo(myInterp, argv[0], &infoPtr) != 0)

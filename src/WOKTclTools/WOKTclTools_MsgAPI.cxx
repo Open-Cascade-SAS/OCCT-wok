@@ -83,7 +83,7 @@ Standard_Integer WOKTclTools_MsgAPI::Set(const Standard_Integer argc, const WOKT
       TCollection_AsciiString astr(VClass->String());
 
       astr.AssignCat("=true");
-      putenv(astr.ToCString());
+      putenv((char*)astr.ToCString());
       //OSD_Environment anenv(VClass->String());
       //anenv.SetValue(TCollection_AsciiString("true"));
       
@@ -156,7 +156,7 @@ Standard_Integer WOKTclTools_MsgAPI::UnSet(const Standard_Integer argc, const WO
     {
       TCollection_AsciiString astr(VClass->ToCString());
       astr.AssignCat("=");
-      putenv(astr.ToCString());
+      putenv((char*)astr.ToCString());
 	
       retval.AddUnSetEnvironment(VClass);
     }
