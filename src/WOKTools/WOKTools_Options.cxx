@@ -75,7 +75,7 @@ void WOKTools_Options::Next()
 {
   if (!mymore) return;
 
-  mycuropt = getopt(myargc, myargv, myoptions->ToCString());
+  mycuropt = getopt(myargc, myargv, (char *)myoptions->ToCString());
 
   if(mycuropt == (Standard_Byte ) EOF)
     {
@@ -197,7 +197,7 @@ void WOKTools_Options::Next()
 //      Standard_Character acuropt = '\0';
       Standard_Byte acuropt = 0;
       while(acuropt != (Standard_Byte ) EOF)
-	  acuropt = getopt(myargc, myargv, myoptions->ToCString());
+	  acuropt = getopt(myargc, myargv, (char *)myoptions->ToCString());
     }
 
   return;
