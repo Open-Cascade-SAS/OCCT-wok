@@ -1,6 +1,7 @@
 #include <MS_Method.ixx>
 #include <MS_MetaSchema.hxx>
 #include <MS_InstMet.hxx>
+#include <Standard_PCharacter.hxx>
 
 #define MET_DESTROY  0x01
 #define MET_PRIVATE  0x02
@@ -239,8 +240,8 @@ Standard_Boolean MS_Method::IsSameSignature(const Handle(TCollection_HAsciiStrin
     Standard_CString aname1 = strchr(aMetName1->ToCString(), ':');
     Standard_CString aname2 = strchr(aMetName2->ToCString(), ':');
 
-    Standard_CString fin1 = strchr(aname1, '=');
-    Standard_CString fin2 = strchr(aname2, '=');
+    Standard_PCharacter fin1 = strchr(aname1, '=');
+    Standard_PCharacter fin2 = strchr(aname2, '=');
 
     if(fin1) *fin1 = '\0';
     if(fin2) *fin2 = '\0';
