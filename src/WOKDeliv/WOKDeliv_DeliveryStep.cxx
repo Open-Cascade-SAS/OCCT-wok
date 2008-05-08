@@ -72,7 +72,7 @@ Handle(WOKDeliv_DeliveryList) WOKDeliv_DeliveryStep::ParseCOMPONENTS(const Stand
   Handle(WOKernel_File) filCOMP = GetCOMPONENTS();
   if (!filCOMP.IsNull()) {
     filCOMP->GetPath();
-    if (WOKDeliv_Delivery_SetFile(filCOMP->Path()->Name()->ToCString())) {
+    if (WOKDeliv_Delivery_SetFile((char *)filCOMP->Path()->Name()->ToCString())) {
       dlist = WOKDeliv_Delivery_Parse(aStep);
       WOKDeliv_Delivery_CloseFile();
     }
@@ -245,7 +245,7 @@ Handle(WOKernel_Locator) WOKDeliv_DeliveryStep::DefineLocator()
 	  Handle(WOKernel_File) theCOMPFile = Locator()->Locate(theunit->Name(),TypeName,COMPName);
 	  if (!theCOMPFile.IsNull()) {
 	    theCOMPFile->GetPath();
-	    if (WOKDeliv_Delivery_SetFile(theCOMPFile->Path()->Name()->ToCString())) {
+	    if (WOKDeliv_Delivery_SetFile((char *)theCOMPFile->Path()->Name()->ToCString())) {
 	      Handle(WOKDeliv_DeliveryList) alist = WOKDeliv_Delivery_Parse(T_BASE);
 	      WOKDeliv_Delivery_CloseFile();
 	      if (!alist.IsNull()) {

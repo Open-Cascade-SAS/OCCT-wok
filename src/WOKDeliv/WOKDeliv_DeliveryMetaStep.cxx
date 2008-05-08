@@ -66,7 +66,7 @@ Handle(WOKDeliv_DeliveryList) WOKDeliv_DeliveryMetaStep::ParseCOMPONENTS(const S
   Handle(WOKernel_File) filCOMP = GetCOMPONENTS();
   if (!filCOMP.IsNull()) {
     filCOMP->GetPath();
-    if (WOKDeliv_Delivery_SetFile(filCOMP->Path()->Name()->ToCString())) {
+    if (WOKDeliv_Delivery_SetFile((char *)filCOMP->Path()->Name()->ToCString())) {
       dlist = WOKDeliv_Delivery_Parse(aStep);
       WOKDeliv_Delivery_CloseFile();
     }
