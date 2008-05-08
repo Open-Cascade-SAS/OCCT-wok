@@ -26,6 +26,7 @@
 #include <WOKUtils_SearchList.hxx>
 #include <WOKUtils_WOKVersion.hxx>
 #include <WOKUtils_Param.ixx>
+#include <Standard_PCharacter.hxx>
 
 #ifdef WNT
 # include <windows.h>
@@ -430,7 +431,7 @@ Handle(TCollection_HAsciiString) WOKUtils_Param::ClassFile(const Standard_CStrin
 //=======================================================================
 Handle(TCollection_HAsciiString) WOKUtils_Param::ClassSubFile(const Standard_CString aclass, const Standard_CString asub) const
 {
-  Standard_CString thedir = strchr(asub, '@');
+  Standard_PCharacter thedir = strchr(asub, '@');
 
   if(thedir)
     {
