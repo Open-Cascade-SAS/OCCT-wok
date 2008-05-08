@@ -226,11 +226,11 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
           }  // end if
 # endif  // WOKStep_Incluse_SYMLINK
 #else
-	  Standard_CString args[ 4 ];
+	  Standard_PCharacter args[ 4 ];
 
       args[ 0 ] = "wokCMP";
-      args[ 1 ] = infile -> File () -> Path () -> Name () -> ToCString ();
-      args[ 2 ] = pubincfile        -> Path () -> Name () -> ToCString ();
+      args[ 1 ] = (Standard_PCharacter)infile -> File () -> Path () -> Name () -> ToCString ();
+      args[ 2 ] = (Standard_PCharacter)pubincfile        -> Path () -> Name () -> ToCString ();
 
       if (  wokCMP ( 3, args )  ) {
 

@@ -59,6 +59,7 @@
 #include <WOKStep_ProcessStep.ixx>
 
 #include <WOKUtils_AdmFile.hxx>
+#include <Standard_PCharacter.hxx>
 
 #define READBUF_SIZE 1024
 
@@ -122,9 +123,9 @@ Handle(TCollection_HAsciiString) WOKStep_ProcessStep::GetUnitName(const Handle(T
   Handle(TCollection_HAsciiString) handleprefix = Unit()->Params().Eval("%FILENAME_HANDLEPREFIX");
   Handle(TCollection_HAsciiString) rejectlist   = Unit()->Params().Eval("%FILENAME_REJECTLIST");
   Handle(TCollection_HAsciiString) unitname;
-  Standard_CString ptr;
-  static Standard_CString unit = new char[1024];
-  Standard_CString unitptr;
+  Standard_PCharacter ptr;
+  static Standard_PCharacter unit = new char[1024];
+  Standard_PCharacter unitptr;
   Standard_Integer apos;
   
   unitptr = unit;
@@ -148,11 +149,11 @@ Handle(TCollection_HAsciiString) WOKStep_ProcessStep::GetUnitName(const Handle(T
   // Extraire le BaseName
   if((apos = aincpath->SearchFromEnd("/")) != -1)
     {
-      ptr = aincpath->ToCString() + apos;
+      ptr = (Standard_PCharacter)aincpath->ToCString() + apos;
     }
   else
     {
-      ptr = aincpath->ToCString();
+      ptr = (Standard_PCharacter)aincpath->ToCString();
     }
 
 
