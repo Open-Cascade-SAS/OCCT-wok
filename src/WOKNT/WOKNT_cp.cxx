@@ -70,7 +70,7 @@ int wokCP( int argc, char** argv )
       if(woksrc->IsFile() && wokdst->IsDirectory())
 	{
 	  newdst = new WOKNT_Path(wokdst->Name()->ToCString(), woksrc->FileName()->ToCString());
-	  dst = newdst->Name()->ToCString();
+	  dst = (char *) newdst->Name()->ToCString();
 	}
       
       if(fRecurse) 

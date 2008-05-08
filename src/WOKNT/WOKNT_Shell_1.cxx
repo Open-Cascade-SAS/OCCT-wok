@@ -391,7 +391,7 @@ Standard_Boolean WOKNT_Shell :: BuiltInCommand (
 
    for ( int i = 1; i <= args -> Length (); ++i )
 
-    argv[ i - 1 ] = args -> Value ( i ) -> ToCString ();
+    argv[ i - 1 ] = (TCHAR*)args -> Value ( i ) -> ToCString ();
 
    myStatus = ( *xFunc ) (  args -> Length (), argv  );
 

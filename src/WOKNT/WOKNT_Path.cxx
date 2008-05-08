@@ -582,15 +582,15 @@ Standard_Boolean WOKNT_Path::IsNewer(const Handle(WOKNT_Path)& aName)
 
 Standard_Boolean WOKNT_Path::IsSameFile(const Handle( WOKNT_Path )& aPath)const {
 
-  Standard_CString newArgs[ 3 ];
+  Standard_PCharacter newArgs[ 3 ];
 
   if(myPath.IsNull()) return Standard_False;
   if(aPath.IsNull())  return Standard_False;
   if(aPath->Name().IsNull()) return Standard_False;
   
   newArgs[ 0 ] = "wokCMP";
-  newArgs[ 1 ] = myPath -> ToCString ();
-  newArgs[ 2 ] = aPath  -> Name () -> ToCString ();
+  newArgs[ 1 ] = (Standard_PCharacter)myPath -> ToCString ();
+  newArgs[ 2 ] = (Standard_PCharacter)aPath  -> Name () -> ToCString ();
 
   return !wokCMP(3, newArgs)? Standard_True : Standard_False;
 

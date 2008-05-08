@@ -222,7 +222,7 @@ void WOKNT_Shell :: Execute (  const Handle( TCollection_HAsciiString )& aCmdLin
 
     if (  !CreateProcess (
             NULL,                        // image name
-            cmd -> ToCString (),         // command line
+            (char *) cmd -> ToCString (),         // command line
             NULL,                        // security attributes for process ( default )
             NULL,                        // security attributes for primary thread ( default )
             TRUE,                        // handle inheritance
@@ -409,8 +409,8 @@ Standard_Address WOKNT_Shell :: BuildEnvironment (
  } else {
 
   int                      i;
-  Standard_CString         retVal;
-  Standard_CString         ptr;
+  Standard_PCharacter         retVal;
+  Standard_PCharacter        ptr;
   Standard_Integer         len = 0;
   WOKNT_CompareOfString comp;
   WOKNT_Array1OfString  env (  1, myEnvironment -> Length ()  );
@@ -428,7 +428,7 @@ Standard_Address WOKNT_Shell :: BuildEnvironment (
 
   for ( i = env.Lower (); i <= env.Upper (); ++i ) {
  
-   lstrcpy (  ptr, env.Value ( i ) -> ToCString ()  );
+   lstrcpy (  (char *)ptr,  env.Value ( i ) -> ToCString ()  );
    ptr += (  lstrlen ( ptr ) + 1  );
  
   }  // end for
@@ -591,11 +591,11 @@ Standard_Integer __fastcall _WOKNT_find_environment_variable (
 
 static void _WOKNT_get_env (  Handle( TColStd_HSequenceOfHAsciiString )& seq  ) {
 
- Standard_CString ptr, env;
+ Standard_PCharacter ptr, env;
 
  seq = new TColStd_HSequenceOfHAsciiString ();
 
- env = ptr = ( Standard_CString )GetEnvironmentStrings ();
+ env = ptr = (Standard_PCharacter)GetEnvironmentStrings ();
 
   if (  *ptr != TEXT( '\x00' )  )
 
