@@ -58,7 +58,7 @@
 : WOKUnix_Shell(apath, amode, outmode, bufmode)
 { 
 
-  char *rshellargv[]={"rsh" , ahost->ToCString(), "exec","/bin/csh", "-fs", NULL};
+  char *rshellargv[]={"rsh" , (char*)ahost->ToCString(), "exec","/bin/csh", "-fs", NULL};
   SetCommand(6,rshellargv);
 }
 

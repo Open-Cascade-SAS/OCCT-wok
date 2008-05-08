@@ -5,6 +5,7 @@
 #include <WOKTools_Messages.hxx>
 
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_PCharacter.hxx>
 
 //=======================================================================
 //function : WOKUnix_Buffer
@@ -92,8 +93,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKUnix_Buffer::Echo()
 
   myfd.Read(buffer, nbtoread);
 
-  Standard_CString aptr   = buffer.ToCString();
-  Standard_CString aptr2  = buffer.ToCString();
+  Standard_PCharacter aptr   = (Standard_PCharacter)buffer.ToCString();
+  Standard_PCharacter aptr2  = (Standard_PCharacter)buffer.ToCString();
   
   i=0;
   while(i<nbtoread)
@@ -130,8 +131,8 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKUnix_Buffer::Errors()
 
   myfd.Read(buffer, nbtoread);
 
-  Standard_CString aptr   = buffer.ToCString();
-  Standard_CString aptr2  = buffer.ToCString();
+  Standard_PCharacter aptr   = (Standard_PCharacter)buffer.ToCString();
+  Standard_PCharacter aptr2  = (Standard_PCharacter)buffer.ToCString();
   
   i=0;
   while(i<nbtoread)

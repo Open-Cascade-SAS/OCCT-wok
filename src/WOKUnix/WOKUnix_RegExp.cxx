@@ -109,7 +109,7 @@ void WOKUnix_RegExp :: SetPattern (
  re_set_syntax ( syntax );
 
  errMsg = re_compile_pattern (
-           aPattern -> ToCString (), aPattern -> Length (), BUFFER
+           (char*)aPattern -> ToCString (), aPattern -> Length (), BUFFER
           );
 
  if ( errMsg != NULL ) {
@@ -133,7 +133,7 @@ Standard_Integer WOKUnix_RegExp :: Search (
  Standard_Integer retVal;
  
  retVal = re_search (
-           BUFFER, aString -> ToCString (), aString -> Length (),
+           BUFFER, (char*)aString -> ToCString (), aString -> Length (),
            aStartPos - 1, 0, NULL
           );
 

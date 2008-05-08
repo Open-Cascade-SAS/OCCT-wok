@@ -173,8 +173,8 @@ void WOKUnix_FDescr::BuildTemporary(const TCollection_AsciiString & apath)
   TCollection_AsciiString astr(apath);
   
   astr.AssignCat("/WOKXXXXXX");
-
-  char *name = mktemp(astr.ToCString()) ;
+  char *pPath=(char *)astr.ToCString();
+  char *name = mktemp(pPath) ;
 
   TCollection_AsciiString aName ( name ) ;
   OSD_Path aPath( aName ) ;
@@ -352,7 +352,7 @@ Handle(TCollection_HAsciiString) WOKUnix_FDescr::ReadLine()
 
       while(GetNbToRead() != 0)
 	{
-	  fgets(abuf.ToCString(), 1024, (FILE *) myFILE);
+	  fgets((char*)abuf.ToCString(), 1024, (FILE *) myFILE);
 	  nbread = strlen(abuf.ToCString());
 	  if(astr.IsNull() && nbread < 1024)
 	    {
