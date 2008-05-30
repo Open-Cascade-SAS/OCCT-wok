@@ -252,20 +252,24 @@ Handle(MS_StdClass) MS::BuildStdClass(const Handle(MS_Class)& aClass,
   return aNewClass;
 }
 
+//=======================================================================
+//function : BuildStdMethod
+//purpose  : 
+//=======================================================================
 Handle(MS_MemberMet) MS::BuildStdMethod(const Handle(MS_MemberMet)& aMethod,
 					const Handle(MS_Class)& aClass,
 				        const Handle(TColStd_HSequenceOfHAsciiString)& aSeqGen,
 				        const Handle(TColStd_HSequenceOfHAsciiString)& aSeqType)
 {
   Handle(MS_MemberMet) aNewMethod;
-  
+  //
   if (!aMethod.IsNull() && !aClass.IsNull()) {
-    Standard_Integer    i; 
+    Standard_Integer i, aNbParams, aNbRaises; 
     Handle(MS_InstMet)  aNewInst;
     Handle(MS_Construc) aNewCons;
     Handle(MS_ClassMet) aNewCmet;
-    MS_InstMet          *anInst = 0l;
-
+    MS_InstMet          *anInst = NULL;//0l;
+    //
     if (aMethod->IsKind(STANDARD_TYPE(MS_InstMet))) {
       anInst     = (MS_InstMet *)aMethod.operator->();
       aNewInst   = new MS_InstMet(aMethod->Name(),aClass->FullName());
@@ -281,20 +285,20 @@ Handle(MS_MemberMet) MS::BuildStdMethod(const Handle(MS_MemberMet)& aMethod,
       aNewCmet   = new MS_ClassMet(aMethod->Name(),aClass->FullName());
       aNewMethod = aNewCmet;
     }
-
+    //
     // Parameters
     //
     Handle(MS_HArray1OfParam)   aSeqParam = aMethod->Params();
     Handle(MS_HSequenceOfParam) tmpParamSeq = new MS_HSequenceOfParam;
     if(!aSeqParam.IsNull()) {
-      for (i = 1; i <= aSeqParam->Length(); i++) {
+      aNbParams=aSeqParam->Length(); 
+      for (i = 1; i <= aNbParams; ++i) {
 	tmpParamSeq->Append(MS::BuildStdParam(aSeqParam->Value(i),aNewMethod,aSeqGen,aSeqType));
-	//aNewMethod->Param(MS::BuildStdParam(aSeqParam->Value(i),aNewMethod,aSeqGen,aSeqType));
       }
       aNewMethod->Params(tmpParamSeq);
     }
-    // Some attributes
     //
+    // Some attributes
     aNewMethod->Private(aMethod->Private());
     aNewMethod->Inline(aMethod->IsInline());
     aNewMethod->ConstReturn(aMethod->IsConstReturn());
@@ -304,22 +308,25 @@ Handle(MS_MemberMet) MS::BuildStdMethod(const Handle(MS_MemberMet)& aMethod,
     aNewMethod->Protected(aMethod->IsProtected());
     aNewMethod->FunctionCall(aMethod->IsFunctionCall());
     aNewMethod->SetAliasType(aMethod->IsOperator());
-
+    //modified by NIZNHY-PKV Mon May  5 09:09:37 2008f
+    aNewMethod->PtrReturn(aMethod->IsPtrReturn());
+    //modified by NIZNHY-PKV Mon May  5 09:09:40 2008t
+    //
     if (!aMethod->Returns().IsNull()) {
       aNewMethod->Returns(MS::BuildStdParam(aMethod->Returns(),aNewMethod,aSeqGen,aSeqType));
     }
-
+    //
     aNewMethod->CreateFullName();
     aNewMethod->MetaSchema(aClass->GetMetaSchema());
     aClass->GetMetaSchema()->AddMethod(aNewMethod);
-
-    // Raises
     //
+    // Raises
     Handle(TColStd_HSequenceOfHAsciiString) aRaiseSeq  = aMethod->GetRaisesName();
     Handle(MS_Method)                       aSimpleMet = aNewMethod;
-
+    //
     if(!aRaiseSeq.IsNull()) {
-      for (i = 1; i <= aRaiseSeq->Length(); i++) {
+      aNbRaises=aRaiseSeq->Length();
+      for (i = 1; i <= aNbRaises; ++i) {
 	aSimpleMet->Raises(aRaiseSeq->Value(i));
       }
     }
@@ -328,10 +335,10 @@ Handle(MS_MemberMet) MS::BuildStdMethod(const Handle(MS_MemberMet)& aMethod,
     cerr << "Error : MS::BuildStdMethod - aMethod or aClass are NULL" << endl;
     Standard_NullObject::Raise();
   }
-
+  //
   return aNewMethod;
 }
-
+//
 // WARNING (to do) : LikeParam is not copied 
 //
 Handle(MS_Param) MS::BuildStdParam(const Handle(MS_Param)& aParam,

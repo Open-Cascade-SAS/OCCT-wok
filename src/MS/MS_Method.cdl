@@ -79,9 +79,15 @@ is
 	    
     IsSameSignature(me; aMetName : HAsciiString from TCollection)
     	returns Boolean;
-    
-fields
+     
+--modified by NIZNHY-PKV Sun May  4 16:18:07 2008f      
+    PtrReturn(me : mutable;  
+    	    aRef : Boolean from Standard);
+    IsPtrReturn(me) 
+	returns Boolean from Standard;  
+--modified by NIZNHY-PKV Sun May  4 16:18:13 2008t 
 
+fields
     myParam     : HArray1OfParam from MS;        -- list of parameters
     myAttribute : Integer;
     myReturns   : Param from MS;                   -- return parameter
