@@ -110,8 +110,13 @@ void CPP_UsedTypes(const Handle(MS_MetaSchema)& aMeta,
 // build a return, parameter or field type in c++
 //  return a <type name> or a Handle_<type name>
 //
-Handle(TCollection_HAsciiString) CPP_BuildType(const Handle(MS_MetaSchema)& aMeta,
-					       const Handle(TCollection_HAsciiString)& aTypeName)
+//=======================================================================
+//function : CPP_BuildType
+//purpose  : 
+//=======================================================================
+Handle(TCollection_HAsciiString) CPP_BuildType
+       (const Handle(MS_MetaSchema)& aMeta,
+	const Handle(TCollection_HAsciiString)& aTypeName)
 {
   Handle(TCollection_HAsciiString)   result = new TCollection_HAsciiString;
   Handle(MS_Type)                    aType;
@@ -143,7 +148,9 @@ Handle(TCollection_HAsciiString) CPP_BuildType(const Handle(MS_MetaSchema)& aMet
     }
   }
   else {
-     ErrorMsg << "CPPExt" << "type " << aType->FullName()->ToCString() << " not defined..." << endm;
+     ErrorMsg << "CPPExt" \
+       << "type " << aType->FullName()->ToCString() \
+	 << " not defined..." << endm;
      Standard_NoSuchObject::Raise();
   }
 
@@ -312,6 +319,10 @@ Handle(TCollection_HAsciiString) CPP_BuildParameterList(const Handle(MS_MetaSche
 //        VConstructorHeader :  must contains the name of the template used for 
 //                              constructors construction
 //
+//=======================================================================
+//function : CPP_BuildMethod
+//purpose  : 
+//=======================================================================
 void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta, 
 		     const Handle(EDL_API)& api, 
 		     const Handle(MS_Method)& m,
@@ -358,22 +369,52 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   }
   
   // it s returning & ?
-    //
+  //
+  Standard_CString pC[3]={"&","*",""};
+  Standard_Integer iX;
+  //
+  iX=2;
   if (m->IsRefReturn()) {
-    api->AddVariable(VAnd,"&");
+    iX=0;
   }
-  else {
-    api->AddVariable(VAnd,"");
+  else if (m->IsPtrReturn()) {
+    iX=1;
   }
-  
-  api->AddVariable(VArgument,CPP_BuildParameterList(aMeta,m->Params(),forDeclaration)->ToCString());
+  api->AddVariable(VAnd, pC[iX]);
+  //
+  //
+  api->AddVariable(VArgument,
+		   CPP_BuildParameterList(aMeta,
+					  m->Params(), 
+					  forDeclaration)->ToCString());
   
   // it s returning a type or void
   //
   retType = m->Returns();
-  
   if (!retType.IsNull()) {
-    api->AddVariable(VReturn,CPP_BuildType(aMeta,retType->TypeName())->ToCString());
+    char *pTypeRet, *pTypeName;
+    //
+    const Handle(TCollection_HAsciiString)& aTypeName=retType->TypeName();
+    pTypeName=(char *)aTypeName->ToCString();
+    //
+    pTypeRet=(char *)CPP_BuildType(aMeta,aTypeName)->ToCString();
+    //
+    //modified by NIZNHY-PKV Mon May  5 15:10:12 2008f
+    if (m->IsPtrReturn()) {
+      
+      if (aMeta->IsDefined(aTypeName)) {
+	const Handle(MS_Type)& aType= aMeta->GetType(aTypeName);
+	if (aType->IsKind(STANDARD_TYPE(MS_Class))) {
+	  const Handle(MS_Class)& aClass=*((Handle(MS_Class)*)&aType);
+	  if (aClass->IsPersistent() || aClass->IsTransient()) {
+	    pTypeRet=pTypeName;
+	  }
+	}
+      }
+    }
+    //modified by NIZNHY-PKV Mon May  5 15:10:15 2008t
+    //
+    api->AddVariable(VReturn, pTypeRet);
   }
   else {
     api->AddVariable(VReturn,"void");

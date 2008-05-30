@@ -320,13 +320,19 @@ void CPP_BuildOidOBJYMethod(const Handle(MS_MetaSchema)& aMeta,
   
   // it s returning & ?
   //
+  //
+  Standard_CString pC[3]={"&","*",""};
+  Standard_Integer iX;
+  //
+  iX=2;
   if (m->IsRefReturn()) {
-    api->AddVariable(VAnd,"&");
+    iX=0;
   }
-  else {
-    api->AddVariable(VAnd,"");
+  else if (m->IsPtrReturn()) {
+    iX=1;
   }
-  
+  api->AddVariable(VAnd, pC[iX]);
+  //
   api->AddVariable(VArgument,CPP_BuildParameterList(aMeta,m->Params(),forDeclaration)->ToCString());
   
   // it s returning a type or void
