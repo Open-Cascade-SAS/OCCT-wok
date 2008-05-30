@@ -1,4 +1,4 @@
-// CDL cdl.cxx      Version 1.1
+// CDLFront.cxx      Version 1.1
 //
 //	Date: 06/04/1995 
 //
@@ -88,26 +88,29 @@ static int   YY_nb_error;
 static int   YY_nb_warning;
 static Handle(TCollection_HAsciiString) CDLFileName;
 
+//=======================================================================
+//function : CDLerror
+//purpose  : 
+//=======================================================================
 extern "C" {
- void CDLerror(char* text)
-  {
-   extern int CDLlineno;
-  
-   // The unix like error declaration 
-   //
-   if (text == NULL) {
-     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": syntax error..." << endm;
-     CDL_InitVariable();
-     MS_TraductionError::Raise("Syntax error");
-   }
-   else {
-     ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << text << endm;
-     YY_nb_error++;
-   }
- }
-
+  void CDLerror(char* text)    {
+    extern int CDLlineno;
+    //
+    // The unix like error declaration 
+    //
+    if (text == NULL) {
+      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" \
+	<<  ", line " << CDLlineno << ": syntax error..." << endm;
+      CDL_InitVariable();
+      MS_TraductionError::Raise("Syntax error");
+    }
+    else {
+      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	<< "\"" <<  ", line " << CDLlineno << ": " << text << endm;
+      YY_nb_error++;
+    }
+  }
 // int yyparse();
-
 #ifdef YYDEBUG
  extern int yydebug = 1;	
 #endif
@@ -463,36 +466,45 @@ void Type_Name(char *aName)
 
 // WARNING : dirty code : look at "Standard_" (but faster than build a string from MS::RootPackageName() + "_")
 //
-Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetypename) 
+//=======================================================================
+//function : VerifyClassUses
+//purpose  : 
+//=======================================================================
+Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theTypeName) 
 {
-  if ((Current_Entity == CDL_STDCLASS || Current_Entity == CDL_GENCLASS) && CheckUsesForClasses == CDL_MUSTCHECKUSES) {
+  if ((Current_Entity == CDL_STDCLASS || 
+       Current_Entity == CDL_GENCLASS) && 
+      CheckUsesForClasses == CDL_MUSTCHECKUSES) {
     // WARNING : dirty code -> here is !!! (sorry for future hacker, guilty : CLE)
     //
-    if (strncmp("Standard_",thetypename->ToCString(),9) == 0) {
-      if (theMetaSchema->IsDefined(thetypename)) {
-	ListOfTypeUsed->Append(thetypename);
+    if (strncmp("Standard_",theTypeName->ToCString(),9) == 0) {
+      if (theMetaSchema->IsDefined(theTypeName)) {
+	ListOfTypeUsed->Append(theTypeName);
 
 	return Standard_True;
       }
       else {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The package Standard has no declaration of " << "'" << thetypename << "'" << endm;
+	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	  << "\"" <<  ", line " << CDLlineno << ": " \
+	    << "The package Standard has no declaration of " \
+	      << "'" << theTypeName << "'" << endm;
 	YY_nb_error++;
 	return Standard_True;
       }
     }
 
-    if (thetypename->IsSameString(SimpleClass->FullName())) return  Standard_True;
+    if (theTypeName->IsSameString(SimpleClass->FullName())) return  Standard_True;
 
     if (Current_Entity == CDL_GENCLASS) {
-      if (thetypename->IsSameString(GenClass->FullName())) return  Standard_True;
+      if (theTypeName->IsSameString(GenClass->FullName())) return  Standard_True;
 
       Standard_Integer                        i;
       Handle(TColStd_HSequenceOfHAsciiString) seqascii = GenClass->GetNestedName();
       Handle(TCollection_HAsciiString)        nestname,
                                               nestnestname = new TCollection_HAsciiString;
 
-      if (theMetaSchema->IsDefined(thetypename)) {
-	Handle(MS_Type) theType = theMetaSchema->GetType(thetypename);
+      if (theMetaSchema->IsDefined(theTypeName)) {
+	Handle(MS_Type) theType = theMetaSchema->GetType(theTypeName);
 	
 	if (theType->IsKind(STANDARD_TYPE(MS_Class))) {
 	  Handle(MS_Class) inst = *((Handle(MS_Class)*)&theType);
@@ -507,7 +519,7 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
       for (i = 1; i <= seqascii->Length(); i++) {
 	nestname = MS::BuildFullName(Container,seqascii->Value(i));
 
-	if (thetypename->IsSameString(nestname) || nestnestname->IsSameString(nestname)) {
+	if (theTypeName->IsSameString(nestname) || nestnestname->IsSameString(nestname)) {
 	  return Standard_True;
 	}
       }
@@ -515,7 +527,7 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
       Handle(MS_HSequenceOfGenType) genericitems = GenClass->GenTypes();
 
       for (i = 1; i <= genericitems->Length(); i++) {
-	if (genericitems->Value(i)->Name()->IsSameString(thetypename)) {
+	if (genericitems->Value(i)->Name()->IsSameString(theTypeName)) {
 	  return Standard_True;
 	}
       }
@@ -524,7 +536,7 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
     Handle(TColStd_HSequenceOfHAsciiString) seqOfType = SimpleClass->GetUsesNames();
 
      for (Standard_Integer i = 1; i <= seqOfType->Length(); i++) {
-       if (seqOfType->Value(i)->IsSameString(thetypename)) {
+       if (seqOfType->Value(i)->IsSameString(theTypeName)) {
 	 return Standard_True;
        }
      }  
@@ -533,7 +545,10 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
       //   SimpleClass->SetComment(ListOfComments->Value(i));
       //}  
 
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has no declaration of : " << thetypename << endm;
+    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+      << "\"" <<  ", line " << CDLlineno << ": " \
+	<< "The 'uses' statement of your class has no declaration of : " \
+	  << theTypeName << endm;
     YY_nb_error++;
   }
   else return Standard_True;
@@ -541,9 +556,15 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& thetype
   return Standard_False;
 }
 
+//=======================================================================
+//function : VerifyUses
+//purpose  : 
+//=======================================================================
 Standard_Boolean VerifyUses(char* used)
 {
-  if (Current_Entity == CDL_PACKAGE || Current_Entity == CDL_INTERFACE || Current_Entity == CDL_EXECUTABLE) {
+  if (Current_Entity == CDL_PACKAGE || 
+      Current_Entity == CDL_INTERFACE || 
+      Current_Entity == CDL_EXECUTABLE) {
     Handle(TColStd_HSequenceOfHAsciiString)  aSeqOfPackage;
     Handle(MS_Package)                       aPackage;
     Handle(MS_Interface)                     anInterface;
@@ -592,7 +613,7 @@ void Type_Pack(char *aName)
     msg->AssignCat(aName);
     msg->AssignCat(" is not in the 'uses' clause of ");
     msg->AssignCat(Container);
-    CDLerror((char *)msg->ToCString());
+    CDLerror((char*)msg->ToCString());
   }
 
   strncpy(Pack_Name,aName,MAX_CHAR);
@@ -664,7 +685,7 @@ char *TypeCompletion(char *aName)
     aFullName->AssignCat(aName);
     
     if (theMetaSchema->IsDefined(aFullName)) {
-      return (char *)aSeqOfPackage->Value(i)->ToCString();
+      return (char*)(aSeqOfPackage->Value(i)->ToCString());
     }
     
     aFullName->Clear();
@@ -680,7 +701,10 @@ void Type_Pack_Blanc()
 
   // we check if we are able to use incomplete declaration
   //
-  if (Current_Entity == CDL_PACKAGE || Current_Entity == CDL_INTERFACE || Current_Entity == CDL_EXECUTABLE || Current_Entity == CDL_CLIENT) {
+  if (Current_Entity == CDL_PACKAGE || 
+      Current_Entity == CDL_INTERFACE ||
+      Current_Entity == CDL_EXECUTABLE || 
+      Current_Entity == CDL_CLIENT) {
     Handle(TCollection_HAsciiString)         aFullName     = new TCollection_HAsciiString;
     aFullName->AssignCat(Container);
     aFullName->AssignCat("_");
@@ -696,7 +720,7 @@ void Type_Pack_Blanc()
 	Handle(TCollection_HAsciiString) msg = new TCollection_HAsciiString("the type '");
 	msg->AssignCat(thetypename);	
 	msg->AssignCat("' must be followed by a package name.");
-	CDLerror((char *)msg->ToCString());
+	CDLerror((char *)(msg->ToCString()));
       }
     }
   }
@@ -713,7 +737,7 @@ void Type_Pack_Blanc()
     }
   }
   else {
-    Type_Pack((char *)Container->ToCString());
+    Type_Pack((char *)(Container->ToCString()));
   }
 
 }
@@ -757,13 +781,19 @@ void add_documentation1(char *comment)
   ListOfComments->Append(aRealComment);
 }
 
+//=======================================================================
+//function : add_cpp_comment
+//purpose  : 
+//=======================================================================
 void add_cpp_comment(int cpptype, char *comment)
 {
   Handle(TCollection_HAsciiString) aComment;
   Handle(TCollection_HAsciiString) aRealComment;
 
   if (Method.IsNull()) {
-    WarningMsg << "CDL" << "line " << CDLlineno << " : " << "C++ directive outside method definition : " << comment << endm;
+    WarningMsg << "CDL" << "line " << CDLlineno \
+      << " : " << "C++ directive outside method definition : "\
+	<< comment << endm;
     YY_nb_warning++;
   }
   else {
@@ -781,13 +811,22 @@ void add_cpp_comment(int cpptype, char *comment)
   }
 }
 
+//=======================================================================
+//function : add_name_to_list
+//purpose  : 
+//=======================================================================
 void add_name_to_list(char *name)
 {
-  Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(name);
+  Handle(TCollection_HAsciiString) aName = 
+    new TCollection_HAsciiString(name);
 
   ListOfName->Append(aName);
 }
 
+//=======================================================================
+//function : Begin_List_Int
+//purpose  : 
+//=======================================================================
 void Begin_List_Int(char *anInt) 
 {
   Handle(TCollection_HAsciiString) Int = new TCollection_HAsciiString(anInt);
@@ -1652,7 +1691,7 @@ void InstClass_Begin()
 {
   Handle(TCollection_HAsciiString) aPackName  = Container;
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
-  Standard_Integer i;
+  //Standard_Integer i;
 
   if (Current_Entity == CDL_GENCLASS) {
     aPackName  = GenClass->Package()->Name();
@@ -1750,7 +1789,7 @@ void Add_InstType()
       aType = theMetaSchema->GetType(aFullName);
     }
     else {
-      char *athetypename = TypeCompletion((char *)ListOfTypes->Value(i)->ToCString());
+      char *athetypename = TypeCompletion((char *)(ListOfTypes->Value(i)->ToCString()));
 
       if (athetypename == aDummyPackageName) {
 	ListOfPackages->Value(i)->Clear();
@@ -2126,18 +2165,22 @@ void Add_FriendExtMet(char *aPackName)
   SimpleClass->FriendMet(Method->FullName());
 }
 
+//=======================================================================
+//function : Add_Friend_Class
+//purpose  : 
+//=======================================================================
 void Add_Friend_Class()
 {
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackName  = new TCollection_HAsciiString(Pack_Name);
-  Handle(TCollection_HAsciiString) thetypename = MS::BuildFullName(aPackName,aClassName);
+  Handle(TCollection_HAsciiString) theTypeName = MS::BuildFullName(aPackName,aClassName);
 
-  if (theMetaSchema->IsDefined(thetypename)) {
+  if (theMetaSchema->IsDefined(theTypeName)) {
     SimpleClass->Friend(aClassName,aPackName);
-    ListOfTypeUsed->Append(thetypename);
+    ListOfTypeUsed->Append(theTypeName);
   }
   else {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "friend class " << thetypename->ToCString() << " is not defined." << endm;
+    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "friend class " << theTypeName->ToCString() << " is not defined." << endm;
     YY_nb_error++;
   }
 }
@@ -2146,6 +2189,10 @@ WOKTools_MapOfHAsciiString anEnumMap;
 
 // The actions for the Enumeration
 //
+//=======================================================================
+//function : Enum_Begin
+//purpose  : 
+//=======================================================================
 void Enum_Begin()
 {
   Handle(TCollection_HAsciiString) anEnumName = new TCollection_HAsciiString(thetypename);
@@ -2217,85 +2264,134 @@ void get_cpp_commentalias(const Handle(TCollection_HAsciiString)& aComment)
   aComment->RightAdjust();
 }
 
+//=======================================================================
+//function : add_cpp_comment_to_method
+//purpose  : 
+//=======================================================================
 void add_cpp_comment_to_method()
 {
   if (Method.IsNull()) {
     if (ListOfCplusplus->Length() > 0) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "C++ directive outside method definition." << endm;
+      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	<< "\"" <<  ", line " << CDLlineno << ": " \
+	  << "C++ directive outside method definition." << endm;
       YY_nb_error++;
     }
   }
   else {
     int                               aCommentType;
-    Standard_Integer                  i;
+    Standard_Integer                  i, aNbCPP;
     Handle(TCollection_HAsciiString)  aCP;
     
-    for(i = 1; i <= ListOfComments->Length(); i++) {
+    for(i = 1; i <= ListOfComments->Length(); ++i) {
         Method->SetComment(ListOfComments->Value(i));
-    }  
-    for(i = 1; i <= ListOfCplusplus->Length(); i++) {
-      aCommentType = ListOfCPPType->Value(i);
-
-      switch (aCommentType) {
-      case CDL_HARDALIAS: 
-	get_cpp_commentalias(ListOfCplusplus->Value(i));
-	Method->Alias(ListOfCplusplus->Value(i));
-	Method->SetAliasType(Standard_False);
-	break;
-      case CDL_OPERATOR:
-	get_cpp_commentalias(ListOfCplusplus->Value(i));
-	Method->Alias(ListOfCplusplus->Value(i));
-	Method->SetAliasType(Standard_True);
-	break;
-      case CDL_INLINE:
-	Method->Inline(Standard_True);
-	break;
-      case CDL_DESTRUCTOR:
-	if (Method->IsFunctionCall()) {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << methodlineno << ": " << "C++ directive 'alias ~' cannot be used with 'function call'." << endm;
-	  YY_nb_error++;
-	}
-	Method->Destructor(Standard_True);
-	break;
-      case CDL_CONSTREF:
-	if (!Method->Returns().IsNull()) {
-	  Method->ConstReturn(Standard_True);
-	  Method->RefReturn(Standard_True);
-	}
-	else {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << methodlineno << ": " << "C++ directive 'return const &' cannot be used without 'returns' clause." << endm;
-	  YY_nb_error++;
-	}
-	break;
-      case CDL_REF:
-	if (!Method->Returns().IsNull()) {
-	  Method->RefReturn(Standard_True);
-	}
-	else {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << methodlineno << ": " << "C++ directive 'return &' cannot be used without 'returns' clause." << endm;
-	  YY_nb_error++;
-	}
-	break;
-      case CDL_CONSTRET:
-	if (!Method->Returns().IsNull()) {
-	  Method->ConstReturn(Standard_True);
-	}
-	else {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << methodlineno << ": " << "C++ directive 'return const' cannot be used without 'returns' clause." << endm;
-	  YY_nb_error++;
-	}
-        break;
-      case CDL_FUNCTIONCALL:
-	if (Method->IsDestructor()) {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << methodlineno << ": " << "C++ directive 'function call' cannot be used with 'alias ~'." << endm;
-	  YY_nb_error++;
-	}
-	Method->FunctionCall(Standard_True);
-	break;
-      default:
-	break;
-      }
     }
+    //
+    aNbCPP=ListOfCplusplus->Length();
+    for(i = 1; i <= aNbCPP; ++i) {
+      aCommentType = ListOfCPPType->Value(i);
+      //
+      switch (aCommentType) {
+        case CDL_HARDALIAS: 
+	  get_cpp_commentalias(ListOfCplusplus->Value(i));
+	  Method->Alias(ListOfCplusplus->Value(i));
+	  Method->SetAliasType(Standard_False);
+	  break;
+	case CDL_OPERATOR:
+	  get_cpp_commentalias(ListOfCplusplus->Value(i));
+	  Method->Alias(ListOfCplusplus->Value(i));
+	  Method->SetAliasType(Standard_True);
+	  break;
+	case CDL_INLINE:
+	  Method->Inline(Standard_True);
+	  break;
+	case CDL_DESTRUCTOR:
+	  if (Method->IsFunctionCall()) {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	      << "\"" <<  ", line " << methodlineno << ": "\
+		<< "C++ directive 'alias ~' cannot be used with 'function call'." \
+		  << endm;
+	    YY_nb_error++;
+	  }
+	  Method->Destructor(Standard_True);
+	  break;
+	  
+	case CDL_CONSTREF:
+	  if (!Method->Returns().IsNull()) {
+	    Method->ConstReturn(Standard_True);
+	    Method->RefReturn(Standard_True);
+	  }
+	  else {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	      << "\"" <<  ", line " << methodlineno << ": " \
+	      << "C++ directive 'return const &' cannot be used without 'returns' clause."\
+	      << endm;
+	    YY_nb_error++;
+	  }
+	  break;
+	case CDL_REF:
+	  if (!Method->Returns().IsNull()) {
+	    Method->RefReturn(Standard_True);
+	  }
+	  else {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	      << "\"" <<  ", line " << methodlineno << ": "\
+	      << "C++ directive 'return &' cannot be used without 'returns' clause."\
+              << endm;
+	    YY_nb_error++;
+	  }
+	  break;
+	  //===f
+	case CDL_CONSTPTR:
+	  if (!Method->Returns().IsNull()) {
+	    Method->ConstReturn(Standard_True);
+	    Method->PtrReturn(Standard_True);
+	  }
+	  else {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	      << "\"" <<  ", line " << methodlineno << ": " \
+	      << "C++ directive 'return const &' cannot be used without 'returns' clause."\
+	      << endm;
+	    YY_nb_error++;
+	  }
+	  break;
+	case CDL_PTR:
+	  if (!Method->Returns().IsNull()) {
+	    Method->PtrReturn(Standard_True);
+	  }
+	  else {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	      << "\"" <<  ", line " << methodlineno << ": "\
+	      << "C++ directive 'return &' cannot be used without 'returns' clause." << endm;
+	    YY_nb_error++;
+	  }
+	  break;
+	  //===t
+	case CDL_CONSTRET:
+	  if (!Method->Returns().IsNull()) {
+	    Method->ConstReturn(Standard_True);
+	  }
+	  else {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	      << "\"" <<  ", line " << methodlineno << ": "\
+		<< "C++ directive 'return const' cannot be used without 'returns' clause." << endm;
+	    YY_nb_error++;
+	  }
+	  break;
+	case CDL_FUNCTIONCALL:
+	  if (Method->IsDestructor()) {
+	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	      << "\"" <<  ", line " << methodlineno << ": "\
+		<< "C++ directive 'function call' cannot be used with 'alias ~'." << endm;
+	    YY_nb_error++;
+	  }
+	  Method->FunctionCall(Standard_True);
+	  break;
+	default:
+	  break;
+       }//switch (aCommentType) {
+    }//for(i = 1; i <= aNbCPP; ++i) {
+    //
     ListOfComments->Clear();
     ListOfCplusplus->Clear();
     ListOfCPPType->Clear();
@@ -2303,6 +2399,10 @@ void add_cpp_comment_to_method()
   }
 }
 
+//=======================================================================
+//function : Construct_Begin
+//purpose  : 
+//=======================================================================
 void Construct_Begin()
 {
   if (SimpleClass->Deferred()) {
@@ -2805,7 +2905,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 
     try {
       OCC_CATCH_SIGNALS
-      ErrorLevel = TraductionMain((char *)aFileName->ToCString());
+      ErrorLevel = TraductionMain((char *)(aFileName->ToCString()));
     }
     catch(Standard_Failure) {
       fclose(CDLin);

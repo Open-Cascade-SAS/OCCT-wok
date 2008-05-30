@@ -70,7 +70,6 @@
 #define	STRING	313
 #define	INVALID	314
 
-#line 9 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 
 /* all parser must define this variable */
 
@@ -95,7 +94,6 @@ extern void CDLerror ( char* );
 extern int  CDLlex   ( void  );
 
 
-#line 100 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 typedef union {
  char str[MAX_STRING];
 } YYSTYPE;
@@ -1422,603 +1420,453 @@ yyreduce:
   switch (yyn) {
 
 case 14:
-#line 133 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Pack_Begin(yyvsp[0].str); ;
     break;}
 case 15:
-#line 137 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Pack_End(); ;
     break;}
 case 21:
-#line 147 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Pack_Use(yyvsp[0].str); ;
     break;}
 case 22:
-#line 148 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Pack_Use(yyvsp[0].str); ;
     break;}
 case 24:
-#line 156 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Interface_Begin(yyvsp[0].str); ;
     break;}
 case 31:
-#line 171 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Use(yyvsp[0].str);;
     break;}
 case 32:
-#line 172 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Interface_Use(yyvsp[0].str); ;
     break;}
 case 37:
-#line 180 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Interface_Package(yyvsp[-1].str); ;
     break;}
 case 41:
-#line 187 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Method_TypeName(); ;
     break;}
 case 43:
-#line 188 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Method(yyvsp[-2].str);;
     break;}
 case 44:
-#line 191 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Method("");;
     break;}
 case 45:
-#line 192 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Method("");;
     break;}
 case 46:
-#line 193 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Method("");;
     break;}
 case 48:
-#line 197 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { CDLerror("in interface, method declaration can not have a 'returns' clause"); ;
     break;}
 case 49:
-#line 201 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Schema_Begin(yyvsp[0].str); ;
     break;}
 case 50:
-#line 204 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Schema_End(); ;
     break;}
 case 58:
-#line 217 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Schema_Package(yyvsp[-1].str); ;
     break;}
 case 59:
-#line 218 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Schema_Class(); ;
     break;}
 case 60:
-#line 223 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Engine_Begin(yyvsp[0].str); ;
     break;}
 case 66:
-#line 238 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Engine_Schema(yyvsp[0].str); ;
     break;}
 case 73:
-#line 249 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Engine_Interface(yyvsp[-1].str); ;
     break;}
 case 74:
-#line 254 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Component_Begin(yyvsp[0].str); ;
     break;}
 case 75:
-#line 258 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Component_End(); ;
     break;}
 case 83:
-#line 274 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Component_Interface(yyvsp[-3].str,yyvsp[-1].str); ;
     break;}
 case 84:
-#line 280 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_Begin(yyvsp[0].str); ;
     break;}
 case 90:
-#line 295 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_Use ( yyvsp[0].str ); ;
     break;}
 case 91:
-#line 296 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_Use ( yyvsp[0].str ); ;
     break;}
 case 93:
-#line 300 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_End(); ;
     break;}
 case 94:
-#line 301 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_End(); ;
     break;}
 case 99:
-#line 311 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Client_Interface(yyvsp[-1].str); ;
     break;}
 case 101:
-#line 315 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Method_TypeName(); ;
     break;}
 case 103:
-#line 316 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method(yyvsp[-2].str,1);;
     break;}
 case 104:
-#line 317 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method(yyvsp[-4].str,1);;
     break;}
 case 105:
-#line 320 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",1);;
     break;}
 case 106:
-#line 321 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",1);;
     break;}
 case 107:
-#line 322 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",1);;
     break;}
 case 108:
-#line 323 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",1);;
     break;}
 case 109:
-#line 324 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",-1);;
     break;}
 case 110:
-#line 325 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Client_Method("",-1);;
     break;}
 case 112:
-#line 329 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { CDLerror("in client, method declaration can not have a 'returns' clause"); ;
     break;}
 case 113:
-#line 333 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Executable_Begin(yyvsp[-1].str); ;
     break;}
 case 117:
-#line 341 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {  Executable_End(); ;
     break;}
 case 118:
-#line 342 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Executable_End(); ;
     break;}
 case 121:
-#line 349 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_Begin(yyvsp[0].str); ;
     break;}
 case 122:
-#line 353 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_End(); ;
     break;}
 case 127:
-#line 364 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_Schema(yyvsp[0].str); ;
     break;}
 case 132:
-#line 375 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ExecFile_AddUse(yyvsp[-2].str);;
     break;}
 case 133:
-#line 378 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ExecFile_SetUseType(CDL_LIBRARY); ;
     break;}
 case 134:
-#line 379 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ExecFile_SetUseType(CDL_EXTERNAL); ;
     break;}
 case 139:
-#line 390 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_AddComponent(yyvsp[-2].str); ;
     break;}
 case 140:
-#line 392 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_SetLang(CDL_CPP); ;
     break;}
 case 142:
-#line 396 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_SetLang(CDL_CPP); ;
     break;}
 case 143:
-#line 397 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_SetLang(CDL_FOR); ;
     break;}
 case 144:
-#line 398 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_SetLang(CDL_C); ;
     break;}
 case 145:
-#line 399 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { ExecFile_SetLang(CDL_OBJ); ;
     break;}
 case 173:
-#line 451 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Std_Ancestors(); ;
     break;}
 case 174:
-#line 452 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Std_Uses(); ;
     break;}
 case 177:
-#line 469 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Std_Ancestors(); ;
     break;}
 case 178:
-#line 470 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Std_Uses(); ;
     break;}
 case 189:
-#line 496 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Set_Item(yyvsp[0].str); ;
     break;}
 case 206:
-#line 522 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Type(); ;
     break;}
 case 207:
-#line 523 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Type(); ;
     break;}
 case 208:
-#line 525 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Type_Name(yyvsp[0].str); Type_Pack_Blanc(); ;
     break;}
 case 209:
-#line 526 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Type_Name(yyvsp[-1].str); ;
     break;}
 case 210:
-#line 526 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Type_Pack(yyvsp[0].str); ;
     break;}
 case 221:
-#line 590 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Enum(yyvsp[0].str); ;
     break;}
 case 222:
-#line 591 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Enum(yyvsp[0].str); ;
     break;}
 case 224:
-#line 597 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { add_cpp_comment_to_method(); ;
     break;}
 case 228:
-#line 604 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Set_Method(yyvsp[0].str); ;
     break;}
 case 233:
-#line 611 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { add_cpp_comment_to_method(); ;
     break;}
 case 279:
-#line 725 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Value(yyvsp[0].str,INTEGER); ;
     break;}
 case 280:
-#line 726 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Value(yyvsp[0].str,REAL); ;
     break;}
 case 281:
-#line 727 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Value(yyvsp[0].str,STRING); ;
     break;}
 case 282:
-#line 728 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Value(yyvsp[0].str,LITERAL); ;
     break;}
 case 283:
-#line 729 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_Value(yyvsp[0].str,IDENTIFIER); ;
     break;}
 case 308:
-#line 777 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Begin_List_Int(yyvsp[0].str); ;
     break;}
 case 309:
-#line 778 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Make_List_Int(yyvsp[0].str); ;
     break;}
 case 311:
-#line 784 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { CDL_MustNotCheckUses(); ;
     break;}
 case 312:
-#line 784 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { CDL_MustCheckUses(); ;
     break;}
 case 318:
-#line 794 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Method_TypeName(); ;
     break;}
 case 320:
-#line 796 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { Add_FriendExtMet(yyvsp[-1].str); ;
     break;}
 case 334:
-#line 825 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { add_name_to_list(yyvsp[0].str); ;
     break;}
 case 335:
-#line 826 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 { add_name_to_list(yyvsp[0].str); ;
     break;}
 case 337:
-#line 830 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {yyval.str[0] = '\0';;
     break;}
 case 338:
-#line 837 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {set_inc_state();;
     break;}
 case 339:
-#line 838 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {restore_state();;
     break;}
 case 340:
-#line 840 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_Class();;
     break;}
 case 341:
-#line 841 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Interface_End();;
     break;}
 case 342:
-#line 843 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Engine_End();;
     break;}
 case 343:
-#line 845 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Alias_Begin();;
     break;}
 case 344:
-#line 846 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Alias_Type();;
     break;}
 case 345:
-#line 847 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Alias_End();;
     break;}
 case 346:
-#line 849 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Pointer_Begin();;
     break;}
 case 347:
-#line 850 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Pointer_Type();;
     break;}
 case 348:
-#line 851 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Pointer_End();;
     break;}
 case 349:
-#line 853 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Imported_Begin();;
     break;}
 case 350:
-#line 854 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Imported_End();;
     break;}
 case 351:
-#line 856 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Prim_Begin();;
     break;}
 case 352:
-#line 857 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Prim_End();;
     break;}
 case 353:
-#line 859 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Except_Begin();;
     break;}
 case 354:
-#line 860 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Except_End();;
     break;}
 case 355:
-#line 862 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Enum_Begin();;
     break;}
 case 356:
-#line 863 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Enum_End();;
     break;}
 case 357:
-#line 865 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Inc_Class_Dec();;
     break;}
 case 358:
-#line 866 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Inc_GenClass_Dec();;
     break;}
 case 359:
-#line 868 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {GenClass_Begin();;
     break;}
 case 360:
-#line 869 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_GenType();;
     break;}
 case 361:
-#line 870 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_DynaGenType();;
     break;}
 case 362:
-#line 871 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Embeded();;
     break;}
 case 363:
-#line 872 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {GenClass_End();;
     break;}
 case 364:
-#line 874 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {InstClass_Begin();;
     break;}
 case 365:
-#line 875 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Gen_Class();;
     break;}
 case 366:
-#line 876 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_InstType();;
     break;}
 case 367:
-#line 877 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {InstClass_End();;
     break;}
 case 368:
-#line 878 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {DynaType_Begin();;
     break;}
 case 369:
-#line 880 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {StdClass_Begin();;
     break;}
 case 370:
-#line 881 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {StdClass_End();;
     break;}
 case 371:
-#line 883 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Raises();;
     break;}
 case 372:
-#line 884 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Field();;
     break;}
 case 373:
-#line 885 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_FriendMet();;
     break;}
 case 374:
-#line 886 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Friend_Class();;
     break;}
 case 375:
-#line 888 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Construct_Begin();;
     break;}
 case 376:
-#line 889 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {InstMet_Begin();;
     break;}
 case 377:
-#line 890 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ClassMet_Begin();;
     break;}
 case 378:
-#line 891 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ExtMet_Begin();;
     break;}
 case 379:
-#line 892 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Friend_Construct_Begin();;
     break;}
 case 380:
-#line 893 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Friend_InstMet_Begin();;
     break;}
 case 381:
-#line 894 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Friend_ClassMet_Begin();;
     break;}
 case 382:
-#line 895 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Friend_ExtMet_Begin();;
     break;}
 case 383:
-#line 896 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Me();;
     break;}
 case 384:
-#line 897 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_MetRaises();;
     break;}
 case 385:
-#line 898 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Add_Returns();;
     break;}
 case 386:
-#line 899 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {MemberMet_End();;
     break;}
 case 387:
-#line 900 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {ExternMet_End();;
     break;}
 case 388:
-#line 902 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Param_Begin();;
     break;}
 case 389:
-#line 904 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {End();;
     break;}
 case 390:
-#line 905 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_In();;
     break;}
 case 391:
-#line 906 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Out();;
     break;}
 case 392:
-#line 907 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_InOut();;
     break;}
 case 393:
-#line 908 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Mutable();;
     break;}
 case 394:
-#line 909 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Mutable_Any();;
     break;}
 case 395:
-#line 910 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Immutable();;
     break;}
 case 396:
-#line 911 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Priv();;
     break;}
 case 397:
-#line 912 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Defe();;
     break;}
 case 398:
-#line 913 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Redefined();;
     break;}
 case 399:
-#line 914 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Prot();;
     break;}
 case 400:
-#line 915 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Static();;
     break;}
 case 401:
-#line 916 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Virtual();;
     break;}
 case 402:
-#line 917 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Like_Me();;
     break;}
 case 403:
-#line 918 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 {Set_Any();;
     break;}
 }
@@ -2219,5 +2067,4 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 919 "/adv_20/KAS/C40/ros/src/CDLFront/CDL.yacc"
 

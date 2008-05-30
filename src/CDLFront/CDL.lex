@@ -49,6 +49,8 @@ CONSTRET        [-][-][-][C][+][+][ \t]*[:][ \t]*[r][e][t][u][r][n][ \t]*[c][o][
 REF             [-][-][-][C][+][+][ \t]*[:][ \t]*[r][e][t][u][r][n][ \t]*['&'][ \t]*
 HARDALIAS       [-][-][-][C][+][+][ \t]*[:][ \t]*[a][l][i][a][s][ \t]*\"(\\\"|[^"])*\"[ \t]*
 FUNCTIONCALL    [-][-][-][C][+][+][ \t]*[:][ \t]*[f][u][n][c][t][i][o][n][ \t]*[c][a][l][l][ \t]*
+PTR             [-][-][-][C][+][+][ \t]*[:][ \t]*[r][e][t][u][r][n][ \t]*['*'][ \t]* 
+CONSTPTR        [-][-][-][C][+][+][ \t]*[:][ \t]*[r][e][t][u][r][n][ \t]*[c][o][n][s][t][ \t]*['*'][ \t]* 
 
 /* The identifiers without underscore at begining and end */
 
@@ -81,6 +83,8 @@ STRING		\"(\\\"|[^"])*\"
 <DOC_BLOCK>{DOCUMENTATION1}    { add_documentation1(CDLtext);  CDLlineno++; }
 {REF}\n             { add_cpp_comment(CDL_REF,CDLtext); CDLlineno++; BEGIN(0);}
 {CONSTREF}\n        { add_cpp_comment(CDL_CONSTREF,CDLtext); CDLlineno++; BEGIN(0); }
+{PTR}\n             { add_cpp_comment(CDL_PTR,CDLtext); CDLlineno++; BEGIN(0); }
+{CONSTPTR}\n        { add_cpp_comment(CDL_CONSTPTR,CDLtext); CDLlineno++; BEGIN(0); }
 {CONSTRET}\n        { add_cpp_comment(CDL_CONSTRET,CDLtext); CDLlineno++; BEGIN(0); }
 {DESTRUCTOR}\n      { add_cpp_comment(CDL_DESTRUCTOR,CDLtext); CDLlineno++;  BEGIN(0);}
 {INLINE}\n          { add_cpp_comment(CDL_INLINE,CDLtext); CDLlineno++;  BEGIN(0);}
@@ -94,6 +98,7 @@ STRING		\"(\\\"|[^"])*\"
 {CPLUSPLUS}\n       { CDLlineno++; CDLerror("Empty C++ directive."); BEGIN(0); } 
 {FCPLUSPLUS}.*\n    { CDLlineno++; CDLerror("C++ directive without ':'.");  BEGIN(0);} 
 {COMMENTER}.*\n	    { CDLlineno++; BEGIN(0); }
+
 
 alias		{ BEGIN(0); return(alias); }
 any		{ BEGIN(0); return(any); }
