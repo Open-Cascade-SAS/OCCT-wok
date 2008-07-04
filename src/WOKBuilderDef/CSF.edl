@@ -88,6 +88,8 @@
    @set %CSF_opengl32 = "" ;
    @set %CSF_wsock32 = "" ;
 
+   @set %CSF_AviLibs = "" ;
+
    @set %CSF_dpsLibs = "" ;
    @set %CSF_XwLibs = "" ;
    @set %CSF_OpenGlLibs = "" ;
@@ -382,6 +384,9 @@
       @set %CSF_opengl32 = "opengl32.lib" ;
       @set %CSF_wsock32 = "wsock32.lib" ;
       @set %CSF_netapi32 = "netapi32.lib";
+
+      @set %CSF_AviLibs = "ws2_32.lib vfw32.lib" ;
+
 
 
    @endif;
