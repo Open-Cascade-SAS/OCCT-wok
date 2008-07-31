@@ -431,22 +431,18 @@ Handle(TCollection_HAsciiString) WOKUtils_Param::ClassFile(const Standard_CStrin
 //=======================================================================
 Handle(TCollection_HAsciiString) WOKUtils_Param::ClassSubFile(const Standard_CString aclass, const Standard_CString asub) const
 {
-  Standard_PCharacter thedir = strchr(asub, '@');
+  Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString(asub);
+  Standard_CString thedir = strchr(asub, '@');
 
   if(thedir)
-    {
-      Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString(&(thedir[1]));
-      result->AssignCat("/");
-      *thedir = '\0';
-      result->AssignCat(asub);
-      *thedir = '@';
-      result->AssignCat("_");
-      result->AssignCat(aclass);
-      result->AssignCat(".edl");
-      return result;
-    }
+  {
+    Handle(TCollection_HAsciiString) res = new TCollection_HAsciiString(&(thedir[1]));
+    result->Trunc(thedir-asub);
+    res->AssignCat("/");
+    res->AssignCat(result);
+    result = res;
+  }
 
-  Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString(asub);
   result->AssignCat("_");
   result->AssignCat(aclass);
   result->AssignCat(".edl");
