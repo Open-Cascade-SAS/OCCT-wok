@@ -325,24 +325,12 @@ Standard_Boolean MS_Method::IsSameSignature
     Standard_CString aname1 = strchr(aMetName1->ToCString(), ':');
     Standard_CString aname2 = strchr(aMetName2->ToCString(), ':');
 
-    Standard_PCharacter fin1 = strchr(aname1, '=');
-    Standard_PCharacter fin2 = strchr(aname2, '=');
+    Standard_CString fin1 = strchr(aname1, '=');
+    Standard_CString fin2 = strchr(aname2, '=');
 
-    if(fin1) {
-      *fin1 = '\0';
-    }
-    if(fin2) {
-      *fin2 = '\0';
-    }
-    //
-    result = !strcmp(aname1, aname2);
-    //
-    if(fin1) {
-      *fin1 = '=';
-    }    
-    if(fin2) {
-      *fin2 = '=';
-    }
+    int n1 = ( fin1 ? fin1 - aname1 : strlen(aname1) );
+    int n2 = ( fin2 ? fin2 - aname2 : strlen(aname2) );
+    result = ( n1 == n2 && strncmp (aname1, aname2, n1) );
     //
     if (result) {
       Handle(MS_Method) m1,m2;
