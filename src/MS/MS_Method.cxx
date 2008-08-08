@@ -330,7 +330,7 @@ Standard_Boolean MS_Method::IsSameSignature
 
     int n1 = ( fin1 ? fin1 - aname1 : strlen(aname1) );
     int n2 = ( fin2 ? fin2 - aname2 : strlen(aname2) );
-    result = ( n1 == n2 && strncmp (aname1, aname2, n1) );
+    result = ( n1 == n2 && ! strncmp (aname1, aname2, n1) );
     //
     if (result) {
       Handle(MS_Method) m1,m2;
