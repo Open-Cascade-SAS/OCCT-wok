@@ -555,9 +555,15 @@ void WOKTclTools_Interpretor::Append(const Standard_Real i)
 //function : AppendElement
 //purpose  : 
 //=======================================================================
-void WOKTclTools_Interpretor::AppendElement(const Standard_CString s)
+void WOKTclTools_Interpretor::AppendElement(Standard_CString s)
 {
-  Tcl_AppendElement(myInterp,s);
+#ifdef IRIX
+  //AppendElement is declared as (Tcl_Interp *interp, char *string)
+  //on SGI 32
+  Tcl_AppendElement(myInterp,(char*) s);
+#else
+  Tcl_AppendElement(myInterp, s);
+#endif
 }
 
 //=======================================================================
