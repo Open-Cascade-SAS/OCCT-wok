@@ -40,7 +40,7 @@ public:
   Standard_EXPORT   void Append(const Standard_CString Result) ;
   Standard_EXPORT   void Append(const Standard_Integer Result) ;
   Standard_EXPORT   void Append(const Standard_Real Result) ;
-  Standard_EXPORT   void AppendElement(const Standard_CString Result) ;
+  Standard_EXPORT   void AppendElement(Standard_CString Result) ;
   Standard_EXPORT   Standard_Integer Eval(const Standard_CString Script) ;
   Standard_EXPORT   Standard_Integer RecordAndEval(const Standard_CString Script,const Standard_Integer Flags = 0) ;
   Standard_EXPORT   Standard_Integer EvalFile(const Standard_CString FileName) ;
