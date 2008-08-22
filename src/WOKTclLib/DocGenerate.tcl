@@ -6,6 +6,7 @@ proc DocGenerate {theModule outDir isSearch} {
  global env
  source [woklocate -p OS:source:OS.tcl]
  set filelist {}
+ lappend filelist $outDir/../work/Standard_DefineHandle.hxx
  if {[lsearch [OS -lm] $theModule] != -1 } {
    set entity "module"
    foreach tk [$theModule:toolkits] {
@@ -111,7 +112,7 @@ proc DocGenerate {theModule outDir isSearch} {
  puts $fileid "DOT_MULTI_TARGETS = YES"
  puts $fileid "DOT_IMAGE_FORMAT = png"
  puts $fileid "INLINE_SOURCES   = NO"
- puts $fileid "INPUT		= [wokparam -v %[wokinfo -n [wokinfo -w]]_Home]/inc"
+ puts $fileid "INPUT		= $outDir/../work [wokparam -v %[wokinfo -n [wokinfo -w]]_Home]/inc"
  puts $fileid "FILE_PATTERNS	= \\"
  foreach ID $filelist {
      puts $fileid "               $ID \\"

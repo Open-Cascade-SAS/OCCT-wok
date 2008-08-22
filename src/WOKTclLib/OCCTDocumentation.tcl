@@ -28,6 +28,9 @@ proc OCCTDoc_UpdateDoxygenDocumentation {OCCTDoc_DocLocation isSearch} {
 	    puts "File $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/$moduleName.tcl is absent."
 	    puts "     It is impossible to get information about toolkits in the module $moduleName."
 	}
+	# Corrected accordning to the SZV request - alphabetical order
+	set toolkitsList [lsort $toolkitsList]
+	# ------------------------------------------------------------
 	lappend toolkitsListOfList $toolkitsList
     }
     
@@ -50,6 +53,9 @@ proc OCCTDoc_UpdateDoxygenDocumentation {OCCTDoc_DocLocation isSearch} {
 		puts "File $path_RWorkbench/src/$toolkitName/PACKAGES is absent."
 		puts "     It is impossible to get information about packages in the toolkit $toolkitName."
 	    }
+	    # Corrected accordning to the SZV request - alphabetical order
+	    set packagesList [lsort $packagesList]
+	    # ------------------------------------------------------------
 	    lappend packagesListOfList $packagesList
 	}
 	lappend packagesListOfListOfList $packagesListOfList
@@ -865,15 +871,28 @@ proc OCCTDoc_CreatePackageHTML {OCCTDoc_DocLocation isSearch moduleName toolkits
     puts $file_packagesHTML "<h1>$moduleName<br>Packages</h1>"
     puts $file_packagesHTML "<hr size=\"1\">"
     puts $file_packagesHTML "<ul>"
+    # Corrected accordning to the SZV request - alphabetical order
+    set packagesFullList {}
+    # ------------------------------------------------------------
     for {set indexOfList_1 0} {$indexOfList_1 < [llength $toolkitsList]} {incr indexOfList_1 1} {
 	set toolkitName [lindex $toolkitsList $indexOfList_1]
 	set packagesList [lindex $packagesListOfList $indexOfList_1]
 	for {set indexOfList_2 0} {$indexOfList_2 < [llength $packagesList]} {incr indexOfList_2 1} {
 	    set packageName [lindex $packagesList $indexOfList_2]
-	    puts $file_packagesHTML "<li><a class=\"el\" href=\"packages/$packageName.html\">$packageName</a>"
+	    # Corrected accordning to the SZV request - alphabetical order
+	    # puts $file_packagesHTML "<li><a class=\"el\" href=\"packages/$packageName.html\">$packageName</a>"
+	    lappend packagesFullList $packageName
+	    # ------------------------------------------------------------
 	    OCCTDoc_ProcessPackagesHTML $OCCTDoc_DocLocation $isSearch $moduleName $toolkitName $packageName
 	}
     }
+    # Corrected accordning to the SZV request - alphabetical order
+    set packagesFullList [lsort $packagesFullList]
+    for {set indexOfList 0} {$indexOfList < [llength $packagesFullList]} {incr indexOfList 1} {
+	set packageName [lindex $packagesFullList $indexOfList]
+	puts $file_packagesHTML "<li><a class=\"el\" href=\"packages/$packageName.html\">$packageName</a>"
+    }
+    # ------------------------------------------------------------
     puts $file_packagesHTML "</ul>"
     puts $file_packagesHTML "<hr size=\"1\">"
     puts $file_packagesHTML "</body>"
@@ -930,9 +949,12 @@ proc OCCTDoc_ProcessPackagesHTML {OCCTDoc_DocLocation isSearch moduleName toolki
     puts $file_packageHTML "<h1>$moduleName<br><a href=\"../toolkits/$toolkitName.html\">$toolkitName</a><br>$packageName<br>Classes</h1>"
     puts $file_packageHTML "<hr size=\"1\">"
     puts $file_packageHTML "<ul>"
-    set linksList {}
     if {[file exists $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html] == 1} {
 	set file_hierarchyHTML [open $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html RDONLY]
+	# Corrected accordning to the SZV request - alphabetical order
+	set listClassName {}
+	set listLinkPath {}
+	# ------------------------------------------------------------
 	while {[eof $file_hierarchyHTML] == 0} {
 	    set hierarchyLine [string trim [gets $file_hierarchyHTML]]
 	    if {[string compare [string range $hierarchyLine 0 12] "<li><a class="] == 0} {
@@ -940,19 +962,38 @@ proc OCCTDoc_ProcessPackagesHTML {OCCTDoc_DocLocation isSearch moduleName toolki
 		    set className [string trim [string range $hierarchyLine 0 [expr {[string last < $hierarchyLine] - 1}]]]
 		    set className [string trim [string range $className [expr {[string last > $className] + 1}] [string length $className]]]
 		    set packageClassName [string trim [string range $className 0 [expr {[string first _ $className] - 1}]]]
+		    # Corrected accordning to the SZV request - include package name to the list of package classes
+		    if {[string length $packageClassName] == 0} {
+			if {[string compare $packageName $className] == 0} {
+			    set packageClassName $className
+			}
+		    }
+		    # ---------------------------------------------------------------------------------------------
 		    if {[string compare $packageName $packageClassName] == 0} {
 			set linkPath [string trim [string range $hierarchyLine 0 [expr {[string last \" $hierarchyLine] - 1}]]]
 			set linkPath [string trim [ string range $linkPath [expr {[string last \" $linkPath] + 1}] [string length $linkPath]]]
 			if {[string length $className] != 0} {
-			    lappend linksList $className
 			    OCCTDoc_UpdateClassDescriptionFile $OCCTDoc_DocLocation $isSearch $linkPath $moduleName $toolkitName $packageName
-			    puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
+			    # Corrected accordning to the SZV request - alphabetical order
+			    #puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
+			    lappend listClassName $className
+			    lappend listLinkPath $linkPath
+			    # ------------------------------------------------------------
 			}
 		    }
 		}
 	    }
 	}
 	close $file_hierarchyHTML
+	# Corrected accordning to the SZV request - alphabetical order
+	set listClassName [lsort $listClassName]
+	set listLinkPath [lsort $listLinkPath]
+	for {set indexOfList 0} {$indexOfList < [llength $listClassName]} {incr indexOfList 1} {
+	    set className [lindex $listClassName $indexOfList]
+	    set linkPath [lindex $listLinkPath $indexOfList]
+	    puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
+	}
+	# ------------------------------------------------------------
     }
     puts $file_packageHTML "</ul>"
     puts $file_packageHTML "</ul>"
