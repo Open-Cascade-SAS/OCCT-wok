@@ -12,6 +12,14 @@
 ;# the full path of a MS project template file.
 ;# Should be overwritten
 ;#
+proc osutils:vc8_64:readtemplate { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.vc8_64]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
+proc osutils:vc8_64:readtemplatex { } {
+    puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.vc8x_64]]"
+    return [wokUtils:FILES:FileToString $loc]
+}
 proc osutils:vc8:readtemplate { } {
     puts stderr "Info : readtemplate : Template for MS project from [set loc [woklocate -p WOKTclLib:source:template.vc8]]"
     return [wokUtils:FILES:FileToString $loc]
@@ -82,6 +90,12 @@ proc osutils:vc7proj:header { } {
     return $var
 }
 proc osutils:vc8proj:header { } {
+    append var \
+	    "Microsoft Visual Studio Solution File, Format Version 9.00\n" \
+	    "# Visual Studio 2005\n"
+    return $var
+}
+proc osutils:vc8_64proj:header { } {
     append var \
 	    "Microsoft Visual Studio Solution File, Format Version 9.00\n" \
 	    "# Visual Studio 2005\n"
@@ -190,6 +204,14 @@ proc osutils:vc8:fmtcppx { } {
     return {AdditionalIncludeDirectories="..\..\..\inc,..\..\..\drv\%s,..\..\..\src\%s"
                                                         PreprocessorDefinitions="__%s_DLL;$(NoInherit)"}
 }
+proc osutils:vc8_64:fmtcpp { } {
+    return {AdditionalIncludeDirectories="..\..\..\inc,..\..\..\drv\%s,..\..\..\src\%s"
+                                                        PreprocessorDefinitions="__%s_DLL;"}
+}
+proc osutils:vc8_64:fmtcppx { } {
+    return {AdditionalIncludeDirectories="..\..\..\inc,..\..\..\drv\%s,..\..\..\src\%s"
+                                                        PreprocessorDefinitions="__%s_DLL;$(NoInherit)"}
+}
 proc osutils:mak:fmtcppx { } {
     return {CPP_SWITCHES=$(CPP_PROJ) /I ..\..\..\inc /I ..\..\..\drv\%s /I ..\..\..\src\%s /D "__%s_DLL"}
 }
@@ -203,6 +225,9 @@ proc osutils:vc7:compilable { } {
     return [list .c .cxx .cpp]
 }
 proc osutils:vc8:compilable { } {
+    return [list .c .cxx .cpp]
+}
+proc osutils:vc8_64:compilable { } {
     return [list .c .cxx .cpp]
 }
 ;#
@@ -771,6 +796,101 @@ proc osutils:vc8 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     close $fp
     return $fvcproj
 }
+proc osutils:vc8_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
+   if { $tmplat == {} } {set tmplat [osutils:vc8_64:readtemplate]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:vc8_64:fmtcpp]}
+    set fp [open [set fvcproj [file join $dir ${tkloc}.vcproj]] w]
+    fconfigure $fp -translation crlf
+    set l_compilable [osutils:vc8_64:compilable]
+    regsub -all -- {__TKNAM__} $tmplat $tkloc  temp0
+    set tkused ""
+    foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
+	append tkused "${tkx}.lib "
+    }
+    foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
+	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+	    if {[wokparam -t %$element] != 0} {
+		set felem [file tail [lindex [wokparam -v "%$element"] 0]]
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+		    set tkused [concat $tkused $felem]
+		}
+	     }   
+	   }
+	}
+    }
+
+    puts "$tkloc requires  $tkused"
+    regsub -all -- {__TKDEP__} $temp0  $tkused temp1
+    set files ""
+    set listloc [osutils:tk:units [woklocate -u $tkloc]]
+    set resultloc [osutils:justwnt $listloc]
+    if [array exists written] { unset written }
+    foreach fxlo $resultloc {
+        set xlo [wokinfo -n $fxlo]        
+	append files "        <Filter\n"
+        append files "                                Name=\"${xlo}\"\n"
+        append files "                                Filter=\"\">\n"
+        set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
+	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+        set needparam ""
+        foreach partopt $fxloparam {
+	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
+		if { "-I[lindex [wokparam -v %CSF_JAVA_INCLUDE] 0]" != "$partopt "} {
+        	  set needparam "$needparam $partopt"
+                }
+	    }
+        }
+        foreach f $lsrc {
+	    #puts " f = $f"
+	    if { ![info exists written([file tail $f])] } {
+		set written([file tail $f]) 1
+		append files "\t\t\t\t<File\n"
+		append files "\t\t\t\t\tRelativePath=\"..\\..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]]\">\n"
+                append files "\t\t\t\t\t<FileConfiguration\n"
+                append files "\t\t\t\t\t\tName=\"Debug\|x64\">\n"
+                append files "\t\t\t\t\t\t<Tool\n"
+                append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+                if {$needparam != ""} {
+                  append files "\t\t\t\t\t\t\tAdditionalOptions=\""
+                  foreach paramm $needparam {
+                     append files "$paramm "
+                  }
+                  append files "\"\n"
+                }
+                append files "\t\t\t\t\t\t\tOptimization=\"0\"\n"
+		append files "\t\t\t\t\t\t\t[format $fmtcpp $xlo $xlo $xlo]\n"
+                append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+                append files "\t\t\t\t\t</FileConfiguration>\n"
+                append files "\t\t\t\t\t<FileConfiguration\n"
+                append files "\t\t\t\t\t\tName=\"Release\|x64\">\n"
+                append files "\t\t\t\t\t\t<Tool\n"
+                append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+                if {$needparam != ""} {
+                  append files "\t\t\t\t\t\t\tAdditionalOptions=\""
+                  foreach paramm $needparam {
+                     append files "$paramm "
+                  }
+                  append files "\"\n"
+                }
+                append files "\t\t\t\t\t\t\tOptimization=\"2\"\n"
+		append files "\t\t\t\t\t\t\t[format $fmtcpp $xlo $xlo $xlo]\n"
+                append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+                append files "\t\t\t\t\t</FileConfiguration>\n"
+		append files "\t\t\t\t</File>\n"
+	    } else {
+		puts "Warning : in vcproj more than one occurences for [file tail $f]"
+	    }
+	}
+    append files "\t\t\t</Filter>"
+    }
+    
+    regsub -all -- {__FILES__} $temp1 $files temp2
+    puts $fp $temp2
+    close $fp
+    return $fvcproj
+}
 ;#
 ;# Create file tkloc.dsp for a executable "console" application
 ;# in dir return the full path of the created file
@@ -989,6 +1109,92 @@ proc osutils:vc8x { dir tkloc {tmplat {} } {fmtcpp {} } } {
             append files "\t\t\t\t\t</FileConfiguration>\n"
             append files "\t\t\t\t\t<FileConfiguration\n"
             append files "\t\t\t\t\t\tName=\"Release|Win32\">\n"
+            append files "\t\t\t\t\t\t<Tool\n"
+            append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+            append files "\t\t\t\t\t\t\tOptimization=\"2\"\n"
+            append files "\t\t\t\t\t\t\t[format $fmtcpp $tkloc $tkloc $tkloc] \n"
+            append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+            append files "\t\t\t\t\t</FileConfiguration>\n"
+            append files "\t\t\t\t</File>\n"
+            append files "\t\t\t</Filter>\n"
+	} else {
+	    puts "Warning : in dsp more than one occurences for [file tail $f]"
+	}
+	;#}
+    #puts "$temp3 $files"
+    regsub -all -- {__FILES__} $temp3 $files temp4
+    regsub -all -- {__CONF__} $temp4 $binext temp5
+    set fp [open [set fdsp [file join $dir ${tf}.vcproj]] w]
+    fconfigure $fp -translation crlf
+ 
+    puts $fp $temp5
+    set fout [lappend fout $fdsp]
+    close $fp
+   }
+   return $fout
+}
+
+proc osutils:vc8x_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
+    if { $tmplat == {} } {set tmplat [osutils:vc8_64:readtemplatex]}
+    if { $fmtcpp == {} } {set fmtcpp [osutils:vc8_64:fmtcppx]}
+    set fout {}
+    foreach f [osutils:tk:files $tkloc osutils:am:compilable 0] {
+        puts "1"
+        set tf [file rootname [file tail $f]]   
+        set l_compilable [osutils:vc8_64:compilable]
+        regsub -all -- {__XQTNAM__} $tmplat $tf  temp0
+        set tkused ""
+        foreach tkx [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
+	    append tkused "${tkx}.lib "
+	  }
+          if {[lsearch [w_info -l] $tkx] == "-1"} {
+	    append tkused "${tkx}.lib "
+	  }
+        }
+       foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
+	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
+	    if {[wokparam -t %$element] != 0} {
+                set elemlist [wokparam -v "%$element"]
+		set felem [file tail [lindex $elemlist 0]] 
+	      if {[lsearch $tkused $felem] == "-1"} {
+		if {$felem != "\{\}"} {
+                    #puts "was found $element $felem"	   
+		    set tkused [concat $tkused $felem]
+		}
+	      }   
+	    }
+	 }
+       }
+       if {[wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]] == "#WOKStep_DLLink(exec.tks)"} { 
+           set tkused [concat $tkused "\/dll"]
+           set binext 2
+       } else {
+           set binext 1
+       }
+       #puts "$tf requires  $tkused"
+       regsub -all -- {__TKDEP__} $temp0  $tkused temp3
+       set files ""
+       ;#set lsrc   [osutils:tk:files $tkloc osutils:am:compilable 0]
+       ;#foreach f $lsrc {
+	if { ![info exists written([file tail $f])] } {
+	    set written([file tail $f]) 1
+            append files "\t\t\t<Filter\n"
+            append files "\t\t\t\tName=\"$tkloc\"\n"
+	    append files "\t\t\t\tFilter=\"\">\n"
+            append files "\t\t\t\t<File\n"
+	    append files "\t\t\t\t\tRelativePath=\"..\\..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $f 3]]\">\n"
+            append files "\t\t\t\t\t<FileConfiguration\n"
+            append files "\t\t\t\t\t\tName=\"Debug|x64\">\n"
+            append files "\t\t\t\t\t\t<Tool\n"
+            append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
+            append files "\t\t\t\t\t\t\tOptimization=\"0\"\n"
+            append files "\t\t\t\t\t\t\t[format $fmtcpp $tkloc $tkloc $tkloc] \n"
+	    append files "\t\t\t\t\t\t\tBasicRuntimeChecks=\"3\"\n"
+            append files "\t\t\t\t\t\t\tCompileAs=\"0\"/>\n"
+            append files "\t\t\t\t\t</FileConfiguration>\n"
+            append files "\t\t\t\t\t<FileConfiguration\n"
+            append files "\t\t\t\t\t\tName=\"Release|x64\">\n"
             append files "\t\t\t\t\t\t<Tool\n"
             append files "\t\t\t\t\t\t\tName=\"VCCLCompilerTool\"\n"
             append files "\t\t\t\t\t\t\tOptimization=\"2\"\n"
