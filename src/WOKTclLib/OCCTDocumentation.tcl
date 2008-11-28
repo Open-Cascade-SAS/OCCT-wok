@@ -987,10 +987,27 @@ proc OCCTDoc_ProcessPackagesHTML {OCCTDoc_DocLocation isSearch moduleName toolki
 	close $file_hierarchyHTML
 	# Corrected accordning to the SZV request - alphabetical order
 	set listClassName [lsort $listClassName]
-	set listLinkPath [lsort $listLinkPath]
+	# OCCTR20503
+	# set listLinkPath [lsort $listLinkPath]
+	# OCCTR20503 - end
 	for {set indexOfList 0} {$indexOfList < [llength $listClassName]} {incr indexOfList 1} {
 	    set className [lindex $listClassName $indexOfList]
-	    set linkPath [lindex $listLinkPath $indexOfList]
+	    # OCCTR20503
+	    # set linkPath [lindex $listLinkPath $indexOfList]
+	    set linkPath ""
+	    set currentPackageName [string trim [string range $className 0 [expr {[string first _ $className] - 1}]]]
+	    set currentPackageClassName [string trim [string range $className [expr {[string first _ $className] + 1}] [string length $className]]]
+	    set currentFileName "${currentPackageName}__${currentPackageClassName}.html"
+	    if {[string compare [string range $currentFileName 0 0] "_"] == 0} {
+		set currentFileName "${className}.html"
+	    }
+	    for {set indexOfLinkList 0} {$indexOfLinkList < [llength $listLinkPath]} {incr indexOfLinkList 1} {
+		set currentLinkPath [lindex $listLinkPath $indexOfLinkList]
+		if {[regexp $currentFileName $currentLinkPath] == 1} {
+		    set linkPath $currentLinkPath
+		}
+	    }
+	    # OCCTR20503 - end
 	    puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
 	}
 	# ------------------------------------------------------------
