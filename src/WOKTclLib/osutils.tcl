@@ -549,16 +549,19 @@ proc osutils:vc6 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
 	append tkused "${tkx}.lib "
     }
+    wokparam -l CSF
     foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
 	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+	    puts "$element"
 	    if {[wokparam -t %$element] != 0} {
 		set felem [file tail [lindex [wokparam -v "%$element"] 0]]
-	      if {[lsearch $tkused $felem] == "-1"} {
-		if {$felem != "\{\}"} {
-		    set tkused [concat $tkused $felem]
+		puts "$felem"
+		if {[lsearch $tkused $felem] == "-1"} {
+		    if {$felem != "\{\}"} {
+			set tkused [concat $tkused $felem]
+		    }
 		}
-	     }   
-	   }
+	    }
 	}
     }
 
@@ -572,12 +575,15 @@ proc osutils:vc6 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     ;#puts "result = $resultloc"
     ;#set lsrc   [lsort [osutils:tk:files $tkloc osutils:am:compilable 1 osutils:justwnt]]
     if [array exists written] { unset written }
+    set fxloparamfcxx [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]
+    set fxloparamfc   [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options   [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] ] 2]
+    set fxloparam    "[union [split $fxloparamfcxx] [split $fxloparamfc]]"
     foreach fxlo $resultloc {
         set xlo [wokinfo -n $fxlo]
 	append files "# Begin Group \"${xlo}\"" "\n"        
 	set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
-	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
-        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+	set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]"
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] [split [lindex [wokparam -v %CMPLRS_C_Options   $fxlo] 0]] ] 2]"
         set needparam ""
         foreach partopt $fxloparam {
 	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
@@ -617,6 +623,7 @@ proc osutils:vc7 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
 	append tkused "${tkx}.lib "
     }
+    wokparam -l CSF
     foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
 	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
@@ -636,14 +643,17 @@ proc osutils:vc7 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     set listloc [osutils:tk:units [woklocate -u $tkloc]]
     set resultloc [osutils:justwnt $listloc]
     if [array exists written] { unset written }
+    set fxloparamfcxx [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]
+    set fxloparamfc   [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options   [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] ] 2]
+    set fxloparam    "[union [split $fxloparamfcxx] [split $fxloparamfc]]"
     foreach fxlo $resultloc {
         set xlo [wokinfo -n $fxlo]        
 	append files "        <Filter\n"
         append files "                                Name=\"${xlo}\"\n"
         append files "                                Filter=\"\">\n"
         set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
-	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
-        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+	set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]"
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo]   0]] ] 2]"
         set needparam ""
         foreach partopt $fxloparam {
 	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
@@ -712,6 +722,7 @@ proc osutils:vc8 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
 	append tkused "${tkx}.lib "
     }
+    wokparam -l CSF
     foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
 	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
@@ -731,14 +742,17 @@ proc osutils:vc8 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     set listloc [osutils:tk:units [woklocate -u $tkloc]]
     set resultloc [osutils:justwnt $listloc]
     if [array exists written] { unset written }
+    set fxloparamfcxx [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]
+    set fxloparamfc   [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options   [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] ] 2]
+    set fxloparam    "[union [split $fxloparamfcxx] [split $fxloparamfc]]"
     foreach fxlo $resultloc {
         set xlo [wokinfo -n $fxlo]        
 	append files "        <Filter\n"
         append files "                                Name=\"${xlo}\"\n"
         append files "                                Filter=\"\">\n"
         set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
-	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
-        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+	set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]"
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo]   0]] ] 2]"
         set needparam ""
         foreach partopt $fxloparam {
 	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
@@ -807,6 +821,7 @@ proc osutils:vc8_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] {
 	append tkused "${tkx}.lib "
     }
+    wokparam -l CSF
     foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
 	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
@@ -826,14 +841,17 @@ proc osutils:vc8_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     set listloc [osutils:tk:units [woklocate -u $tkloc]]
     set resultloc [osutils:justwnt $listloc]
     if [array exists written] { unset written }
+    set fxloparamfcxx [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]
+    set fxloparamfc   [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options   [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] ] 2]
+    set fxloparam    "[union [split $fxloparamfcxx] [split $fxloparamfc]]"
     foreach fxlo $resultloc {
         set xlo [wokinfo -n $fxlo]        
 	append files "        <Filter\n"
         append files "                                Name=\"${xlo}\"\n"
         append files "                                Filter=\"\">\n"
         set lsrc   [osutils:tk:files $xlo osutils:am:compilable 0]
-	set fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]
-        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options $fxlo] 0]] ] 2]"
+	set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options $fxlo] 0]] ] 2]"
+        set fxloparam "$fxloparam [lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] [split [lindex [wokparam -v %CMPLRS_C_Options   $fxlo] 0]] ] 2]"
         set needparam ""
         foreach partopt $fxloparam {
 	    if { "-I[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]" != "$partopt "} {
@@ -918,6 +936,7 @@ proc osutils:vc6x { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	      append tkused "${tkx}.lib "
 	  }
         }
+	wokparam -l CSF
         foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	    foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokinfo -N [woklocate -u $tk]]]] {
 	    if {[wokparam -t %$element] != 0} {
@@ -980,6 +999,7 @@ proc osutils:vc7x { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	    append tkused "${tkx}.lib "
 	  }
         }
+	wokparam -l CSF
        foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
 	    if {[wokparam -t %$element] != 0} {
@@ -1066,6 +1086,7 @@ proc osutils:vc8x { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	    append tkused "${tkx}.lib "
 	  }
         }
+	wokparam -l CSF
        foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
 	    if {[wokparam -t %$element] != 0} {
@@ -1152,6 +1173,7 @@ proc osutils:vc8x_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
 	    append tkused "${tkx}.lib "
 	  }
         }
+	wokparam -l CSF
        foreach tk [LibToLinkX [woklocate -u $tkloc] $tf] {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
 	    if {[wokparam -t %$element] != 0} {
@@ -1835,8 +1857,8 @@ proc osutils:am:__VPATH__lastoccur { str } {
     }
 }
 proc osutils:am:PkCXXOption ppk {
- set CXXCOMMON [lindex [wokparam -e  %CMPLRS_CXX_Options [wokcd]] 0]
- set FoundFlag ""
+ set CXXCOMMON  [lindex [wokparam -e  %CMPLRS_CXX_Options [wokcd]] 0]
+ set FoundFlag "[lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]"
  foreach pk $ppk {
   if {[lsearch [uinfo -f -T source [woklocate -u $pk]] ${pk}_CMPLRS.edl] != "-1"} {
 	set CXXStr  [lindex [wokparam -e %CMPLRS_CXX_Options [woklocate -u $pk]] 0]
@@ -1865,7 +1887,7 @@ proc osutils:am:PkCXXOption ppk {
 
 proc osutils:am:PkCOption ppk {
  set CCOMMON [lindex [wokparam -e  %CMPLRS_C_Options [wokcd]] 0]
- set FoundFlag ""
+ set FoundFlag "[lindex [intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] ] 2]"
  foreach pk $ppk {
   if {[lsearch [uinfo -f -T source [woklocate -u $pk]] ${pk}_CMPLRS.edl] != "-1"} {
 	set CStr  [lindex [wokparam -e %CMPLRS_C_Options [woklocate -u $pk]] 0]
