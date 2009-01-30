@@ -373,6 +373,6 @@ void WOKUnix_Process::Kill()
 void WOKUnix_Process::Destroy()
 {
  Kill();
- delete myargv;
+ delete [] myargv;
 }
 #endif

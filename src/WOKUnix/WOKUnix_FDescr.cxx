@@ -202,8 +202,10 @@ WOKUnix_FDescr WOKUnix_FDescr::BuildNamedPipe()
   if(mknod(apath.ToCString(), 0700 |  S_IFIFO, 0)) 
     { perror(apath.ToCString());}
 
-  myFileChannel = open(apath.ToCString(),  O_RDONLY | O_NDELAY | O_CREAT);
-  SetUnBuffered();
+//  myFileChannel = open(apath.ToCString(),  O_RDONLY | O_NDELAY | O_CREAT);
+    myFileChannel = open(apath.ToCString(),  O_RDONLY | O_NDELAY | O_CREAT,
+                     S_IRUSR|S_IWUSR|S_IWUSR|S_IRGRP|S_IROTH);
+    SetUnBuffered();
 
   // write end of pipe is unbuffered also 
   writeend.SetPath(OSD_Path(Name()->String()));
@@ -433,7 +435,7 @@ WOKUnix_FDescr WOKUnix_FDescr::Stderr()
 #ifdef __GNUC__
 static FILE* _wokunix_fdopen ( int fd ) {
 
- char* fdMode = "r";
+ const char* fdMode = "r";
  int   mode   = fcntl ( fd, F_GETFL );
 
  switch ( mode & O_ACCMODE ) {
