@@ -25,68 +25,22 @@ $// for a particular purpose or non-infringement. Please see the License for
 $// the specific terms and conditions governing rights and limitations under the
 $// License.
 $
-$//
 $#ifndef _Handle_%Class_HeaderFile
 $#define _Handle_%Class_HeaderFile
-$#ifndef _Standard_Macro_HeaderFile
-$#include <Standard_Macro.hxx>
+$
+$#ifndef _Standard_DefineHandle_HeaderFile
+$#include <Standard_DefineHandle.hxx>
 $#endif
 $#ifndef _Handle_%Inherits_HeaderFile
 $#include <Handle_%Inherits.hxx>
 $#endif
 $
 $class Standard_Transient;
-$class Handle_Standard_Type;
-$class Handle(%Inherits);
+$class Handle(Standard_Type);
 $class %Class; 
-$Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(%Class);
 $
-$#ifndef _Handle_%Inherits_HeaderFile
-$#include <Handle_%Inherits.hxx>
-$#endif
-$class %Class;
+$DEFINE_STANDARD_HANDLE(%Class,%Inherits)
 $
-$
-$class Handle(%Class) : public Handle(%Inherits) 
-${
-$  public:
-$    Handle(%Class)() : Handle(%Inherits)() 
-$     {
-$     }
-$ 
-$    Handle(%Class)(const Handle(%Class)& aHandle) : Handle(%Inherits)(aHandle) 
-$     {
-$     }
-$
-$    Handle(%Class)(const %Class* anItem) : Handle(%Inherits)((%Inherits *)anItem) 
-$     {
-$     }
-$
-$    Handle(%Class)& operator=(const Handle(%Class)& aHandle)
-$     {
-$       Assign(aHandle.Access());
-$       return *this;
-$     }
-$
-$    Handle(%Class)& operator=(const %Class* anItem)
-$     {
-$       Assign((Standard_Transient *)anItem);
-$       return *this;
-$     }
-$
-$    %Class* operator->() 
-$     {
-$       return (%Class *)ControlAccess();
-$     }
-$
-$    %Class* operator->() const 
-$     {
-$       return (%Class *)ControlAccess();
-$     }
-$
-$    Standard_EXPORT ~Handle(%Class)(); 
-$     Standard_EXPORT static const Handle(%Class) DownCast(const Handle(Standard_Transient)& AnObject);
-$};
 $#endif
 @end;
 
@@ -118,6 +72,7 @@ $// License.
 $
 $#ifndef _%Interface_Standard_Transient_HeaderFile
 $#define _%Interface_Standard_Transient_HeaderFile
+$
 $#include <Handle_%Interface_Standard_Transient.hxx>
 $
 $#ifndef _FrontEnd_EngineAdaptor_HeaderFile
@@ -134,9 +89,9 @@ $class %Interface_Standard_Transient: public FrontEnd_HExternRef {
 $
 $public:
 $
-$  %Interface_Standard_Transient(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) : FrontEnd_HExternRef(_aRef,_anEng) 
-$   {
-$   }
+$ %Interface_Standard_Transient(const FrontEnd_FHandle& _aRef, const Handle(FrontEnd_EngineAdaptor)& _anEng) : FrontEnd_HExternRef(_aRef,_anEng) 
+$ {
+$ }
 $  
 $ const Handle(Standard_Type)& DynamicType() const
 $ { 
@@ -229,9 +184,6 @@ $
 $  return _anOtherObject ;
 $}
 $
-$Handle(%Interface_Standard_Transient)::~Handle(%Interface_Standard_Transient)()
-${
-$}
 @end;
 
 @template PersistentRootClientHXX(%Interface) is
