@@ -1594,17 +1594,19 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildGenClass(const Handle(WOKBu
 	// END JGA
 	
 	Handle(MS_GenClass) agenclass = Handle(MS_GenClass)::DownCast(ameta->GetType(anaction->Entity()->Name()));
-	Handle(MS_InstClass) instclass;
-	Handle(TColStd_HSequenceOfHAsciiString) nestedinst = agenclass->GetNestedInsClassesName();
-	for(i=1; i<=nestedinst->Length(); i++)
-	  {
-	    Handle(TCollection_HAsciiString) fullname = MS::BuildFullName(agenclass->Package()->Name(), nestedinst->Value(i));
+	if(!agenclass.IsNull()) {
+	  Handle(MS_InstClass) instclass;
+	  Handle(TColStd_HSequenceOfHAsciiString) nestedinst = agenclass->GetNestedInsClassesName();
+	  for(i=1; i<=nestedinst->Length(); i++)
+	    {
+	      Handle(TCollection_HAsciiString) fullname = MS::BuildFullName(agenclass->Package()->Name(), nestedinst->Value(i));
 	    
-	    instclass = Handle(MS_InstClass)::DownCast(MSchema()->MetaSchema()->GetType(fullname));
+	      instclass = Handle(MS_InstClass)::DownCast(MSchema()->MetaSchema()->GetType(fullname));
 	    
-	    if(! instclass.IsNull())
-	      AddAction(anit,instclass->GenClass(), WOKBuilder_GenType);
-	  }
+	      if(! instclass.IsNull())
+		AddAction(anit,instclass->GenClass(), WOKBuilder_GenType);
+	    }
+	}
       }
       break;
     default:

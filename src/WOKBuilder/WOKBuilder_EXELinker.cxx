@@ -66,15 +66,31 @@ Handle(TCollection_HAsciiString) WOKBuilder_EXELinker::EvalFooter()
  retVal->AssignCat(tmp);
  outEnt[1] = new WOKBuilder_SharedLibrary(new WOKUtils_Path(tmp));
  //  }
+#if _MSC_VER >= 1400
  outEnt[2] = new WOKBuilder_ManifestLibrary(new WOKUtils_Path(EvalToolTemplate("EXEMAN")));
+#endif
+
  SetProduction(new WOKBuilder_HSequenceOfEntity);
- Produces()->Append(outEnt[0]);
- 
- //if(fDebug) 
- Produces()->Append(outEnt[1]);
- Produces()->Append(outEnt[2]);
+
+ for ( int i = 0; i < 3; i++ )
+ {
+  if ( !outEnt[ i ].IsNull() )
+    Produces()->Append( outEnt[ i ] );
+ }
 
  return retVal;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

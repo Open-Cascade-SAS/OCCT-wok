@@ -67,15 +67,18 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalFooter()
   tmp = EvalToolTemplate ( "LinkerPDB" );
   retVal -> AssignCat ( tmp );
   outEnt[3] = new WOKBuilder_SharedLibrary(new WOKUtils_Path(tmp));
+
+#if _MSC_VER >= 1400
   outEnt[4] = new WOKBuilder_ManifestLibrary(new WOKUtils_Path(EvalToolTemplate("DLLMAN")));
+#endif
+
   SetProduction(new WOKBuilder_HSequenceOfEntity());
 
-  Produces()->Append(outEnt[0]);
-  Produces()->Append(outEnt[1]);
-  Produces()->Append(outEnt[2]);
-
-  Produces()->Append(outEnt[3]);
-  Produces()->Append(outEnt[4]);
+  for ( int i = 0; i < 5; i++ )
+  {
+    if ( !outEnt[ i ].IsNull() )
+      Produces()->Append( outEnt[ i ] );
+  }
   return retVal;
 }
 
