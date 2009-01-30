@@ -383,10 +383,14 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   api->AddVariable(VAnd, pC[iX]);
   //
   //
-  api->AddVariable(VArgument,
-		   CPP_BuildParameterList(aMeta,
-					  m->Params(), 
-					  forDeclaration)->ToCString());
+  Handle(TCollection_HAsciiString) aParamList = CPP_BuildParameterList(aMeta,
+								       m->Params(), 
+								       forDeclaration);
+  api->AddVariable(VArgument, aParamList->ToCString());
+  //api->AddVariable(VArgument,
+	//	   CPP_BuildParameterList(aMeta,
+		//			  m->Params(), 
+			//		  forDeclaration)->ToCString());
   
   // it s returning a type or void
   //
@@ -397,7 +401,9 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     const Handle(TCollection_HAsciiString)& aTypeName=retType->TypeName();
     pTypeName=(char *)aTypeName->ToCString();
     //
-    pTypeRet=(char *)CPP_BuildType(aMeta,aTypeName)->ToCString();
+    Handle(TCollection_HAsciiString) aTypeRet = CPP_BuildType(aMeta,aTypeName);
+    pTypeRet=(char *)aTypeRet->ToCString();
+    //pTypeRet=(char *)CPP_BuildType(aMeta,aTypeName)->ToCString();
     //
     //modified by NIZNHY-PKV Mon May  5 15:10:12 2008f
     if (m->IsPtrReturn()) {
