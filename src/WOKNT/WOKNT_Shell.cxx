@@ -66,8 +66,8 @@ void WOKNT_Shell :: Destroy () {
 
  Kill ();
 
- delete myOutput;
-
+ WOKNT_MixedOutput* anOutput = (WOKNT_MixedOutput*)myOutput;
+ delete anOutput;
 }  // end WOKNT_Shell :: Destroy
 
 void WOKNT_Shell :: Launch () {
