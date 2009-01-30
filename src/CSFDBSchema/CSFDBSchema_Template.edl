@@ -39,87 +39,25 @@ $#endif
 $#ifndef _Storage_stCONSTclCOM_HeaderFile
 $#include <Storage_stCONSTclCOM.hxx>
 $#endif
-$#ifndef _Handle_Storage_Schema_HeaderFile
-$#include <Handle_Storage_Schema.hxx>
+$#ifndef _Storage_Schema_HeaderFile
+$#include <Storage_Schema.hxx>
 $#endif
-$
-$class Handle_Standard_Type;
-$Standard_EXPORT Handle_Standard_Type& %Schema_Type_();
-$class Standard_Transient;
-$class Handle(Storage_Schema);
-$%SchemaComment
-$class %Schema;
-$
-$class Handle(%Schema) : public Handle(Storage_Schema) {
-$  public:
-$    Handle(%Schema)():Handle(Storage_Schema)() {} 
-$    Handle(%Schema)(const Handle(%Schema)& aHandle) : Handle(Storage_Schema)(aHandle) 
-$     {
-$     }
-$
-$    Handle(%Schema)(const %Schema* anItem) : Handle(Storage_Schema)((Storage_Schema *)anItem) 
-$     {
-$     }
-$
-$    Handle(%Schema)& operator=(const Handle(%Schema)& aHandle)
-$     {
-$      Assign(aHandle.Access());
-$      return *this;
-$     }
-$
-$    Handle(%Schema)& operator=(const %Schema* anItem)
-$     {
-$      Assign((Standard_Transient *)anItem);
-$      return *this;
-$     }
-$
-$    %Schema* operator->() 
-$     {
-$      return (%Schema *)ControlAccess();
-$     }
-$
-$    %Schema* operator->() const 
-$     {
-$      return (%Schema *)ControlAccess();
-$     }
-$
-$   ~Handle(%Schema)(){};
-$
-$   static const Handle(%Schema) DownCast(const Handle(Storage_Schema)& AnObject) 
-$   {
-$     Handle(%Schema) _anOtherObject;
-$
-$     if (!AnObject.IsNull()) {
-$        if (AnObject->IsKind(STANDARD_TYPE(%Schema))) {
-$          _anOtherObject = Handle(%Schema)((Handle(%Schema)&)AnObject);
-$        }
-$     }
-$
-$     return _anOtherObject ;
-$   }
-$};
-$
-$#ifndef _Storage_CallBack_HeaderFile_
+$#ifndef _Storage_CallBack_HeaderFile
 $#include <Storage_CallBack.hxx>
 $#endif
-$#ifndef _Storage_BaseDriver_HeaderFile_
+$#ifndef _Storage_BaseDriver_HeaderFile
 $#include <Storage_BaseDriver.hxx>
 $#endif
 $
+$DEFINE_STANDARD_HANDLE(%Schema,Storage_Schema)
+$
+$%SchemaComment
 $class %Schema : public Storage_Schema {
 $public:
 $
 $  Storage_DECLARE_SCHEMA_METHODS(%Schema)
 $
-$  Standard_Boolean IsKind(const Handle(Standard_Type)& AType) const 
-$  { 
-$    return (STANDARD_TYPE(%Schema) == AType || Storage_Schema::IsKind(AType)); 
-$  }
-$
-$  const Handle(Standard_Type)& DynamicType() const 
-$  { 
-$    return STANDARD_TYPE(%Schema) ; 
-$  }
+$  DEFINE_STANDARD_RTTI(%Schema)
 $};
 $
 $#endif
@@ -153,78 +91,33 @@ $
 $#ifndef _Storage_Schema_HeaderFile
 $#include <Storage_Schema.hxx>
 $#endif
-$#ifndef _Storage_CallBack_HeaderFile_
+$#ifndef _Storage_CallBack_HeaderFile
 $#include <Storage_CallBack.hxx>
 $#endif
-$#ifndef _Storage_BaseDriver_HeaderFile_
+$#ifndef _Storage_BaseDriver_HeaderFile
 $#include <Storage_BaseDriver.hxx>
+$#endif
+$#ifndef _Handle_%Type_HeaderFile
+$#include <Handle_%Type.hxx>
 $#endif
 $
 $%Include
 $
-$class Handle_%Type;
-$
-$class Handle_Standard_Type;
-$Standard_EXPORT Handle_Standard_Type& %Schema_%Type_Type_();
-$Standard_EXPORT Handle_Standard_Type& %Type_Type_();
-$class Standard_Transient;
-$class Handle_Standard_Persistent;
-$class %Schema_%Type;
-$
-$class Handle(%Schema_%Type) : public Handle(Storage_CallBack) {
-$  public:
-$    Handle(%Schema_%Type)() : Handle(Storage_CallBack)() {} 
-$    Handle(%Schema_%Type)(const Handle(%Schema_%Type)& aHandle) : Handle(Storage_CallBack)(aHandle) 
-$     {
-$     }
-$
-$    Handle(%Schema_%Type)(const %Schema_%Type* anItem) : Handle(Storage_CallBack)((Storage_CallBack *)anItem) 
-$     {
-$     }
-$
-$    Handle(%Schema_%Type)& operator=(const Handle(%Schema_%Type)& aHandle)
-$     {
-$      Assign(aHandle.Access());
-$      return *this;
-$     }
-$
-$    Handle(%Schema_%Type)& operator=(const %Schema_%Type* anItem)
-$     {
-$      Assign((Standard_Transient *)anItem);
-$      return *this;
-$     }
-$
-$    %Schema_%Type* operator->() 
-$     {
-$      return (%Schema_%Type *)ControlAccess();
-$     }
-$
-$    %Schema_%Type* operator->() const 
-$     {
-$      return (%Schema_%Type *)ControlAccess();
-$     }
-$
-$   ~Handle(%Schema_%Type)(){};
-$
-$   Standard_EXPORT static const Handle(%Schema_%Type) DownCast(const Handle(Storage_CallBack)&);
-$};
-$
+$DEFINE_STANDARD_HANDLE(%Schema_%Type,Storage_CallBack)
 $
 $class %Schema_%Type : public Storage_CallBack {
-$  public:
-$   %Schema_%Type() {};
-$   Standard_EXPORT static void SAdd(const Handle(%Type)& ,const Handle(Storage_Schema)&);
-$   Standard_EXPORT static void SWrite(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&);
-$   Standard_EXPORT static void SRead(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&);
+$public:
+$  %Schema_%Type() {}
+$  Standard_EXPORT static void SAdd(const Handle(%Type)& ,const Handle(Storage_Schema)&);
+$  Standard_EXPORT static void SWrite(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&);
+$  Standard_EXPORT static void SRead(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&);
 $
-$   Standard_EXPORT Handle_Standard_Persistent New() const;
-$   Standard_EXPORT void Add(const Handle(Standard_Persistent)&,const Handle(Storage_Schema)&) const;
-$   Standard_EXPORT void Write(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
-$   Standard_EXPORT void Read(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
-$   ~%Schema_%Type() {};
+$  Standard_EXPORT Handle_Standard_Persistent New() const;
+$  Standard_EXPORT void Add(const Handle(Standard_Persistent)&,const Handle(Storage_Schema)&) const;
+$  Standard_EXPORT void Write(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
+$  Standard_EXPORT void Read(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
 $
-$   Standard_EXPORT Standard_Boolean IsKind(const Handle(Standard_Type)& AType) const; 
-$   Standard_EXPORT const Handle(Standard_Type)& DynamicType() const;
+$  DEFINE_STANDARD_RTTI(%Schema_%Type)
 $};
 $#endif
 @end;
@@ -257,7 +150,7 @@ $
 $#ifndef _Handle_Storage_Schema_HeaderFile
 $#include <Handle_Storage_Schema.hxx>
 $#endif
-$#ifndef _Storage_BaseDriver_HeaderFile_
+$#ifndef _Storage_BaseDriver_HeaderFile
 $#include <Storage_BaseDriver.hxx>
 $#endif
 $
@@ -266,12 +159,11 @@ $
 $class %Type;
 $
 $class %Schema_%Type {
-$  public:
-$   Standard_EXPORT static void SAdd(const %Type&,const Handle(Storage_Schema)& aSchema);
-$   Standard_EXPORT static void SWrite(const %Type&,Storage_BaseDriver& aDriver,const Handle(Storage_Schema)& aSchema);
-$   Standard_EXPORT static void SRead(%Type&,Storage_BaseDriver& aDriver,const Handle(Storage_Schema)& aSchema);
+$public:
+$  Standard_EXPORT static void SAdd(const %Type&,const Handle(Storage_Schema)& aSchema);
+$  Standard_EXPORT static void SWrite(const %Type&,Storage_BaseDriver& aDriver,const Handle(Storage_Schema)& aSchema);
+$  Standard_EXPORT static void SRead(%Type&,Storage_BaseDriver& aDriver,const Handle(Storage_Schema)& aSchema);
 $};
-$
 $#endif
 @end;
 
@@ -279,16 +171,15 @@ $#endif
 --
 @template CSFDBADDTSBegin(%Schema,%Type) is
 $
-$ Storage_BEGIN_ADD_TYPES(%Schema)
+$Storage_BEGIN_ADD_TYPES(%Schema)
 @end;
 
 @template CSFDBADDTSPart(%Schema,%Type) is
-$ Storage_ADD_TYPES(%Schema,%Type,%Schema_%Type)
+$Storage_ADD_TYPES(%Schema,%Type,%Schema_%Type)
 @end;
 
 @template CSFDBADDTSEnd(%Schema) is
-$ Storage_END_ADD_TYPES(%Schema)
-$
+$Storage_END_ADD_TYPES(%Schema)
 @end;
 --
 -- -------------- AddTypeSelection
@@ -297,16 +188,15 @@ $
 --
 @template CSFDBTypeListBegin(%Schema) is
 $
-$  Storage_BEGIN_SCHEMA_TYPES(%Schema)
+$Storage_BEGIN_SCHEMA_TYPES(%Schema)
 @end;
 
 @template CSFDBTypeListPart(%Type) is
-$  Storage_SCHEMA_TYPES(%Type)
+$Storage_SCHEMA_TYPES(%Type)
 @end;
 
 @template CSFDBTypeListEnd(%Schema) is
-$  Storage_END_SCHEMA_TYPES(%Schema)
-$
+$Storage_END_SCHEMA_TYPES(%Schema)
 @end;
 --
 -- -------------- TypeList
@@ -315,16 +205,15 @@ $
 --
 @template CSFDBREADTSBegin(%Schema) is
 $
-$ Storage_BEGIN_READ_SELECTION(%Schema)
+$Storage_BEGIN_READ_SELECTION(%Schema)
 @end;
 
 @template CSFDBREADTSPart(%Schema,%Type) is
-$ Storage_READ_SELECTION(%Schema,%Type,%Schema_%Type)
+$Storage_READ_SELECTION(%Schema,%Type,%Schema_%Type)
 @end;
 
 @template CSFDBREADTSEnd(%Schema) is
-$ Storage_END_READ_SELECTION(%Schema)
-$
+$Storage_END_READ_SELECTION(%Schema)
 @end;
 --
 -- -------------- ReadTypeSelection
@@ -350,7 +239,8 @@ $    }
 $  }
 $}
 $
-$void %Schema_%Type::Add(const Handle(Standard_Persistent)& p, const Handle(Storage_Schema)& theSchema) const {
+$void %Schema_%Type::Add(const Handle(Standard_Persistent)& p, const Handle(Storage_Schema)& theSchema) const
+${
 $  %Schema_%Type::SAdd((Handle(%Type)&)p,theSchema);
 $}
 @end;
@@ -386,8 +276,9 @@ $}
 $
 $void %Schema_%Type::Write(const Handle(Standard_Persistent)& p, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema) const
 ${ 
-$ %Schema_%Type::SWrite(p,f,theSchema);
+$  %Schema_%Type::SWrite(p,f,theSchema);
 $}
+$
 @end;
 --
 -- -------------- WRITE
@@ -395,21 +286,24 @@ $}
 -- -------------- READ
 --
 @template CSFDBNEWOBJECT(%Schema,%Type) is
+$
 $Handle(Standard_Persistent) %Schema_%Type::New() const
 ${
-$ return new %Type(Storage_stCONSTclCOM());
+$  return new %Type(Storage_stCONSTclCOM());
 $}
 @end;
 
 @template CSFDBNEWOBJECTDeferred(%Schema,%Type) is
+$
 $Handle(Standard_Persistent) %Schema_%Type::New() const
 ${
-$ Handle(Standard_Persistent) NullObject;
-$ return NullObject;
+$  Handle(Standard_Persistent) NullObject;
+$  return NullObject;
 $}
 @end;
 
 @template CSFDBSREAD(%Schema,%Type,%Body) is
+$
 $void %Schema_%Type::SRead(%Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
 $  f.BeginReadObjectData();
@@ -419,6 +313,7 @@ $}
 @end;
 
 @template CSFDBPREAD(%Schema,%Type,%Body) is
+$
 $void %Schema_%Type::SRead(const Handle(Standard_Persistent)& p, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${ 
 $  if (!p.IsNull()) {
@@ -426,15 +321,15 @@ $    Handle(%Type) &pp = (Handle(%Type)&)p;
 $
 $    theSchema->ReadPersistentObjectHeader(f);
 $    f.BeginReadPersistentObjectData();
-$
 $%Body
 $    f.EndReadPersistentObjectData();
 $  }
 $}
 $
 $void %Schema_%Type::Read(const Handle(Standard_Persistent)& p, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema) const
+$
 ${ 
-$ %Schema_%Type::SRead(p,f,theSchema);
+$  %Schema_%Type::SRead(p,f,theSchema);
 $}
 @end;
 
@@ -516,6 +411,7 @@ $  }
 @end;
 
 @template CSFDBWRITEDBC(%Schema,%Type,%Body) is
+$
 $void %Schema_%Type::SWrite(const %Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
 $  Standard_Integer i;
@@ -530,6 +426,7 @@ $}
 @end;
 
 @template CSFDBREADDBC(%Schema,%Type,%Body) is
+$
 $void %Schema_%Type::SRead(%Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
 $  Standard_Integer size = 0;
@@ -637,7 +534,7 @@ $   %Schema_%Type::SAdd(p%TCall_CSFDB_Get%NameField%Field(),theSchema);
 @end;
 
 @template CSFDBCallWritePersistent(%Field,%NameField,%TCall) is
-$  theSchema->WritePersistentReference(pp%TCall_CSFDB_Get%NameField%Field(),f);
+$    theSchema->WritePersistentReference(pp%TCall_CSFDB_Get%NameField%Field(),f);
 @end;
 
 @template CSFDBComma() is
@@ -649,13 +546,13 @@ $  f.%DriverFunction(pp%TCall_CSFDB_Get%NameField%Field());
 @end;
 
 @template CSFDBInclude(%Type) is
-$#ifndef _%Type_HeaderFile_
+$#ifndef _%Type_HeaderFile
 $#include <%Type.hxx>
 $#endif
 @end;
 
 @template CSFDBDerivatedInclude(%Schema,%Type) is
-$#ifndef _%Schema_%Type_HeaderFile_
+$#ifndef _%Schema_%Type_HeaderFile
 $#include <%Schema_%Type.hxx>
 $#endif
 @end;
@@ -743,61 +640,14 @@ $}
 -- ------------- C++ Array
 @template CSFDBTypeMgt(%Schema) is
 $
-$Handle_Standard_Type& %Schema_Type_()
-${
-$
-$  static Handle_Standard_Type tSchema = STANDARD_TYPE(%Schema); 
-$  static Handle_Standard_Type bSchema = STANDARD_TYPE(Storage_Schema);
-$
-$  static Handle_Standard_Transient _Ancestors[]= {tSchema,bSchema,NULL};
-$  static Handle_Standard_Type _aType = new Standard_Type("%Schema",
-$			                                 sizeof(%Schema),
-$			                                 1,
-$			                                 (Standard_Address)_Ancestors,
-$			                                 (Standard_Address)NULL);
-$
-$  return _aType;
-$}
-$
+$IMPLEMENT_STANDARD_HANDLE(%Schema,Storage_Schema)
+$IMPLEMENT_STANDARD_RTTIEXT(%Schema,Storage_Schema)
 @end;
 
 @template CSFDBCallBackTypeMgt(%Schema,%Type) is
 $
-$Handle_Standard_Type& %Schema_%Type_Type_()
-${
-$
-$  static Handle_Standard_Type tSchema = STANDARD_TYPE(%Schema_%Type); 
-$  static Handle_Standard_Type bSchema = STANDARD_TYPE(Storage_CallBack);
-$
-$  static Handle_Standard_Transient _Ancestors[]= {tSchema,bSchema,NULL};
-$  static Handle_Standard_Type _aType = new Standard_Type("%Schema_%Type",
-$			                                 sizeof(%Schema_%Type),
-$			                                 1,
-$			                                 (Standard_Address)_Ancestors,
-$			                                 (Standard_Address)NULL);
-$
-$  return _aType;
-$}
-$
-$const Handle(%Schema_%Type) Handle(%Schema_%Type)::DownCast(const Handle(Storage_CallBack)& AnObject) {
-$  Handle(%Schema_%Type) _anOtherObject;
-$
-$  if (!AnObject.IsNull()) {
-$     if (AnObject->IsKind(STANDARD_TYPE(%Schema_%Type))) {
-$       _anOtherObject = Handle(%Schema_%Type)((Handle(%Schema_%Type)&)AnObject);
-$     }
-$  }
-$
-$  return _anOtherObject ;
-$}
-$
-$Standard_Boolean %Schema_%Type::IsKind(const Handle(Standard_Type)& AType) const { 
-$  return (STANDARD_TYPE(%Schema_%Type) == AType || Storage_CallBack::IsKind(AType)); 
-$}
-$
-$const Handle(Standard_Type)& %Schema_%Type::DynamicType() const { 
-$  return STANDARD_TYPE(%Schema_%Type) ; 
-$}
+$IMPLEMENT_STANDARD_HANDLE(%Schema_%Type,Storage_CallBack)
+$IMPLEMENT_STANDARD_RTTIEXT(%Schema_%Type,Storage_CallBack)
 @end;
 
 @template CSFDBClassDeclaration (%Type) is
@@ -805,5 +655,5 @@ $class %Type;
 @end;
 
 @template CSFDBHandleDeclaration (%Type) is
-$class Handle_%Type;
+$class Handle(%Type);
 @end;
