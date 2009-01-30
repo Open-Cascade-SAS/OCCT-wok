@@ -36,9 +36,9 @@ extern "C" {
   int Traite_Ifdef(char* s)
     {
 #ifdef WNT
-      char* name="WNT";
+      const char* name="WNT";
 #else
-      char* name="UNIX";
+      const char* name="UNIX";
 #endif
       if (!strcmp(name,s)) {
 	goandtreat = Standard_True;
