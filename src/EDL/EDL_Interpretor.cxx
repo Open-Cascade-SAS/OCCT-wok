@@ -994,7 +994,7 @@ void edl_test_condition(const edlstring varname, int ope, const edlstring value)
 	      }
               break;
     default:
-      EDLerror("wrong logical operator...","");
+      EDLerror((char*)"wrong logical operator...",(char*)"");
       exit(EDL_SYNTAXERROR);
    }
   
@@ -1022,7 +1022,7 @@ void edl_eval_local_condition(int ope)
 	       break;
   case LOGOR:  Result = Left || Right;
 	       break;
-  default:     EDLerror("wrong logical operator..."," ");
+  default:     EDLerror((char*)"wrong logical operator...",(char*)" ");
 	       exit(EDL_SYNTAXERROR);
   }
 
