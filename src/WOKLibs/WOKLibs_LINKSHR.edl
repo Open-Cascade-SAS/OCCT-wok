@@ -2,7 +2,7 @@
  @set %WOKLibs_LINKSHR_EDL = "";
  @if ( %Station == "lin" ) then
   @template LINKSHR_Footer () is
-   $ -ltcl -ldl;
+   $ -ldl;
    $ set ld_status=$status;
    $ if ( $?LD_LIBRARY_PATH ) then
    $  set ld_library_path=$LD_LIBRARY_PATH
