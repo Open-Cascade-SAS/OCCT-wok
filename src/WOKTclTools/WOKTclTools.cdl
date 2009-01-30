@@ -16,11 +16,11 @@ uses
 
 is
 
-    imported CommandFunction;
+    primitive CommandFunction;
     imported PInterp;
-    imported ExitHandler;
+    primitive ExitHandler;
 
-    imported WokCommand;
+    primitive WokCommand;
     
     class Package;
 
