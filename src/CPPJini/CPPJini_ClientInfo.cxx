@@ -16,7 +16,7 @@ CPPJini_ClientInfo :: CPPJini_ClientInfo (
 
  if (  clt.IsNull ()  )
 
-  ErrorMsg << "CPPJini" << "Client " << aName << " was not found" << endm;
+  ErrorMsg() << "CPPJini" << "Client " << aName << " was not found" << endm;
 
  else {
 
@@ -27,7 +27,7 @@ CPPJini_ClientInfo :: CPPJini_ClientInfo (
           xtern, membr, myComplete, myIncomplete, mySemicomplete
          );
 
-  InfoMsg << "CPPJini" << "Using client: " << aName << endm;
+  InfoMsg() << "CPPJini" << "Using client: " << aName << endm;
 
  }  // end else
 

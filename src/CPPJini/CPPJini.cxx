@@ -329,7 +329,7 @@ static void _CPPJini_FillUses (
 
    if (   s_CltMap.Contains (  use -> Value ( i )  )   ) {
 
-    ErrorMsg << "_CPPJini_FillUses"
+    ErrorMsg() << "_CPPJini_FillUses"
              << "Cyclic dependency between clients ( check your 'uses' lists )"
              << endm;
     Standard_ProgramError :: Raise ();
@@ -398,7 +398,7 @@ void CPPJini_Init (
 
  } else {
 
-  ErrorMsg << "CPPJini" << "Init : Client " << aName << " not found..." << endm;
+  ErrorMsg() << "CPPJini" << "Init : Client " << aName << " not found..." << endm;
   Standard_NoSuchObject :: Raise ();
   
  }  // end else
@@ -467,14 +467,14 @@ Handle( EDL_API )& CPPJini_LoadTemplate (
 
   if (  api -> Execute ( "CPPJini_Template.edl" ) != EDL_NORMAL  ) {
 
-   ErrorMsg << "CPPJini" << "unable to load : CPPJini_Template.edl" << endm;
+   ErrorMsg() << "CPPJini" << "unable to load : CPPJini_Template.edl" << endm;
    Standard_NoSuchObject :: Raise ();
 
   }  // end if
 
   if (  api -> Execute ( "CPPJini_General.edl" ) != EDL_NORMAL  ) {
 
-   ErrorMsg << "CPPJini" << "unable to load : CPPJini_General.edl" << endm;
+   ErrorMsg() << "CPPJini" << "unable to load : CPPJini_General.edl" << endm;
    Standard_NoSuchObject :: Raise ();
 
   }  // end if
@@ -622,7 +622,7 @@ void CPPJini_MethodUsedTypes (
 
    else {
 
-	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject :: Raise ();
 
    }  // end else
@@ -664,7 +664,7 @@ void CPPJini_MethodUsedTypes (
 
     else {
 
-     ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+     ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
      Standard_NoSuchObject :: Raise ();
 	
     }  // end else
@@ -778,7 +778,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildType (
 
    else {
 
-    ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+    ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
     Standard_NoSuchObject :: Raise ();
 
    }  // end else
@@ -803,7 +803,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildType (
 
  } else {
 
-  ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
+  ErrorMsg() << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
   Standard_NoSuchObject :: Raise ();
 
  }  // end else
@@ -936,7 +936,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildParameterList (
 
       else {
 
-       ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+       ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
        Standard_NoSuchObject :: Raise ();
 
       }  // end else
@@ -1064,8 +1064,8 @@ void CPPJini_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   theArgList = CPPJini_BuildParameterList(aMeta,m->Params(),Standard_True);
   
   if (theArgList == CPPJini_ErrorArgument) {
-    WarningMsg << "CPPJini" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
-    WarningMsg << "CPPJini" << "Method : " << m->FullName() << " not exported." << endm;
+    WarningMsg() << "CPPJini" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
+    WarningMsg() << "CPPJini" << "Method : " << m->FullName() << " not exported." << endm;
     api->AddVariable(VJMethod,CPPJini_ErrorArgument->ToCString());
     return;
   }
@@ -1083,8 +1083,8 @@ void CPPJini_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     Handle(TCollection_HAsciiString) returnT = CPPJini_BuildType(aMeta,retType->TypeName());
     
     if (returnT == CPPJini_ErrorArgument) {
-      WarningMsg << "CPPJini" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
-      WarningMsg << "CPPJini" << "Method : " << m->FullName() << " not exported." << endm;
+      WarningMsg() << "CPPJini" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
+      WarningMsg() << "CPPJini" << "Method : " << m->FullName() << " not exported." << endm;
       api->AddVariable(VJMethod,CPPJini_ErrorArgument->ToCString());
       return;
     }
@@ -1169,7 +1169,7 @@ Handle(TCollection_HAsciiString) CPPJini_ConvertToJavaType(const Handle(MS_MetaS
 	aType = aMeta->GetType(parname);
       }
       else {
-	ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }
@@ -1558,7 +1558,7 @@ void CPPJini_ReturnBuilder (
 
    else {
 
-    ErrorMsg << "CPPJini" << "Type " << parname << " not defined..." << endm;
+    ErrorMsg() << "CPPJini" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject :: Raise ();
 
    }  // end else
@@ -1903,7 +1903,7 @@ void CPPJini_TypeExtract(const Handle(MS_MetaSchema)& aMeta,
              const Standard_CString Mode)
 {
 
-//  InfoMsg << "CPPJini" << "Extract " << aName->ToCString() << endm;
+//  InfoMsg() << "CPPJini" << "Extract " << aName->ToCString() << endm;
   Handle(MS_Type)              srcType;
   Handle(MS_Package)           srcPackage;
 
@@ -1916,7 +1916,7 @@ void CPPJini_TypeExtract(const Handle(MS_MetaSchema)& aMeta,
     srcPackage = aMeta->GetPackage(aName);
   }
   else {
-    ErrorMsg << "CPPJini" << aName->ToCString() << " not defined..." << endm;
+    ErrorMsg() << "CPPJini" << aName->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
   
@@ -2084,7 +2084,7 @@ void CPPJini_Extract (
 
   else {
 
-   ErrorMsg << "CPPJini" << "Unknown extraction mode:" << Mode << endm;
+   ErrorMsg() << "CPPJini" << "Unknown extraction mode:" << Mode << endm;
    Standard_NoSuchObject :: Raise ();
 
   }  // end else
@@ -2106,14 +2106,14 @@ void CPPJini_Extract (
         theMode == CPPJini_SEMICOMPLETE && type == CPPJini_COMPLETE
    ) {     
 
-    InfoMsg << "CPPJini" << "Skipping " << aTypeName
+    InfoMsg() << "CPPJini" << "Skipping " << aTypeName
             << " (already defined in " << cltName << ")" << endm;
 
     g_SkipMap.Bind ( aTypeName, cltName );
 #if 0
     if ( fDuplicate )
 
-     WarningMsg << "CPPJini"
+     WarningMsg() << "CPPJini"
                 << aTypeName
                 << " defined in more than one client declared in 'uses' statement"
                 << endm;
@@ -2132,7 +2132,7 @@ void CPPJini_Extract (
 
  } else {
 
-  ErrorMsg << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
+  ErrorMsg() << "CPPJini" << "Type " << aTypeName << " not defined..." << endm;
   Standard_NoSuchObject :: Raise ();
 
  }  // end else

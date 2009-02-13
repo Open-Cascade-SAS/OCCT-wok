@@ -295,7 +295,7 @@ void CPPJini_Package (
 
  } else {
 
-  ErrorMsg << "CPPJini" << "CPPJini_Package - the package is NULL..." << endm;
+  ErrorMsg() << "CPPJini" << "CPPJini_Package - the package is NULL..." << endm;
   Standard_NoSuchObject :: Raise ();
 
  }  // end else

@@ -445,7 +445,7 @@ void CPPJini_MPVClass (
 
  } else {
 
-  ErrorMsg << "CPPJini" << "CPPJini_TransientClass - the class is NULL..." << endm;
+  ErrorMsg() << "CPPJini" << "CPPJini_TransientClass - the class is NULL..." << endm;
   Standard_NoSuchObject :: Raise ();
 
  }  // end else
