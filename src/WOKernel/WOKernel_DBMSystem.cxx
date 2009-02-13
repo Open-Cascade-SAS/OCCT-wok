@@ -20,7 +20,7 @@ WOKernel_DBMSID WOKernel_DBMSystem::GetID(const Handle(TCollection_HAsciiString)
   if( !strcmp( astring->ToCString(), "OBJY"  ) )  return WOKernel_OBJY;
   if( !strcmp( astring->ToCString(), "OBJS"  ) )  return WOKernel_OBJS;
 
-  ErrorMsg << "WOKernel_DBMSystem::GetID" << "DBMSystem " << astring << " is unknown for WOK" << endm;
+  ErrorMsg() << "WOKernel_DBMSystem::GetID" << "DBMSystem " << astring << " is unknown for WOK" << endm;
   Standard_ProgramError::Raise("WOKernel_DBMSystem::GetID");
   return WOKernel_UnknownDBMS;
 }

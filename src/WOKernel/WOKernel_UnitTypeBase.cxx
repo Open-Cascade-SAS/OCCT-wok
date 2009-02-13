@@ -44,7 +44,7 @@ Standard_Boolean WOKernel_UnitTypeBase::LoadBase(const WOKUtils_Param& params)
 
   if(types.IsNull())
     {
-      ErrorMsg << "WOKernel_UnitTypeBase::LoadBase" 
+      ErrorMsg() << "WOKernel_UnitTypeBase::LoadBase" 
 	       << "Could not eval parameter %WOKEntity_UnitTypes : unit types cannot be loaded" << endm;
       return Standard_True;
     }
@@ -64,7 +64,7 @@ Standard_Boolean WOKernel_UnitTypeBase::LoadBase(const WOKUtils_Param& params)
 
       if(akey.IsNull())
 	{
-	  ErrorMsg << "WOKernel_UnitTypeBase::LoadBase" 
+	  ErrorMsg() << "WOKernel_UnitTypeBase::LoadBase" 
 	           << "Type " << atype << " with no key is ignored" << endm;
 	  status = Standard_True;
 	}

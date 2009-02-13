@@ -24,7 +24,7 @@ WOKernel_StationID WOKernel_Station::GetID(const Handle(TCollection_HAsciiString
   if( !strcmp( astring->ToCString(), "aix" ) )  return WOKernel_AIX;
   if( !strcmp( astring->ToCString(), "bsd" ) )  return WOKernel_BSD;
 
-  ErrorMsg << "WOKernel_Station::GetID" << "Station " << astring << " is unknown to WOK" << endm;
+  ErrorMsg() << "WOKernel_Station::GetID" << "Station " << astring << " is unknown to WOK" << endm;
   Standard_ProgramError::Raise("WOKernel_Station::GetID");
   return WOKernel_UnknownStation;
 }

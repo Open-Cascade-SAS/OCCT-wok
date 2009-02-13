@@ -86,7 +86,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_Parcel::GetUnitList()
 	  
 	  if(unit.IsNull() == Standard_True)
 	    {
-	      ErrorMsg << "WOKernel_Parcel::GetUnitList" 
+	      ErrorMsg() << "WOKernel_Parcel::GetUnitList" 
 		       << "Unknown type code (" << typecode << ") in " 
 		       << allcomps->Path()->Name() <<  " of " << Name() << endm;
 	      Standard_ProgramError::Raise("WOKernel_Parcel::GetUnitList");

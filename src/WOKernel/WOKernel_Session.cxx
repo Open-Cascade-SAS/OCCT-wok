@@ -139,7 +139,7 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
   // chargement de la table de parametres de la Session
   if(aroot.IsNull())
     {
-      ErrorMsg << "WOKernel_Session::Open" 
+      ErrorMsg() << "WOKernel_Session::Open" 
 	<< "No administration root directory" << endm;
       return;
     }
@@ -148,13 +148,13 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
       Handle(WOKUtils_Path) rootpath = new WOKUtils_Path(aroot);
       if(!rootpath->Exists())
 	{
-	  ErrorMsg << "WOKernel_Session::Open" 
+	  ErrorMsg() << "WOKernel_Session::Open" 
 	    << "Administration root directory (" << aroot << ") does not exists" << endm;
 	  return;
 	}
       if(!rootpath->IsDirectory())
 	{
-	  ErrorMsg << "WOKernel_Session::Open" 
+	  ErrorMsg() << "WOKernel_Session::Open" 
 	    << "Administration root directory (" << aroot << ") is not a directory" << endm;
 	  return;
 	}
@@ -165,7 +165,7 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
   // chargement de la librarie WOK
   if(woklib.IsNull())
     {
-      ErrorMsg << "WOKernel_Session::Open" << "No File search path" << endm;
+      ErrorMsg() << "WOKernel_Session::Open" << "No File search path" << endm;
       return;
     }
 
@@ -205,7 +205,7 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
       thestation = WOKernel_AIX;
       break;
     default:
-      ErrorMsg << "WOKernel_Session::Open" << "Unrecognized Type of host " << ahost.HostName().ToCString() << endm;
+      ErrorMsg() << "WOKernel_Session::Open" << "Unrecognized Type of host " << ahost.HostName().ToCString() << endm;
       Standard_Failure::Raise("WOKernel_Session::Open");
     }
 
@@ -221,7 +221,7 @@ void WOKernel_Session::Open(const Handle(TCollection_HAsciiString)& aroot, const
 
   if(afile.IsNull() == Standard_True)
     {
-      ErrorMsg << "WOKernel_Session::Open" << "Parameter %WOKSESSION_ATListFile not set" << endm;
+      ErrorMsg() << "WOKernel_Session::Open" << "Parameter %WOKSESSION_ATListFile not set" << endm;
       Standard_ProgramError::Raise("WOKernel_Session::Open");
     }
   
@@ -512,7 +512,7 @@ void WOKernel_Session::DumpFactoryList() const
   
   if(!astream)
     {
-      ErrorMsg << "WOKernel_Session::AddFactory" << "Could not open " << anatlist << endm;
+      ErrorMsg() << "WOKernel_Session::AddFactory" << "Could not open " << anatlist << endm;
       Standard_ProgramError::Raise("WOKernel_Session::AddFactory");
     }
   
@@ -533,7 +533,7 @@ void WOKernel_Session::AddFactory(const Handle(WOKernel_Factory)& afact)
 {
   if(Session()->IsKnownEntity(afact->FullName()))
     {
-      ErrorMsg << "WOKernel_Session::AddFactory" << "There is already an entity named " << afact->FullName() << endm;
+      ErrorMsg() << "WOKernel_Session::AddFactory" << "There is already an entity named " << afact->FullName() << endm;
       Standard_ProgramError::Raise("WOKernel_Session::AddFactory");
     }
 

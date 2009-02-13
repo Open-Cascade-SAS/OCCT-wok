@@ -42,7 +42,7 @@ WOKernel_File::WOKernel_File(const Handle(WOKernel_Entity)& anesting,
 {
   if(mytype->IsFileDependent())
     {
-      ErrorMsg << "WOKernel_File::WOKernel_File"
+      ErrorMsg() << "WOKernel_File::WOKernel_File"
 	       << "Tried to build a File with noname with a FileDependant Type (" << mytype->Name() << ")" << endm;
 
       Standard_ConstructionError::Raise("WOKernel_File::WOKernel_File");

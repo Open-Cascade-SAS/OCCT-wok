@@ -51,7 +51,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKernel_Workshop::BuildParameters(const H
   Standard_Boolean found = Standard_False;
   for (Standard_Integer i=1; (i<= someparams->Length()) && !found; i++) {
     if (!strcmp(someparams->Value(i).Name()->ToCString(),nameparam.ToCString())) {
-      InfoMsg << "WOKernel_Workshop::BuildParameters"
+      InfoMsg() << "WOKernel_Workshop::BuildParameters"
 	<< "Use configuration " << someparams->Value(i).Value() << endm;
       resparams->Append(someparams->Value(i));
       WOKUtils_ParamItem aparam("%ShopName",Name()->ToCString());
@@ -279,13 +279,13 @@ void WOKernel_Workshop::GetParcelsInUse()
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKernel_Workshop::GetParcelsInUse"
+		      ErrorMsg() << "WOKernel_Workshop::GetParcelsInUse"
 			       << "Name " << astr << " is not a parcel name" << endm;
 		    }
 		}
 	      else
 		{
-		  ErrorMsg << "WOKernel_Workshop::GetParcelsInUse"
+		  ErrorMsg() << "WOKernel_Workshop::GetParcelsInUse"
 			   << "Name " << astr << " is unknown" << endm;
 		}
 
@@ -407,7 +407,7 @@ void WOKernel_Workshop :: DumpWorkbenchList () const {
   
  if ( !astream ) {
 
-  ErrorMsg << "WOKernel_Workshop::AddWorkbench"
+  ErrorMsg() << "WOKernel_Workshop::AddWorkbench"
            << "Could not open "
            << wblistfile -> Path () -> Name ()
            << endm;
@@ -449,7 +449,7 @@ void WOKernel_Workshop::AddWorkbench(const Handle(WOKernel_Workbench)& aworkbenc
 {
   if(Session()->IsKnownEntity(aworkbench->FullName()))
     {
-      ErrorMsg << "WOKernel_Workshop::AddWorkbench" << "There is already a workbench called " <<  aworkbench->Name() << endm;
+      ErrorMsg() << "WOKernel_Workshop::AddWorkbench" << "There is already a workbench called " <<  aworkbench->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Workshop::AddWorkbench");
     }
   myworkbenches->Append(aworkbench->FullName());
@@ -493,7 +493,7 @@ void WOKernel_Workshop :: RemoveWorkbench (
 
  if (  !kids -> IsEmpty ()  )
 
-  WarningMsg << "WOKernel_Workshop :: RemoveWorkbench"
+  WarningMsg() << "WOKernel_Workshop :: RemoveWorkbench"
              << "workbench '" << aworkbench -> FullName ()
              << "' has ancestors ( "
              << kids << ")"

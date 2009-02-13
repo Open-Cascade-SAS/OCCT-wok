@@ -120,7 +120,7 @@ void WOKernel_Warehouse::AddParcel(const Handle(WOKernel_Parcel)& aparcel)
 {
   if(Session()->IsKnownEntity(aparcel)) 
     {
-      ErrorMsg << "WOKernel_Warehouse::AddParcel" << "There is already a parcel called " << aparcel->Name() << endm;
+      ErrorMsg() << "WOKernel_Warehouse::AddParcel" << "There is already a parcel called " << aparcel->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Warehouse::AddParcel");
     }
 
@@ -171,7 +171,7 @@ void WOKernel_Warehouse::DumpParcelList() const
   theparcellist->GetPath();
   Handle(WOKUtils_Path) theparcellistpath = theparcellist->Path();
   if (!theparcellistpath->IsWriteAble()) {
-    ErrorMsg << "WOKernel_Warehouse::DumpParcelList"
+    ErrorMsg() << "WOKernel_Warehouse::DumpParcelList"
       << "Enable to modify file " << theparcellistpath->Name() << endm;
     Standard_ProgramError::Raise("WOKernel_Warehouse::DumpParcelList");
   }
@@ -184,7 +184,7 @@ void WOKernel_Warehouse::DumpParcelList() const
       }
     }
     else {
-      ErrorMsg << "WOKernel_Parcel::DumpParcelList"
+      ErrorMsg() << "WOKernel_Parcel::DumpParcelList"
 	<< "Enable to access file " << theparcellistpath->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Warehouse::DumpParcelList");
     } 

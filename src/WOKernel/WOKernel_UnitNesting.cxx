@@ -73,14 +73,14 @@ Handle(WOKernel_DevUnit) WOKernel_UnitNesting::GetDevUnit(const Standard_Charact
 
   if(atype.IsNull())
     {
-      ErrorMsg << "WOKernel_UnitNesting::GetDevUnit"
+      ErrorMsg() << "WOKernel_UnitNesting::GetDevUnit"
 	       << "Could not find appropriate unit type for key : " << akey << endm;
       return result;
     }
   
   if(aname.IsNull())
     {
-      ErrorMsg << "WOKernel_UnitNesting::GetDevUnit"
+      ErrorMsg() << "WOKernel_UnitNesting::GetDevUnit"
 	       << "Invalid unit name (null)" << endm;
       return result;
     }
@@ -102,14 +102,14 @@ Handle(WOKernel_DevUnit) WOKernel_UnitNesting::GetDevUnit(const Handle(TCollecti
 
   if(thetype.IsNull())
     {
-      ErrorMsg << "WOKernel_UnitNesting::GetDevUnit"
+      ErrorMsg() << "WOKernel_UnitNesting::GetDevUnit"
 	       << "Could not find appropriate unit type for type : " << atype << endm;
       return result;
     }
   
   if(aname.IsNull())
     {
-      ErrorMsg << "WOKernel_UnitNesting::GetDevUnit"
+      ErrorMsg() << "WOKernel_UnitNesting::GetDevUnit"
 	       << "Invalid unit name (null)" << endm;
       return result;
     }
@@ -166,7 +166,7 @@ void WOKernel_UnitNesting::DumpUnitList() const
   
   if(!astream)
     {
-      ErrorMsg << "WOKernel_UnitNesting::AddUnit" << "Could not open " << afile->Path()->Name() << endm;
+      ErrorMsg() << "WOKernel_UnitNesting::AddUnit" << "Could not open " << afile->Path()->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Workshop::AddWorkbench");
     }
   
@@ -197,7 +197,7 @@ void WOKernel_UnitNesting::AddUnit(const Handle(WOKernel_DevUnit)& aunit)
 {
   if(Session()->IsKnownEntity(aunit)) 
     {
-      ErrorMsg << "WOKernel_UnitNesting::AddUnit" << "There is already a unit called " << aunit->Name() << endm;
+      ErrorMsg() << "WOKernel_UnitNesting::AddUnit" << "There is already a unit called " << aunit->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_UnitNesting::AddUnit");
     }
 

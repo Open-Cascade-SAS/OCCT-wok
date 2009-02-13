@@ -155,7 +155,7 @@ void WOKernel_Factory::DumpWorkshopList() const
 
   if(!astream)
     {
-      ErrorMsg << "WOKernel_Factory::AddWorkshop" << "Could not open " << afile->Path()->Name() << endm;
+      ErrorMsg() << "WOKernel_Factory::AddWorkshop" << "Could not open " << afile->Path()->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Factory::AddWorkshop");
     }
 
@@ -176,7 +176,7 @@ void WOKernel_Factory::AddWorkshop(const Handle(WOKernel_Workshop)& aworkshop)
 {
   if(Session()->IsKnownEntity(aworkshop->FullName()))
     {
-      ErrorMsg << "WOKernel_Factory::AddWorkshop" << "There is already an entity named " <<  aworkshop->Name() << endm;
+      ErrorMsg() << "WOKernel_Factory::AddWorkshop" << "There is already an entity named " <<  aworkshop->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_Factory::AddWorkshop");
     }
 

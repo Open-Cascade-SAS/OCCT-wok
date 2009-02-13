@@ -146,7 +146,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_Workbench::GetUnitList()
 
       if(unit.IsNull() == Standard_True)
 	{
-	  ErrorMsg << "WOKernel_UnitNesting::Open" << "Unknown type code (" << typecode << ") in UNITLIST of " << Name() << endm;
+	  ErrorMsg() << "WOKernel_UnitNesting::Open" << "Unknown type code (" << typecode << ") in UNITLIST of " << Name() << endm;
 	  Standard_ProgramError::Raise("WOKernel_UnitNesting::Open");
 	}
 

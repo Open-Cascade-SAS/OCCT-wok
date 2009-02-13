@@ -47,7 +47,7 @@ void WOKernel_FileTypeBase::Load(const WOKUtils_Param& params)
   
   if(astr.IsNull())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::Load"
+      ErrorMsg() << "WOKernel_FileTypeBase::Load"
 	<< "Could not evalutate parameter " << (Standard_CString) WOKENTITYFILELIST << endm;
       return;
     }
@@ -61,7 +61,7 @@ void WOKernel_FileTypeBase::Load(const WOKUtils_Param& params)
 	  
 	  if(mytypes.IsBound(thestr))
 	    {
-	      WarningMsg << "WOKernel_FileTypeBase::Load" 
+	      WarningMsg() << "WOKernel_FileTypeBase::Load" 
 			 << "Redefinition of type " << thestr << endm;
 	    }
 	  else
@@ -72,7 +72,7 @@ void WOKernel_FileTypeBase::Load(const WOKUtils_Param& params)
 	      
 	      if(!params.myapi->IsDefined(templname->ToCString()))
 		{
-		  ErrorMsg << "WOKernel_FileTypeBase::Load" 
+		  ErrorMsg() << "WOKernel_FileTypeBase::Load" 
 		           << "Listed type " << thestr << " is not defined (" << templname << ")" << endm;
 		}
 	      else
@@ -100,7 +100,7 @@ void WOKernel_FileTypeBase::Load(const WOKUtils_Param& params)
 	  
 	  if(mytypes.IsBound(thestr))
 	    {
-	      WarningMsg << "WOKernel_FileTypeBase::Load" 
+	      WarningMsg() << "WOKernel_FileTypeBase::Load" 
 			 << "Redefinition of type " << thestr << endm;
 	    }
 	  else
@@ -111,7 +111,7 @@ void WOKernel_FileTypeBase::Load(const WOKUtils_Param& params)
 	      
 	      if(!params.myapi->IsDefined(templname->ToCString()))
 		{
-		  ErrorMsg << "WOKernel_FileTypeBase::Load" 
+		  ErrorMsg() << "WOKernel_FileTypeBase::Load" 
 		           << "Listed type " << thestr << " is not defined (" << templname << ")" << endm;
 		}
 	      else
@@ -170,7 +170,7 @@ Handle(WOKernel_FileType) WOKernel_FileTypeBase::Type(const Handle(TCollection_H
     result = mytypes.Find(atype);
   else
     {
-      ErrorMsg << "WOKernel_FileTypeBase::Type" 
+      ErrorMsg() << "WOKernel_FileTypeBase::Type" 
 	       << "Attempt to get inexistent type : " << atype << endm;
     }
   return result;
@@ -191,7 +191,7 @@ Handle(WOKernel_FileType) WOKernel_FileTypeBase::Type(const Standard_CString aty
     result = mytypes.Find(name);
   else
     {
-      ErrorMsg << "WOKernel_FileTypeBase::Type" 
+      ErrorMsg() << "WOKernel_FileTypeBase::Type" 
 	       << "Attempt to get inexistent type : " << atype << endm;
     }
   return result;
@@ -500,7 +500,7 @@ void WOKernel_FileTypeBase::SetNeededArguments(const Handle(WOKernel_Entity)& th
 	      value = thenesting->Params().Eval(astr.ToCString(), Standard_False);
 	      if(value.IsNull())
 		{
-		  ErrorMsg << "WOKernel_FileTypeBase::SetNeededArguments"
+		  ErrorMsg() << "WOKernel_FileTypeBase::SetNeededArguments"
 		    << "Needed parameter : " << astr.ToCString() << " not setted" << endm;
 		}
 	      else
@@ -559,7 +559,7 @@ void WOKernel_FileTypeBase::SetNeededArguments(const Handle(WOKernel_Entity)& th
 	      value = theentity->Params().Eval(astr.ToCString(), Standard_False);
 	      if(value.IsNull())
 		{
-		  ErrorMsg << "WOKernel_FileTypeBase::SetNeededArguments"
+		  ErrorMsg() << "WOKernel_FileTypeBase::SetNeededArguments"
 		    << "Needed parameter : " << astr.ToCString() << " not setted" << endm;
 		}
 	      else
@@ -634,14 +634,14 @@ Handle(TColStd_HSequenceOfHAsciiString)
 
   if(!dbmss->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid DBMS systems can't be empty." << endm;
       return result;
     }
   
   if(!stations->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid Stations can't be empty." << endm;
       return result;
     }
@@ -844,14 +844,14 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_FileTypeBase::GetDirectories(co
 
   if(!dbmss->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid DBMS systems can't be empty." << endm;
       return result;
     }
   
   if(!stations->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid Stations can't be empty." << endm;
       return result;
     }
@@ -1071,14 +1071,14 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_FileTypeBase::GetFiles(const Ha
 
   if(!dbmss->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid DBMS systems can't be empty." << endm;
       return result;
     }
   
   if(!stations->Length())
     {
-      ErrorMsg << "WOKernel_FileTypeBase::GetDirectories" 
+      ErrorMsg() << "WOKernel_FileTypeBase::GetDirectories" 
 	       << "Valid Stations can't be empty." << endm;
       return result;
     }

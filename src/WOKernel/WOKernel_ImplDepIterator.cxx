@@ -52,7 +52,7 @@ void WOKernel_ImplDepIterator::GetSuppliers()
     } 
 
   if (mySuppliers.IsNull()) {
-    ErrorMsg << "WOKernel_ImplDepIterator::GetSuppliers" << "Unable to get suppliers for unit " << myCurrentUd->ToCString() << endm;
+    ErrorMsg() << "WOKernel_ImplDepIterator::GetSuppliers" << "Unable to get suppliers for unit " << myCurrentUd->ToCString() << endm;
     myMore = Standard_False;
   }
   else if(!mySuppliers->Length()) {

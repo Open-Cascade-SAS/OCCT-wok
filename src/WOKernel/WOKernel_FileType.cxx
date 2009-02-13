@@ -96,7 +96,7 @@ Handle( TCollection_HAsciiString )
 
   } else {
 
-   ErrorMsg << "WOKernel_FileType::ComputePath"
+   ErrorMsg() << "WOKernel_FileType::ComputePath"
             << "Needed argument "
             << name
             << " for type "
@@ -116,7 +116,7 @@ Handle( TCollection_HAsciiString )
 
  if (  resseq.IsNull ()  )
 
-  ErrorMsg << "WOKernel_FileType::ComputePath"
+  ErrorMsg() << "WOKernel_FileType::ComputePath"
            << "Type "
            << Name ()
            << " could not be evaluated"
@@ -126,7 +126,7 @@ Handle( TCollection_HAsciiString )
 
   if (  resseq -> Length () != 1  )
 
-   WarningMsg << "WOKernel_FileType::ComputePath"
+   WarningMsg() << "WOKernel_FileType::ComputePath"
               << "Type "
               << Name ()
               << " evaluates to more than one line : ignoring others"

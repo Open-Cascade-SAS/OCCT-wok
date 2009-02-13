@@ -133,7 +133,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
   if(mymap.IsBound(alocatorname)) 
     {
       WOK_TRACE {
-	VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+	VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 				  << "Found in cache " << mymap.Find(alocatorname)->UserPathName() << endm;
       }
       return mymap.Find(alocatorname);
@@ -184,7 +184,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
   Standard_Boolean fLibrary = atype -> IsSameString ( libType ) && g_fForceLib;
 //<--- EUG4JR
   WOK_TRACE {
-    VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+    VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 			      << "Searching for " << locatorname << endm;
   }
   
@@ -192,7 +192,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
   if(mymap.IsBound(locatorname)) 
     {
       WOK_TRACE {
-	VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+	VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 				  << "Found in cache " << mymap.Find(locatorname)->UserPathName() << endm;
       }
       return mymap.Find(locatorname);
@@ -204,7 +204,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
     {
       
       WOK_TRACE {
-	VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+	VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 				  << "Looking in : " << myvisibility->Value(i) << endm;
       }
 
@@ -219,7 +219,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
 	  if(aunit.IsNull() == Standard_False)
 	    {
 	      WOK_TRACE {
-		VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+		VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 					  << aunitname << " is present" << endm;
 	      }
 
@@ -236,7 +236,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
 #endif
 			{
 			  WOK_TRACE {
-			    VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate"
+			    VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate"
 						      << "Found " << locatorname << " at " << aunit->UserPathName() << endm;
 			  }
 			  afile = new WOKernel_File(aname, aunit, aunit->FileTypeBase()->Type(atype));
@@ -248,7 +248,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
 		}
 	      else
 		{
-		  WarningMsg << "WOKernel_Locator::Locate" 
+		  WarningMsg() << "WOKernel_Locator::Locate" 
 			     << "Attempt to locate inexistent file type " << atype << " in " << aunit->UserPathName() << endm;
 		}
 	    }
@@ -256,7 +256,7 @@ const Handle(WOKernel_File)& WOKernel_Locator::Locate(const Handle(TCollection_H
       else
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate"
+	    VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate"
 				      << aunitname << " is NOT present" << endm;
 	  }
 	}
@@ -278,7 +278,7 @@ Handle(WOKernel_DevUnit) WOKernel_Locator::LocateDevUnit(const Handle(TCollectio
     {
       
       WOK_TRACE {
-	VerboseMsg("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
+	VerboseMsg()("WOK_LOCATOR") << "WOKernel_Locator::Locate" 
 				  << "Looking in : " << myvisibility->Value(i) << endm;
       }
       

@@ -216,7 +216,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKernel_DevUnit::BuildParameters(const Ha
 
   if(anesting.IsNull())
     {
-      ErrorMsg << "WOKernel_DevUnit::Build" 
+      ErrorMsg() << "WOKernel_DevUnit::Build" 
 	       << "Nesting : " << Nesting() << " is an invalid Nesting for a DevUnit" << endm;
       return someparams;
     }
@@ -265,7 +265,7 @@ void WOKernel_DevUnit::Destroy()
       if(afile->Path()->Exists())
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_DESTROY") << "WOKernel_DevUnit::Destroy" 
+	    VerboseMsg()("WOK_DESTROY") << "WOKernel_DevUnit::Destroy" 
 				      << "Removing file : " << afile->Path()->Name() << endm;
 	  }
 	  afile->Path()->RemoveFile();
@@ -315,7 +315,7 @@ void WOKernel_DevUnit::Open()
 		
 		if(aunit.IsNull() == Standard_True)
 		  {
-		    ErrorMsg << "WOKernel_DevUnit::Open" 
+		    ErrorMsg() << "WOKernel_DevUnit::Open" 
 		      << "Wrong Type for Entity " 
 			<< Name() << "found in workbench " 
 			  << afather->Name() << endm;
@@ -450,7 +450,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ReadSingleFileList(con
 
       if(!astream)
 	{
-	  ErrorMsg << "WOKernel_DevUnit::ReadSingleFileList" << "Could not open " << afile->Path()->Name() << endm;
+	  ErrorMsg() << "WOKernel_DevUnit::ReadSingleFileList" << "Could not open " << afile->Path()->Name() << endm;
 	  Standard_ProgramError::Raise("WOKernel_DevUnit::ReadSingleFileList");
 	}
       
@@ -480,7 +480,7 @@ void WOKernel_DevUnit::WriteSingleFileList(const Handle(WOKernel_File)& afile, c
   
   if(!astream)
     {
-      ErrorMsg << "WOKernel_DevUnit::WriteSingleFileList" << "Could not open " << afile->Path()->Name() << endm;
+      ErrorMsg() << "WOKernel_DevUnit::WriteSingleFileList" << "Could not open " << afile->Path()->Name() << endm;
       Standard_ProgramError::Raise("WOKernel_DevUnit::WriteSingleFileList");
     }
   
@@ -751,7 +751,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ReadImplDepFile(const 
       
       if(aunit.IsNull()) 
 	{
-	  WarningMsg << "WOKernel_DevUnit::ReadImplDepFile" 
+	  WarningMsg() << "WOKernel_DevUnit::ReadImplDepFile" 
 		     << "Wrong or not visible entry " << astr << " in implementation dep of " << Name() << endm;
 	}
       else
@@ -808,15 +808,15 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
 	  Standard_Boolean mustExist = SearchInFileList(agraph->Locator(),impldepfilename);
 	  if (mustExist)
 	    {
-	      ErrorMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      ErrorMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		       << "Implementation Dependences not found for " << Name() << endm;
-	      ErrorMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      ErrorMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		       << "Perhaps " << Name() << " is not compiled on this platform" << endm;
 	      return NULLRESULT;
 	    }
 	  else
 	    {
-	      WarningMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      WarningMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		         << "Could not determine Implementation Dependences for " << Name() << endm;
 	      agraph->Add(Name(), new TColStd_HSequenceOfHAsciiString);
 	    }
@@ -856,7 +856,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
 
 	      if(paramval.IsNull())
 		{
-		  WarningMsg << "WOKernel_DevUnit::ImplementationDepList" 
+		  WarningMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 			   << "Could not find DYNAMICPK definition for " << paramname 
 			   << " referenced in " << intern->Path()->Name() << endm;
 		  
@@ -867,7 +867,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
 		  
 		  if(unit.IsNull())
 		    {
-		      WarningMsg << "WOKernel_DevUnit::ImplementationDepList" 
+		      WarningMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 				 << "Could not find unit " << paramval 
 				 << " referenced in " << intern->Path()->Name() << endm;
 		    }
@@ -906,7 +906,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
       impldepfilename = Params().Eval("%FILENAME_IMPLDEP");
       
       if(impldepfilename.IsNull()) {
-	ErrorMsg << "WOKernel_DevUnit::ImplementationDep" << "Could not eval parameter : FILENAME_IMPLDEP" << endm;
+	ErrorMsg() << "WOKernel_DevUnit::ImplementationDep" << "Could not eval parameter : FILENAME_IMPLDEP" << endm;
 	return result;
       }
 
@@ -924,15 +924,15 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
 	  Standard_Boolean mustExist = SearchInFileList(agraph->Locator(),filename);
 	  if (mustExist)
 	    {
-	      ErrorMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      ErrorMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		       << "Implementation Dependences not found for " << aname << endm;
-	      ErrorMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      ErrorMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		       << "Perhaps " << aname << " is not compiled on this platform" << endm;
 	      return result;
 	    }
 	  else
 	    {
-	      WarningMsg << "WOKernel_DevUnit::ImplementationDepList" 
+	      WarningMsg() << "WOKernel_DevUnit::ImplementationDepList" 
 		         << "Could not determine Implementation Dependences for " << aname << endm;
 	      result = new TColStd_HSequenceOfHAsciiString;
 	    }
@@ -954,7 +954,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDepList(
 		
 		if(aunit.IsNull())
 		  {
-		    WarningMsg << "WOKernel_Executable::ImplementationDep" 
+		    WarningMsg() << "WOKernel_Executable::ImplementationDep" 
 			       << "Wrong or not visible entry " << astr << " in implementation dep of " << Name() << endm;
 		    depError = Standard_True;
 		  }
@@ -1009,15 +1009,15 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
       {      
 	if(algo.NbVertices() > 1)
 	  {
-	    ErrorMsg << "WOKernel_DevUnit::ImplementationDep"
+	    ErrorMsg() << "WOKernel_DevUnit::ImplementationDep"
 	             << "Cyclic dependency detected between: ";
 	    
 	    for(i=1; i<= algo.NbVertices(); i++)
 	      {
-		ErrorMsg << algo.Value(i) << " ";
+		ErrorMsg() << algo.Value(i) << " ";
 	      }
 	    
-	    ErrorMsg << endm;
+	    ErrorMsg() << endm;
 	    
 	    IsCyclic = Standard_True;
 	  }
@@ -1040,7 +1040,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
       Standard_SStream astream;
       astream << E << ends;
 
-      ErrorMsg << "WOKernel_DevUnit::ImplementationDep" << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << "WOKernel_DevUnit::ImplementationDep" << "Exception was raised : " << GetSString(astream) << endm;
       return NULLRESULT ;
     }
   return NULLRESULT;
@@ -1111,15 +1111,15 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
       {      
 	if(algo.NbVertices() > 1)
 	  {
-	    ErrorMsg << "WOKernel_DevUnit::ImplClients"
+	    ErrorMsg() << "WOKernel_DevUnit::ImplClients"
 	             << "Cyclic dependency detected between: ";
 	    
 	    for(i=1; i<= algo.NbVertices(); i++)
 	      {
-		ErrorMsg << algo.Value(i) << " ";
+		ErrorMsg() << algo.Value(i) << " ";
 	      }
 	    
-	    ErrorMsg << endm;
+	    ErrorMsg() << endm;
 	    
 	    IsCyclic = Standard_True;
 	  }
@@ -1142,7 +1142,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
       Standard_SStream astream;
       astream << E << ends;
 
-      ErrorMsg << "WOKernel_DevUnit::ImplClients" << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << "WOKernel_DevUnit::ImplClients" << "Exception was raised : " << GetSString(astream) << endm;
       return NULLRESULT ;
     }
    return NULLRESULT ;

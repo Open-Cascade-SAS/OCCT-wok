@@ -77,14 +77,14 @@ void WOKernel_Entity::GetParams()
 	  Handle(TCollection_HAsciiString) dbs = entity->EvalParameter((Standard_CString) DBMSYSTEMS_SUFFIX,Standard_False);
 
 	 if(sts.IsNull()) {
-		  ErrorMsg << "WOKernel_Entity::GetParams"
+		  ErrorMsg() << "WOKernel_Entity::GetParams"
 				   << "Parameter " << ParameterName((Standard_CString) STATIONS_SUFFIX) << " is not setted using current station : " << WOKernel_Station::GetName(Session()->Station()) << endm;
 		  sts = new TCollection_HAsciiString(WOKernel_Station::GetName(Session()->Station()));
 	  }
 	  mystations = WOKernel_Station::GetHSeqOfStation(sts);
 
 	  if(dbs.IsNull()) {
-		  ErrorMsg << "WOKernel_Entity::GetParams"
+		  ErrorMsg() << "WOKernel_Entity::GetParams"
 				   << "Parameter " << ParameterName((Standard_CString) DBMSYSTEMS_SUFFIX) << " is not setted using current dbmsystem : " << WOKernel_DBMSystem::GetName(Session()->DBMSystem()) << endm;
 		  dbs = new TCollection_HAsciiString(WOKernel_DBMSystem::GetName(Session()->DBMSystem()));
 	  }
@@ -239,7 +239,7 @@ Handle(TCollection_HAsciiString) WOKernel_Entity::EvalParameter(const Standard_C
 
   if(result.IsNull() && isnecessary ) 
     {
-      ErrorMsg << "WOKernel_Entity::EvalParameter" 
+      ErrorMsg() << "WOKernel_Entity::EvalParameter" 
 	       << "Parameter " << aparamname << " could not be evaluated" << endm;
       Standard_ProgramError::Raise("WOKernel_Entity::EvalParameter");
     }
@@ -271,7 +271,7 @@ Handle(TCollection_HAsciiString) WOKernel_Entity::EvalDefaultParameterValue(cons
   
   if(evaldepth > 20 )
     {
-      ErrorMsg << "WOKernel_Entity::EvalDefaultParameterValue" 
+      ErrorMsg() << "WOKernel_Entity::EvalDefaultParameterValue" 
 	       << "Too many levels in DEFAULT parameter evaluation" << endm;
       return result;
     }
@@ -319,7 +319,7 @@ Handle(TCollection_HAsciiString) WOKernel_Entity::EvalDefaultParameterValue(cons
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKernel_Entity::EvalDefaultParameterValue" 
+		      ErrorMsg() << "WOKernel_Entity::EvalDefaultParameterValue" 
 			       << "Could not eval default value for argument : " <<  argseq->Value(i) << endm;
 		      return result;
 		    }
@@ -334,14 +334,14 @@ Handle(TCollection_HAsciiString) WOKernel_Entity::EvalDefaultParameterValue(cons
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKernel_Entity::EvalDefaultParameterValue" 
+		      ErrorMsg() << "WOKernel_Entity::EvalDefaultParameterValue" 
 			       << "Could not eval default value for argument : " <<  argseq->Value(i) << endm;
 		      return result;
 		    }
 		}
 	      else
 		{
-		  ErrorMsg << "WOKernel_Entity::EvalDefaultParameterValue" 
+		  ErrorMsg() << "WOKernel_Entity::EvalDefaultParameterValue" 
 			   << "Default value Argument not set : " << argseq->Value(i) << endm;
 		  return result;
 		}
@@ -408,7 +408,7 @@ void WOKernel_Entity::DumpBuildParameters(const Handle(WOKUtils_HSequenceOfParam
 
   if(deftype->IsFileDependent())
     {
-      WarningMsg << "WOKernel_Entity::DumpBuildParameters"
+      WarningMsg() << "WOKernel_Entity::DumpBuildParameters"
 		 << "Incorrect DefinitionFile definition for " << UserPathName() << " : No file created" << endm;
       return;
     }
@@ -533,14 +533,14 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
   Handle(WOKernel_FileTypeBase) abase;
 
   if (!IsValidName()) {
-    ErrorMsg << "WOKernel_Entity::Build" 
+    ErrorMsg() << "WOKernel_Entity::Build" 
       << "Invalid Name for entity : " << Name() << endm;
     return;
   }
 
   if(Session()->IsKnownEntity(FullName()))
     {
-      ErrorMsg << "WOKernel_Entity::Build" 
+      ErrorMsg() << "WOKernel_Entity::Build" 
 	       << "An Entity with name " << UserPathName() << " is already defined" << endm;
       return;
     }
@@ -578,7 +578,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 	  buildsh->ClearOutput();
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_CREATE") << "WOKernel_Entity::Build" 
+	    VerboseMsg()("WOK_CREATE") << "WOKernel_Entity::Build" 
 				     << "Launching before command : " << cmd << endm;
 	  }
 	  
@@ -586,7 +586,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 
 	  if(buildsh->Status())
 	    {
-	      ErrorMsg << "WOKernel_Entity::Build" 
+	      ErrorMsg() << "WOKernel_Entity::Build" 
 		       << "Errors occured in BeforeBuild :" << endm;
 
 	      Handle(TColStd_HSequenceOfHAsciiString) aseq = buildsh->Errors();
@@ -594,7 +594,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 
 	      for(i=1; i<=aseq->Length(); i++)
 		{
-		  ErrorMsg << "WOKernel_Entity::Build" << aseq->Value(i) << endm;
+		  ErrorMsg() << "WOKernel_Entity::Build" << aseq->Value(i) << endm;
 		}
 	    }
 	}
@@ -607,13 +607,13 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
   for(i=1; i<=dirs->Length(); i++)
     {
       WOK_TRACE {
-	VerboseMsg("WOK_CREATE") << "WOKernel_Entity::Build" 
+	VerboseMsg()("WOK_CREATE") << "WOKernel_Entity::Build" 
 				 << "Creating directory : " << dirs->Value(i) << endm;
       }
 
       apath = new WOKUtils_Path(dirs->Value(i));
       if (!apath->CreateDirectory(Standard_True)) {
-	ErrorMsg << "WOKernel_Entity::Build" 
+	ErrorMsg() << "WOKernel_Entity::Build" 
 	  << "Enable to create directory " << dirs->Value(i) << endm;
       }
     }
@@ -623,7 +623,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
   for(i=1; i<=files->Length(); i++)
     {
       WOK_TRACE {
-	VerboseMsg("WOK_CREATE") << "WOKernel_Entity::Build" 
+	VerboseMsg()("WOK_CREATE") << "WOKernel_Entity::Build" 
 				 << "Creating file : " << files->Value(i) << endm;
       }
       
@@ -644,7 +644,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 	  buildsh->ClearOutput();
 
 	  WOK_TRACE {
-	    VerboseMsg("WOK_CREATE") << "WOKernel_Entity::Build" 
+	    VerboseMsg()("WOK_CREATE") << "WOKernel_Entity::Build" 
 				     << "Launching after command : " << cmd << endm;
 	  }
 	  
@@ -652,7 +652,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 	  
 	  if(buildsh->Status())
 	    {
-	      ErrorMsg << "WOKernel_Entity::Build" 
+	      ErrorMsg() << "WOKernel_Entity::Build" 
 		       << "Errors occured in AfterBuild :" << endm;
 
 	      Handle(TColStd_HSequenceOfHAsciiString) aseq = buildsh->Errors();
@@ -660,7 +660,7 @@ void WOKernel_Entity::Build(const Handle(WOKUtils_HSequenceOfParamItem)& somepar
 
 	      for(i=1; i<=aseq->Length(); i++)
 		{
-		  ErrorMsg << "WOKernel_Entity::Build" << aseq->Value(i) << endm;
+		  ErrorMsg() << "WOKernel_Entity::Build" << aseq->Value(i) << endm;
 		}
 	    }
 
@@ -688,7 +688,7 @@ void WOKernel_Entity::Destroy()
 
   if(!IsOpened())
     {
-      ErrorMsg << "WOKernel_Entity::Destroy" 
+      ErrorMsg() << "WOKernel_Entity::Destroy" 
 	       << UserPathName() << " has to be opened to be destroyed" << endm;
       return;
     }
@@ -712,7 +712,7 @@ void WOKernel_Entity::Destroy()
 	  buildsh->ClearOutput();
 
 	  WOK_TRACE {
-	    VerboseMsg("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
+	    VerboseMsg()("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
 				      << "Launching before command : " << cmd << endm;
 	  }
 
@@ -720,7 +720,7 @@ void WOKernel_Entity::Destroy()
 
 	  if(buildsh->Status())
 	    {
-	      ErrorMsg << "WOKernel_Entity::Destroy" 
+	      ErrorMsg() << "WOKernel_Entity::Destroy" 
 		       << "Errors occured in BeforeDestroy :" << endm;
 
 	      Handle(TColStd_HSequenceOfHAsciiString) aseq = buildsh->Errors();
@@ -728,7 +728,7 @@ void WOKernel_Entity::Destroy()
 
 	      for(i=1; i<=aseq->Length(); i++)
 		{
-		  ErrorMsg << "WOKernel_Entity::Destroy" << aseq->Value(i) << endm;
+		  ErrorMsg() << "WOKernel_Entity::Destroy" << aseq->Value(i) << endm;
 		}
 	    }
 
@@ -742,7 +742,7 @@ void WOKernel_Entity::Destroy()
   for(i=1; i<=files->Length(); i++)
     {
       WOK_TRACE {
-	VerboseMsg("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
+	VerboseMsg()("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
 				  << "Destroying file : " << files->Value(i) << endm;
       }
       
@@ -757,7 +757,7 @@ void WOKernel_Entity::Destroy()
   for(i=dirs->Length(); i>=1; i--)
     {
       WOK_TRACE {
-	VerboseMsg("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
+	VerboseMsg()("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
 				  << "Destroying dir  : " << dirs->Value(i) << endm;
       }
 
@@ -774,13 +774,13 @@ void WOKernel_Entity::Destroy()
 	      
 	      if(apath->IsDirectory())
 		{
-		  WarningMsg << "WOKernel_Entity::Destroy" 
+		  WarningMsg() << "WOKernel_Entity::Destroy" 
 		    << "Removing dir  : " << apath->Name() << endm;
 		  apath->RemoveDirectory(Standard_False);
 		}
 	      else
 		{
-		  WarningMsg << "WOKernel_Entity::Destroy" 
+		  WarningMsg() << "WOKernel_Entity::Destroy" 
 		    << "Removing file  : " << apath->Name() << endm;
 		  apath->RemoveFile();
 		}
@@ -804,7 +804,7 @@ void WOKernel_Entity::Destroy()
 	  buildsh->ClearOutput();
 
 	  WOK_TRACE {
-	    VerboseMsg("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
+	    VerboseMsg()("WOK_DESTROY") << "WOKernel_Entity::Destroy" 
 				      << "Launching after command : " << cmd << endm;
 	  }
 	  
@@ -812,7 +812,7 @@ void WOKernel_Entity::Destroy()
 
 	  if(buildsh->Status())
 	    {
-	      ErrorMsg << "WOKernel_Entity::Destroy" 
+	      ErrorMsg() << "WOKernel_Entity::Destroy" 
 		       << "Errors occured in AfterDestroy :" << endm;
 
 	      Handle(TColStd_HSequenceOfHAsciiString) aseq = buildsh->Errors();
@@ -820,7 +820,7 @@ void WOKernel_Entity::Destroy()
 
 	      for(i=1; i<=aseq->Length(); i++)
 		{
-		  ErrorMsg << "WOKernel_Entity::Destroy" << aseq->Value(i) << endm;
+		  ErrorMsg() << "WOKernel_Entity::Destroy" << aseq->Value(i) << endm;
 		}
 	    }
 	}
