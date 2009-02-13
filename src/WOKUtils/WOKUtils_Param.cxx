@@ -460,39 +460,39 @@ Standard_Boolean WOKUtils_Param::LoadFile(const Handle(TCollection_HAsciiString)
     case EDL_NORMAL:
       return Standard_True;
     case EDL_SYNTAXERROR:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "EDL Syntax errors occured while loading file : " << afile << endm;
       break;
     case EDL_VARNOTFOUND:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "Variable not found while loading file : " << afile << endm;
       break;
     case EDL_TEMPMULTIPLEDEFINED:
     case EDL_TEMPLATENOTDEFINED:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "Template not found while loading file : " << afile << endm;
       break;
     case EDL_LIBRARYNOTFOUND:
     case EDL_LIBNOTOPEN:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "Library error while loading file : " << afile << endm;
       break;
     case EDL_FUNCTIONNOTFOUND:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "Function not found while loading file : " << afile << endm;
       break;
     case EDL_FILEOPENED:
     case EDL_FILENOTOPENED:
       if(filemaynotexist) return Standard_True;
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "File " << afile << " could not be opened" << endm;
       break;
     case EDL_TOOMANYINCLUDELEVEL:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "Too many include levels while loading file : " << afile << endm;
       break;
     case EDL_FILENOTFOUND:
-      ErrorMsg << "WOKUtils_Param::LoadParamClass"
+      ErrorMsg() << "WOKUtils_Param::LoadParamClass"
 	       << "File not found : " << afile << endm;
       break;
     }
@@ -508,7 +508,7 @@ Standard_Boolean WOKUtils_Param::LoadParamClass(const Standard_CString aclass) c
   if(!myapi->IsDefined(ClassLoadFlag(aclass)->ToCString()))
     {
       WOK_TRACE {
-	VerboseMsg("WOK_PARAM") << "WOKUtils_Param::LoadParamClass"
+	VerboseMsg()("WOK_PARAM") << "WOKUtils_Param::LoadParamClass"
 				<< "Loading class : " << aclass << endm;
       }
       return LoadFile(ClassFile(aclass));
@@ -531,7 +531,7 @@ Standard_Boolean WOKUtils_Param::LoadParamClass(const Standard_CString aclass, c
   if(!myapi->IsDefined(theflag->ToCString()))
     {
       WOK_TRACE {
-	VerboseMsg("WOK_PARAM") << "WOKUtils_Param::LoadParamClass"
+	VerboseMsg()("WOK_PARAM") << "WOKUtils_Param::LoadParamClass"
 				<< "Loading subclass : " << asub << "_" << aclass << endm;
       }
       Standard_CString tok = strchr(asub,'@');

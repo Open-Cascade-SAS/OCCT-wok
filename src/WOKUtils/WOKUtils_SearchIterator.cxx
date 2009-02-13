@@ -73,7 +73,7 @@ void WOKUtils_SearchIterator::Next()
 	  }
 	  break;
 	default:
-	  ErrorMsg << "WOKUtils_Param::Load" << "Invalid type for file : " << apath->Name() << endm;
+	  ErrorMsg() << "WOKUtils_Param::Load" << "Invalid type for file : " << apath->Name() << endm;
 	}
       myidx++;
     }

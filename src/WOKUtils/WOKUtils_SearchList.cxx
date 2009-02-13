@@ -87,7 +87,7 @@ Handle(WOKUtils_Path) WOKUtils_SearchList::SearchFile(const Handle(TCollection_H
 	  }
 	  break;
 	default:
-	  ErrorMsg << "WOKUtils_Param::Load" << "Invalid type for file : " << aname << endm;
+	  ErrorMsg() << "WOKUtils_Param::Load" << "Invalid type for file : " << aname << endm;
 	}
       
     }

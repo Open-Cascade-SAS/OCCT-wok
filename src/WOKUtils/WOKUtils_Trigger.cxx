@@ -55,7 +55,7 @@ WOKUtils_TriggerStatus DefaultHandler(WOKUtils_Trigger& atrigger)
 	case WOKTools_String:
 	  {
 	    Handle(WOKTools_StringValue) astrval = Handle(WOKTools_StringValue)::DownCast(avalue);
-	    InfoMsg << "DefaultHandler" << "Arg " << i << " is : " << astrval->Value() << endm;
+	    InfoMsg() << "DefaultHandler" << "Arg " << i << " is : " << astrval->Value() << endm;
 	  }
 	  break;
         default: break;
