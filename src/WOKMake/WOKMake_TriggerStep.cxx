@@ -190,9 +190,9 @@ void WOKMake_TriggerStep::Init()
 
   if(apath.IsNull())
     {
-      WarningMsg << "WOKMake_TriggerStep::Init" 
+      WarningMsg() << "WOKMake_TriggerStep::Init" 
 	<< "Could not find file associated with trigger step " << Name() << endm;
-      WarningMsg << "WOKMake_TriggerStep::Init" 
+      WarningMsg() << "WOKMake_TriggerStep::Init" 
 	<< "Nothing done" << endm;
     }
 

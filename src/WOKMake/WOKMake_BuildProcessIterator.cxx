@@ -124,7 +124,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 
   if(step.IsNull())
     {
-      ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" 
+      ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" 
 	       << "Invalid NULL step in iterator" << endm;
       mystatus = WOKMake_Failed;
       return mystatus;
@@ -140,7 +140,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 
 	  if(precstep.IsNull())
 	    {
-	      ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" 
+	      ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" 
 		       << "Could not find precedence step : " << precsteps->Value(i) << endm;
 	      mystatus = WOKMake_Failed;
 	      return mystatus;
@@ -150,7 +150,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	    {
 	    case WOKMake_Failed:
 	    case WOKMake_Incomplete:
-	      ErrorMsg   << "WOKMake_BuildProcessIterator::MakeStep" 
+	      ErrorMsg()   << "WOKMake_BuildProcessIterator::MakeStep" 
 			 << "Step " << step->Code() << " not done : almost " << precsteps->Value(i) << " failed" << endm;
 	      if(myprocessed.Contains(step->Unit()->Name())) myprocessed.Remove(step->Unit()->Name());
 	      step->SetStatus(WOKMake_Failed);
@@ -166,7 +166,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
       WOKTools_MsgStreamPtr astream = NULL;
       Handle(WOKernel_File) logfile;
 
-      WOKTools_Info theinfo = InfoMsg;
+      WOKTools_Info theinfo = InfoMsg();
 
       if(!mylogflag) 
 	{
@@ -192,10 +192,10 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 
 	  if(astream->good())
 	    {
-	      InfoMsg.LogToStream(astream);
-	      WarningMsg.LogToStream(astream);
-	      ErrorMsg.LogToStream(astream);
-	      VerboseMsg.LogToStream(astream);
+	      InfoMsg().LogToStream(astream);
+	      WarningMsg().LogToStream(astream);
+	      ErrorMsg().LogToStream(astream);
+	      VerboseMsg().LogToStream(astream);
 	    }
 	}
 
@@ -220,7 +220,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	if(E->IsKind(STANDARD_TYPE(OSD_Exception_CTRL_BREAK)))
 #endif
 	  {
-	    ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Process received interupt signal" << endm;
+	    ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Process received interupt signal" << endm;
 	    WOKUtils_ProcessManager::KillAll();
 	    mygrpidx =  myprocess->Groups().Extent()+1;
 	    
@@ -230,17 +230,17 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	    Standard_SStream astream;
 	     astream << E << ends;
 	    
-	    ErrorMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << GetSString(astream) << endm;
+	    ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << GetSString(astream) << endm;
 	  }	
       }
       
       
       if(mylogflag && astream) 
 	{
-	  InfoMsg.EndLogging();
-	  WarningMsg.EndLogging();
-	  ErrorMsg.EndLogging();
-	  VerboseMsg.EndLogging();
+	  InfoMsg().EndLogging();
+	  WarningMsg().EndLogging();
+	  ErrorMsg().EndLogging();
+	  VerboseMsg().EndLogging();
 	  astream->close();
 	  delete astream;
 	}
@@ -266,26 +266,26 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	case WOKMake_Incomplete:
 	  if(myprocessed.Contains(step->Unit()->Name())) myprocessed.Remove(step->Unit()->Name());
 	  theinfo << endm;
-	  WarningMsg << " is incomplete" << endm;
+	  WarningMsg() << " is incomplete" << endm;
 	  if(mylogflag)
-	    {WarningMsg   << "WOKMake_BuildProcessIterator::MakeStep" 
+	    {WarningMsg()   << "WOKMake_BuildProcessIterator::MakeStep" 
 	       << "Consult " << logfile->Path()->Name()->ToCString() << " for details" << endm;}
 	  return WOKMake_Incomplete;
 	  
 	case WOKMake_Failed:
 	  if(myprocessed.Contains(step->Unit()->Name())) myprocessed.Remove(step->Unit()->Name());
 	  theinfo << endm;
-	  ErrorMsg   << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " failed" << endm;
+	  ErrorMsg()   << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " failed" << endm;
 	  if(mylogflag)
-	    {ErrorMsg   << "WOKMake_BuildProcessIterator::MakeStep" 
+	    {ErrorMsg()   << "WOKMake_BuildProcessIterator::MakeStep" 
 	       << "Consult " << logfile->Path()->Name()->ToCString() << " for details" << endm;}
 	  return WOKMake_Failed;
 	  
 	case WOKMake_Unprocessed:
 	  theinfo << endm;
-	  WarningMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is still unprocessed" << endm;
+	  WarningMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is still unprocessed" << endm;
 	  if(mylogflag)
-	    {WarningMsg   << "WOKMake_BuildProcessIterator::MakeStep" 
+	    {WarningMsg()   << "WOKMake_BuildProcessIterator::MakeStep" 
 	       << "Consult " << logfile->Path()->Name()->ToCString() << " for details" << endm;}
 	  break;
 	}
@@ -298,24 +298,24 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
       switch(step->Status())
 	{
 	case WOKMake_Uptodate:
-	  InfoMsg    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is up to date" << endm;
+	  InfoMsg()    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is up to date" << endm;
 	  break;
 	case WOKMake_Success:
 	  if(!myprocessed.Contains(step->Unit()->Name())) myprocessed.Add(step->Unit()->Name());
-	  InfoMsg    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is successfull" << endm;
+	  InfoMsg()    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is successfull" << endm;
 	  break;
 	case WOKMake_Processed:
 	  if(!myprocessed.Contains(step->Unit()->Name())) myprocessed.Add(step->Unit()->Name());
-	  //InfoMsg    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is processed" << endm;
+	  //InfoMsg()    << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is processed" << endm;
 	  break;
 	case WOKMake_Incomplete:
 	  if(myprocessed.Contains(step->Unit()->Name())) myprocessed.Remove(step->Unit()->Name());
-	  WarningMsg << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is incomplete" << endm;
+	  WarningMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " is incomplete" << endm;
 	  return WOKMake_Incomplete;
 	  
 	case WOKMake_Failed:
 	  if(myprocessed.Contains(step->Unit()->Name())) myprocessed.Remove(step->Unit()->Name());
-	  ErrorMsg   << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " failed" << endm;
+	  ErrorMsg()   << "WOKMake_BuildProcessIterator::MakeStep" << "Step " << step->Code() << " failed" << endm;
 	  return WOKMake_Failed;
 	  
 	case WOKMake_Unprocessed:
@@ -391,7 +391,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::Terminate()
 
   WOKMake_DataMapIteratorOfDataMapOfHAsciiStringOfSequenceOfHAsciiString anit(myprocess->Units());
 
-  InfoMsg << "WOKMake_BuildProcessIterator::Terminate" 
+  InfoMsg() << "WOKMake_BuildProcessIterator::Terminate" 
           << "------------------ Process report ------------------" << endm;
 
   while(anit.More())
@@ -445,12 +445,12 @@ WOKMake_Status WOKMake_BuildProcessIterator::Terminate()
       switch(update)
 	{
 	case 0:
-	  //InfoMsg << "WOKMake_BuildProcessIterator::Terminate" 
+	  //InfoMsg() << "WOKMake_BuildProcessIterator::Terminate" 
 	  //	  << "Not done " << anit.Key() << endm;
 	  break;
 	case 1:
 	  {
-	    InfoMsg << "WOKMake_BuildProcessIterator::Terminate" 
+	    InfoMsg() << "WOKMake_BuildProcessIterator::Terminate" 
 		    << "Success  " << anit.Key() << endm;
 	    for(Standard_Integer i=1; i<=steps.Length(); i++) {
 	      const Handle(WOKMake_Step)& step = myprocess->Find(steps.Value(i));
@@ -495,7 +495,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::Terminate()
 		}
 	      }
 	      else {
-		ErrorMsg << "WOKMake_BuildProcessIterator::Terminate" 
+		ErrorMsg() << "WOKMake_BuildProcessIterator::Terminate" 
 		  << "Could not obtain step " << steps.Value(i) << endm;
 		return WOKMake_Failed;
 	      }
@@ -506,7 +506,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::Terminate()
 	case 2:
 	  {
 	    result = WOKMake_Failed;
-	    InfoMsg << "WOKMake_BuildProcessIterator::Terminate" 
+	    InfoMsg() << "WOKMake_BuildProcessIterator::Terminate" 
 		    << "Failed   " << anit.Key() << " (" << failedlist << ")"<< endm;
 	  }
 	}
@@ -520,7 +520,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::Terminate()
   
   myprocess->ClearUnits();
 
-  InfoMsg << "WOKMake_BuildProcessIterator::Terminate" 
+  InfoMsg() << "WOKMake_BuildProcessIterator::Terminate" 
           << "----------------------------------------------------" << endm;
 
   WOKUtils_ProcessManager::KillAll();
@@ -577,7 +577,7 @@ void WOKMake_BuildProcessIterator::ReorderCurrentGroup()
 	    
 	    Handle(WOKernel_File) impldepfile = astep->Unit()->ImplDepFile(theloc,astep->Unit()->Name());
 	    if (impldepfile.IsNull()) {
-	      ErrorMsg << "WOKMake_BuildProcessIterator::ReorderCurrentGroup" <<
+	      ErrorMsg() << "WOKMake_BuildProcessIterator::ReorderCurrentGroup" <<
 		"Unable to get ImplDep file for unit " << astep->Unit()->Name()->ToCString() << endm;
 	    }
 	    else {
@@ -597,7 +597,7 @@ void WOKMake_BuildProcessIterator::ReorderCurrentGroup()
 							      pkgstype, 
 							      PACKAGESname);
 	      if (filepack.IsNull()) {
-		ErrorMsg << "WOKMake_BuildProcessIterator::ReorderCurrentGroup" <<
+		ErrorMsg() << "WOKMake_BuildProcessIterator::ReorderCurrentGroup" <<
 		  "Unable to get PACKAGES file for unit " << astep->Unit()->Name()->ToCString() << endm;
 	      }
 	      else {
@@ -625,14 +625,14 @@ void WOKMake_BuildProcessIterator::ReorderCurrentGroup()
 	Handle(TColStd_HSequenceOfHAsciiString)  orderedtks = new TColStd_HSequenceOfHAsciiString ;
 	while(algo.More()) {      
 	  if(algo.NbVertices() > 1) {
-	    ErrorMsg << "WOKMake_BuildProcessIterator::ReorderCurrentGroup"
+	    ErrorMsg() << "WOKMake_BuildProcessIterator::ReorderCurrentGroup"
 	      << "Cyclic dependency detected between: ";
 	    
 	    for(i=1; i<= algo.NbVertices(); i++) {
-	      ErrorMsg << algo.Value(i) << " ";
+	      ErrorMsg() << algo.Value(i) << " ";
 	    }
 	    
-	    ErrorMsg << endm;
+	    ErrorMsg() << endm;
 	    
 	    IsCyclic = Standard_True;
 	  }

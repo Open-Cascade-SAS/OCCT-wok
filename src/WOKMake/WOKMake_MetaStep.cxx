@@ -129,7 +129,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
 
       if(thestep.IsNull())
 	{
-	  ErrorMsg << "WOKMake_MetaStep::GetUnderlyingSteps" 
+	  ErrorMsg() << "WOKMake_MetaStep::GetUnderlyingSteps" 
 		   << "Could not obtain step for code : " << Code() << " in unit " << Unit()->Name() << endm;
 	  SetFailed();
 	  return NULLRESULT;
@@ -150,7 +150,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
 	  
 	  if(precunit.IsNull())
 	    {
-	      ErrorMsg << "WOKMake_MetaStep::Execute" 
+	      ErrorMsg() << "WOKMake_MetaStep::Execute" 
 		       << "Specified unit (" << aunit << ") in input of step " << Code() 
 		       << " of " << Unit()->Name() << " could not be found" << endm;
 	      SetFailed();
@@ -170,7 +170,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKMake_MetaStep::GetUnderlyingSteps()
 	  
 	  if(precstep.IsNull())
 	    {
-	      ErrorMsg << "WOKMake_MetaStep::GetUnderlyingSteps" 
+	      ErrorMsg() << "WOKMake_MetaStep::GetUnderlyingSteps" 
 		       << "Could not obtain step for code : " << acode << " in unit " << precunit->Name() << endm;
 	      SetFailed();
 	      return NULLRESULT;
@@ -372,7 +372,7 @@ void WOKMake_MetaStep::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 
       if (thestep->IsToExecute()) 
 	{
-	  InfoMsg << "WOKMake_MetaStep::Execute"
+	  InfoMsg() << "WOKMake_MetaStep::Execute"
 	    << "========> " << thestep->SubCode() << endm;
 	}
 
@@ -383,24 +383,24 @@ void WOKMake_MetaStep::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 	  switch(thestep->Status())
 	    {
 	    case WOKMake_Uptodate:
-	      InfoMsg << "WOKMake_MetaStep::Execute"
+	      InfoMsg() << "WOKMake_MetaStep::Execute"
 		      << "========> " << thestep->SubCode() << " is uptodate" << endm;
 	      break;
 	    case WOKMake_Success:
-	      InfoMsg << "WOKMake_MetaStep::Execute"
+	      InfoMsg() << "WOKMake_MetaStep::Execute"
 		      << "========> " << thestep->SubCode() << " succeeded" << endm;
 	      break;
 	    case WOKMake_Incomplete:
-	      WarningMsg << "WOKMake_MetaStep::Execute"
+	      WarningMsg() << "WOKMake_MetaStep::Execute"
 		         << "========> " << thestep->SubCode() << " is incomplete" << endm;
 	      break;
 	    case WOKMake_Failed:
-	      ErrorMsg << "WOKMake_MetaStep::Execute"
+	      ErrorMsg() << "WOKMake_MetaStep::Execute"
 		       << "========> " << thestep->SubCode() << " failed" << endm;
 	      ok = Standard_False;
 	      break;
 	    case WOKMake_Unprocessed:
-	      WarningMsg << "WOKMake_MetaStep::Execute"
+	      WarningMsg() << "WOKMake_MetaStep::Execute"
 		         << "========> " << thestep->SubCode() << " is still unprocessed" << endm;
 	      ok=Standard_False;
 	      break;
@@ -425,7 +425,7 @@ void WOKMake_MetaStep::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 	  
 	  if(infile.IsNull())
 	    {
-	      WarningMsg << "WOKMake_MetaStep::Execute"
+	      WarningMsg() << "WOKMake_MetaStep::Execute"
 			 << "Ignoring precedence step dependence on " << precid << " (not in input list)" << endm;
 	    }
 	  else

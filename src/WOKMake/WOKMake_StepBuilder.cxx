@@ -78,7 +78,7 @@ WOKMake_DataMapOfHAsciiStringOfStepBuilder& WOKMake_StepBuilder::StepBuilders()
 void WOKMake_StepBuilder::Add() const
 {
   WOK_TRACE {
-    VerboseMsg("WOK_STEP") << "WOKMake_StepBuilder::Add" 
+    VerboseMsg()("WOK_STEP") << "WOKMake_StepBuilder::Add" 
 			   << "Adding " << myname << " in cache" << endm;
   }
   WOKMake_StepBuilder::StepBuilders().Bind(Name(), *this);
@@ -105,7 +105,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 
   if(name.IsNull() || aunit.IsNull() || acode.IsNull())
     {
-      ErrorMsg << "WOKMake_StepBuilder::BuildStep" 
+      ErrorMsg() << "WOKMake_StepBuilder::BuildStep" 
 	       << "Invalid Input to WOKMake_StepBuilder::BuildStep" << endm;
       Standard_ProgramError::Raise("Invalid Input to WOKMake_StepBuilder::BuildStep");
     }
@@ -114,7 +114,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 
   if(libs.IsNull())
     {
-      ErrorMsg << "WOKMake_Step::GetStep"
+      ErrorMsg() << "WOKMake_Step::GetStep"
 	       << "Could not eval parameter %WOKSteps_StepLibs" << endm;
       return result;
     }
@@ -122,7 +122,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
   if(knownsteps.IsBound(name))
     {
       WOK_TRACE {
-	VerboseMsg("WOK_STEP") << "WOKMake_StepBuilder::BuildStep" 
+	VerboseMsg()("WOK_STEP") << "WOKMake_StepBuilder::BuildStep" 
 			       << "Got " << name << " in cache at pos " << i << endm;
       }
       return (*knownsteps.Find(name).Builder())(aprocess,aunit,acode,checked,hidden);
@@ -160,7 +160,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 	  
 	  if(libpath.IsNull())
 	    {
-	      ErrorMsg << "WOKMake_Step::GetStep"
+	      ErrorMsg() << "WOKMake_Step::GetStep"
 		       << "Could not eval parameter " << libparam.ToCString() << endm;
 	      return result;
 	    }
@@ -173,7 +173,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 	      
 	      if(alibpath.IsNull())
 		{
-		  ErrorMsg << "WOKMake_Step::GetStep"
+		  ErrorMsg() << "WOKMake_Step::GetStep"
 			   << "Could not eval find library " << libpath << endm;
 		  return result;
 		}
@@ -184,7 +184,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 
 	  if(!ashlib.DlOpen(OSD_RTLD_LAZY))
 	    {
-	      ErrorMsg << "WOKMake_Step::GetStep"
+	      ErrorMsg() << "WOKMake_Step::GetStep"
 		       << "Could not open " << libpath << " : " << ashlib.DlError() << endm;
 	      return result;
 	    }
@@ -193,7 +193,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 
 	  if(ptr == NULL)
 	    {
-	      ErrorMsg << "WOKMake_Step::GetStep"
+	      ErrorMsg() << "WOKMake_Step::GetStep"
 		       << "Could not find " << key << " in " << libpath << endm;
 	      return result;
 	    }
@@ -201,7 +201,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 	  WOKMake_StepBuilder builder(name, ptr);
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_STEP") << "WOKMake_Step::GetStep"
+	    VerboseMsg()("WOK_STEP") << "WOKMake_Step::GetStep"
 				   << "Adding main : " << name->ToCString() << endm; 
 	  }
 
@@ -223,7 +223,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 
 		  if(ptr == NULL)
 		    {
-		      WarningMsg << "WOKMake_Step::GetStep"
+		      WarningMsg() << "WOKMake_Step::GetStep"
 			<< "Could not find declared " << otherkey << " in " << libpath << endm;
 		    }
 		  else 
@@ -231,7 +231,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 		      WOKMake_StepBuilder builder(astr, ptr);
 
 		      WOK_TRACE {
-			VerboseMsg("WOK_STEP") << "WOKMake_Step::GetStep"
+			VerboseMsg()("WOK_STEP") << "WOKMake_Step::GetStep"
 					       << "Adding : " << astr->ToCString() << endm;
 		      }
 		      builder.Add();
@@ -251,7 +251,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
   if(result.IsNull())
     {
       WOK_TRACE {
-	VerboseMsg("WOK_STEP") << "WOKMake_Step::GetStep"
+	VerboseMsg()("WOK_STEP") << "WOKMake_Step::GetStep"
 			       << key << " is a triggerred step" << endm;
       }
 
@@ -277,13 +277,13 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
   
   if(aunit.IsNull())
     {
-      ErrorMsg << "WOKMake_StepBuilder::BuildStep"
+      ErrorMsg() << "WOKMake_StepBuilder::BuildStep"
 	       << "Invalid Null Unit" << endm;
       return result;
     }
   if(acode.IsNull())
     {
-      ErrorMsg << "WOKMake_StepBuilder::BuildStep"
+      ErrorMsg() << "WOKMake_StepBuilder::BuildStep"
 	       << "Invalid Null Step code" << endm;
       return result;
     }
@@ -333,7 +333,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
 	  begin++;
 	  break;
 	default:
-	  ErrorMsg << "WOKMake_StepDescrExplorer" << "Bad WOKMake Step ctl Character in : " << key << endm;
+	  ErrorMsg() << "WOKMake_StepDescrExplorer" << "Bad WOKMake Step ctl Character in : " << key << endm;
 	  Standard_ProgramError::Raise("WOKMake_StepDescrExplorer");
 	}
     }
@@ -355,7 +355,7 @@ Handle(WOKMake_Step) WOKMake_StepBuilder::BuildStep(const Handle(WOKMake_BuildPr
       
       if(precend == 0)
 	{
-	  ErrorMsg << "WOKMake_StepBuilder::GetStep" << "Bad WOKMake Step format : " << key << endm;
+	  ErrorMsg() << "WOKMake_StepBuilder::GetStep" << "Bad WOKMake Step format : " << key << endm;
 	  Standard_ProgramError::Raise("WOKMake_StepBuilder::GetStep");
 	}
 

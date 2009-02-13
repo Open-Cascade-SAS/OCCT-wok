@@ -81,7 +81,7 @@ Standard_Boolean WOKMake_BuildProcess::ComputeSteps(const Handle(WOKernel_DevUni
 
   if(groups.IsNull())
     {
-      ErrorMsg << "WOKMake_BuildProcess::ComputeSteps" 
+      ErrorMsg() << "WOKMake_BuildProcess::ComputeSteps" 
 	       << "Could not eval %WOKSteps_Groups setting build process groups" << endm;
       return Standard_True;
     }
@@ -122,7 +122,7 @@ Standard_Boolean WOKMake_BuildProcess::ComputeSteps(const Handle(WOKernel_DevUni
 		}
 	      else 
 		{
-		  ErrorMsg << "WOKMake_BuildProcess::ComputeSteps" 
+		  ErrorMsg() << "WOKMake_BuildProcess::ComputeSteps" 
 		           << "Could not build step " << step << " for unit " << aunit->Name() << endm;
 		}
 	      j++;
@@ -131,7 +131,7 @@ Standard_Boolean WOKMake_BuildProcess::ComputeSteps(const Handle(WOKernel_DevUni
 	}
       else
 	{
-	  WarningMsg << "WOKMake_BuildProcess::ComputeSteps" 
+	  WarningMsg() << "WOKMake_BuildProcess::ComputeSteps" 
 	             << "Could not eval step group " << group << " (%WOKSteps_" << group << "Group" << ")" << endm;
 	}
 
@@ -265,7 +265,7 @@ Handle(WOKMake_Step) WOKMake_BuildProcess::GetStepFromID(const Handle(TCollectio
 	  
 	  if(result.IsNull())
 	    {
-	      ErrorMsg << "WOKMake_BuildProcess::GetStepFromID" 
+	      ErrorMsg() << "WOKMake_BuildProcess::GetStepFromID" 
 		<< "Cannot get step " << acode << " for unit " << aunit->Name() << " (type : " << aunit->Type() << ")" << endm;
 	      return result;
 	    }
@@ -273,7 +273,7 @@ Handle(WOKMake_Step) WOKMake_BuildProcess::GetStepFromID(const Handle(TCollectio
 	}
       else
 	{
-	  ErrorMsg << "WOKMake_BuildProcess::GetStepFromID" 
+	  ErrorMsg() << "WOKMake_BuildProcess::GetStepFromID" 
 		<< "Cannot locate dev unit : " << uname << endm;
 	  return result;
 	}
@@ -304,7 +304,7 @@ const Handle(WOKMake_Step)& WOKMake_BuildProcess::GetAndAddStep(const Handle(WOK
 
   if(myunits.IsBound(aunit->Name()) && asubcode.IsNull())
     {
-      WarningMsg << "WOKMake_BuildProcess::GetAndAddStep" 
+      WarningMsg() << "WOKMake_BuildProcess::GetAndAddStep" 
 	       << "Cannot get step (" << acode << ") for unit " << aunit->Name() << " (type : " << aunit->Type() << ")" << endm;
 //      return NULLRESULT;
     }
@@ -319,7 +319,7 @@ const Handle(WOKMake_Step)& WOKMake_BuildProcess::GetAndAddStep(const Handle(WOK
 	}
       else
 	{
-	  ErrorMsg << "WOKMake_BuildProcess::GetAndAddStep" 
+	  ErrorMsg() << "WOKMake_BuildProcess::GetAndAddStep" 
 	     << "Cannot get step " << acode << " for unit " << aunit->Name() << " (type : " << aunit->Type() << ")" << endm;
 	   return NULLRESULT;
 	}

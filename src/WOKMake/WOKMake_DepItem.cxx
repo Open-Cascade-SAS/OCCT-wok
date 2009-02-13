@@ -113,7 +113,7 @@ void WOKMake_DepItem::ReadLine(Standard_IStream& astream, Handle(WOKMake_DepItem
 	}
       else
 	{
-	  ErrorMsg << "WOKMake_DepItem::ReadLine" 
+	  ErrorMsg() << "WOKMake_DepItem::ReadLine" 
 		   << "Could not read invalid first line" << endm;
 	  anitem.Nullify();
 	  return;
@@ -218,7 +218,7 @@ Standard_Integer WOKMake_DepItem::WriteFile(const Handle(WOKUtils_Path)& apath,
   
   if(!astream)
     {
-      ErrorMsg << "WOKMake_DepItem::WriteFile" << "Could not open " << apath->Name() << endm;
+      ErrorMsg() << "WOKMake_DepItem::WriteFile" << "Could not open " << apath->Name() << endm;
       Standard_ProgramError::Raise("");
     }
     

@@ -154,15 +154,15 @@ void WOKMake_Step::GetInputFromStep(const Handle(WOKMake_Step)& astep)
   Handle(WOKMake_HSequenceOfOutputFile) out = astep->OutputFileList();
 
   WOK_TRACE {
-    VerboseMsg("WOK_MAKE") << "WOKMake_Step::GetInputFromStep" 
+    VerboseMsg()("WOK_MAKE") << "WOKMake_Step::GetInputFromStep" 
 			   << "Compute Input Flow from step: " << astep->Unit()->Name() << ":" << astep->Code() << endm;
   }
 
   if(out.IsNull())
     {
-      ErrorMsg << "WOKMake_Step::GetInputFromStep"
+      ErrorMsg() << "WOKMake_Step::GetInputFromStep"
 	       << "Output file list of step (" << astep->Code() << ") is not available" << endm;
-      ErrorMsg << "WOKMake_Step::GetInputFromStep"
+      ErrorMsg() << "WOKMake_Step::GetInputFromStep"
 	       << "Please perform this step before using step : " << Code() << endm;
       SetFailed();
       return;
@@ -189,7 +189,7 @@ void WOKMake_Step::GetInputFromStep(const Handle(WOKMake_Step)& astep)
 			  
 			  if(aunit.IsNull())
 			    {
-			      WarningMsg << "WOKMake_Step::GetInputFromStep"
+			      WarningMsg() << "WOKMake_Step::GetInputFromStep"
 					 << "Skipping msentity " << name << " : unit " 
 					 << outfile->ID()->Token(":", 1) << " not found" << endm;
 			    }
@@ -210,7 +210,7 @@ void WOKMake_Step::GetInputFromStep(const Handle(WOKMake_Step)& astep)
 		    }
 		  else
 		    {
-		      WarningMsg << "WOKMake_Step::GetInputFromStep"
+		      WarningMsg() << "WOKMake_Step::GetInputFromStep"
 				 << "Skipping file " << outfile->LastPath()->Name() << " : not found" << endm;
 		    }
 		}
@@ -270,7 +270,7 @@ void WOKMake_Step::GetInputFlow()
   Handle(TColStd_HSequenceOfHAsciiString) steps = PrecedenceSteps();
 
   WOK_TRACE {
-    VerboseMsg("WOK_MAKE") << "WOKMake_Step::GetInputFlow" 
+    VerboseMsg()("WOK_MAKE") << "WOKMake_Step::GetInputFlow" 
 			   << "Computing Input Flow" << endm;
   }
 
@@ -356,9 +356,9 @@ void WOKMake_Step::LoadDependencies()
 
 	  if(!mydepin.Contains(anitem->IssuedFrom()))
 	    {
-	      ErrorMsg << "WOKMake_Step::LoadDependencies"
+	      ErrorMsg() << "WOKMake_Step::LoadDependencies"
 		       << "Unknown origin : " << anitem->IssuedFrom() << endm;
-	      ErrorMsg << "WOKMake_Step::LoadDependencies"
+	      ErrorMsg() << "WOKMake_Step::LoadDependencies"
 		       << "Dependences could not be loaded : will force step" << endm;
 	      mydepmatrix.Nullify();
 	      mydepitems.Clear();
@@ -372,9 +372,9 @@ void WOKMake_Step::LoadDependencies()
 
 	  if(!mydepout.Contains(anitem->OutputFile()))
 	    {
-	      ErrorMsg << "WOKMake_Step::LoadDependencies"
+	      ErrorMsg() << "WOKMake_Step::LoadDependencies"
 		       << "Unknown output : " << anitem->OutputFile() << endm;
-	      ErrorMsg << "WOKMake_Step::LoadDependencies"
+	      ErrorMsg() << "WOKMake_Step::LoadDependencies"
 		       << "Dependences could not be loaded : will force step" << endm;
 	      mydepmatrix.Nullify();
 	      mydepitems.Clear();
@@ -389,7 +389,7 @@ void WOKMake_Step::LoadDependencies()
 
 	  if(mydepmatrix->Value(out_index, in_index))
 	    {
-	      WarningMsg << "WOKMake_Step::LoadDependencies"
+	      WarningMsg() << "WOKMake_Step::LoadDependencies"
 			 << "Ignoring duplicate line in depfile (" << anitem->OutputFile() << " : " << anitem->IssuedFrom() << ")" << endm;
 	    }
 	  else
@@ -491,7 +491,7 @@ Handle(WOKMake_HSequenceOfInputFile) WOKMake_Step::OutOfDateEntities()
 	case WOKMake_Disappeared:
 	  if(myinflow.Contains(infile->ID()))
 	    {
-	      ErrorMsg << "WOKMake_Step::OutOfDateEntities"
+	      ErrorMsg() << "WOKMake_Step::OutOfDateEntities"
 		       << "Could not locate input file : " << infile->ID() << endm;
 	      SetFailed();
 	      return result;
@@ -813,7 +813,7 @@ Standard_Boolean WOKMake_Step::CheckStatus(const Standard_CString amsg) const
     case WOKMake_Processed:
       break;
     case WOKMake_Failed:
-      ErrorMsg << "WOKMake_Step::Make" << "Failed during " << amsg << endm;
+      ErrorMsg() << "WOKMake_Step::Make" << "Failed during " << amsg << endm;
       return Standard_True;
     }
   return Standard_False;
@@ -884,7 +884,7 @@ void WOKMake_Step::AcquitExecution(const Handle(WOKMake_HSequenceOfInputFile)& e
 
 	      if(afile.IsNull())
 		{
-		  WarningMsg << "WOKMake_Step::AcquitExecution" 
+		  WarningMsg() << "WOKMake_Step::AcquitExecution" 
 			     << "Could not find precedence step (" << precstep->UniqueName() 
 			     << ") admin file : " << precstep->OutputFilesFileName() << endm;
 		}
@@ -1350,7 +1350,7 @@ WOKMake_Status WOKMake_Step::Make()
           !strcmp ( aType, "WOKStep_LibLink"        )
     ) {
 
-     InfoMsg << "WOKMake_Step :: Make" << "Generating build file" << endm;
+     InfoMsg() << "WOKMake_Step :: Make" << "Generating build file" << endm;
 
      g_fCompOrLnk = Standard_True;
 
@@ -1504,7 +1504,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 	    
 		if(atempl.IsNull())
 		  {
-		    WarningMsg << "WOKMake_Step::HandleOutputFile"
+		    WarningMsg() << "WOKMake_Step::HandleOutputFile"
 			       << "Could not determine Del action for type : " << afile->File()->TypeName() << endm;
 		    ashell->UnLock();
 		    return Standard_False;
@@ -1512,7 +1512,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 	    
 		if(! Unit()->Params().IsSet(atempl->ToCString()))
 		  {
-		    ErrorMsg << "WOKMake_Step::HandleOutputFile"
+		    ErrorMsg() << "WOKMake_Step::HandleOutputFile"
 			     << "Could not eval Del action (" << atempl << ") for type : " << afile->File()->TypeName() << endm;
 		    ashell->UnLock();
 		    return Standard_False;
@@ -1528,7 +1528,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 		
 		    if(!acmd.IsNull())
 		      {
-			InfoMsg << "WOKMake_Step::HandleOutputFile"
+			InfoMsg() << "WOKMake_Step::HandleOutputFile"
 				<< "Invoking " << atempl << " on " << afile->File()->Path()->Name() << endm;
 		      
 			ashell->Execute(acmd);
@@ -1536,15 +1536,15 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 			if(ashell->Status())
 			  {
 			    Handle(TColStd_HSequenceOfHAsciiString) resseq = ashell->Errors();
-			    Standard_Boolean ph = ErrorMsg.PrintHeader();
+			    Standard_Boolean ph = ErrorMsg().PrintHeader();
 			
-			    ErrorMsg << "WOKMake_Step::HandleOutputFile" << "Errors occured in Shell" << endm;
-			    ErrorMsg.DontPrintHeader();
+			    ErrorMsg() << "WOKMake_Step::HandleOutputFile" << "Errors occured in Shell" << endm;
+			    ErrorMsg().DontPrintHeader();
 			    for(Standard_Integer i=1; i<= resseq->Length(); i++)
 			      {
-				ErrorMsg << "WOKMake_Step::HandleOutputFile" << resseq->Value(i) << endm;
+				ErrorMsg() << "WOKMake_Step::HandleOutputFile" << resseq->Value(i) << endm;
 			      }
-			    if(ph) ErrorMsg.DoPrintHeader();
+			    if(ph) ErrorMsg().DoPrintHeader();
 			  }
 			OutLocator()->ChangeRemove(afile->File());
 			ashell->ClearOutput();
@@ -1555,7 +1555,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 		  {
 		    if(afile->File()->Path()->IsSymLink())
 		      {
-			WarningMsg << "WOKMake_Step::HandleOutputFile"
+			WarningMsg() << "WOKMake_Step::HandleOutputFile"
 				   << "Disappeared File (" << afile->File()->UserPathName() << ") does not exists " << endm;
 		      }
 		  }
@@ -1564,7 +1564,7 @@ Standard_Boolean WOKMake_Step::HandleOutputFile(const Handle(WOKMake_OutputFile)
 	      }
 	    else
 	      {
-		WarningMsg << "WOKMake_Step::HandleOutputFile" 
+		WarningMsg() << "WOKMake_Step::HandleOutputFile" 
 			   << "File " << afile->File()->UserPathName() << " is not in " << Unit()->UserPathName() 
 			   << " : Disappeared and left untouched" << endm;
 		return Standard_False;

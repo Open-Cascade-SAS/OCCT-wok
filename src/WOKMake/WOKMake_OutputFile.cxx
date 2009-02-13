@@ -238,7 +238,7 @@ Standard_Integer WOKMake_OutputFile::WriteFile(const Handle(WOKUtils_Path)& apat
   
   if(!astream)
     {
-      ErrorMsg << "WOKMake_StepOutput::Dump" << "Could not open " << apath->Name() << endm;
+      ErrorMsg() << "WOKMake_StepOutput::Dump" << "Could not open " << apath->Name() << endm;
       Standard_ProgramError::Raise("");
     }
   
@@ -299,7 +299,7 @@ Standard_Integer WOKMake_OutputFile::WriteFile(const Handle(WOKUtils_Path)& apat
   
   if(!astream)
     {
-      ErrorMsg << "WOKMake_StepOutput::Dump" << "Could not open " << apath->Name() << endm;
+      ErrorMsg() << "WOKMake_StepOutput::Dump" << "Could not open " << apath->Name() << endm;
       Standard_ProgramError::Raise("");
     }
   
