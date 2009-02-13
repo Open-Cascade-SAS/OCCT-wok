@@ -825,7 +825,7 @@ void MS::StubClassesToExtract(const Handle(MS_MetaSchema)& aMeta,
 
       
       if (!aMeta->IsDefined(aSeq->Value(i))) {
-	ErrorMsg << "MS" << "Class " << aSeq->Value(i) << " not defined..." << endm;
+	ErrorMsg() << "MS" << "Class " << aSeq->Value(i) << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
 
@@ -902,7 +902,7 @@ void MS::StubPackagesToExtract(const Handle(MS_MetaSchema)& aMeta,
       MS::StubMethodsTypesToExtract(aMeta,aPackage,ExtractionMap,ExtractionIncpMap,ExtractionSemiMap);
     }
     else {
-      ErrorMsg << "MS" << "Package " << aSeq->Value(i) << " not defined..." << endm;
+      ErrorMsg() << "MS" << "Package " << aSeq->Value(i) << " not defined..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -978,7 +978,7 @@ void MS::StubMethodsToExtract(const Handle(MS_MetaSchema)& aMeta,
       }
     }
     else {
-      ErrorMsg << "MS" << "Method " << aseq->Value(i) << " not defined..." << endm;
+      ErrorMsg() << "MS" << "Method " << aseq->Value(i) << " not defined..." << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -1017,7 +1017,7 @@ void MS::StubMethodTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	    type = aMeta->GetType(parname);
 	  }
 	  else {
-	    ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	    ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	    Standard_NoSuchObject::Raise();
 	  }
 	}
@@ -1048,7 +1048,7 @@ void MS::StubMethodTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	}
       }
       else {
-	ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }
@@ -1069,7 +1069,7 @@ void MS::StubMethodTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	  type = aMeta->GetType(parname);
 	}
 	else {
-	  ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	  ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	  Standard_NoSuchObject::Raise();
 	}
       }
@@ -1099,7 +1099,7 @@ void MS::StubMethodTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
       }
     }
     else {
-      ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+      ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -1165,7 +1165,7 @@ void MS::StubMethodsTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	      type = aMeta->GetType(parname);
 	    }
 	    else {
-	      ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	      ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	      Standard_NoSuchObject::Raise();
 	    }
 	  }
@@ -1193,7 +1193,7 @@ void MS::StubMethodsTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	  }
 	}
 	else {
-	  ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	  ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	  Standard_NoSuchObject::Raise();
 	}
       }
@@ -1214,7 +1214,7 @@ void MS::StubMethodsTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	    type = aMeta->GetType(parname);
 	  }
 	  else {
-	    ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	    ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	    Standard_NoSuchObject::Raise();
 	  }
 	}
@@ -1246,7 +1246,7 @@ void MS::StubMethodsTypesToExtract(const Handle(MS_MetaSchema)& aMeta,
 	}
       }
       else {
-	ErrorMsg << "MS" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "MS" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }

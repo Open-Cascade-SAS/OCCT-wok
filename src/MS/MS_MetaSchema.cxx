@@ -1054,7 +1054,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
 
     for (i = 1; i <= aSeq->Length(); i++) {
       if (!IsDefined(aSeq->Value(i))) {
-	ErrorMsg << CHECKERROR << "the class " << aSeq->Value(i)->ToCString() << " used in schema is not defined in a package." << endm;
+	ErrorMsg() << CHECKERROR << "the class " << aSeq->Value(i)->ToCString() << " used in schema is not defined in a package." << endm;
 	result = Standard_False;
       }
     }
@@ -1063,7 +1063,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
 
     for (i = 1; i <= aSeq->Length(); i++) {
       if (!IsPackage(aSeq->Value(i))) {
-	ErrorMsg << CHECKERROR << "the package " << aSeq->Value(i)->ToCString() << " used in schema does not exist." << endm;
+	ErrorMsg() << CHECKERROR << "the package " << aSeq->Value(i)->ToCString() << " used in schema does not exist." << endm;
 	result = Standard_False;
       }
     }
@@ -1080,7 +1080,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
       met = MS::GetMethodFromFriendName(this,aASeq->Value(i));
 
       if (met.IsNull()) {
-	ErrorMsg << CHECKERROR << "the method " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
+	ErrorMsg() << CHECKERROR << "the method " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
 	result = Standard_False;
       }
     }
@@ -1093,7 +1093,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
 	result = result && locRes;
       }
       else {
-	ErrorMsg << CHECKERROR << "in client " << aName->ToCString() << ", the interface " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
+	ErrorMsg() << CHECKERROR << "in client " << aName->ToCString() << ", the interface " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
 	result = Standard_False;
       }
     }
@@ -1111,7 +1111,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
 	result = result && locRes;
       }
       else {
-	ErrorMsg << CHECKERROR << "in engine " << aName->ToCString() << ", the interface " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
+	ErrorMsg() << CHECKERROR << "in engine " << aName->ToCString() << ", the interface " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
 	result = Standard_False;
       }
     }
@@ -1134,17 +1134,17 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
 	locRes = aType->IsKind(STANDARD_TYPE(MS_Class));
 	
 	if (!locRes) {
-	  ErrorMsg << CHECKERROR << "the type " << fullName->ToCString() << " is not a class." << endm;
+	  ErrorMsg() << CHECKERROR << "the type " << fullName->ToCString() << " is not a class." << endm;
 	  result = Standard_False;
 	}
 	
 	if (aType->IsKind(STANDARD_TYPE(MS_GenClass))) {
-	  ErrorMsg << CHECKERROR << "the type " << fullName->ToCString() << " is a generic class, it cannot be exported." << endm;
+	  ErrorMsg() << CHECKERROR << "the type " << fullName->ToCString() << " is a generic class, it cannot be exported." << endm;
 	  result = Standard_False;
 	}
       }
       else {
-	ErrorMsg << CHECKERROR << "the type " << fullName->ToCString() << " is not defined." << endm;
+	ErrorMsg() << CHECKERROR << "the type " << fullName->ToCString() << " is not defined." << endm;
 	result = Standard_False;
       }
     }   
@@ -1156,7 +1156,7 @@ Standard_Boolean MS_MetaSchema::Check(const Handle(TCollection_HAsciiString)& aN
       amet = MS::GetMethodFromFriendName(this,aASeq->Value(i));
       
       if (amet.IsNull()) {
-	ErrorMsg << CHECKERROR << "the method " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
+	ErrorMsg() << CHECKERROR << "the method " << aASeq->Value(i)->ToCString() << " is not defined." << endm;
 	result = Standard_False;
       }
     }
@@ -1194,15 +1194,15 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
     locRes = IsDefined(uses->Value(i));
     
     if (!locRes) {
-       ErrorMsg << CHECKERROR << "the type " << uses->Value(i)->ToCString() << " is not defined." << endm;
-       ErrorMsg << CHECKERROR << "first reference in 'uses' clause of " << aClass->FullName()->ToCString() << endm;
+       ErrorMsg() << CHECKERROR << "the type " << uses->Value(i)->ToCString() << " is not defined." << endm;
+       ErrorMsg() << CHECKERROR << "first reference in 'uses' clause of " << aClass->FullName()->ToCString() << endm;
     }
     else {
       theType = GetType(uses->Value(i));
 
       if (theType->IsKind(STANDARD_TYPE(MS_GenClass))) {
-	ErrorMsg << CHECKERROR << "the generic class " << uses->Value(i)->ToCString() << " cannot be" << endm;
-	ErrorMsg << CHECKERROR << "in 'uses' clause of " << aClass->FullName()->ToCString() << endm;
+	ErrorMsg() << CHECKERROR << "the generic class " << uses->Value(i)->ToCString() << " cannot be" << endm;
+	ErrorMsg() << CHECKERROR << "in 'uses' clause of " << aClass->FullName()->ToCString() << endm;
 	locRes = Standard_False;
       }
     }
@@ -1225,28 +1225,28 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
     locRes = IsDefined(uses->Value(i));
     
     if (!locRes) {
-       ErrorMsg << CHECKERROR << "the type " << uses->Value(i)->ToCString() << " is not defined." << endm;
-       ErrorMsg << CHECKERROR << "first reference in 'inherits' clause of ";
+       ErrorMsg() << CHECKERROR << "the type " << uses->Value(i)->ToCString() << " is not defined." << endm;
+       ErrorMsg() << CHECKERROR << "first reference in 'inherits' clause of ";
 
        if (i == 1) {
-	 ErrorMsg << aClass->FullName()->ToCString() << endm;
+	 ErrorMsg() << aClass->FullName()->ToCString() << endm;
        }
        else {
-	 ErrorMsg << uses->Value(i-1)->ToCString() << endm;
+	 ErrorMsg() << uses->Value(i-1)->ToCString() << endm;
        }
     }
     else {
       theType = GetType(uses->Value(i));
 
       if (theType->IsKind(STANDARD_TYPE(MS_GenClass))) {
-	ErrorMsg << CHECKERROR << "the generic class " << uses->Value(i)->ToCString() << " cannot be" << endm;
-	ErrorMsg << CHECKERROR << "in 'inherits' clause of ";
+	ErrorMsg() << CHECKERROR << "the generic class " << uses->Value(i)->ToCString() << " cannot be" << endm;
+	ErrorMsg() << CHECKERROR << "in 'inherits' clause of ";
 
 	if (i == 1) {
-	  ErrorMsg << aClass->FullName()->ToCString() << endm;
+	  ErrorMsg() << aClass->FullName()->ToCString() << endm;
 	}
 	else {
-	  ErrorMsg << uses->Value(i-1)->ToCString() << endm;
+	  ErrorMsg() << uses->Value(i-1)->ToCString() << endm;
 	}
 
 	locRes = Standard_False;
@@ -1319,14 +1319,14 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
 	    
 	    if (aSeqM_i_1->Length() > 0) {
 	      for (k = 1; k <= aSeqM_i_1->Length(); k++) {
-		ErrorMsg << CHECKERROR << "the deferred method " << aSeqM_i_1->Value(k)->FullName()->ToCString() << " must" << endm;
-		ErrorMsg << CHECKERROR << "have an implementation in class ";
+		ErrorMsg() << CHECKERROR << "the deferred method " << aSeqM_i_1->Value(k)->FullName()->ToCString() << " must" << endm;
+		ErrorMsg() << CHECKERROR << "have an implementation in class ";
 		
 		if (i == 1) {
-		  ErrorMsg << aClass->FullName()->ToCString() << endm;
+		  ErrorMsg() << aClass->FullName()->ToCString() << endm;
 		}
 		else {
-		  ErrorMsg << uses->Value(i)->ToCString() << endm;
+		  ErrorMsg() << uses->Value(i)->ToCString() << endm;
 		}
 	      }
 	      
@@ -1365,8 +1365,8 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
     
     if (aSeqM_i_1->Length() > 0) {
       for (k = 1; k <= aSeqM_i_1->Length(); k++) {
-	ErrorMsg << CHECKERROR << "the deferred method " << aSeqM_i_1->Value(k)->FullName()->ToCString() << " must" << endm;
-	ErrorMsg << CHECKERROR << "have an implementation in class " << aClass->FullName()->ToCString() << endm;
+	ErrorMsg() << CHECKERROR << "the deferred method " << aSeqM_i_1->Value(k)->FullName()->ToCString() << " must" << endm;
+	ErrorMsg() << CHECKERROR << "have an implementation in class " << aClass->FullName()->ToCString() << endm;
       }
       
       locRes = Standard_False;
@@ -1392,7 +1392,7 @@ Standard_Boolean MS_MetaSchema::CheckClass(const Handle(MS_Class)& aClass) const
     met = MS::GetMethodFromFriendName(this,uses->Value(i));
     
     if (met.IsNull()) {
-      ErrorMsg << CHECKERROR << "the friend method '" << uses->Value(i)->ToCString() << "' in 'friend' clause of the class '" << aClass->FullName()->ToCString() << "' is not defined." << endm;
+      ErrorMsg() << CHECKERROR << "the friend method '" << uses->Value(i)->ToCString() << "' in 'friend' clause of the class '" << aClass->FullName()->ToCString() << "' is not defined." << endm;
       result = Standard_False;
     }
   }
@@ -1524,19 +1524,19 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
     Standard_Boolean   myclassishandled = aClass->IsPersistent() || aClass->IsTransient();
       
     if (anInst->IsDeferred() && !aClass->Deferred()) {
-      ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'deferred' in a class without keyword 'deferred'." << endm;
+      ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'deferred' in a class without keyword 'deferred'." << endm;
       result = Standard_False;
     }
 
     if (myclassishandled) {
       if (anInst->IsOut()) {
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'out' but 'mutable' because it's comes from a Persistent or a Transient class." << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'out' but 'mutable' because it's comes from a Persistent or a Transient class." << endm;
 	result = Standard_False;
       }
     }
     else {
       if (anInst->IsMutable()) {
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'mutable' but 'out' because it does not comes from a Persistent or a Transient class." << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the keyword 'mutable' but 'out' because it does not comes from a Persistent or a Transient class." << endm;
 	result = Standard_False;
       }
     }
@@ -1563,26 +1563,26 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
 	      if (!anOther->Returns().IsNull()) {
 		if ((anOther->IsConstReturn() != anInst->IsConstReturn()) || (anOther->IsRefReturn() != anInst->IsRefReturn())) {
 		  result = Standard_False;
-		  ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a different C++ return mode than" << endm;
-		  ErrorMsg << CHECKERROR << "the redefined super method : " << anOther->FullName()->ToCString() << endm;
+		  ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a different C++ return mode than" << endm;
+		  ErrorMsg() << CHECKERROR << "the redefined super method : " << anOther->FullName()->ToCString() << endm;
 		}
 		
 		if (!anOther->Returns()->TypeName()->IsSameString(returnValue->TypeName())) {
 		  result = Standard_False;
-		  ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a different return value than" << endm;
-		  ErrorMsg << CHECKERROR << "the redefined super method : " << anOther->FullName()->ToCString() << endm;
+		  ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a different return value than" << endm;
+		  ErrorMsg() << CHECKERROR << "the redefined super method : " << anOther->FullName()->ToCString() << endm;
 		}
 	      }
 	      else {
 		result = Standard_False;
-		ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " have a return value but" << endm;
-		ErrorMsg << CHECKERROR << "not the super method " << anOther->FullName()->ToCString() << endm;
+		ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " have a return value but" << endm;
+		ErrorMsg() << CHECKERROR << "not the super method " << anOther->FullName()->ToCString() << endm;
 	      }
 	    } 
 	    else if (!anOther->Returns().IsNull()) {
 	      result = Standard_False;
-	      ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a return value because" << endm;
-	      ErrorMsg << CHECKERROR << "the super method " << anOther->FullName()->ToCString() << " does not have one" << endm;
+	      ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have a return value because" << endm;
+	      ErrorMsg() << CHECKERROR << "the super method " << anOther->FullName()->ToCString() << " does not have one" << endm;
 	    }
 	    
 	    if (!IsDeferred && !StopRedefinition) {
@@ -1615,36 +1615,36 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
       
       if (anInst->IsRedefined()) {
 	result = Standard_False;
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'redefined' keyword" << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'redefined' keyword" << endm;
 	
 	if (StopRedefinition) {
-	  ErrorMsg << CHECKERROR << "the redefinition was stopped in class " << whoStopRedefinition->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "the redefinition was stopped in class " << whoStopRedefinition->ToCString() << endm;
 	}
 	else {
-	  ErrorMsg << CHECKERROR << "to be able to make this redefinition, the keyword 'is virtual' must be set at the end of the method of the class " << aSeqAncestors->Value(IsFound)->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "to be able to make this redefinition, the keyword 'is virtual' must be set at the end of the method of the class " << aSeqAncestors->Value(IsFound)->ToCString() << endm;
 	}
       }
       else if (!anInst->IsStatic() && StopRedefinition) {
 	result = Standard_False;
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'virtual' keyword because redefinition" << endm;
-	ErrorMsg << CHECKERROR << "was stopped in class " << whoStopRedefinition->ToCString() << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'virtual' keyword because redefinition" << endm;
+	ErrorMsg() << CHECKERROR << "was stopped in class " << whoStopRedefinition->ToCString() << endm;
       }
       else if (anInst->IsDeferred() && StopRedefinition) {
 	result = Standard_False;
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'deferred' keyword because redefinition" << endm;
-	ErrorMsg << CHECKERROR << "was stopped in class " << whoStopRedefinition->ToCString() << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot have the 'deferred' keyword because redefinition" << endm;
+	ErrorMsg() << CHECKERROR << "was stopped in class " << whoStopRedefinition->ToCString() << endm;
       }
       else if (!anInst->IsDeferred() && anInst->IsStatic()) {
 	result = Standard_False;
 	
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot redefine the same method than class "
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " cannot redefine the same method than class "
 	  << aSeqAncestors->Value(IsFound)->ToCString() << endm;
 	
 	if (StopRedefinition) {
-	  ErrorMsg << "the redefinition was stopped in class " << whoStopRedefinition->ToCString() << endm;
+	  ErrorMsg() << "the redefinition was stopped in class " << whoStopRedefinition->ToCString() << endm;
 	}
 	else {
-	  ErrorMsg << CHECKERROR <<"to be able to make this redefinition, the keyword 'is virtual' must be set at the end of the method of the class "
+	  ErrorMsg() << CHECKERROR <<"to be able to make this redefinition, the keyword 'is virtual' must be set at the end of the method of the class "
 	    << aSeqAncestors->Value(IsFound)->ToCString() << endm;
 	}
       }
@@ -1653,13 +1653,13 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
     else if ((IsVirtual || IsDeferred) && IsFound != 0) {
       if ((IsDeferred && !anInst->IsRedefined() && (whoIsDeferred > IsFound)) || (!IsDeferred && IsVirtual && !anInst->IsRedefined())) {
 	result = Standard_False;
-	ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " must have the 'redefined' keyword." << endm;
+	ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " must have the 'redefined' keyword." << endm;
       }
     }
     else if ((IsFound == 0 ) && anInst->IsRedefined()) {
       result = Standard_False;
-      ErrorMsg << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " must have been declared in an ancestor class" << endm;
-      ErrorMsg << CHECKERROR << "to be redefined." << endm;
+      ErrorMsg() << CHECKERROR << "the method " << anInst->FullName()->ToCString() << " must have been declared in an ancestor class" << endm;
+      ErrorMsg() << CHECKERROR << "to be redefined." << endm;
     }
   }
 
@@ -1697,21 +1697,21 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
 	  
 	  if (!handleclass) {
 	    if (p->IsMutable() || p->IsImmutable()) {
-	      ErrorMsg << CHECKERROR << "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " must be set 'in' or 'out' , but not 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
+	      ErrorMsg() << CHECKERROR << "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " must be set 'in' or 'out' , but not 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
 	      result = Standard_False;
 	    }
 	  }
 	}
 	else {
 	  if (p->IsMutable() || p->IsImmutable()) {
-	    ErrorMsg << CHECKERROR <<  "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
+	    ErrorMsg() << CHECKERROR <<  "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
 	    result = Standard_False;
 	  }
 	}
 
 	if (t->Private()) {
 	  if (!t->Package()->FullName()->IsSameString(aClass->Package()->FullName())) {
-	    ErrorMsg << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in method " << aMeth->FullName()->ToCString() << endm;
+	    ErrorMsg() << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in method " << aMeth->FullName()->ToCString() << endm;
 	    locRes = Standard_False;
 	  }
 	  else if (!aClass->Private() && !aMeth->Private() && !whoStopRedefinition->IsSameString(p->TypeName())) {
@@ -1727,7 +1727,7 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
 	      }
 	    }
 	    if (cankill) {
-	      ErrorMsg << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot use a private type as parameter." << endm;
+	      ErrorMsg() << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot use a private type as parameter." << endm;
 	      locRes = Standard_False;
 	    }
 	  }
@@ -1765,21 +1765,21 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
 	
 	if (!handleclass) {
 	  if (p->IsMutable() || p->IsImmutable()) {
-	    ErrorMsg << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
+	    ErrorMsg() << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
 	    result = Standard_False;
 	  }
 	}
       }   
       else {
 	if (p->IsMutable() || p->IsImmutable()) {
-	  ErrorMsg << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
+	  ErrorMsg() << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
 	  result = Standard_False;
 	}
       }
 
       if (t->Private()) {
 	if (!t->Package()->FullName()->IsSameString(aClass->Package()->FullName())) {
-	  ErrorMsg << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in 'returns' clause of " << aMeth->FullName()->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in 'returns' clause of " << aMeth->FullName()->ToCString() << endm;
 	  locRes = Standard_False;
 	}
 	else if (!aClass->Private() && !aMeth->Private() && !whoStopRedefinition->IsSameString(p->TypeName())) {
@@ -1795,7 +1795,7 @@ Standard_Boolean MS_MetaSchema::CheckMemberMethod(const Handle(MS_MemberMet)& aM
 	    }
 	  }
 	  if (cankill) {
-	    ErrorMsg << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot return a private type." << endm;
+	    ErrorMsg() << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot return a private type." << endm;
 	    result = Standard_False;
 	  }
 	}
@@ -1818,7 +1818,7 @@ Standard_Boolean MS_MetaSchema::CheckExternMethod(const Handle(MS_ExternMet)& aM
 
   for (j = 1; j <= raisesseq->Length(); j++) {
     if (!IsDefined(raisesseq->Value(j))) {
-      ErrorMsg << CHECKERROR << "the exception " << raisesseq->Value(j)->ToCString() << ", used in package method " << aMeth->Name()->ToCString() << ", is not defined." << endm;
+      ErrorMsg() << CHECKERROR << "the exception " << raisesseq->Value(j)->ToCString() << ", used in package method " << aMeth->Name()->ToCString() << ", is not defined." << endm;
       result = Standard_False;
     }
   }
@@ -1852,25 +1852,25 @@ Standard_Boolean MS_MetaSchema::CheckExternMethod(const Handle(MS_ExternMet)& aM
 	  
 	  if (!handleclass) {
 	    if (p->IsMutable() || p->IsImmutable()) {
-	      ErrorMsg << CHECKERROR << "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " must be set 'in' or 'out' , but not 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
+	      ErrorMsg() << CHECKERROR << "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " must be set 'in' or 'out' , but not 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
 	      result = Standard_False;
 	    }
 	  }
 	}
 	else {
 	  if (p->IsMutable() || p->IsImmutable()) {
-	    ErrorMsg << CHECKERROR <<  "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
+	    ErrorMsg() << CHECKERROR <<  "the parameter " << p->Name()->ToCString() << " from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
 	    result = Standard_False;
 	  }
 	}
 
 	if (t->Private()) {
 	  if (!t->Package()->FullName()->IsSameString(packname)) {
-	    ErrorMsg << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in package method " << aMeth->FullName()->ToCString() << endm;
+	    ErrorMsg() << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in package method " << aMeth->FullName()->ToCString() << endm;
 	    locRes = Standard_False;
 	  }
 	  else if (!aMeth->Private()) {
-	    ErrorMsg << CHECKERROR << "the non private package method " << aMeth->FullName()->ToCString() << " cannot use a private type as parameter." << endm;
+	    ErrorMsg() << CHECKERROR << "the non private package method " << aMeth->FullName()->ToCString() << " cannot use a private type as parameter." << endm;
 	    locRes = Standard_False;
 	  }
 	}
@@ -1908,25 +1908,25 @@ Standard_Boolean MS_MetaSchema::CheckExternMethod(const Handle(MS_ExternMet)& aM
 	
 	if (!handleclass) {
 	  if (p->IsMutable() || p->IsImmutable()) {
-	    ErrorMsg << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
+	    ErrorMsg() << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because class " << t->FullName()->ToCString() << " is not persistent or transient." << endm;
 	    result = Standard_False;
 	  }
 	}
       }   
       else {
 	if (p->IsMutable() || p->IsImmutable()) {
-	  ErrorMsg << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
+	  ErrorMsg() << CHECKERROR << "the return's type from method " << aMeth->FullName()->ToCString() << " cannot be 'mutable' or 'immutable' because " << t->FullName()->ToCString() << " is not a class." << endm;
 	  result = Standard_False;
 	}
       }
 
       if (t->Private()) {
 	if (!t->Package()->FullName()->IsSameString(packname)) {
-	  ErrorMsg << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in 'returns' clause of " << aMeth->FullName()->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in 'returns' clause of " << aMeth->FullName()->ToCString() << endm;
 	  locRes = Standard_False;
 	}
 	else if (!aMeth->Private()) {
-	  ErrorMsg << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot return a private type." << endm;
+	  ErrorMsg() << CHECKERROR << "the non private method " << aMeth->FullName()->ToCString() << " cannot return a private type." << endm;
 	  result = Standard_False;
 	}
       }
@@ -1980,13 +1980,13 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 	    else if (aType->IsKind(STANDARD_TYPE(MS_Enum))) {
 	      if (!aSeqGType->Value(i)->TYpeName()->IsSameString(MS::GetStorableRootName())) {
 		result = Standard_False;
-		ErrorMsg << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
+		ErrorMsg() << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
 	      }
 	    }
 	    else if (aType->IsKind(STANDARD_TYPE(MS_Imported))) {
 	      if (aSeqGType->Value(i)->TYpeName()->IsSameString(MS::GetStorableRootName())) {
 		result = Standard_False;
-		ErrorMsg << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
+		ErrorMsg() << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
 	      }
 	    }
 	    else if (aType->IsKind(STANDARD_TYPE(MS_PrimType))) {
@@ -1995,7 +1995,7 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 	      if (aSeqGType->Value(i)->TYpeName()->IsSameString(MS::GetStorableRootName())) {
 		result = aPrim->IsStorable();
 		if (!result) {
-		  ErrorMsg << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
+		  ErrorMsg() << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
 		}
 	      }
 	    }
@@ -2037,7 +2037,7 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 	    }
 	    
 	    if (!locRes) {
-	       ErrorMsg << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
+	       ErrorMsg() << CHECKERROR << "the instantiation type " << aSeqIType->Value(i)->ToCString() << " is not compatible with the constraint type " <<  aSeqGType->Value(i)->TYpeName()->ToCString() << " in the class " << anInst->FullName()->ToCString() << endm;
 	    }
 	    result = result && locRes;
 	  }
@@ -2111,18 +2111,18 @@ Standard_Boolean MS_MetaSchema::CheckInstClass(const Handle(MS_InstClass)& anIns
 	    if (typeName.IsNull()) {
 	      locRes = Standard_False;
 	      ItsAClass = Standard_True;
-	      ErrorMsg << CHECKERROR << "the constraint of generic type " << aSeqGType->Value(i)->Name()->ToCString() << " does not have an instantiation parameter of the type " << aSeqCont->Value(pos) << " as required." << endm;
+	      ErrorMsg() << CHECKERROR << "the constraint of generic type " << aSeqGType->Value(i)->Name()->ToCString() << " does not have an instantiation parameter of the type " << aSeqCont->Value(pos) << " as required." << endm;
 	    }
 	  }
 	  else {
-	    ErrorMsg << CHECKERROR << "in class " << anInst->FullName()->ToCString() << ", the instantiation parameter " << aSeqGType->Value(i)->Name()->ToCString() << " must be an instantiation not the type " <<  aSeqIType->Value(i)->ToCString() << endm;
+	    ErrorMsg() << CHECKERROR << "in class " << anInst->FullName()->ToCString() << ", the instantiation parameter " << aSeqGType->Value(i)->Name()->ToCString() << " must be an instantiation not the type " <<  aSeqIType->Value(i)->ToCString() << endm;
 	    locRes    = Standard_False;
 	    ItsAClass = Standard_False;
 	  }
 
 	}
 	else {
-	  ErrorMsg << CHECKERROR << "in class " << anInst->FullName()->ToCString() << ", the instantiation parameter " << aSeqGType->Value(i)->Name()->ToCString() << " must be a class not the type " <<  aSeqIType->Value(i)->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "in class " << anInst->FullName()->ToCString() << ", the instantiation parameter " << aSeqGType->Value(i)->Name()->ToCString() << " must be a class not the type " <<  aSeqIType->Value(i)->ToCString() << endm;
 	  locRes    = Standard_False;
 	  ItsAClass = Standard_False;
 	}
@@ -2160,7 +2160,7 @@ Standard_Boolean MS_MetaSchema::CheckField(const Handle(MS_Field)& aField) const
     
     if (!IHaveTheType) {
       result = Standard_False;
-      ErrorMsg << CHECKERROR << "the field " << aField->Name()->ToCString() 
+      ErrorMsg() << CHECKERROR << "the field " << aField->Name()->ToCString() 
 	   << " from generic class " << aClass->FullName()->ToCString()
 	   << " has an unknown type or an undeclared generic item : " << aField->TYpe()->ToCString() << endm;
     }
@@ -2184,7 +2184,7 @@ Standard_Boolean MS_MetaSchema::CheckField(const Handle(MS_Field)& aField) const
 	  }
 	}
 	if (cankill) {
-	  ErrorMsg << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in field " << aField->Name()->ToCString() << " of class " << aClass->FullName()->ToCString() << endm;
+	  ErrorMsg() << CHECKERROR << "the private type " << t->FullName()->ToCString() << " cannot be used in field " << aField->Name()->ToCString() << " of class " << aClass->FullName()->ToCString() << endm;
 	  result = Standard_False;
 	}
       }
@@ -2202,14 +2202,14 @@ Standard_Boolean MS_MetaSchema::CheckField(const Handle(MS_Field)& aField) const
 	
 	if (!(aCl->IsStorable() || aCl->IsPersistent())) {
 	  result = Standard_False;
-	  ErrorMsg << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
+	  ErrorMsg() << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
 	       << " must be Storable or Persistent." << endm;
 	}
       }
       else if (!aType.IsNull()) {
 	if (aType->IsKind(STANDARD_TYPE(MS_Pointer))) {
 	  result = Standard_False;
-	  ErrorMsg << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
+	  ErrorMsg() << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
 	       << " has a pointer type : " << aField->TYpe()->ToCString() << endm;
 	}
 	else if (aType->IsKind(STANDARD_TYPE(MS_PrimType))) {
@@ -2217,7 +2217,7 @@ Standard_Boolean MS_MetaSchema::CheckField(const Handle(MS_Field)& aField) const
 	  
 	  if (!aPType->IsStorable()) {
 	    result = Standard_False;
-	    ErrorMsg << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
+	    ErrorMsg() << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
 		 << " has a non storable type : " << aField->TYpe()->ToCString() << endm;
 	  }
 	}
@@ -2226,7 +2226,7 @@ Standard_Boolean MS_MetaSchema::CheckField(const Handle(MS_Field)& aField) const
     
     if (IsDefined(aField->Name())) {
       result = Standard_False;
-      ErrorMsg << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
+      ErrorMsg() << CHECKERROR << "the field " << aField->Name()->ToCString() << " from class " << aClass->FullName()->ToCString()
 	   << " must not have the same name than a type." << endm;
     }
   }
