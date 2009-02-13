@@ -39,7 +39,7 @@ Handle(EDL_API)&  TCPP_LoadTemplate(const Handle(TColStd_HSequenceOfHAsciiString
     }
 
     if (api->Execute("TCPPExt_MethodTemplate.edl") != EDL_NORMAL) {
-      ErrorMsg << "TCPPExt" << "unable to load : TCPPExt_MethodTemplate.edl" << endm;
+      ErrorMsg() << "TCPPExt" << "unable to load : TCPPExt_MethodTemplate.edl" << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -126,7 +126,7 @@ Handle(TCollection_HAsciiString) TCPP_BuildType(const Handle(MS_MetaSchema)& aMe
     }
   }
   else {
-    ErrorMsg << "TCPPExt" << "type " << aType->FullName()->ToCString() << " not defined..." << endm;
+    ErrorMsg() << "TCPPExt" << "type " << aType->FullName()->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
   return result;
@@ -224,7 +224,7 @@ Handle(TCollection_HAsciiString) TCPP_BuildParameterList(const Handle(MS_MetaSch
 	    }
 	  }
 	  else {
-	    ErrorMsg << "TCPPExt" << "incomplete alias deep type in method's parameter..." << endm;
+	    ErrorMsg() << "TCPPExt" << "incomplete alias deep type in method's parameter..." << endm;
 	    Standard_NoSuchObject::Raise();
 	  }
 	}
@@ -282,14 +282,14 @@ void TCPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     
     if (( srcType->IsKind(STANDARD_TYPE(MS_InstClass)) ) || 
 	( (!srcType->IsKind(STANDARD_TYPE(MS_StdClass))) && (!srcType->IsKind(STANDARD_TYPE(MS_GenClass))) )) {
-      // InfoMsg << "TCPPExt" << " c'est une InstClass ou une Enum " << endm;
+      // InfoMsg() << "TCPPExt" << " c'est une InstClass ou une Enum " << endm;
       return;
     }
 
     Handle(MS_StdClass) stdClass = Handle(MS_StdClass)::DownCast(srcType);
     if (!stdClass.IsNull()) {
       if (!stdClass->GetMyCreator().IsNull()) {
-	// InfoMsg << "TCPPExt" << " c'est une classe instantiee par InstToStd " << endm;
+	// InfoMsg() << "TCPPExt" << " c'est une classe instantiee par InstToStd " << endm;
 	return;
       }
     }
@@ -298,7 +298,7 @@ void TCPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     srcPackage = aMeta->GetPackage(aName);
   }
   else {
-    ErrorMsg << "TCPPExt" << "class " << aName->ToCString() << " not defined..." << endm;
+    ErrorMsg() << "TCPPExt" << "class " << aName->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
   
@@ -384,7 +384,7 @@ void TCPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       m = aSeqExtMet->Value(i);
     }
     else {
-      ErrorMsg << "TCPPExt" << "while extracting " << aName->ToCString()  << endm;
+      ErrorMsg() << "TCPPExt" << "while extracting " << aName->ToCString()  << endm;
       Standard_NoSuchObject::Raise();
     }
     
