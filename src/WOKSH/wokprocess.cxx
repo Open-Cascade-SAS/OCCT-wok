@@ -39,9 +39,6 @@
 
 #include <WOKTCL_TriggerHandler.hxx>
 
-//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 #ifdef WNT
 # ifdef _DEBUG
 extern "C" void _debug_break ( char* );
@@ -65,6 +62,8 @@ int main(int argc, char **argv)
 #if defined( WNT ) && defined( _DEBUG )
   _debug_break ( "main" );
 #endif  // WNT && _DEBUG
+
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
 
   WOKTclTools_PInterp interp  = Tcl_CreateInterp();
   
@@ -123,7 +122,7 @@ int main(int argc, char **argv)
     Handle(Standard_Failure) E = Standard_Failure::Caught();
     Standard_SStream astream;
     astream << E << ends;
-    ErrorMsg << "WOKTCL_AppInit" << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << "WOKTCL_AppInit" << "Exception was raised : " << GetSString(astream) << endm;
     WOKUtils_ProcessManager::UnArm();
     return TCL_ERROR;
   }
