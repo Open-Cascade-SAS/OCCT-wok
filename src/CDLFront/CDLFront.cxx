@@ -86,7 +86,10 @@ void CDL_InitVariable();
 
 static int   YY_nb_error;
 static int   YY_nb_warning;
-static Handle(TCollection_HAsciiString) CDLFileName;
+static Handle(TCollection_HAsciiString)& CDLFileName() {
+  static Handle(TCollection_HAsciiString) CDLFileName;
+  return CDLFileName;
+}
 
 //=======================================================================
 //function : CDLerror
@@ -99,13 +102,13 @@ extern "C" {
     // The unix like error declaration 
     //
     if (text == NULL) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" \
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" \
 	<<  ", line " << CDLlineno << ": syntax error..." << endm;
       CDL_InitVariable();
       MS_TraductionError::Raise("Syntax error");
     }
     else {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	<< "\"" <<  ", line " << CDLlineno << ": " << text << endm;
       YY_nb_error++;
     }
@@ -198,8 +201,11 @@ static Standard_Integer Mutable = 0,
 // Container : an entity where type are declared or defined
 //   ex.: a package, an interface,...
 //
-Handle(TCollection_HAsciiString) Container = new TCollection_HAsciiString;
 
+static Handle(TCollection_HAsciiString)& Container() {
+  static Handle(TCollection_HAsciiString) Container = new TCollection_HAsciiString;
+  return Container;
+}
 // The variables representing the analyze of current object
 // The Conventions:                           
 //   Begining of analyse: a new object is creating. 
@@ -208,139 +214,282 @@ Handle(TCollection_HAsciiString) Container = new TCollection_HAsciiString;
 
 // The Schema variables 
 //
-static Handle(MS_Schema)	Schema;     // The current Schema
+static Handle(MS_Schema)&	Schema() {
+  static Handle(MS_Schema)	Schema;     // The current Schema
+  return Schema;
+}
 
 // The Engine variables
 //
-static Handle(MS_Engine)	Engine;     // The current Engine
+static Handle(MS_Engine)&	Engine() {
+  static Handle(MS_Engine)	Engine;     // The current Engine
+  return Engine;
+}
 
 // The Component variables
 //
-static Handle(MS_Component)	Component;     // The current Component
+static Handle(MS_Component)&	Component() {
+  static Handle(MS_Component)	Component;     // The current Component
+  return Component;
+}
 
 // The Executable variables
 //
-static Handle(MS_Executable)	      Executable; // The current Executable
-static Handle(MS_ExecPart)	      ExecPart;   // The current ExePart
-static Handle(MS_HSequenceOfExecPart) ExecTable;
+static Handle(MS_Executable)&	      Executable() {
+  static Handle(MS_Executable)	      Executable; // The current Executable
+  return Executable;
+}
+
+static Handle(MS_ExecPart)&	      ExecPart() {
+  static Handle(MS_ExecPart)	      ExecPart;   // The current ExePart
+  return ExecPart;
+}
+
+static Handle(MS_HSequenceOfExecPart)& ExecTable() {
+  static Handle(MS_HSequenceOfExecPart) ExecTable;
+  return ExecTable;
+}
+
 static int ExecutableLanguage;
 static int ExecutableUseType;
 
 // The Client variables
 //
-static Handle(MS_Client)	Client;  // The current Client
+static Handle(MS_Client)&	Client() {
+  static Handle(MS_Client)	Client;  // The current Client
+  return Client;
+}
 
 // The Interface variables
 //
-static Handle(MS_Interface)	Interface;  // The current Interface
+static Handle(MS_Interface)&	Interface() {
+  static Handle(MS_Interface)	Interface;  // The current Interface
+  return Interface;
+}
 
 // The Package variables
 //
-static Handle(MS_Package)	Package;    // The current package
+static Handle(MS_Package)&	Package() {
+  static Handle(MS_Package)	Package;    // The current package
+  return Package;
+}
 
 // The Alias variables
 //
-static Handle(MS_Alias)	Alias;	    // The current Alias
+static Handle(MS_Alias)&	Alias() {
+  static Handle(MS_Alias)	Alias;	    // The current Alias
+  return Alias;
+}
 
 // The Pointer variables
 //
-static Handle(MS_Pointer)	Pointer;    // The current Pointer
+static Handle(MS_Pointer)&	Pointer() {
+  static Handle(MS_Pointer)	Pointer;    // The current Pointer
+  return Pointer;
+}
 
 // The Imported variables
 //
-static Handle(MS_Imported)	Imported;   // The current Imported
+static Handle(MS_Imported)&	Imported() {
+  static Handle(MS_Imported)	Imported;   // The current Imported
+  return Imported;
+}
 
 // The primitive variables
 //
-static Handle(MS_PrimType)	Primitive;  // The current Primitive
+static Handle(MS_PrimType)&	Primitive() {
+  static Handle(MS_PrimType)	Primitive;  // The current Primitive
+  return Primitive;
+}
 
 // The Enum variables
 //
-static Handle(MS_Enum)		Enum;	    // The current enum
+static Handle(MS_Enum)&		Enum() {
+  static Handle(MS_Enum)		Enum;	    // The current enum
+  return Enum;
+}
 
 // The Error (exception) class
 //
-static Handle(MS_Error)         Exception;
+static Handle(MS_Error)&         Exception() {
+  static Handle(MS_Error)         Exception;
+  return Exception;
+}
 
 // For dynamic generic instantiation like
 //   generic class toto (item1, this one --> item2 as list from TCollection(item1))
 //
-static Handle(MS_GenType)       DynType;
+static Handle(MS_GenType)&       DynType() {
+  static Handle(MS_GenType)       DynType;
+  return DynType;
+}
 
 // The Class variables
 //
-static Handle(MS_Class)	        SimpleClass;
-  
-static Handle(MS_StdClass)	Class;      // The current class
+static Handle(MS_Class)&        SimpleClass() {
+  static Handle(MS_Class)	        SimpleClass;
+  return SimpleClass;
+}
 
-static Handle(MS_StdClass)	StdClass;   // The current class is
-					    // a Standard Class
+static Handle(MS_StdClass)&	Class() {
+  static Handle(MS_StdClass)	Class;      // The current class
+  return Class;
+}
 
-static Handle(MS_StdClass)	GenStdClass;// The current class
-					    // descipt a Generic Class
- 
-static Handle(MS_Error)	        Error;      // The current class is
-					    // a Exception
-         
-static Handle(MS_GenClass)	GenClass;   // The current class is
-					    // a Generic class 
+static Handle(MS_StdClass)&	StdClass() {
+  static Handle(MS_StdClass)	StdClass;   // The current class is
+  return                        StdClass;   // a Standard Class
+}
+
+static Handle(MS_StdClass)&	GenStdClass() {
+  static Handle(MS_StdClass)	GenStdClass;// The current class
+  return 	GenStdClass;		    // descipt a Generic Class
+}
+
+static Handle(MS_Error)&        Error() {
+  static Handle(MS_Error)	        Error;      // The current class is
+  return 		Error;		    // a Exception
+}
+
+static Handle(MS_GenClass)&	GenClass() {         
+  static Handle(MS_GenClass)	GenClass;   // The current class is
+  return 		GenClass;	    // a Generic class 
     
-static Handle(MS_InstClass)	InstClass;  // The current class is
-					    // a instanciated class
+}
 
+static Handle(MS_InstClass)&	InstClass() {
+  static Handle(MS_InstClass)	InstClass;  // The current class is
+  return 		InstClass;	    // a instanciated class
+}
+
+static Handle(MS_GenClass)&	Embeded() {
 static Handle(MS_GenClass)	Embeded;    // The current class is
-					    // embeded class       
+ return 	Embeded;		    // embeded class       
+}
 
 // The Method variables
 //
-static Handle(TCollection_HAsciiString) MethodName = new TCollection_HAsciiString;
+static Handle(TCollection_HAsciiString)& MethodName() {
+  static Handle(TCollection_HAsciiString) MethodName = new TCollection_HAsciiString;
+  return MethodName;
+}
 
-static Handle(MS_Method)	Method;     // The current method
+static Handle(MS_Method)&	Method() {
+  static Handle(MS_Method)	Method;     // The current method
+  return Method;
+}
 
-static Handle(MS_MemberMet)	MemberMet;  // The Membermethod
+static Handle(MS_MemberMet)&	MemberMet() {
+  static Handle(MS_MemberMet)	MemberMet;  // The Membermethod
+  return MemberMet;
+}
 
-static Handle(MS_ExternMet)	ExternMet;  // The current metod is
-					    // a method of package
-static Handle(MS_Construc)	Construc;   // The current metod is
-					    // a constructeur
-static Handle(MS_InstMet)	InstMet;    // The current metod is
-					    // a method of instance
-static Handle(MS_ClassMet)	ClassMet;   // The current metod is
-					    // a method of class
+static Handle(MS_ExternMet)&	ExternMet() {
+  static Handle(MS_ExternMet)	ExternMet;  // The current metod is
+  return 	ExternMet;		    // a method of package
+}
 
-static Handle(MS_HSequenceOfParam) MethodParams; // The current method parameters
+static Handle(MS_Construc)&	Construc() {
+  static Handle(MS_Construc)	Construc;   // The current metod is
+  return 		Construc;	    // a constructeur
+}
+
+static Handle(MS_InstMet)&	InstMet() {
+  static Handle(MS_InstMet)	InstMet;    // The current metod is
+  return 	InstMet;		    // a method of instance
+}
+
+static Handle(MS_ClassMet)&	ClassMet() {
+  static Handle(MS_ClassMet)	ClassMet;   // The current metod is
+  return 		ClassMet;	    // a method of class
+}
+
+static Handle(MS_HSequenceOfParam)& MethodParams() {
+  static Handle(MS_HSequenceOfParam) MethodParams; // The current method parameters
+  return MethodParams;
+}
 
 // The most important : the meta-schema
 //
-Handle(MS_MetaSchema)           theMetaSchema;
+static Handle(MS_MetaSchema)&           theMetaSchema() {
+  static Handle(MS_MetaSchema)           theMetaSchema;
+  return theMetaSchema;
+}
 
 // The Field variables
 //
-static Handle(MS_Field)	Field;
+static Handle(MS_Field)&	Field() {
+  static Handle(MS_Field)	Field;
+  return Field;
+}
 
+static Handle(TCollection_HAsciiString)& DefCons() {
+  static Handle(TCollection_HAsciiString) DefCons = new TCollection_HAsciiString("Initialize");
+  return DefCons;
+}
 
-static Handle(TCollection_HAsciiString) DefCons = new TCollection_HAsciiString("Initialize");
-static Handle(TCollection_HAsciiString) NorCons = new TCollection_HAsciiString("Create");
+static Handle(TCollection_HAsciiString)& NorCons() {
+  static Handle(TCollection_HAsciiString) NorCons = new TCollection_HAsciiString("Create");
+  return NorCons;
+}
 
 // The Parameter variables
 //
-static Handle(MS_Param)	                Param;
+static Handle(MS_Param)&                Param() {
+  static Handle(MS_Param)	                Param;
+  return Param;
+}
+
 static Standard_Integer                 ParamType = 0;
-static Handle(TCollection_HAsciiString) ParamValue;
+
+static Handle(TCollection_HAsciiString)& ParamValue() {
+  static Handle(TCollection_HAsciiString) ParamValue;
+  return ParamValue;
+}
 
 // for clause like : type1,type2,type3, ... ,typen
 //
-Handle(TColStd_HSequenceOfHAsciiString) ListOfTypes     = new TColStd_HSequenceOfHAsciiString;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfPackages  = new TColStd_HSequenceOfHAsciiString;
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfTypes() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfTypes     = new TColStd_HSequenceOfHAsciiString;
+  return ListOfTypes;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfPackages() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfPackages  = new TColStd_HSequenceOfHAsciiString;
+  return ListOfPackages;
+}
 
 // for generic classes (generic item1, ... ,generic itemn)
 //
-Handle(TColStd_HSequenceOfHAsciiString) ListOfItem      = new TColStd_HSequenceOfHAsciiString;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfName      = new TColStd_HSequenceOfHAsciiString;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfCplusplus = new TColStd_HSequenceOfHAsciiString;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfComments  = new TColStd_HSequenceOfHAsciiString;
-Handle(TColStd_HSequenceOfInteger)      ListOfCPPType   = new TColStd_HSequenceOfInteger;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfInteger   = new TColStd_HSequenceOfHAsciiString;
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfItem() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfItem      = new TColStd_HSequenceOfHAsciiString;
+  return ListOfItem;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfName() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfName      = new TColStd_HSequenceOfHAsciiString;
+  return ListOfName;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfCplusplus() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfCplusplus = new TColStd_HSequenceOfHAsciiString;
+  return ListOfCplusplus;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfComments() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfComments  = new TColStd_HSequenceOfHAsciiString;
+  return ListOfComments;
+}
+
+static Handle(TColStd_HSequenceOfInteger)&      ListOfCPPType() {
+  static Handle(TColStd_HSequenceOfInteger)      ListOfCPPType   = new TColStd_HSequenceOfInteger;
+  return ListOfCPPType;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfInteger() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfInteger   = new TColStd_HSequenceOfHAsciiString;
+  return ListOfInteger;
+}
 
 // this is a dummy package name for generic type (item, etc...)
 //
@@ -348,10 +497,25 @@ const char *aDummyPackageName = "___D";
 const char *theRootPack = "Standard";
 char        thePackNameFound[128];
 
-Handle(TColStd_HSequenceOfHAsciiString) ListOfGlobalUsed;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfTypeUsed;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfInst;
-Handle(TColStd_HSequenceOfHAsciiString) ListOfGen;
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfGlobalUsed() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfGlobalUsed;
+  return ListOfGlobalUsed;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfTypeUsed() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfTypeUsed;
+  return ListOfTypeUsed;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfInst() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfInst;
+  return ListOfInst;
+}
+
+static Handle(TColStd_HSequenceOfHAsciiString)& ListOfGen() {
+  static Handle(TColStd_HSequenceOfHAsciiString) ListOfGen;
+  return ListOfGen;
+}
 
 void CDL_MustNotCheckUses() 
 {
@@ -386,58 +550,58 @@ void CDL_InitVariable()
   DynaType  = Standard_False;
   Mutable = 0;
   InOrOut = MS_IN;
-  Container = new TCollection_HAsciiString;
-  Schema.Nullify();
-  Engine.Nullify();
-  Component.Nullify();
-  Executable.Nullify();
-  ExecPart.Nullify();
-  ExecTable.Nullify();
+  Container() = new TCollection_HAsciiString;
+  Schema().Nullify();
+  Engine().Nullify();
+  Component().Nullify();
+  Executable().Nullify();
+  ExecPart().Nullify();
+  ExecTable().Nullify();
   ExecutableLanguage = CDL_CPP;
   ExecutableUseType = CDL_LIBRARY;
-  Interface.Nullify();
-  Package.Nullify();    
-  Alias.Nullify();
-  Pointer.Nullify();
-  Imported.Nullify();
-  Primitive.Nullify();
-  Enum.Nullify();
-  Exception.Nullify();
-  DynType.Nullify();
-  SimpleClass.Nullify();
-  Class.Nullify();
-  StdClass.Nullify();
-  GenStdClass.Nullify();
-  Error.Nullify();
-  GenClass.Nullify();
-  InstClass.Nullify();
-  Embeded.Nullify();
-  MethodName = new TCollection_HAsciiString;
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  MethodParams.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
-  theMetaSchema.Nullify();
-  Field.Nullify();
-  Param.Nullify();
+  Interface().Nullify();
+  Package().Nullify();    
+  Alias().Nullify();
+  Pointer().Nullify();
+  Imported().Nullify();
+  Primitive().Nullify();
+  Enum().Nullify();
+  Exception().Nullify();
+  DynType().Nullify();
+  SimpleClass().Nullify();
+  Class().Nullify();
+  StdClass().Nullify();
+  GenStdClass().Nullify();
+  Error().Nullify();
+  GenClass().Nullify();
+  InstClass().Nullify();
+  Embeded().Nullify();
+  MethodName() = new TCollection_HAsciiString;
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  MethodParams().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
+  theMetaSchema().Nullify();
+  Field().Nullify();
+  Param().Nullify();
   ParamType = 0;
-  ParamValue.Nullify();
-  Client.Nullify();
-  ListOfTypes     = new TColStd_HSequenceOfHAsciiString;
-  ListOfPackages  = new TColStd_HSequenceOfHAsciiString;
-  ListOfItem      = new TColStd_HSequenceOfHAsciiString;
-  ListOfName      = new TColStd_HSequenceOfHAsciiString;
-  ListOfCplusplus = new TColStd_HSequenceOfHAsciiString;
-  ListOfComments  = new TColStd_HSequenceOfHAsciiString;
-  ListOfCPPType   = new TColStd_HSequenceOfInteger;
-  ListOfInteger   = new TColStd_HSequenceOfHAsciiString;
-  ListOfGlobalUsed.Nullify();
-  ListOfTypeUsed.Nullify();
-  ListOfInst.Nullify();
-  ListOfGen.Nullify();
+  ParamValue().Nullify();
+  Client().Nullify();
+  ListOfTypes()     = new TColStd_HSequenceOfHAsciiString;
+  ListOfPackages()  = new TColStd_HSequenceOfHAsciiString;
+  ListOfItem()      = new TColStd_HSequenceOfHAsciiString;
+  ListOfName()      = new TColStd_HSequenceOfHAsciiString;
+  ListOfCplusplus() = new TColStd_HSequenceOfHAsciiString;
+  ListOfComments()  = new TColStd_HSequenceOfHAsciiString;
+  ListOfCPPType()   = new TColStd_HSequenceOfInteger;
+  ListOfInteger()   = new TColStd_HSequenceOfHAsciiString;
+  ListOfGlobalUsed().Nullify();
+  ListOfTypeUsed().Nullify();
+  ListOfInst().Nullify();
+  ListOfGen().Nullify();
 }
 
 // ////////////////////////////////////////
@@ -445,7 +609,7 @@ void CDL_InitVariable()
 // ////////////////////////////////////////
 void Clear_ListOfItem() 
 {
-  ListOfItem->Clear();
+  ListOfItem()->Clear();
 }
 
 void set_inc_state() 
@@ -478,13 +642,13 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theType
     // WARNING : dirty code -> here is !!! (sorry for future hacker, guilty : CLE)
     //
     if (strncmp("Standard_",theTypeName->ToCString(),9) == 0) {
-      if (theMetaSchema->IsDefined(theTypeName)) {
-	ListOfTypeUsed->Append(theTypeName);
+      if (theMetaSchema()->IsDefined(theTypeName)) {
+	ListOfTypeUsed()->Append(theTypeName);
 
 	return Standard_True;
       }
       else {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	  << "\"" <<  ", line " << CDLlineno << ": " \
 	    << "The package Standard has no declaration of " \
 	      << "'" << theTypeName << "'" << endm;
@@ -493,38 +657,38 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theType
       }
     }
 
-    if (theTypeName->IsSameString(SimpleClass->FullName())) return  Standard_True;
+    if (theTypeName->IsSameString(SimpleClass()->FullName())) return  Standard_True;
 
     if (Current_Entity == CDL_GENCLASS) {
-      if (theTypeName->IsSameString(GenClass->FullName())) return  Standard_True;
+      if (theTypeName->IsSameString(GenClass()->FullName())) return  Standard_True;
 
       Standard_Integer                        i;
-      Handle(TColStd_HSequenceOfHAsciiString) seqascii = GenClass->GetNestedName();
+      Handle(TColStd_HSequenceOfHAsciiString) seqascii = GenClass()->GetNestedName();
       Handle(TCollection_HAsciiString)        nestname,
                                               nestnestname = new TCollection_HAsciiString;
 
-      if (theMetaSchema->IsDefined(theTypeName)) {
-	Handle(MS_Type) theType = theMetaSchema->GetType(theTypeName);
+      if (theMetaSchema()->IsDefined(theTypeName)) {
+	Handle(MS_Type) theType = theMetaSchema()->GetType(theTypeName);
 	
 	if (theType->IsKind(STANDARD_TYPE(MS_Class))) {
 	  Handle(MS_Class) inst = *((Handle(MS_Class)*)&theType);
 	  
 	  if (!inst->GetNestingClass().IsNull()) {
-	    if (GenClass->FullName()->IsSameString(inst->GetNestingClass())) return Standard_True;
+	    if (GenClass()->FullName()->IsSameString(inst->GetNestingClass())) return Standard_True;
 	    nestnestname = inst->GetNestingClass();
 	  }
 	}
       }
 
       for (i = 1; i <= seqascii->Length(); i++) {
-	nestname = MS::BuildFullName(Container,seqascii->Value(i));
+	nestname = MS::BuildFullName(Container(),seqascii->Value(i));
 
 	if (theTypeName->IsSameString(nestname) || nestnestname->IsSameString(nestname)) {
 	  return Standard_True;
 	}
       }
 
-      Handle(MS_HSequenceOfGenType) genericitems = GenClass->GenTypes();
+      Handle(MS_HSequenceOfGenType) genericitems = GenClass()->GenTypes();
 
       for (i = 1; i <= genericitems->Length(); i++) {
 	if (genericitems->Value(i)->Name()->IsSameString(theTypeName)) {
@@ -533,7 +697,7 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theType
       }
     }
 
-    Handle(TColStd_HSequenceOfHAsciiString) seqOfType = SimpleClass->GetUsesNames();
+    Handle(TColStd_HSequenceOfHAsciiString) seqOfType = SimpleClass()->GetUsesNames();
 
      for (Standard_Integer i = 1; i <= seqOfType->Length(); i++) {
        if (seqOfType->Value(i)->IsSameString(theTypeName)) {
@@ -541,11 +705,11 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theType
        }
      }  
     
-      //for (i = 1; i <= ListOfComments->Length(); i++ ) {
-      //   SimpleClass->SetComment(ListOfComments->Value(i));
+      //for (i = 1; i <= ListOfComments()->Length(); i++ ) {
+      //   SimpleClass()->SetComment(ListOfComments()->Value(i));
       //}  
 
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString()\
       << "\"" <<  ", line " << CDLlineno << ": " \
 	<< "The 'uses' statement of your class has no declaration of : " \
 	  << theTypeName << endm;
@@ -573,24 +737,24 @@ Standard_Boolean VerifyUses(char* used)
     Standard_Boolean                         status = Standard_False;
     Standard_Integer                         i;
 
-    if (theMetaSchema->IsPackage(Container)) {
-      aPackage = theMetaSchema->GetPackage(Container);
+    if (theMetaSchema()->IsPackage(Container())) {
+      aPackage = theMetaSchema()->GetPackage(Container());
       aSeqOfPackage = aPackage->Uses();
-      //for (i = 1; i <= ListOfComments->Length(); i++ ) {
-         //aPackage->SetComment(ListOfComments->Value(i));
+      //for (i = 1; i <= ListOfComments()->Length(); i++ ) {
+         //aPackage->SetComment(ListOfComments()->Value(i));
       //}  
 
     } 
-    else if (theMetaSchema->IsInterface(Container)) {
-      anInterface = theMetaSchema->GetInterface(Container);
+    else if (theMetaSchema()->IsInterface(Container())) {
+      anInterface = theMetaSchema()->GetInterface(Container());
       aSeqOfPackage = anInterface->Uses();
     }
-    else if (theMetaSchema->IsEngine(Container)) {
-      anEngine = theMetaSchema->GetEngine(Container);
+    else if (theMetaSchema()->IsEngine(Container())) {
+      anEngine = theMetaSchema()->GetEngine(Container());
       aSeqOfPackage = anEngine->Uses();
     }
-    else if (theMetaSchema->IsComponent(Container)) {
-      aComponent = theMetaSchema->GetComponent(Container);
+    else if (theMetaSchema()->IsComponent(Container())) {
+      aComponent = theMetaSchema()->GetComponent(Container());
       aSeqOfPackage = aComponent->Uses();
     }
     
@@ -599,7 +763,7 @@ Standard_Boolean VerifyUses(char* used)
 	status = Standard_True;
       }
     }
-    ListOfComments->Clear();
+    ListOfComments()->Clear();
 
     return status;
   }
@@ -612,7 +776,7 @@ void Type_Pack(char *aName)
     Handle(TCollection_HAsciiString) msg = new TCollection_HAsciiString("the entity : ");
     msg->AssignCat(aName);
     msg->AssignCat(" is not in the 'uses' clause of ");
-    msg->AssignCat(Container);
+    msg->AssignCat(Container());
     CDLerror((char*)msg->ToCString());
   }
 
@@ -629,11 +793,11 @@ char *TypeCompletion(char *aName)
     Handle(TCollection_HAsciiString) aPackageName, thethetypename = new TCollection_HAsciiString(aName);
     
 
-    if (SimpleClass->Name()->IsSameString(thethetypename)) {
-       return (char *)Container->ToCString();
+    if (SimpleClass()->Name()->IsSameString(thethetypename)) {
+       return (char *)Container()->ToCString();
     }
 
-    aSeqOfPackage = SimpleClass->GetUsesNames();
+    aSeqOfPackage = SimpleClass()->GetUsesNames();
     for (i = 1; i <= aSeqOfPackage->Length(); i++) {
       aPackageName = aSeqOfPackage->Value(i)->Token("_");
       if (aSeqOfPackage->Value(i)->IsSameString(MS::BuildFullName(aPackageName,thethetypename))) {
@@ -642,11 +806,11 @@ char *TypeCompletion(char *aName)
       }
     }
 
-    if (theMetaSchema->IsDefined(MS::BuildFullName(MS::GetPackageRootName(),thethetypename))) return (char *)theRootPack;
+    if (theMetaSchema()->IsDefined(MS::BuildFullName(MS::GetPackageRootName(),thethetypename))) return (char *)theRootPack;
 
     if (Current_Entity == CDL_GENCLASS) { 
-      for (i = 1; i <= ListOfItem->Length(); i++) {
-	if (strcmp(ListOfItem->Value(i)->ToCString(),aName) == 0) {
+      for (i = 1; i <= ListOfItem()->Length(); i++) {
+	if (strcmp(ListOfItem()->Value(i)->ToCString(),aName) == 0) {
 	  return (char *)aDummyPackageName;
 	}
       }
@@ -658,20 +822,20 @@ char *TypeCompletion(char *aName)
   Handle(MS_Engine)                        anEngine;
   Handle(MS_Component)                     aComponent;
   
-  if (theMetaSchema->IsPackage(Container)) {
-    aPackage = theMetaSchema->GetPackage(Container);
+  if (theMetaSchema()->IsPackage(Container())) {
+    aPackage = theMetaSchema()->GetPackage(Container());
     aSeqOfPackage = aPackage->Uses();
   } 
-  else if (theMetaSchema->IsInterface(Container)) {
-    anInterface = theMetaSchema->GetInterface(Container);
+  else if (theMetaSchema()->IsInterface(Container())) {
+    anInterface = theMetaSchema()->GetInterface(Container());
     aSeqOfPackage = anInterface->Uses();
   }
-  else if (theMetaSchema->IsEngine(Container)) {
-    anEngine = theMetaSchema->GetEngine(Container);
+  else if (theMetaSchema()->IsEngine(Container())) {
+    anEngine = theMetaSchema()->GetEngine(Container());
     aSeqOfPackage = anEngine->Uses();
   }
-  else if (theMetaSchema->IsComponent(Container)) {
-    aComponent = theMetaSchema->GetComponent(Container);
+  else if (theMetaSchema()->IsComponent(Container())) {
+    aComponent = theMetaSchema()->GetComponent(Container());
     aSeqOfPackage = aComponent->Uses();
   }
   else {
@@ -684,7 +848,7 @@ char *TypeCompletion(char *aName)
     aFullName->AssignCat("_");
     aFullName->AssignCat(aName);
     
-    if (theMetaSchema->IsDefined(aFullName)) {
+    if (theMetaSchema()->IsDefined(aFullName)) {
       return (char*)(aSeqOfPackage->Value(i)->ToCString());
     }
     
@@ -706,17 +870,17 @@ void Type_Pack_Blanc()
       Current_Entity == CDL_EXECUTABLE || 
       Current_Entity == CDL_CLIENT) {
     Handle(TCollection_HAsciiString)         aFullName     = new TCollection_HAsciiString;
-    aFullName->AssignCat(Container);
+    aFullName->AssignCat(Container());
     aFullName->AssignCat("_");
     aFullName->AssignCat(thetypename);
     
-    if (!theMetaSchema->IsDefined(aFullName)) {
+    if (!theMetaSchema()->IsDefined(aFullName)) {
       aFullName->Clear();
       aFullName->AssignCat(MS::GetPackageRootName());
       aFullName->AssignCat("_");
       aFullName->AssignCat(thetypename);
 
-      if (!theMetaSchema->IsDefined(aFullName)) {
+      if (!theMetaSchema()->IsDefined(aFullName)) {
 	Handle(TCollection_HAsciiString) msg = new TCollection_HAsciiString("the type '");
 	msg->AssignCat(thetypename);	
 	msg->AssignCat("' must be followed by a package name.");
@@ -729,7 +893,7 @@ void Type_Pack_Blanc()
     thePackName = TypeCompletion(thetypename);
     
     if (thePackName == NULL) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the type '" << thetypename << "' is not defined." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the type '" << thetypename << "' is not defined." << endm;
       YY_nb_error++;
     }
     else {
@@ -737,7 +901,7 @@ void Type_Pack_Blanc()
     }
   }
   else {
-    Type_Pack((char *)(Container->ToCString()));
+    Type_Pack((char *)(Container()->ToCString()));
   }
 
 }
@@ -747,8 +911,8 @@ void Add_Type()
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(Pack_Name);
   Handle(TCollection_HAsciiString) athetypename = new TCollection_HAsciiString(thetypename);
 
-  ListOfTypes->Append(athetypename);
-  ListOfPackages->Append(aPackName);
+  ListOfTypes()->Append(athetypename);
+  ListOfPackages()->Append(aPackName);
 }
 
 void add_documentation(char *comment)
@@ -763,7 +927,7 @@ void add_documentation(char *comment)
   if (!aRealComment->IsEmpty()) {
     aRealComment->AssignCat (" <br>");
     aRealComment->Insert(1,"//!");
-    ListOfComments->Append(aRealComment);
+    ListOfComments()->Append(aRealComment);
   }
 }
 
@@ -778,7 +942,7 @@ void add_documentation1(char *comment)
   aRealComment->RightAdjust();
   aRealComment->AssignCat (" <br>");
   aRealComment->Insert(1,"\n//!");
-  ListOfComments->Append(aRealComment);
+  ListOfComments()->Append(aRealComment);
 }
 
 //=======================================================================
@@ -790,8 +954,8 @@ void add_cpp_comment(int cpptype, char *comment)
   Handle(TCollection_HAsciiString) aComment;
   Handle(TCollection_HAsciiString) aRealComment;
 
-  if (Method.IsNull()) {
-    WarningMsg << "CDL" << "line " << CDLlineno \
+  if (Method().IsNull()) {
+    WarningMsg() << "CDL" << "line " << CDLlineno \
       << " : " << "C++ directive outside method definition : "\
 	<< comment << endm;
     YY_nb_warning++;
@@ -806,8 +970,8 @@ void add_cpp_comment(int cpptype, char *comment)
       aRealComment->LeftAdjust();
     }
     
-    ListOfCplusplus->Append(aRealComment);
-    ListOfCPPType->Append(cpptype);
+    ListOfCplusplus()->Append(aRealComment);
+    ListOfCPPType()->Append(cpptype);
   }
 }
 
@@ -820,7 +984,7 @@ void add_name_to_list(char *name)
   Handle(TCollection_HAsciiString) aName = 
     new TCollection_HAsciiString(name);
 
-  ListOfName->Append(aName);
+  ListOfName()->Append(aName);
 }
 
 //=======================================================================
@@ -831,15 +995,15 @@ void Begin_List_Int(char *anInt)
 {
   Handle(TCollection_HAsciiString) Int = new TCollection_HAsciiString(anInt);
 
-  ListOfInteger->Clear();
-  ListOfInteger->Append(Int);
+  ListOfInteger()->Clear();
+  ListOfInteger()->Append(Int);
 }
 
 void Make_List_Int(char *anInt)
 {
   Handle(TCollection_HAsciiString) Int = new TCollection_HAsciiString(anInt);
 
-  ListOfInteger->Append(Int);
+  ListOfInteger()->Append(Int);
 }
 
 // The actions for the Schema
@@ -848,26 +1012,26 @@ void Schema_Begin(char *name)
 {
   Handle(TCollection_HAsciiString) aSchemaName = new TCollection_HAsciiString(name);
 
-  Schema = new MS_Schema(aSchemaName);
-  Schema->MetaSchema(theMetaSchema);
-  Container = aSchemaName;
+  Schema() = new MS_Schema(aSchemaName);
+  Schema()->MetaSchema(theMetaSchema());
+  Container() = aSchemaName;
 
-  if (!theMetaSchema->AddSchema(Schema)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Schema : " << aSchemaName << " is already defined." << endm;
+  if (!theMetaSchema()->AddSchema(Schema())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Schema : " << aSchemaName << " is already defined." << endm;
     YY_nb_error++;
   }
- ListOfComments->Clear();
+ ListOfComments()->Clear();
 }
 
 void Schema_Package(char *name)
 {
   Standard_Integer i;
   Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString(name);
-  Schema->Package(aName);
-  for(i = 1; i <= ListOfComments->Length(); i++) {
-     Schema->SetComment(ListOfComments->Value(i));
+  Schema()->Package(aName);
+  for(i = 1; i <= ListOfComments()->Length(); i++) {
+     Schema()->SetComment(ListOfComments()->Value(i));
   }
-  ListOfComments->Clear();
+  ListOfComments()->Clear();
 }
 
 void Schema_Class()
@@ -875,13 +1039,13 @@ void Schema_Class()
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(Pack_Name);
 
-  Schema->Class(MS::BuildFullName(aPackageName,aClassName));
+  Schema()->Class(MS::BuildFullName(aPackageName,aClassName));
 }
 
 void Schema_End()
 {
-  Schema.Nullify();
-  Container.Nullify();
+  Schema().Nullify();
+  Container().Nullify();
 }
 
 // The actions for the Engine
@@ -890,38 +1054,38 @@ void Engine_Begin(char *engineName)
 {
   Handle(TCollection_HAsciiString) anEngineName = new TCollection_HAsciiString(engineName);
   
-  Engine = new MS_Engine(anEngineName);
-  Engine->MetaSchema(theMetaSchema);
-  Container = anEngineName;
+  Engine() = new MS_Engine(anEngineName);
+  Engine()->MetaSchema(theMetaSchema());
+  Container() = anEngineName;
 
-  if (!theMetaSchema->AddEngine(Engine)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Engine : " << anEngineName << " is already defined." << endm;
+  if (!theMetaSchema()->AddEngine(Engine())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Engine : " << anEngineName << " is already defined." << endm;
     YY_nb_error++;
   }
 
-  Engine->Use(MS::GetPackageRootName());
+  Engine()->Use(MS::GetPackageRootName());
 }
 
 void Engine_Schema(char *name)
 {
   Handle(TCollection_HAsciiString) sname = new TCollection_HAsciiString(name);
 
-  Engine->Schema(sname);
-  ListOfGlobalUsed->Append(sname);
+  Engine()->Schema(sname);
+  ListOfGlobalUsed()->Append(sname);
 }
 
 void Engine_Interface(char *inter)
 {
   Handle(TCollection_HAsciiString) sname = new TCollection_HAsciiString(inter);
 
-  Engine->Interface(sname);
-  ListOfGlobalUsed->Append(sname);
+  Engine()->Interface(sname);
+  ListOfGlobalUsed()->Append(sname);
 }
 
 void Engine_End()
 {
-  Engine.Nullify();
-  Container.Nullify();
+  Engine().Nullify();
+  Container().Nullify();
 }
 
 // The actions for the Component
@@ -930,16 +1094,16 @@ void Component_Begin(char *ComponentName)
 {
   Handle(TCollection_HAsciiString) anComponentName = new TCollection_HAsciiString(ComponentName);
   
-  Component = new MS_Component(anComponentName);
-  Component->MetaSchema(theMetaSchema);
-  Container = anComponentName;
+  Component() = new MS_Component(anComponentName);
+  Component()->MetaSchema(theMetaSchema());
+  Container() = anComponentName;
 
-  if (!theMetaSchema->AddComponent(Component)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Component : " << anComponentName << " is already defined." << endm;
+  if (!theMetaSchema()->AddComponent(Component())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Component : " << anComponentName << " is already defined." << endm;
     YY_nb_error++;
   }
 
-  Component->Use(MS::GetPackageRootName());
+  Component()->Use(MS::GetPackageRootName());
 }
 
 void Component_Interface(char *inter, char *udname)
@@ -948,14 +1112,14 @@ void Component_Interface(char *inter, char *udname)
   Handle(TCollection_HAsciiString) sname = new TCollection_HAsciiString(inter);
 
   sname = MS::BuildFullName(uname,sname);
-  Component->Interface(sname);
-  ListOfGlobalUsed->Append(sname);
+  Component()->Interface(sname);
+  ListOfGlobalUsed()->Append(sname);
 }
 
 void Component_End()
 {
-  Component.Nullify();
-  Container.Nullify();
+  Component().Nullify();
+  Container().Nullify();
 }
 
 // UD : stub client
@@ -964,12 +1128,12 @@ void Client_Begin(char *clientName)
 {
   Handle(TCollection_HAsciiString) aClientName = new TCollection_HAsciiString(clientName);
   
-  Client = new MS_Client(aClientName);
-  Client->MetaSchema(theMetaSchema);
-  Container = aClientName;
+  Client() = new MS_Client(aClientName);
+  Client()->MetaSchema(theMetaSchema());
+  Container() = aClientName;
   
-  if (!theMetaSchema->AddClient(Client)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Client : " << clientName << " is already defined." << endm;
+  if (!theMetaSchema()->AddClient(Client())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Client : " << clientName << " is already defined." << endm;
     YY_nb_error++;
   }
   
@@ -980,46 +1144,46 @@ void Client_Interface(char *inter)
 {
   Handle(TCollection_HAsciiString) aIName = new TCollection_HAsciiString(inter);
 
-  Client->Interface(aIName);
+  Client()->Interface(aIName);
 }
 
 void Client_Method(char *entity, int execmode)
 {
   if (execmode == 1) {
-    if (entity != NULL && !ExternMet.IsNull()) {
-      ExternMet->Package(new TCollection_HAsciiString(entity));
+    if (entity != NULL && !ExternMet().IsNull()) {
+      ExternMet()->Package(new TCollection_HAsciiString(entity));
     }
-    Method->Params(MethodParams);
-    MethodParams.Nullify();
-    Method->CreateFullName();
+    Method()->Params(MethodParams());
+    MethodParams().Nullify();
+    Method()->CreateFullName();
     
-    Client->Method(Method->FullName());
+    Client()->Method(Method()->FullName());
   }
   else if (execmode < 0) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "constructor cannot have the asynchronous execution mode." << endm;
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "constructor cannot have the asynchronous execution mode." << endm;
     YY_nb_error++;
   }
 
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
 }
 
 
 void Client_End() 
 {
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
-  Interface.Nullify();
-  Container.Nullify();
-  Client.Nullify();
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
+  Interface().Nullify();
+  Container().Nullify();
+  Client().Nullify();
 
   Current_Entity = CDL_NULL;
   Private   = Standard_False;
@@ -1039,15 +1203,15 @@ void Executable_Begin(char *name)
 
   Handle(TCollection_HAsciiString) anExecName = new TCollection_HAsciiString(name);
 
-  Executable = new MS_Executable(anExecName);
-  Executable->MetaSchema(theMetaSchema);
+  Executable() = new MS_Executable(anExecName);
+  Executable()->MetaSchema(theMetaSchema());
 
-  if (!theMetaSchema->AddExecutable(Executable)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Executable : " << anExecName << " is already defined." << endm;
+  if (!theMetaSchema()->AddExecutable(Executable())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Executable : " << anExecName << " is already defined." << endm;
     YY_nb_error++;
   }
 
-  ExecTable = new MS_HSequenceOfExecPart;
+  ExecTable() = new MS_HSequenceOfExecPart;
 
   Current_Entity = CDL_EXECUTABLE;
 }
@@ -1059,9 +1223,9 @@ void ExecFile_Begin(char *name)
 
   Handle(TCollection_HAsciiString) anExecName = new TCollection_HAsciiString(name);
 
-  ExecPart = new MS_ExecPart(anExecName);
-  ExecPart->MetaSchema(theMetaSchema);
-  ExecTable->Append(ExecPart);
+  ExecPart() = new MS_ExecPart(anExecName);
+  ExecPart()->MetaSchema(theMetaSchema());
+  ExecTable()->Append(ExecPart());
 }
 
 
@@ -1069,7 +1233,7 @@ void ExecFile_Schema(char *name)
 {
   Handle(TCollection_HAsciiString) a = new TCollection_HAsciiString(name);
 
-  ExecPart->Schema(a);
+  ExecPart()->Schema(a);
 }
 
 void ExecFile_AddUse(char *name)
@@ -1077,10 +1241,10 @@ void ExecFile_AddUse(char *name)
   Handle(TCollection_HAsciiString) a = new TCollection_HAsciiString(name);
 
   if (ExecutableUseType == CDL_LIBRARY) {
-    ExecPart->AddLibrary(a);
+    ExecPart()->AddLibrary(a);
   }
   else {
-    ExecPart->AddExternal(a);
+    ExecPart()->AddExternal(a);
   }
 }
 
@@ -1109,7 +1273,7 @@ void ExecFile_AddComponent(char *name)
                  break;
   }
 
-  ExecPart->AddFile(aFile);
+  ExecPart()->AddFile(aFile);
 }
 
 void ExecFile_SetLang(int l)
@@ -1119,23 +1283,23 @@ void ExecFile_SetLang(int l)
 
 void ExecFile_End()
 {
-  ExecPart.Nullify();
+  ExecPart().Nullify();
 }
 
 void Executable_End()
 {
-  Executable->AddParts(ExecTable);
+  Executable()->AddParts(ExecTable());
 
-  ExecTable.Nullify();
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
-  Interface.Nullify();
-  Executable.Nullify();
-  Client.Nullify();
+  ExecTable().Nullify();
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
+  Interface().Nullify();
+  Executable().Nullify();
+  Client().Nullify();
 
   Current_Entity = CDL_NULL;
   Private   = Standard_False;
@@ -1152,16 +1316,16 @@ void Interface_Begin(char *anInterName)
 {
   Handle(TCollection_HAsciiString) anInterfaceName = new TCollection_HAsciiString(anInterName);
 
-  Interface = new MS_Interface(anInterfaceName);
-  Interface->MetaSchema(theMetaSchema);
-  Container = anInterfaceName;
+  Interface() = new MS_Interface(anInterfaceName);
+  Interface()->MetaSchema(theMetaSchema());
+  Container() = anInterfaceName;
 
-  if (!theMetaSchema->AddInterface(Interface)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Interface : " << anInterName << " is already defined." << endm;
+  if (!theMetaSchema()->AddInterface(Interface())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Interface : " << anInterName << " is already defined." << endm;
     YY_nb_error++;
   }
 
-  Interface->Use(MS::GetPackageRootName());
+  Interface()->Use(MS::GetPackageRootName());
   Current_Entity = CDL_INTERFACE;
 }
 
@@ -1169,8 +1333,8 @@ void Interface_Use(char*aPackageName)
 {
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
 
-  ListOfGlobalUsed->Append(aPackName);
-  Interface->Use(aPackName);
+  ListOfGlobalUsed()->Append(aPackName);
+  Interface()->Use(aPackName);
 }
 
 void Client_Use ( char* aClientName ) {
@@ -1178,7 +1342,7 @@ void Client_Use ( char* aClientName ) {
  Handle( TCollection_HAsciiString ) aCltName =
   new TCollection_HAsciiString ( aClientName );
 
- Client -> Use ( aCltName );
+ Client() -> Use ( aCltName );
 
 }  // end Client_Use
 
@@ -1186,7 +1350,7 @@ void Interface_Package(char *aPackageName)
 {
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
 
-  Interface->Package(aPackName);
+  Interface()->Package(aPackName);
 }
 
 void Interface_Class()
@@ -1194,8 +1358,8 @@ void Interface_Class()
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(Pack_Name);
 
-  Interface->Class(MS::BuildFullName(aPackageName,aClassName));
-  ListOfTypeUsed->Append(MS::BuildFullName(aPackageName,aClassName));
+  Interface()->Class(MS::BuildFullName(aPackageName,aClassName));
+  ListOfTypeUsed()->Append(MS::BuildFullName(aPackageName,aClassName));
 }
 
 void Method_TypeName()
@@ -1203,39 +1367,39 @@ void Method_TypeName()
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(Pack_Name);
 
-  ListOfTypeUsed->Append(MS::BuildFullName(aPackageName,aClassName));
+  ListOfTypeUsed()->Append(MS::BuildFullName(aPackageName,aClassName));
 }
 
 void Interface_Method(char *entityName)
 {
-  if (entityName != NULL && !ExternMet.IsNull()) {
-    ExternMet->Package(new TCollection_HAsciiString(entityName));
+  if (entityName != NULL && !ExternMet().IsNull()) {
+    ExternMet()->Package(new TCollection_HAsciiString(entityName));
   }
 
-  Method->Params(MethodParams);
-  MethodParams.Nullify();
-  Method->CreateFullName();
-  Interface->Method(Method->FullName());
+  Method()->Params(MethodParams());
+  MethodParams().Nullify();
+  Method()->CreateFullName();
+  Interface()->Method(Method()->FullName());
 
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
 }
 
 void Interface_End()
 {
-  Method.Nullify();
-  MemberMet.Nullify();
-  ExternMet.Nullify();
-  Construc.Nullify();
-  InstMet.Nullify();
-  ClassMet.Nullify();
-  Interface.Nullify();
-  Container.Nullify();
-  Client.Nullify();
+  Method().Nullify();
+  MemberMet().Nullify();
+  ExternMet().Nullify();
+  Construc().Nullify();
+  InstMet().Nullify();
+  ClassMet().Nullify();
+  Interface().Nullify();
+  Container().Nullify();
+  Client().Nullify();
 
   Current_Entity = CDL_NULL;
   Private   = Standard_False;
@@ -1255,48 +1419,48 @@ void Pack_Begin(char *aPackageName)
 
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
 
-  Container = aPackName;
+  Container() = aPackName;
 
-  Package = new MS_Package(aPackName);
+  Package() = new MS_Package(aPackName);
  
-  Package->MetaSchema(theMetaSchema);
+  Package()->MetaSchema(theMetaSchema());
 
-  for (i = 1; i <= ListOfComments->Length(); i++) {
-    Package->SetComment(ListOfComments->Value(i));
+  for (i = 1; i <= ListOfComments()->Length(); i++) {
+    Package()->SetComment(ListOfComments()->Value(i));
   }  
 
-  if (!theMetaSchema->AddPackage(Package)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Package : " << aPackageName << " is already defined." << endm;
+  if (!theMetaSchema()->AddPackage(Package())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Package : " << aPackageName << " is already defined." << endm;
     YY_nb_error++;
   }
-  Package->Use(MS::GetPackageRootName());
+  Package()->Use(MS::GetPackageRootName());
 
 
   Current_Entity = CDL_PACKAGE;
-  ListOfComments->Clear();
+  ListOfComments()->Clear();
 
 }
 
 void Pack_Use(char *aPackageName)
 {
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(aPackageName);
-  for (Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
-    Package->SetComment(ListOfComments->Value(i));
+  for (Standard_Integer i = 1; i <= ListOfComments()->Length(); i++) {
+    Package()->SetComment(ListOfComments()->Value(i));
   }  
 
-  ListOfGlobalUsed->Append(aPackName);
-  Package->Use(aPackName);
-  ListOfComments->Clear();
+  ListOfGlobalUsed()->Append(aPackName);
+  Package()->Use(aPackName);
+  ListOfComments()->Clear();
 
 }
 
 void Pack_End()
 {
   add_cpp_comment_to_method();
-  Package.Nullify();
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
-  ListOfComments->Clear();
+  Package().Nullify();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
+  ListOfComments()->Clear();
 
 }
 
@@ -1306,12 +1470,12 @@ void Alias_Begin()
 {
   Handle(TCollection_HAsciiString) anAliasName = new TCollection_HAsciiString(thetypename);
 
-  Alias = new MS_Alias(anAliasName,Container,Container,Private);
+  Alias() = new MS_Alias(anAliasName,Container(),Container(),Private);
 
-  Alias->MetaSchema(theMetaSchema);
+  Alias()->MetaSchema(theMetaSchema());
   
-  if (!theMetaSchema->AddType(Alias)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Alias : " << Alias->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(Alias())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Alias : " << Alias()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 
@@ -1324,14 +1488,14 @@ void Alias_Type()
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(Pack_Name);
 
 
-  Alias->Type(anAliasName,aPackageName);
-  ListOfTypeUsed->Append(Alias->Type());
+  Alias()->Type(anAliasName,aPackageName);
+  ListOfTypeUsed()->Append(Alias()->Type());
 }
 
 void Alias_End()
 {
-  Package->Alias(Alias->Name());
-  Alias.Nullify();
+  Package()->Alias(Alias()->Name());
+  Alias().Nullify();
 }
 
 // Pointer type
@@ -1340,12 +1504,12 @@ void Pointer_Begin()
 {
   Handle(TCollection_HAsciiString) aPointerName = new TCollection_HAsciiString(thetypename);
 
-  Pointer = new MS_Pointer(aPointerName,Container,Container,Private);
+  Pointer() = new MS_Pointer(aPointerName,Container(),Container(),Private);
 
-  Pointer->MetaSchema(theMetaSchema);
+  Pointer()->MetaSchema(theMetaSchema());
   
-  if (!theMetaSchema->AddType(Pointer)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Pointer : " << Pointer->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(Pointer())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Pointer : " << Pointer()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 
@@ -1357,14 +1521,14 @@ void Pointer_Type()
   Handle(TCollection_HAsciiString) athetypename = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(Pack_Name);
 
-  Pointer->Type(athetypename,aPackageName);
-  ListOfTypeUsed->Append(Pointer->Type());
+  Pointer()->Type(athetypename,aPackageName);
+  ListOfTypeUsed()->Append(Pointer()->Type());
 }
 
 void Pointer_End()
 {
-  Package->Pointer(Pointer->Name());
-  Pointer.Nullify();
+  Package()->Pointer(Pointer()->Name());
+  Pointer().Nullify();
 }
 
 
@@ -1372,16 +1536,16 @@ void Imported_Begin()
 {
   Handle(TCollection_HAsciiString) anImportedName = new TCollection_HAsciiString(thetypename);
 
-  Imported = new MS_Imported(anImportedName,Container,Container,Private);
+  Imported() = new MS_Imported(anImportedName,Container(),Container(),Private);
 
-  Imported->MetaSchema(theMetaSchema);
+  Imported()->MetaSchema(theMetaSchema());
 
-  if (!theMetaSchema->AddType(Imported)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Imported : " << Imported->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(Imported())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Imported : " << Imported()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
-  //for (i =1; i <= ListOfComments->Length(); i++) {
-  //     Imported->SetComment(ListOfComments->Value(i));
+  //for (i =1; i <= ListOfComments()->Length(); i++) {
+  //     Imported()->SetComment(ListOfComments()->Value(i));
   //}
 
   Private = Standard_False;
@@ -1389,8 +1553,8 @@ void Imported_Begin()
 
 void Imported_End()
 {
-  Package->Imported(Imported->Name());
-  Imported.Nullify();
+  Package()->Imported(Imported()->Name());
+  Imported().Nullify();
 }
 
 
@@ -1398,12 +1562,12 @@ void Prim_Begin()
 {  
   Handle(TCollection_HAsciiString) aPrimName = new TCollection_HAsciiString(thetypename);
 
-  Primitive = new MS_PrimType(aPrimName,Container,Container,Private);
+  Primitive() = new MS_PrimType(aPrimName,Container(),Container(),Private);
 
-  Primitive->MetaSchema(theMetaSchema);
+  Primitive()->MetaSchema(theMetaSchema());
 
-  if (!theMetaSchema->AddType(Primitive)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Primitive : " << Primitive->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(Primitive())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Primitive : " << Primitive()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 
@@ -1415,27 +1579,27 @@ void Prim_End()
   Standard_Integer i;
   Handle(TCollection_HAsciiString) iName;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    iName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    iName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
 
     if (i > 1) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Type " << Primitive->FullName() << " uses multiple inheritance." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Type " << Primitive()->FullName() << " uses multiple inheritance." << endm;
       YY_nb_error++;
     }
-    else if (!iName->IsSameString(Primitive->FullName())) {
-      Primitive->Inherit(ListOfTypes->Value(i),ListOfPackages->Value(i));
+    else if (!iName->IsSameString(Primitive()->FullName())) {
+      Primitive()->Inherit(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
     }
     else {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Primitive : " << Primitive->FullName() << " can not inherits from itself." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Primitive : " << Primitive()->FullName() << " can not inherits from itself." << endm;
     YY_nb_error++;
     }
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 
-  Package->Primitive(Primitive->Name());
-  Primitive.Nullify();
+  Package()->Primitive(Primitive()->Name());
+  Primitive().Nullify();
 }
 
 
@@ -1443,12 +1607,12 @@ void Except_Begin()
 {
   Handle(TCollection_HAsciiString) anExceptName = new TCollection_HAsciiString(thetypename);
   
-  Exception = new MS_Error(anExceptName,Container);
+  Exception() = new MS_Error(anExceptName,Container());
 
-  Exception->MetaSchema(theMetaSchema);
+  Exception()->MetaSchema(theMetaSchema());
 
-  if (!theMetaSchema->AddType(Exception)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception : " << Exception->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(Exception())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception : " << Exception()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 }
@@ -1458,27 +1622,27 @@ void Except_End()
   Standard_Integer i;
   Handle(TCollection_HAsciiString) iName;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    iName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    iName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
     
     if (i > 1) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception " << Exception->FullName() << " uses multiple inheritance." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception " << Exception()->FullName() << " uses multiple inheritance." << endm;
       YY_nb_error++;
     }
-    else if (!iName->IsSameString(Exception->FullName())) {
-      Exception->Inherit(ListOfTypes->Value(i),ListOfPackages->Value(i));
+    else if (!iName->IsSameString(Exception()->FullName())) {
+      Exception()->Inherit(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
     }
     else {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception : " << Exception->FullName() << " can not inherits from itself." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Exception : " << Exception()->FullName() << " can not inherits from itself." << endm;
       YY_nb_error++;
     }
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 
-  Package->Except(Exception->Name());
-  Exception.Nullify();
+  Package()->Except(Exception()->Name());
+  Exception().Nullify();
 }
 
 void Inc_Class_Dec()
@@ -1486,27 +1650,27 @@ void Inc_Class_Dec()
   Standard_Integer i;
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
 
-  StdClass = new MS_StdClass(aClassName,Container);
+  StdClass() = new MS_StdClass(aClassName,Container());
 
-  StdClass->MetaSchema(theMetaSchema);
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     //StdClass->SetComment(ListOfComments->Value(i));
+  StdClass()->MetaSchema(theMetaSchema());
+  for (i =1; i <= ListOfComments()->Length(); i++) {
+     //StdClass()->SetComment(ListOfComments()->Value(i));
   }
 
-  if (!theMetaSchema->AddType(StdClass)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << StdClass->FullName() << " is already defined." << endm;
+  if (!theMetaSchema()->AddType(StdClass())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << StdClass()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 
-  StdClass->Private(Private);
-  StdClass->Deferred(Deferred);
-  StdClass->Incomplete(Standard_True);
-  Package->Class(StdClass->Name());
-  StdClass->Package(Package->FullName());
+  StdClass()->Private(Private);
+  StdClass()->Deferred(Deferred);
+  StdClass()->Incomplete(Standard_True);
+  Package()->Class(StdClass()->Name());
+  StdClass()->Package(Package()->FullName());
   
-  ListOfTypeUsed->Append(StdClass->FullName());
+  ListOfTypeUsed()->Append(StdClass()->FullName());
 
-  StdClass.Nullify();
+  StdClass().Nullify();
 
   Private   = Standard_False;
   Protected = Standard_False;
@@ -1514,7 +1678,7 @@ void Inc_Class_Dec()
   Deferred  = Standard_False;
   Redefined = Standard_False;
   Like      = Standard_False;
-  ListOfComments->Clear();
+  ListOfComments()->Clear();
 }
 
 void Inc_GenClass_Dec()
@@ -1522,33 +1686,33 @@ void Inc_GenClass_Dec()
   Standard_Integer    i;
   Handle(MS_GenClass) theClass;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    GenClass = new MS_GenClass(ListOfTypes->Value(i),ListOfPackages->Value(i));
-    GenClass->MetaSchema(theMetaSchema);
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    GenClass() = new MS_GenClass(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
+    GenClass()->MetaSchema(theMetaSchema());
 
     if (i == 1) {
-      theClass = GenClass;
+      theClass = GenClass();
     }
     else {
-      theClass->AddNested(GenClass->Name());
-      GenClass->Mother(theClass->FullName());
-      GenClass->NestingClass(theClass->FullName());
+      theClass->AddNested(GenClass()->Name());
+      GenClass()->Mother(theClass->FullName());
+      GenClass()->NestingClass(theClass->FullName());
     }
 
-    if (!theMetaSchema->AddType(GenClass)) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Generic class : " << GenClass->FullName() << " is already defined." << endm;
+    if (!theMetaSchema()->AddType(GenClass())) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Generic class : " << GenClass()->FullName() << " is already defined." << endm;
       YY_nb_error++;
     }
     
-    GenClass->Private(Private);
-    GenClass->Deferred(Deferred);
-    GenClass->Incomplete(Standard_True);
+    GenClass()->Private(Private);
+    GenClass()->Deferred(Deferred);
+    GenClass()->Incomplete(Standard_True);
 
-    Package->Class(GenClass->Name());
-    GenClass->Package(Package->FullName());
+    Package()->Class(GenClass()->Name());
+    GenClass()->Package(Package()->FullName());
   }
 
-  ListOfGen->Append(theClass->FullName());
+  ListOfGen()->Append(theClass->FullName());
   Private   = Standard_False;
   Protected = Standard_False;
   Static    = Standard_True;
@@ -1556,10 +1720,10 @@ void Inc_GenClass_Dec()
   Redefined = Standard_False;
   Like      = Standard_False;
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 
-  GenClass.Nullify();
+  GenClass().Nullify();
 }
 
 // Generic type processing
@@ -1572,63 +1736,63 @@ void GenClass_Begin()
   Handle(MS_Type)                  aType;
 
   if (Current_Entity == CDL_GENCLASS) {
-    aPackName = GenClass->Package()->Name();
+    aPackName = GenClass()->Package()->Name();
   }
   else {
-    Container = aPackName;
+    Container() = aPackName;
   }
 
-  if (!theMetaSchema->IsPackage(Container)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Unknown package " << Container << endm;
+  if (!theMetaSchema()->IsPackage(Container())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Unknown package " << Container() << endm;
     YY_nb_error++;
     CDL_InitVariable();
     MS_TraductionError::Raise("Unknown package.");
   }
   
-  GenClass = new MS_GenClass(aClassName,aPackName);
+  GenClass() = new MS_GenClass(aClassName,aPackName);
   
-  if (!theMetaSchema->IsDefined(GenClass->FullName())) {    
-    GenClass->MetaSchema(theMetaSchema);
+  if (!theMetaSchema()->IsDefined(GenClass()->FullName())) {    
+    GenClass()->MetaSchema(theMetaSchema());
     
-    GenClass->Private(Private);
-    GenClass->Deferred(Deferred);
-    GenClass->Incomplete(Standard_False);    
+    GenClass()->Private(Private);
+    GenClass()->Deferred(Deferred);
+    GenClass()->Incomplete(Standard_False);    
 
-    theMetaSchema->AddType(GenClass);
+    theMetaSchema()->AddType(GenClass());
   }
   else {
-    GenClass = Handle(MS_GenClass)::DownCast(theMetaSchema->GetType(GenClass->FullName()));
+    GenClass() = Handle(MS_GenClass)::DownCast(theMetaSchema()->GetType(GenClass()->FullName()));
 
-    if (GenClass.IsNull()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << GenClass->FullName() << " already declared but not as a generic class." << endm;
+    if (GenClass().IsNull()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << GenClass()->FullName() << " already declared but not as a generic class." << endm;
       CDL_InitVariable();
       MS_TraductionError::Raise("Class already defined but as generic.");
     }
 
-    if (Private != GenClass->Private()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
+    if (Private != GenClass()->Private()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass()->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
       YY_nb_error++;
     }
 
-    if (Deferred != GenClass->Deferred()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass->FullName() << " is ";
+    if (Deferred != GenClass()->Deferred()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass()->FullName() << " is ";
 
       if (Deferred) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass->FullName() << " is declared 'deferred' in class definition but not in package declaration." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass()->FullName() << " is declared 'deferred' in class definition but not in package declaration." << endm;
       }
       else {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass->FullName() << " is declared 'deferred' in package declaration but not in class definition." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << GenClass()->FullName() << " is declared 'deferred' in package declaration but not in class definition." << endm;
       }
       YY_nb_error++;
     }
-    GenClass->GetNestedName()->Clear();
+    GenClass()->GetNestedName()->Clear();
   }
 
-  GenClass->Package(aPackName);
+  GenClass()->Package(aPackName);
 
   Current_Entity = CDL_GENCLASS;
   
-  SimpleClass = GenClass;
+  SimpleClass() = GenClass();
 
   Private   = Standard_False;
   Protected = Standard_False;
@@ -1636,52 +1800,52 @@ void GenClass_Begin()
   Deferred  = Standard_False;
   Redefined = Standard_False;
   Like      = Standard_False;
-  ListOfComments->Clear();
+  ListOfComments()->Clear();
 }
 
 void Add_GenType()
 {
   if (Any) {
-    GenClass->GenType(ListOfItem->Value(ListOfItem->Length()));
+    GenClass()->GenType(ListOfItem()->Value(ListOfItem()->Length()));
     Any = Standard_False;
   }
   else {
     Handle(TCollection_HAsciiString) aTName = new TCollection_HAsciiString(thetypename);
     Handle(TCollection_HAsciiString) aPName = new TCollection_HAsciiString(Pack_Name);
 
-    GenClass->GenType(ListOfItem->Value(ListOfItem->Length()),MS::BuildFullName(aPName,aTName));
+    GenClass()->GenType(ListOfItem()->Value(ListOfItem()->Length()),MS::BuildFullName(aPName,aTName));
   }
 }
 
 void Add_DynaGenType()
 {
-  GenClass->GenType(DynType);
+  GenClass()->GenType(DynType());
 
-  DynType.Nullify();
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  DynType().Nullify();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 void Add_Embeded()
 {
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 void GenClass_End()
 {
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
   Clear_ListOfItem();
 
-  GenClass->Incomplete(Standard_False);
+  GenClass()->Incomplete(Standard_False);
 
-  if (!StdClass.IsNull()) {
-    StdClass->Incomplete(Standard_False);
+  if (!StdClass().IsNull()) {
+    StdClass()->Incomplete(Standard_False);
   }
 
-  GenClass.Nullify();
-  StdClass.Nullify();
+  GenClass().Nullify();
+  StdClass().Nullify();
 
   Current_Entity = CDL_NULL;
 }
@@ -1689,43 +1853,43 @@ void GenClass_End()
 
 void InstClass_Begin()
 {
-  Handle(TCollection_HAsciiString) aPackName  = Container;
+  Handle(TCollection_HAsciiString) aPackName  = Container();
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   //Standard_Integer i;
 
   if (Current_Entity == CDL_GENCLASS) {
-    aPackName  = GenClass->Package()->Name();
+    aPackName  = GenClass()->Package()->Name();
   }
 
   if (Current_Entity != CDL_PACKAGE) {
-    if (!theMetaSchema->IsPackage(aPackName)) {
-       ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Package : " << Pack_Name << " is not defined." << endm;
+    if (!theMetaSchema()->IsPackage(aPackName)) {
+       ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Package : " << Pack_Name << " is not defined." << endm;
        CDL_InitVariable();
        MS_TraductionError::Raise("Package not defined.");
     }
   }
 
 
-  InstClass = new MS_InstClass(aClassName,aPackName);
+  InstClass() = new MS_InstClass(aClassName,aPackName);
 
-  if (theMetaSchema->IsDefined(InstClass->FullName()) && Current_Entity == CDL_PACKAGE) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Instantiation class " << InstClass->Name() << " is already declared in package " << aPackName << endm;
+  if (theMetaSchema()->IsDefined(InstClass()->FullName()) && Current_Entity == CDL_PACKAGE) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Instantiation class " << InstClass()->Name() << " is already declared in package " << aPackName << endm;
     YY_nb_error++;
   }
   
-  InstClass->MetaSchema(theMetaSchema);  
+  InstClass()->MetaSchema(theMetaSchema());  
 
-  if (!theMetaSchema->IsDefined(InstClass->FullName()) || Current_Entity == CDL_GENCLASS) {
-    if (Current_Entity == CDL_GENCLASS && theMetaSchema->IsDefined(InstClass->FullName())) {
-      theMetaSchema->RemoveType(InstClass->FullName(),Standard_False);
-      GenClass->NestedInsClass(InstClass->Name());
-      InstClass->Mother(GenClass->FullName());
+  if (!theMetaSchema()->IsDefined(InstClass()->FullName()) || Current_Entity == CDL_GENCLASS) {
+    if (Current_Entity == CDL_GENCLASS && theMetaSchema()->IsDefined(InstClass()->FullName())) {
+      theMetaSchema()->RemoveType(InstClass()->FullName(),Standard_False);
+      GenClass()->NestedInsClass(InstClass()->Name());
+      InstClass()->Mother(GenClass()->FullName());
     }
     else if (Current_Entity == CDL_GENCLASS) {
-      Handle(MS_Package) aPackage = theMetaSchema->GetPackage(aPackName);
+      Handle(MS_Package) aPackage = theMetaSchema()->GetPackage(aPackName);
 
       if (!aPackage->HasClass(aClassName)) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Nested instantiation class : " << InstClass->Name() << " is not declared in package " << aPackName << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Nested instantiation class : " << InstClass()->Name() << " is not declared in package " << aPackName << endm;
 	YY_nb_error++;
 	CDL_InitVariable();
 	MS_TraductionError::Raise("Instantiation not defined.");
@@ -1733,33 +1897,33 @@ void InstClass_Begin()
     }
     
     if (Current_Entity == CDL_GENCLASS) {
-      InstClass->NestingClass(GenClass->FullName());
-      GenClass->AddNested(InstClass->Name());
+      InstClass()->NestingClass(GenClass()->FullName());
+      GenClass()->AddNested(InstClass()->Name());
     }
 
-    InstClass->MetaSchema(theMetaSchema);
-    InstClass->Package(aPackName);
-    InstClass->Private(Private);
+    InstClass()->MetaSchema(theMetaSchema());
+    InstClass()->Package(aPackName);
+    InstClass()->Private(Private);
 
-    theMetaSchema->AddType(InstClass);
+    theMetaSchema()->AddType(InstClass());
     Private   = Standard_False;
   }
   else {
-    Handle(MS_Type) aType = theMetaSchema->GetType(InstClass->FullName());
+    Handle(MS_Type) aType = theMetaSchema()->GetType(InstClass()->FullName());
     
-    InstClass = Handle(MS_InstClass)::DownCast(aType);
+    InstClass() = Handle(MS_InstClass)::DownCast(aType);
 
-    if (InstClass.IsNull()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The instantiation " << aClassName << " was not declared..." << endm;
+    if (InstClass().IsNull()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The instantiation " << aClassName << " was not declared..." << endm;
       YY_nb_error++;
       CDL_InitVariable();
       MS_TraductionError::Raise("Instantiation not defined.");
     }
   }
   
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
-  ListOfComments->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
+  ListOfComments()->Clear();
 }
 
 void Add_Gen_Class()
@@ -1767,7 +1931,7 @@ void Add_Gen_Class()
   Handle(TCollection_HAsciiString) aPackName  = new TCollection_HAsciiString(Pack_Name);
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
 
-  InstClass->GenClass(aClassName,aPackName);
+  InstClass()->GenClass(aClassName,aPackName);
 }
 
 void Add_InstType()
@@ -1782,56 +1946,56 @@ void Add_InstType()
     restore_state();
   }
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    aFullName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    aFullName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
 
-    if (theMetaSchema->IsDefined(aFullName)) {
-      aType = theMetaSchema->GetType(aFullName);
+    if (theMetaSchema()->IsDefined(aFullName)) {
+      aType = theMetaSchema()->GetType(aFullName);
     }
     else {
-      char *athetypename = TypeCompletion((char *)(ListOfTypes->Value(i)->ToCString()));
+      char *athetypename = TypeCompletion((char *)(ListOfTypes()->Value(i)->ToCString()));
 
       if (athetypename == aDummyPackageName) {
-	ListOfPackages->Value(i)->Clear();
+	ListOfPackages()->Value(i)->Clear();
       }
     }
 
     if (!ComeFromDynaType) {
-      InstClass->InstType(ListOfTypes->Value(i),ListOfPackages->Value(i));
+      InstClass()->InstType(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
     }
     else {
-      if (ListOfPackages->Value(i)->IsEmpty()) {
-	DynType->InstType(ListOfTypes->Value(i));
+      if (ListOfPackages()->Value(i)->IsEmpty()) {
+	DynType()->InstType(ListOfTypes()->Value(i));
       }
       else {
-	DynType->InstType(MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i)));
+	DynType()->InstType(MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i)));
       }
     }
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 void InstClass_End()
 {
   if (Current_Entity == CDL_GENCLASS) {
-    InstClass->Instantiates();
+    InstClass()->Instantiates();
   }
   else  if (Current_Entity == CDL_PACKAGE) {
-    Package->Class(InstClass->Name());
+    Package()->Class(InstClass()->Name());
   }
 
   if (Current_Entity != CDL_GENCLASS) {
-    ListOfInst->Append(InstClass->FullName());
+    ListOfInst()->Append(InstClass()->FullName());
   }
 
 
-  InstClass->Incomplete(Standard_False);
-  ListOfGen->Append(InstClass->GenClass());
-  InstClass.Nullify();
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  InstClass()->Incomplete(Standard_False);
+  ListOfGen()->Append(InstClass()->GenClass());
+  InstClass().Nullify();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 
 
   Private   = Standard_False;
@@ -1850,7 +2014,7 @@ void DynaType_Begin()
   SaveState      = Current_Entity;
   Current_Entity = CDL_GENTYPE;
   
-  if (! ListOfItem->IsEmpty()) {
+  if (! ListOfItem()->IsEmpty()) {
     Standard_Integer i;
     Handle(TCollection_HAsciiString) aPackName;
     Handle(TCollection_HAsciiString) aGenName  = new TCollection_HAsciiString(thetypename);
@@ -1859,27 +2023,27 @@ void DynaType_Begin()
       aPackName = new TCollection_HAsciiString(Pack_Name);
     }
     else {
-      aPackage = theMetaSchema->GetPackage(Container);
+      aPackage = theMetaSchema()->GetPackage(Container());
       aSeqOfPackage = aPackage->Uses();
       
       for (i = 1; i <= aSeqOfPackage->Length(); i++) {
-	if (theMetaSchema->IsDefined(MS::BuildFullName(aSeqOfPackage->Value(i),aGenName))) {
+	if (theMetaSchema()->IsDefined(MS::BuildFullName(aSeqOfPackage->Value(i),aGenName))) {
 	  aPackName = aSeqOfPackage->Value(i);
 	}
       }
 
       if (aPackName.IsNull()) {
 	aPackName = new TCollection_HAsciiString;
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "constraint type " << thetypename << " comes from a package not declared in 'uses' clause of the package " << Container << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "constraint type " << thetypename << " comes from a package not declared in 'uses' clause of the package " << Container() << endm;
 	YY_nb_error++;
       }
     }
 
-    DynType = new MS_GenType(GenClass,ListOfItem->Value(ListOfItem->Length()),MS::BuildFullName(aPackName,aGenName));
+    DynType() = new MS_GenType(GenClass(),ListOfItem()->Value(ListOfItem()->Length()),MS::BuildFullName(aPackName,aGenName));
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 
@@ -1890,79 +2054,79 @@ void StdClass_Begin()
   Standard_Integer i;
 
   if (Current_Entity == CDL_GENCLASS) {
-    aPackName  = GenClass->Package()->Name();
+    aPackName  = GenClass()->Package()->Name();
   }
 
-  Container  = aPackName;
+  Container()  = aPackName;
 
-  if (!theMetaSchema->IsPackage(Container)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Unknown package " << Container << endm;
+  if (!theMetaSchema()->IsPackage(Container())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Unknown package " << Container() << endm;
     YY_nb_error++;
     CDL_InitVariable();
     MS_TraductionError::Raise("Unknown package.");
   }
   // si la classe n a pas ete cree par une dec incomplete
   //
-  StdClass = new MS_StdClass(aClassName,aPackName);
-  StdClass->MetaSchema(theMetaSchema);
+  StdClass() = new MS_StdClass(aClassName,aPackName);
+  StdClass()->MetaSchema(theMetaSchema());
 
-  if (!theMetaSchema->IsDefined(StdClass->FullName()) || Current_Entity == CDL_GENCLASS) {    
-    if (Current_Entity == CDL_GENCLASS && theMetaSchema->IsDefined(StdClass->FullName())) {
-      theMetaSchema->RemoveType(StdClass->FullName(),Standard_False);
-      GenClass->NestedStdClass(StdClass->Name());
-      StdClass->Mother(GenClass->FullName());
+  if (!theMetaSchema()->IsDefined(StdClass()->FullName()) || Current_Entity == CDL_GENCLASS) {    
+    if (Current_Entity == CDL_GENCLASS && theMetaSchema()->IsDefined(StdClass()->FullName())) {
+      theMetaSchema()->RemoveType(StdClass()->FullName(),Standard_False);
+      GenClass()->NestedStdClass(StdClass()->Name());
+      StdClass()->Mother(GenClass()->FullName());
     }
     else if (Current_Entity == CDL_GENCLASS) {
-      Handle(MS_Package) aPackage = theMetaSchema->GetPackage(aPackName);
+      Handle(MS_Package) aPackage = theMetaSchema()->GetPackage(aPackName);
 
       if (!aPackage->HasClass(aClassName)) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << StdClass->Name() << " is not declared in package " << aPackName << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << StdClass()->Name() << " is not declared in package " << aPackName << endm;
 	YY_nb_error++;
 	CDL_InitVariable();
 	MS_TraductionError::Raise("Class not defined.");
       }
-      GenClass->NestedStdClass(StdClass->Name());
-      StdClass->Mother(GenClass->FullName());      
+      GenClass()->NestedStdClass(StdClass()->Name());
+      StdClass()->Mother(GenClass()->FullName());      
     }
 
     if (Current_Entity == CDL_GENCLASS) {
-      StdClass->SetGenericState(Standard_True);
-      StdClass->NestingClass(GenClass->FullName());
-      GenClass->AddNested(StdClass->Name());
+      StdClass()->SetGenericState(Standard_True);
+      StdClass()->NestingClass(GenClass()->FullName());
+      GenClass()->AddNested(StdClass()->Name());
     }
     
-    StdClass->MetaSchema(theMetaSchema);
+    StdClass()->MetaSchema(theMetaSchema());
     
-    StdClass->Private(Private);
-    StdClass->Deferred(Deferred);
-    StdClass->Incomplete(Standard_False);
+    StdClass()->Private(Private);
+    StdClass()->Deferred(Deferred);
+    StdClass()->Incomplete(Standard_False);
 
-    theMetaSchema->AddType(StdClass);
+    theMetaSchema()->AddType(StdClass());
     
-    StdClass->Package(aPackName);
+    StdClass()->Package(aPackName);
   }
   else {
-    Handle(MS_Type) aType = theMetaSchema->GetType(StdClass->FullName());
+    Handle(MS_Type) aType = theMetaSchema()->GetType(StdClass()->FullName());
     
-    StdClass = Handle(MS_StdClass)::DownCast(aType);
+    StdClass() = Handle(MS_StdClass)::DownCast(aType);
     
-    if (StdClass.IsNull()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The class " << aClassName << " was not declared..." << endm;
+    if (StdClass().IsNull()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The class " << aClassName << " was not declared..." << endm;
       CDL_InitVariable();
       MS_TraductionError::Raise("Class not defined.");
     }
 
-    if (Private != StdClass->Private()) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
+    if (Private != StdClass()->Private()) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass()->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
       YY_nb_error++;
     }
     
-    if (Deferred != StdClass->Deferred()) {
+    if (Deferred != StdClass()->Deferred()) {
       if (Deferred) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass->FullName() << " is declared 'deferred' in class definition but not in package declaration." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass()->FullName() << " is declared 'deferred' in class definition but not in package declaration." << endm;
       }
       else {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass->FullName() << " is declared 'deferred' in package declaration but not in class definition." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << StdClass()->FullName() << " is declared 'deferred' in package declaration but not in class definition." << endm;
       }
       YY_nb_error++;
     }
@@ -1971,11 +2135,11 @@ void StdClass_Begin()
   if (Current_Entity != CDL_GENCLASS) {
     Current_Entity = CDL_STDCLASS;
   }
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     StdClass->SetComment(ListOfComments->Value(i));
+  for (i =1; i <= ListOfComments()->Length(); i++) {
+     StdClass()->SetComment(ListOfComments()->Value(i));
   }
 
-  SimpleClass = StdClass;
+  SimpleClass() = StdClass();
 
   Private   = Standard_False;
   Protected = Standard_False;
@@ -1984,9 +2148,9 @@ void StdClass_Begin()
   Redefined = Standard_False;
   Like      = Standard_False;
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
-  ListOfComments->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
+  ListOfComments()->Clear();
 
 }
 
@@ -1995,45 +2159,45 @@ void Add_Std_Ancestors()
   Standard_Integer                 i;
   Handle(TCollection_HAsciiString) aFullName;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    aFullName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    aFullName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
 
-    if (theMetaSchema->IsDefined(aFullName)) {
-      Handle(MS_Class) aClass = Handle(MS_Class)::DownCast(theMetaSchema->GetType(aFullName));
+    if (theMetaSchema()->IsDefined(aFullName)) {
+      Handle(MS_Class) aClass = Handle(MS_Class)::DownCast(theMetaSchema()->GetType(aFullName));
       if (aClass.IsNull()) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << aFullName << " must not be a normal class." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << aFullName << " must not be a normal class." << endm;
 	YY_nb_error++;
       } 
       
       if (i > 1) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << SimpleClass->FullName() << " uses multiple inheritance." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << SimpleClass()->FullName() << " uses multiple inheritance." << endm;
 	YY_nb_error++;
       }
-      else if (!SimpleClass->FullName()->IsSameString(aClass->FullName())) {
-	SimpleClass->Inherit(aClass);
+      else if (!SimpleClass()->FullName()->IsSameString(aClass->FullName())) {
+	SimpleClass()->Inherit(aClass);
       }
       else {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << SimpleClass->FullName() << " can not inherits from itself." << endm;
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class " << SimpleClass()->FullName() << " can not inherits from itself." << endm;
 	YY_nb_error++;
       }
 
-      SimpleClass->Use(ListOfTypes->Value(i),ListOfPackages->Value(i));
+      SimpleClass()->Use(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
       
-      ListOfTypeUsed->Append(aFullName);
+      ListOfTypeUsed()->Append(aFullName);
     }
     else {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << aFullName << " not defined, can't be in inherits clause." << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Class : " << aFullName << " not defined, can't be in inherits clause." << endm;
       YY_nb_error++;
     }
   }
-  //SimpleClass->MetaSchema(theMetaSchema);
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     SimpleClass->SetComment(ListOfComments->Value(i));
+  //SimpleClass()->MetaSchema(theMetaSchema());
+  for (i =1; i <= ListOfComments()->Length(); i++) {
+     SimpleClass()->SetComment(ListOfComments()->Value(i));
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
-  ListOfComments->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
+  ListOfComments()->Clear();
 }
 
 void Add_Std_Uses()
@@ -2041,47 +2205,47 @@ void Add_Std_Uses()
   Standard_Integer  i;
 
 
-  //SimpleClass->MetaSchema(theMetaSchema);
-  for (i =1; i <= ListOfComments->Length(); i++) {
-     SimpleClass->SetComment(ListOfComments->Value(i));
+  //SimpleClass()->MetaSchema(theMetaSchema());
+  for (i =1; i <= ListOfComments()->Length(); i++) {
+     SimpleClass()->SetComment(ListOfComments()->Value(i));
   }
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    Handle(TCollection_HAsciiString) aFullName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    Handle(TCollection_HAsciiString) aFullName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
 
-    if (Current_Entity != CDL_GENCLASS && !theMetaSchema->IsDefined(aFullName)) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has a type : " << aFullName << " from a package not declared in the 'uses' statement of the package " << Container << endm;
+    if (Current_Entity != CDL_GENCLASS && !theMetaSchema()->IsDefined(aFullName)) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has a type : " << aFullName << " from a package not declared in the 'uses' statement of the package " << Container() << endm;
       YY_nb_error++;
     }
     else if (Current_Entity != CDL_GENCLASS) {
-      if (!SimpleClass->Package()->IsUsed(ListOfPackages->Value(i))) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has a type : " << aFullName << " from a package not declared in the 'uses' statement of the package " << Container << endm;
+      if (!SimpleClass()->Package()->IsUsed(ListOfPackages()->Value(i))) {
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The 'uses' statement of your class has a type : " << aFullName << " from a package not declared in the 'uses' statement of the package " << Container() << endm;
 	YY_nb_error++;
       }
     }
     
-    SimpleClass->Use(ListOfTypes->Value(i),ListOfPackages->Value(i));
+    SimpleClass()->Use(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
 
-    ListOfTypeUsed->Append(aFullName);
+    ListOfTypeUsed()->Append(aFullName);
   }
 
-  ListOfComments->Clear();
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfComments()->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 void StdClass_End()
 {
   if (Current_Entity == CDL_GENCLASS) {
-    SimpleClass = GenClass;
+    SimpleClass() = GenClass();
   }
 
-  StdClass->Incomplete(Standard_False);
+  StdClass()->Incomplete(Standard_False);
 
-  StdClass.Nullify();
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
-  ListOfComments->Clear();
+  StdClass().Nullify();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
+  ListOfComments()->Clear();
 }
 
 
@@ -2089,19 +2253,19 @@ void Add_Raises()
 {
   Standard_Integer i;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    Handle(TCollection_HAsciiString) aFullName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
-    if (theMetaSchema->IsDefined(aFullName)) {
-      SimpleClass->Raises(ListOfTypes->Value(i),ListOfPackages->Value(i));
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    Handle(TCollection_HAsciiString) aFullName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
+    if (theMetaSchema()->IsDefined(aFullName)) {
+      SimpleClass()->Raises(ListOfTypes()->Value(i),ListOfPackages()->Value(i));
     }
     else {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aFullName << "'" << " is not defined."  << endm;
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aFullName << "'" << " is not defined."  << endm;
       YY_nb_error++;
     }
   }
 
-  ListOfTypes->Clear();
-  ListOfPackages->Clear();
+  ListOfTypes()->Clear();
+  ListOfPackages()->Clear();
 }
 
 void Add_Field()
@@ -2110,13 +2274,13 @@ void Add_Field()
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(thetypename);
   Handle(TCollection_HAsciiString) aPackName  = new TCollection_HAsciiString(Pack_Name);
 
-  for (i = 1; i <= ListOfName->Length(); i++) {
-    Field = new MS_Field(SimpleClass,ListOfName->Value(i));
+  for (i = 1; i <= ListOfName()->Length(); i++) {
+    Field() = new MS_Field(SimpleClass(),ListOfName()->Value(i));
 
-    Field->MetaSchema(theMetaSchema);
+    Field()->MetaSchema(theMetaSchema());
 
-    for (j = 1; j <= ListOfInteger->Length(); j++) {
-      Field->Dimension(ListOfInteger->Value(j)->IntegerValue());
+    for (j = 1; j <= ListOfInteger()->Length(); j++) {
+      Field()->Dimension(ListOfInteger()->Value(j)->IntegerValue());
     }
 
     if (strcmp(Pack_Name,aDummyPackageName) == 0) {
@@ -2126,43 +2290,43 @@ void Add_Field()
       VerifyClassUses(MS::BuildFullName(aPackName,aClassName));
     }
 
-    Field->TYpe(aClassName,aPackName);
+    Field()->TYpe(aClassName,aPackName);
 
 
-    Field->Protected(Protected);
+    Field()->Protected(Protected);
     
-    SimpleClass->Field(Field);
+    SimpleClass()->Field(Field());
   }
 
   Private = Standard_False;
   Protected = Standard_False;
-  ListOfInteger->Clear();
-  ListOfName->Clear();
+  ListOfInteger()->Clear();
+  ListOfName()->Clear();
 }
 
 void Add_RedefField()
 {
-  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Fields redefinition no more supported..." << endm;
+  ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Fields redefinition no more supported..." << endm;
   YY_nb_error++;
 }
 
 void Add_FriendMet()
 {
-  Method->Params(MethodParams);
-  MethodParams.Nullify();
-  Method->CreateFullName();
-  SimpleClass->FriendMet(Method->FullName());
+  Method()->Params(MethodParams());
+  MethodParams().Nullify();
+  Method()->CreateFullName();
+  SimpleClass()->FriendMet(Method()->FullName());
 }
 
 void Add_FriendExtMet(char *aPackName)
 {
   Handle(TCollection_HAsciiString) apack = new TCollection_HAsciiString(aPackName);
 
-  ExternMet->Package(apack);
-  Method->Params(MethodParams);
-  MethodParams.Nullify();
-  Method->CreateFullName();
-  SimpleClass->FriendMet(Method->FullName());
+  ExternMet()->Package(apack);
+  Method()->Params(MethodParams());
+  MethodParams().Nullify();
+  Method()->CreateFullName();
+  SimpleClass()->FriendMet(Method()->FullName());
 }
 
 //=======================================================================
@@ -2175,12 +2339,12 @@ void Add_Friend_Class()
   Handle(TCollection_HAsciiString) aPackName  = new TCollection_HAsciiString(Pack_Name);
   Handle(TCollection_HAsciiString) theTypeName = MS::BuildFullName(aPackName,aClassName);
 
-  if (theMetaSchema->IsDefined(theTypeName)) {
-    SimpleClass->Friend(aClassName,aPackName);
-    ListOfTypeUsed->Append(theTypeName);
+  if (theMetaSchema()->IsDefined(theTypeName)) {
+    SimpleClass()->Friend(aClassName,aPackName);
+    ListOfTypeUsed()->Append(theTypeName);
   }
   else {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "friend class " << theTypeName->ToCString() << " is not defined." << endm;
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "friend class " << theTypeName->ToCString() << " is not defined." << endm;
     YY_nb_error++;
   }
 }
@@ -2200,16 +2364,16 @@ void Enum_Begin()
 
   anEnumMap.Clear();
 
-  Enum = new MS_Enum(anEnumName,Container,Container,Private);
+  Enum() = new MS_Enum(anEnumName,Container(),Container(),Private);
 
-  Enum->MetaSchema(theMetaSchema);
-  Enum->Package(Package->FullName());
-  for(i = 1; i <= ListOfComments->Length(); i++) {
-     Enum->SetComment(ListOfComments->Value(i));
+  Enum()->MetaSchema(theMetaSchema());
+  Enum()->Package(Package()->FullName());
+  for(i = 1; i <= ListOfComments()->Length(); i++) {
+     Enum()->SetComment(ListOfComments()->Value(i));
   }  
-  ListOfComments->Clear();
-  if (!theMetaSchema->AddType(Enum)) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Enumeration : " << Enum->FullName() << " is already defined." << endm;
+  ListOfComments()->Clear();
+  if (!theMetaSchema()->AddType(Enum())) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Enumeration : " << Enum()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 }
@@ -2218,17 +2382,17 @@ void Enum_Begin()
 void Add_Enum(char *aValue)
 {
   Handle(TCollection_HAsciiString) anEnumValue = new TCollection_HAsciiString(aValue);
-  for(Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
-     Enum->SetComment(ListOfComments->Value(i));
+  for(Standard_Integer i = 1; i <= ListOfComments()->Length(); i++) {
+     Enum()->SetComment(ListOfComments()->Value(i));
   }  
-  ListOfComments->Clear();
+  ListOfComments()->Clear();
 
   if (!anEnumMap.Contains(anEnumValue)) {
     anEnumMap.Add(anEnumValue);
-    Enum->Enum(anEnumValue);
+    Enum()->Enum(anEnumValue);
   }
   else {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Enumeration value " << aValue << " in " << Enum->FullName() << " is already defined." << endm;
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Enumeration value " << aValue << " in " << Enum()->FullName() << " is already defined." << endm;
     YY_nb_error++;
   }
 }
@@ -2236,12 +2400,12 @@ void Add_Enum(char *aValue)
 void Enum_End()
 {
   //Enum->Check();
-  Package->Enum(Enum->Name());
-  for(Standard_Integer i = 1; i <= ListOfComments->Length(); i++) {
-     Enum->SetComment(ListOfComments->Value(i));
+  Package()->Enum(Enum()->Name());
+  for(Standard_Integer i = 1; i <= ListOfComments()->Length(); i++) {
+     Enum()->SetComment(ListOfComments()->Value(i));
   }  
-  ListOfComments->Clear();
-  Enum.Nullify();
+  ListOfComments()->Clear();
+  Enum().Nullify();
   anEnumMap.Clear();
 
   Private   = Standard_False;
@@ -2270,9 +2434,9 @@ void get_cpp_commentalias(const Handle(TCollection_HAsciiString)& aComment)
 //=======================================================================
 void add_cpp_comment_to_method()
 {
-  if (Method.IsNull()) {
-    if (ListOfCplusplus->Length() > 0) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+  if (Method().IsNull()) {
+    if (ListOfCplusplus()->Length() > 0) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	<< "\"" <<  ", line " << CDLlineno << ": " \
 	  << "C++ directive outside method definition." << endm;
       YY_nb_error++;
@@ -2283,46 +2447,46 @@ void add_cpp_comment_to_method()
     Standard_Integer                  i, aNbCPP;
     Handle(TCollection_HAsciiString)  aCP;
     
-    for(i = 1; i <= ListOfComments->Length(); ++i) {
-        Method->SetComment(ListOfComments->Value(i));
+    for(i = 1; i <= ListOfComments()->Length(); ++i) {
+        Method()->SetComment(ListOfComments()->Value(i));
     }
     //
-    aNbCPP=ListOfCplusplus->Length();
+    aNbCPP=ListOfCplusplus()->Length();
     for(i = 1; i <= aNbCPP; ++i) {
-      aCommentType = ListOfCPPType->Value(i);
+      aCommentType = ListOfCPPType()->Value(i);
       //
       switch (aCommentType) {
         case CDL_HARDALIAS: 
-	  get_cpp_commentalias(ListOfCplusplus->Value(i));
-	  Method->Alias(ListOfCplusplus->Value(i));
-	  Method->SetAliasType(Standard_False);
+	  get_cpp_commentalias(ListOfCplusplus()->Value(i));
+	  Method()->Alias(ListOfCplusplus()->Value(i));
+	  Method()->SetAliasType(Standard_False);
 	  break;
 	case CDL_OPERATOR:
-	  get_cpp_commentalias(ListOfCplusplus->Value(i));
-	  Method->Alias(ListOfCplusplus->Value(i));
-	  Method->SetAliasType(Standard_True);
+	  get_cpp_commentalias(ListOfCplusplus()->Value(i));
+	  Method()->Alias(ListOfCplusplus()->Value(i));
+	  Method()->SetAliasType(Standard_True);
 	  break;
 	case CDL_INLINE:
-	  Method->Inline(Standard_True);
+	  Method()->Inline(Standard_True);
 	  break;
 	case CDL_DESTRUCTOR:
-	  if (Method->IsFunctionCall()) {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	  if (Method()->IsFunctionCall()) {
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	      << "\"" <<  ", line " << methodlineno << ": "\
 		<< "C++ directive 'alias ~' cannot be used with 'function call'." \
 		  << endm;
 	    YY_nb_error++;
 	  }
-	  Method->Destructor(Standard_True);
+	  Method()->Destructor(Standard_True);
 	  break;
 	  
 	case CDL_CONSTREF:
-	  if (!Method->Returns().IsNull()) {
-	    Method->ConstReturn(Standard_True);
-	    Method->RefReturn(Standard_True);
+	  if (!Method()->Returns().IsNull()) {
+	    Method()->ConstReturn(Standard_True);
+	    Method()->RefReturn(Standard_True);
 	  }
 	  else {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	      << "\"" <<  ", line " << methodlineno << ": " \
 	      << "C++ directive 'return const &' cannot be used without 'returns' clause."\
 	      << endm;
@@ -2330,11 +2494,11 @@ void add_cpp_comment_to_method()
 	  }
 	  break;
 	case CDL_REF:
-	  if (!Method->Returns().IsNull()) {
-	    Method->RefReturn(Standard_True);
+	  if (!Method()->Returns().IsNull()) {
+	    Method()->RefReturn(Standard_True);
 	  }
 	  else {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString()\
 	      << "\"" <<  ", line " << methodlineno << ": "\
 	      << "C++ directive 'return &' cannot be used without 'returns' clause."\
               << endm;
@@ -2343,12 +2507,12 @@ void add_cpp_comment_to_method()
 	  break;
 	  //===f
 	case CDL_CONSTPTR:
-	  if (!Method->Returns().IsNull()) {
-	    Method->ConstReturn(Standard_True);
-	    Method->PtrReturn(Standard_True);
+	  if (!Method()->Returns().IsNull()) {
+	    Method()->ConstReturn(Standard_True);
+	    Method()->PtrReturn(Standard_True);
 	  }
 	  else {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	      << "\"" <<  ", line " << methodlineno << ": " \
 	      << "C++ directive 'return const &' cannot be used without 'returns' clause."\
 	      << endm;
@@ -2356,11 +2520,11 @@ void add_cpp_comment_to_method()
 	  }
 	  break;
 	case CDL_PTR:
-	  if (!Method->Returns().IsNull()) {
-	    Method->PtrReturn(Standard_True);
+	  if (!Method()->Returns().IsNull()) {
+	    Method()->PtrReturn(Standard_True);
 	  }
 	  else {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString()\
 	      << "\"" <<  ", line " << methodlineno << ": "\
 	      << "C++ directive 'return &' cannot be used without 'returns' clause." << endm;
 	    YY_nb_error++;
@@ -2368,34 +2532,34 @@ void add_cpp_comment_to_method()
 	  break;
 	  //===t
 	case CDL_CONSTRET:
-	  if (!Method->Returns().IsNull()) {
-	    Method->ConstReturn(Standard_True);
+	  if (!Method()->Returns().IsNull()) {
+	    Method()->ConstReturn(Standard_True);
 	  }
 	  else {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() \
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() \
 	      << "\"" <<  ", line " << methodlineno << ": "\
 		<< "C++ directive 'return const' cannot be used without 'returns' clause." << endm;
 	    YY_nb_error++;
 	  }
 	  break;
 	case CDL_FUNCTIONCALL:
-	  if (Method->IsDestructor()) {
-	    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString()\
+	  if (Method()->IsDestructor()) {
+	    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString()\
 	      << "\"" <<  ", line " << methodlineno << ": "\
 		<< "C++ directive 'function call' cannot be used with 'alias ~'." << endm;
 	    YY_nb_error++;
 	  }
-	  Method->FunctionCall(Standard_True);
+	  Method()->FunctionCall(Standard_True);
 	  break;
 	default:
 	  break;
        }//switch (aCommentType) {
     }//for(i = 1; i <= aNbCPP; ++i) {
     //
-    ListOfComments->Clear();
-    ListOfCplusplus->Clear();
-    ListOfCPPType->Clear();
-    theMetaSchema->AddMethod(Method);
+    ListOfComments()->Clear();
+    ListOfCplusplus()->Clear();
+    ListOfCPPType()->Clear();
+    theMetaSchema()->AddMethod(Method());
   }
 }
 
@@ -2405,105 +2569,105 @@ void add_cpp_comment_to_method()
 //=======================================================================
 void Construct_Begin()
 {
-  if (SimpleClass->Deferred()) {
-    if (!MethodName->IsSameString(DefCons)) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A deferred class must not have a constructor with name 'Create' or no 'me' or 'myclass' present for the method." << endm;
+  if (SimpleClass()->Deferred()) {
+    if (!MethodName()->IsSameString(DefCons())) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A deferred class must not have a constructor with name 'Create' or no 'me' or 'myclass' present for the method." << endm;
       YY_nb_error++;
     }
   }
   else {
-    if (!MethodName->IsSameString(NorCons)) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class must have a constructor with name 'Create' or no 'me' or 'myclass' present for the method." << endm;
+    if (!MethodName()->IsSameString(NorCons())) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class must have a constructor with name 'Create' or no 'me' or 'myclass' present for the method." << endm;
       YY_nb_error++;
     }
   }
 
-  if (!Method.IsNull()) {
+  if (!Method().IsNull()) {
     add_cpp_comment_to_method();
   }
   methodlineno = CDLlineno;
-  Construc  = new MS_Construc(MethodName,SimpleClass->FullName());
-  Method    = Construc;
-  MemberMet = Construc;
-  Method->MetaSchema(theMetaSchema);
+  Construc()  = new MS_Construc(MethodName(),SimpleClass()->FullName());
+  Method()    = Construc();
+  MemberMet() = Construc();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void Friend_Construct_Begin()
 {
-  Construc  = new MS_Construc(MethodName,ListOfTypeUsed->Value(ListOfTypeUsed->Length()));
-  Method    = Construc;
-  MemberMet = Construc;
-  Method->MetaSchema(theMetaSchema);
+  Construc()  = new MS_Construc(MethodName(),ListOfTypeUsed()->Value(ListOfTypeUsed()->Length()));
+  Method()    = Construc();
+  MemberMet() = Construc();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void InstMet_Begin()
 {
-  if (!Method.IsNull()) {
+  if (!Method().IsNull()) {
     add_cpp_comment_to_method();
   }
   methodlineno = CDLlineno;
-  InstMet   = new MS_InstMet(MethodName,SimpleClass->FullName());
-  Method    = InstMet;  
-  Method->MetaSchema(theMetaSchema);
-  MemberMet = InstMet;
+  InstMet()   = new MS_InstMet(MethodName(),SimpleClass()->FullName());
+  Method()    = InstMet();  
+  Method()->MetaSchema(theMetaSchema());
+  MemberMet() = InstMet();
 }
 
 void Friend_InstMet_Begin()
 {
-  InstMet   = new MS_InstMet(MethodName,ListOfTypeUsed->Value(ListOfTypeUsed->Length()));
-  Method    = InstMet;
-  MemberMet = InstMet;
-  Method->MetaSchema(theMetaSchema);
+  InstMet()   = new MS_InstMet(MethodName(),ListOfTypeUsed()->Value(ListOfTypeUsed()->Length()));
+  Method()    = InstMet();
+  MemberMet() = InstMet();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void ClassMet_Begin()
 {
-  if (!Method.IsNull()) {
+  if (!Method().IsNull()) {
     add_cpp_comment_to_method();
   }
   methodlineno = CDLlineno;
-  ClassMet  = new MS_ClassMet(MethodName,SimpleClass->FullName());
-  Method    = ClassMet;
-  Method->MetaSchema(theMetaSchema);
-  MemberMet = ClassMet;
+  ClassMet()  = new MS_ClassMet(MethodName(),SimpleClass()->FullName());
+  Method()    = ClassMet();
+  Method()->MetaSchema(theMetaSchema());
+  MemberMet() = ClassMet();
 }
 
 void Friend_ClassMet_Begin()
 {
-  ClassMet  = new MS_ClassMet(MethodName,ListOfTypeUsed->Value(ListOfTypeUsed->Length()));
-  Method    = ClassMet;
-  MemberMet = ClassMet;
-  Method->MetaSchema(theMetaSchema);
+  ClassMet()  = new MS_ClassMet(MethodName(),ListOfTypeUsed()->Value(ListOfTypeUsed()->Length()));
+  Method()    = ClassMet();
+  MemberMet() = ClassMet();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void ExtMet_Begin()
 {
-  if (!Method.IsNull()) {
+  if (!Method().IsNull()) {
     add_cpp_comment_to_method();
   }
   methodlineno = CDLlineno;
-  ExternMet = new MS_ExternMet(MethodName,Package->Name());
-  Method    = ExternMet;
-  Method->MetaSchema(theMetaSchema);
+  ExternMet() = new MS_ExternMet(MethodName(),Package()->Name());
+  Method()    = ExternMet();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void Friend_ExtMet_Begin()
 {
-  ExternMet = new MS_ExternMet(MethodName);
-  Method    = ExternMet;
-  Method->MetaSchema(theMetaSchema);
+  ExternMet() = new MS_ExternMet(MethodName());
+  Method()    = ExternMet();
+  Method()->MetaSchema(theMetaSchema());
 }
 
 void Add_Me()
 {
   if (Mutable == MS_MUTABLE) {
-    InstMet->ConstMode(MSINSTMET_MUTABLE);
+    InstMet()->ConstMode(MSINSTMET_MUTABLE);
   }
   else if (InOrOut == MS_INOUT || InOrOut == MS_OUT) {
-    InstMet->ConstMode(MSINSTMET_OUT);
+    InstMet()->ConstMode(MSINSTMET_OUT);
   }
   else {
-    InstMet->Const(Standard_True);
+    InstMet()->Const(Standard_True);
   }
 
   Mutable = 0;
@@ -2515,11 +2679,11 @@ void Add_MetRaises()
   Standard_Integer                 i,j;
   Handle(TCollection_HAsciiString) aName;
 
-  for (i = 1; i <= ListOfTypes->Length(); i++) {
-    aName = MS::BuildFullName(ListOfPackages->Value(i),ListOfTypes->Value(i));
-    if (theMetaSchema->IsDefined(aName)) {
+  for (i = 1; i <= ListOfTypes()->Length(); i++) {
+    aName = MS::BuildFullName(ListOfPackages()->Value(i),ListOfTypes()->Value(i));
+    if (theMetaSchema()->IsDefined(aName)) {
       if (Current_Entity == CDL_STDCLASS || Current_Entity == CDL_GENCLASS) {
-	Handle(TColStd_HSequenceOfHAsciiString) seq = SimpleClass->GetRaises();
+	Handle(TColStd_HSequenceOfHAsciiString) seq = SimpleClass()->GetRaises();
 	Standard_Boolean isFound = Standard_False;
 	
 	for (j = 1; j <= seq->Length() && !isFound; j++) {
@@ -2529,32 +2693,32 @@ void Add_MetRaises()
 	}
 
 	if (!isFound) {
-	  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aName << "'" << " is not declared in 'raises' clause of the class: " << SimpleClass->FullName() << endm;
+	  ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aName << "'" << " is not declared in 'raises' clause of the class: " << SimpleClass()->FullName() << endm;
 	  YY_nb_error++;
 	}
 	else {
-	  Method->Raises(aName);
+	  Method()->Raises(aName);
 	}
       }
       else {
-	Method->Raises(aName);
+	Method()->Raises(aName);
       }
     }
     else {
       // si on est dans les methodes de package on ne verifie pas les raises
       //
-      if (ExternMet.IsNull()) {
-	ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aName << "'" << " is not defined."  << endm;
+      if (ExternMet().IsNull()) {
+	ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "the exception "  << "'" << aName << "'" << " is not defined."  << endm;
 	YY_nb_error++;
       }
       else {
-	Method->Raises(aName);
+	Method()->Raises(aName);
       }
     }
   }
 
-  ListOfPackages->Clear();
-  ListOfTypes->Clear();
+  ListOfPackages()->Clear();
+  ListOfTypes()->Clear();
 }
 
 void Add_Returns()
@@ -2564,12 +2728,12 @@ void Add_Returns()
   Handle(MS_Param)                 aParam;
   Standard_Boolean                 isGenType = Standard_False;
 
-  aParam = new MS_Param(Method,athetypename);
+  aParam = new MS_Param(Method(),athetypename);
   
   aParam->Like(Like);
   aParam->AccessMode(Mutable);
   aParam->AccessMode(InOrOut);
-  aParam->MetaSchema(theMetaSchema);
+  aParam->MetaSchema(theMetaSchema());
 
   if (strcmp(Pack_Name,aDummyPackageName) == 0) {
     aPackName->Clear();
@@ -2582,41 +2746,41 @@ void Add_Returns()
 
   aParam->Type(athetypename,aPackName);
 
-  if (!Construc.IsNull()) {
-    if (!aParam->TypeName()->IsSameString(Construc->Class())) {
-      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The constructor must return " << Construc->Class() << " not " << aParam->TypeName() << endm;
+  if (!Construc().IsNull()) {
+    if (!aParam->TypeName()->IsSameString(Construc()->Class())) {
+      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "The constructor must return " << Construc()->Class() << " not " << aParam->TypeName() << endm;
       YY_nb_error++;
     }
   }
 
-  Method->Returns(aParam);
+  Method()->Returns(aParam);
  
   Mutable = 0;
   InOrOut = MS_IN;
   Like      = Standard_False;
 
-  ListOfName->Clear();  
+  ListOfName()->Clear();  
 }
 
 void MemberMet_End() 
 {
-  SimpleClass->Method(MemberMet);
-  Method->Params(MethodParams);
-  MethodParams.Nullify();
-  MemberMet->CreateFullName();
-  MemberMet->Private(Private);
-  MemberMet->Protected(Protected);
+  SimpleClass()->Method(MemberMet());
+  Method()->Params(MethodParams());
+  MethodParams().Nullify();
+  MemberMet()->CreateFullName();
+  MemberMet()->Private(Private);
+  MemberMet()->Protected(Protected);
 
-  if (!InstMet.IsNull()) {
-    InstMet->Deferred(Deferred);
-    InstMet->Redefined(Redefined);
-    InstMet->Static(Static);
+  if (!InstMet().IsNull()) {
+    InstMet()->Deferred(Deferred);
+    InstMet()->Redefined(Redefined);
+    InstMet()->Static(Static);
   }
 
-  MemberMet.Nullify();
-  InstMet.Nullify();
-  Construc.Nullify();
-  ClassMet.Nullify();
+  MemberMet().Nullify();
+  InstMet().Nullify();
+  Construc().Nullify();
+  ClassMet().Nullify();
 
   Private   = Standard_False;
   Protected = Standard_False;
@@ -2628,12 +2792,12 @@ void MemberMet_End()
 
 void ExternMet_End() 
 {
-  Package->Method(ExternMet);
-  Method->Params(MethodParams);
-  MethodParams.Nullify();
-  ExternMet->CreateFullName();
-  ExternMet->Private(Private);
-  ExternMet.Nullify();
+  Package()->Method(ExternMet());
+  Method()->Params(MethodParams());
+  MethodParams().Nullify();
+  ExternMet()->CreateFullName();
+  ExternMet()->Private(Private);
+  ExternMet().Nullify();
   Private   = Standard_False;
   Protected = Standard_False;
   Static    = Standard_True;
@@ -2652,17 +2816,17 @@ void Param_Begin()
   Handle(TCollection_HAsciiString) aPackName = new TCollection_HAsciiString(Pack_Name);
   Standard_Boolean                 isGenType = Standard_False;
   
-  for (i = 1; i <= ListOfName->Length(); i++) {
-    if (ParamValue.IsNull()) {
-      aParam = new MS_Param(Method,ListOfName->Value(i));
+  for (i = 1; i <= ListOfName()->Length(); i++) {
+    if (ParamValue().IsNull()) {
+      aParam = new MS_Param(Method(),ListOfName()->Value(i));
     }
     else {
-      aParam = new MS_ParamWithValue(Method,ListOfName->Value(i));
+      aParam = new MS_ParamWithValue(Method(),ListOfName()->Value(i));
     }
 
     aParam->AccessMode(Mutable);
     aParam->AccessMode(InOrOut);
-    aParam->MetaSchema(theMetaSchema);
+    aParam->MetaSchema(theMetaSchema());
 
     if (strcmp(Pack_Name,aDummyPackageName) == 0) {
       aPackName->Clear();
@@ -2675,7 +2839,7 @@ void Param_Begin()
     aParam->Like(Like);
     aParam->Type(athetypename,aPackName);
 
-    if (!ParamValue.IsNull()) {
+    if (!ParamValue().IsNull()) {
       MS_TypeOfValue pt = MS_INTEGER;
       MS_ParamWithValue *pwv;
 
@@ -2690,31 +2854,31 @@ void Param_Begin()
 		    break;
       case IDENTIFIER: pt = MS_ENUM;
 		    break;
-      default:      ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Type of default value unknown." << endm;
+      default:      ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "Type of default value unknown." << endm;
 	            YY_nb_error++;
 		    break;
       }
       
       pwv = (MS_ParamWithValue *)aParam.operator->();
-      pwv->Value(ParamValue,pt);
+      pwv->Value(ParamValue(),pt);
     }
 
-    //Method->Param(aParam);
-    if(MethodParams.IsNull()) MethodParams = new MS_HSequenceOfParam;
-    MethodParams->Append(aParam);
+    //Method()->Param(aParam);
+    if(MethodParams().IsNull()) MethodParams() = new MS_HSequenceOfParam;
+    MethodParams()->Append(aParam);
   }
 
-  ParamValue.Nullify();
+  ParamValue().Nullify();
   Mutable = 0;
   InOrOut = MS_IN;
   Like    = Standard_False;
 
-  ListOfName->Clear();
+  ListOfName()->Clear();
 }
 
 void Add_Value(char *str,int type)
 {
-  ParamValue = new TCollection_HAsciiString(str);
+  ParamValue() = new TCollection_HAsciiString(str);
   ParamType  = type;
 }
 
@@ -2768,12 +2932,12 @@ void Set_Defe()
 
 void Set_Redefined()
 {
-  if (!Construc.IsNull()) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A constructor cannot be redefined." << endm;
+  if (!Construc().IsNull()) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A constructor cannot be redefined." << endm;
     YY_nb_error++;
   }
-  if (!ClassMet.IsNull()) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class method cannot be redefined." << endm;
+  if (!ClassMet().IsNull()) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class method cannot be redefined." << endm;
     YY_nb_error++;
   }
   Redefined = Standard_True;
@@ -2793,12 +2957,12 @@ void Set_Static()
 
 void Set_Virtual()
 {
-  if (!ClassMet.IsNull()) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class method cannot be redefined, so the 'virtual' keyword cannot be applied to " << ClassMet->Name() << endm;
+  if (!ClassMet().IsNull()) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A class method cannot be redefined, so the 'virtual' keyword cannot be applied to " << ClassMet()->Name() << endm;
     YY_nb_error++;
   }
-  if (!Construc.IsNull()) {
-    ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A constructor cannot be redefined, so the 'virtual' keyword cannot be applied to it." << endm;
+  if (!Construc().IsNull()) {
+    ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": " << "A constructor cannot be redefined, so the 'virtual' keyword cannot be applied to it." << endm;
     YY_nb_error++;
   }
   Static = Standard_False;
@@ -2806,20 +2970,20 @@ void Set_Virtual()
 
 void Set_Method(char *name)
 {
-  MethodName = new TCollection_HAsciiString(name);
+  MethodName() = new TCollection_HAsciiString(name);
 }
 
 void Set_Like_Me()
 {
   Like = Standard_True;
 
-  strncpy(thetypename,SimpleClass->Name()->ToCString(),MAX_CHAR);
-  strncpy(Pack_Name,Container->ToCString(),MAX_CHAR);
+  strncpy(thetypename,SimpleClass()->Name()->ToCString(),MAX_CHAR);
+  strncpy(Pack_Name,Container()->ToCString(),MAX_CHAR);
 }
 
 void Set_Like_Type()
 {
-  ErrorMsg << "CDL" << "\"" << CDLFileName->ToCString() << "\"" <<  ", line " << CDLlineno << ": Obsolete syntaxe : like <thetypename>" << endm;
+  ErrorMsg() << "CDL" << "\"" << CDLFileName()->ToCString() << "\"" <<  ", line " << CDLlineno << ": Obsolete syntaxe : like <thetypename>" << endm;
   YY_nb_error++;
 }
 
@@ -2827,7 +2991,7 @@ void Set_Item(char *Item)
 {
   Handle(TCollection_HAsciiString) anItem = new TCollection_HAsciiString(Item);
 
-  ListOfItem->Append(anItem);
+  ListOfItem()->Append(anItem);
 }
 
 void Set_Any()
@@ -2858,7 +3022,7 @@ int TraductionMain(char *FileName)
 
   if (CDLin == NULL) {
     CDL_InitVariable();
-    ErrorMsg << "CDL" << " File not found : " << FileName << endm;
+    ErrorMsg() << "CDL" << " File not found : " << FileName << endm;
     MS_TraductionError::Raise("File not found.");
   }
 
@@ -2870,11 +3034,11 @@ int TraductionMain(char *FileName)
   fclose(CDLin);
 
   if (YY_nb_error > 0) {
-    ErrorMsg << "CDL" << YY_nb_error << " errors." << endm;
+    ErrorMsg() << "CDL" << YY_nb_error << " errors." << endm;
   } 
   
   if (YY_nb_warning > 0) {
-    WarningMsg << "CDL" << YY_nb_warning << " warnings." << endm;
+    WarningMsg() << "CDL" << YY_nb_warning << " warnings." << endm;
   }
 
   return YY_nb_error;
@@ -2893,15 +3057,15 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 
   CDL_InitVariable();
 
-  theMetaSchema    = aMetaSchema;
-  ListOfGlobalUsed = aGlobalList;
-  ListOfTypeUsed   = aTypeList;
-  ListOfInst       = anInstList;
-  ListOfGen        = anGenList;
+  theMetaSchema()    = aMetaSchema;
+  ListOfGlobalUsed() = aGlobalList;
+  ListOfTypeUsed()   = aTypeList;
+  ListOfInst()       = anInstList;
+  ListOfGen()        = anGenList;
 
   if (!aFileName.IsNull()) {
     CDLlineno = 1;
-    CDLFileName = aFileName;
+    CDLFileName() = aFileName;
 
     try {
       OCC_CATCH_SIGNALS
@@ -2916,12 +3080,12 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
     ErrorLevel = 1;
   }
 
-  theMetaSchema.Nullify();
-  ListOfGlobalUsed.Nullify();
-  ListOfTypeUsed.Nullify();
-  ListOfInst.Nullify();
-  ListOfGen.Nullify();
-  ListOfComments.Nullify();
+  theMetaSchema().Nullify();
+  ListOfGlobalUsed().Nullify();
+  ListOfTypeUsed().Nullify();
+  ListOfInst().Nullify();
+  ListOfGen().Nullify();
+  ListOfComments().Nullify();
   return ErrorLevel;
 }
 
