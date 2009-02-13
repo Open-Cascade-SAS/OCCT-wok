@@ -149,7 +149,7 @@ void WOKOrbix_ServerSource::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 
   if(afile.IsNull())
     {
-      WarningMsg << "WOKOrbix_ServerSource::Execute"
+      WarningMsg() << "WOKOrbix_ServerSource::Execute"
 		 << "Missing server main file " << astr << endm;
       afile = new WOKernel_File(astr, Unit(), Unit()->GetFileType(asourcetype));
       afile->GetPath();

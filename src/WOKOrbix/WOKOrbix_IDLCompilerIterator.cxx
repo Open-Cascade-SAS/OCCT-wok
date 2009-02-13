@@ -75,12 +75,12 @@ void WOKOrbix_IDLCompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,
 	  
 	  if(optline.IsNull())
 	    {
-	      ErrorMsg << "WOKOrbix_IDLCompilerIterator::Init"
+	      ErrorMsg() << "WOKOrbix_IDLCompilerIterator::Init"
 		<< "Could not eval compiler " << acompiler->Name() << " options" << endm;
 	      return;
 	    }
 	  
-	  InfoMsg << "WOKOrbix_IDLCompilerIterator::Init" << optline << endm;
+	  InfoMsg() << "WOKOrbix_IDLCompilerIterator::Init" << optline << endm;
 	}
     }
 }
@@ -112,7 +112,7 @@ WOKBuilder_BuildStatus WOKOrbix_IDLCompilerIterator::Execute(const Handle(WOKOrb
 
   if(acompiler.IsNull())
     {
-      ErrorMsg << "WOKOrbix_IDLCompilerIterator::Execute" 
+      ErrorMsg() << "WOKOrbix_IDLCompilerIterator::Execute" 
 	<< "Could not find appropriate Compiler for " << anidlfile->Path()->Name() << endm;
       return WOKBuilder_Failed;
     }

@@ -108,7 +108,7 @@ void WOKOrbix_ExtractServerList::Execute(const Handle(WOKMake_HSequenceOfInputFi
 
       if(apos < 0 ) 
 	{
-	  ErrorMsg << "WOKOrbix_ExtractServerList::Execute"
+	  ErrorMsg() << "WOKOrbix_ExtractServerList::Execute"
 		   << "Cannot determine idl interface name in " << fullname << ": underscore is missing" << endm;
 	}
 
@@ -124,7 +124,7 @@ void WOKOrbix_ExtractServerList::Execute(const Handle(WOKMake_HSequenceOfInputFi
 
 	  if(declarfile.IsNull())
 	    {
-	      ErrorMsg << "WOKOrbix_ExtractServerList::Execute"
+	      ErrorMsg() << "WOKOrbix_ExtractServerList::Execute"
 		       << "Could not find IDL unit interface declaration list file : " 
 		       << idlunit << ":" << admtype << ":" <<  declfilename << endm;
 	      SetFailed();
@@ -145,7 +145,7 @@ void WOKOrbix_ExtractServerList::Execute(const Handle(WOKMake_HSequenceOfInputFi
 
 	  if(!amap.IsBound(fullname))
 	    {
-	      ErrorMsg << "WOKOrbix_ExtractServerList::Execute"
+	      ErrorMsg() << "WOKOrbix_ExtractServerList::Execute"
 		       << "IDL unit " << idlunit << " does not declare interface: " << interfacename << endm;
 	      SetFailed();
 	    }
@@ -181,7 +181,7 @@ void WOKOrbix_ExtractServerList::Execute(const Handle(WOKMake_HSequenceOfInputFi
 		  
 		  if(servobj.IsNull())
 		    {
-		      ErrorMsg << "WOKOrbix_ExtractServerList::Execute"
+		      ErrorMsg() << "WOKOrbix_ExtractServerList::Execute"
 			       << "Could not find objfile: " << WOKernel_File::FileLocatorName(idlunit, objtype, filename[j]);
 		      SetFailed();
 		    }

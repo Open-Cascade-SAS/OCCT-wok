@@ -110,7 +110,7 @@ void WOKOrbix_IDLCompile::Init()
 
       if(myiterator.LoadGroup())
 	{
-	  ErrorMsg << "WOKOrbix_IDLCompile::Init"
+	  ErrorMsg() << "WOKOrbix_IDLCompile::Init"
 		   << "Could not load idl compilers definition" << endm;
 	  SetFailed();
 	  return;
@@ -190,11 +190,11 @@ _TEST_BREAK();
       
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
-	  InfoMsg << "WOKOrbix_IDLCompile::Execute" << "-------> " << infile->File()->Name() << endm;
+	  InfoMsg() << "WOKOrbix_IDLCompile::Execute" << "-------> " << infile->File()->Name() << endm;
 	}
       else
 	{
-	  InfoMsg << "WOKOrbix_IDLCompile::Execute" << "-------> " << infile->File()->UserPathName() << endm;
+	  InfoMsg() << "WOKOrbix_IDLCompile::Execute" << "-------> " << infile->File()->UserPathName() << endm;
 	}
       
       switch(myiterator.Execute(anidlfile))
@@ -202,13 +202,13 @@ _TEST_BREAK();
 	case WOKBuilder_Success:
 	  {
 	    WOK_TRACE {
-	      if(VerboseMsg("WOK_ORBIX").IsSet())
+	      if(VerboseMsg()("WOK_ORBIX").IsSet())
 		{
-		  VerboseMsg << "WOKOrbix_IDLCompile::Execute" 
+		  VerboseMsg() << "WOKOrbix_IDLCompile::Execute" 
 			     << anidlfile->Path()->Name() << " produces : " << endm;
 		  for(i=1; i<=myiterator.Produces()->Length(); i++)
 		    {
-		      VerboseMsg << "WOKOrbix_IDLCompile::Execute"
+		      VerboseMsg() << "WOKOrbix_IDLCompile::Execute"
 				 << "\t\t" << myiterator.Produces()->Value(i)->Path()->Name() << endm;
 		    }
 		}
@@ -221,7 +221,7 @@ _TEST_BREAK();
 	  break;
 	case WOKBuilder_Failed:
 	  fails->Append(infile);
-	  ErrorMsg << "WOKOrbix_IDLCompile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
+	  ErrorMsg() << "WOKOrbix_IDLCompile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
          default: break;
 	}
@@ -237,15 +237,15 @@ _TEST_BREAK();
   
   if(fails->Length())
     {
-      InfoMsg << "WOKOrbix_IDLCompile::Execute" 
+      InfoMsg() << "WOKOrbix_IDLCompile::Execute" 
 	      << "----------------------- IDL Compilation Report -----------------------" << endm;
 
       for(i=1; i<= fails->Length(); i++)
 	{
-	  InfoMsg << "WOKOrbix_IDLCompile::Execute" 
+	  InfoMsg() << "WOKOrbix_IDLCompile::Execute" 
 		  << "Failed : " << fails->Value(i)->File()->UserPathName() << endm;
 	}
-       InfoMsg << "WOKOrbix_IDLCompile::Execute" 
+       InfoMsg() << "WOKOrbix_IDLCompile::Execute" 
 	       << "-----------------------------------------------------------------" << endm;
     }
 

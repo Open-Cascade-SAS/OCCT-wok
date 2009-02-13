@@ -114,8 +114,8 @@ WOKBuilder_BuildStatus WOKOrbix_IDLCompiler::Execute()
   astr = EvalToolTemplate(Template()->ToCString());
 
   WOK_TRACE {
-    VerboseMsg("WOK_ORBIX") << "WOKOrbix_IDLCompiler::Execute" << "Compilation line : " << endm;
-    VerboseMsg("WOK_ORBIX") << "WOKOrbix_IDLCompiler::Execute" << astr << endm;
+    VerboseMsg()("WOK_ORBIX") << "WOKOrbix_IDLCompiler::Execute" << "Compilation line : " << endm;
+    VerboseMsg()("WOK_ORBIX") << "WOKOrbix_IDLCompiler::Execute" << astr << endm;
   }
 
   Shell()->ClearOutput();
@@ -125,26 +125,26 @@ WOKBuilder_BuildStatus WOKOrbix_IDLCompiler::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKOrbix_IDLCompiler::Execute" << "Errors occured in Shell" << endm;
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg() << "WOKOrbix_IDLCompiler::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg().DontPrintHeader();
       for(Standard_Integer i=start; i<= resseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKOrbix_IDLCompiler::Execute" << resseq->Value(i) << endm;
+	  ErrorMsg() << "WOKOrbix_IDLCompiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
       return WOKBuilder_Failed;
     }
   else
     {
-      Standard_Boolean ph = InfoMsg.PrintHeader();
-      InfoMsg.DontPrintHeader();
+      Standard_Boolean ph = InfoMsg().PrintHeader();
+      InfoMsg().DontPrintHeader();
       for(Standard_Integer i=start; i<= resseq->Length(); i++)
 	{
-	  InfoMsg << "WOKOrbix_IDLCompiler::Execute" << resseq->Value(i) << endm;
+	  InfoMsg() << "WOKOrbix_IDLCompiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
   Shell()->ClearOutput();
 

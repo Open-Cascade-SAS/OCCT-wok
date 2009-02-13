@@ -106,7 +106,7 @@ void WOKOrbix_IDLFill::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
       if(idlfile.IsNull())
 	{
 
-	  ErrorMsg << "WOKOrbix_IDLFill::Execute" 
+	  ErrorMsg() << "WOKOrbix_IDLFill::Execute" 
 		   << "Invalid input : " << infile->BuilderEntity()->Path()->Name() << endm;
 	  SetFailed();
 	  return;
@@ -114,11 +114,11 @@ void WOKOrbix_IDLFill::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
-	  InfoMsg << "WOKOrbix_IDLFill::Execute" << "-------> " << infile->File()->Name() << endm;
+	  InfoMsg() << "WOKOrbix_IDLFill::Execute" << "-------> " << infile->File()->Name() << endm;
 	}
       else
 	{
-	  InfoMsg << "WOKOrbix_IDLFill::Execute" << "-------> " << infile->File()->UserPathName() << endm;
+	  InfoMsg() << "WOKOrbix_IDLFill::Execute" << "-------> " << infile->File()->UserPathName() << endm;
 	}
       
       switch(atrans->Execute(idlfile))

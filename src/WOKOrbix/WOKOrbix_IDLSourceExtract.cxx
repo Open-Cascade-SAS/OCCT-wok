@@ -91,7 +91,7 @@ void WOKOrbix_IDLSourceExtract::Execute(const Handle(WOKMake_HSequenceOfInputFil
 
 	  if(srcfile.IsNull())
 	    {
-	      WarningMsg << "WOKOrbix_IDLSourceExtract::Execute" 
+	      WarningMsg() << "WOKOrbix_IDLSourceExtract::Execute" 
 			 << "Extraction deducted source file " << filename << " is missing" << endm;
 	      srcfile = new WOKernel_File(filename, Unit(), Unit()->GetFileType(srctype));
 	      srcfile->GetPath();
@@ -106,7 +106,7 @@ void WOKOrbix_IDLSourceExtract::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	}
       else
 	{
-	  ErrorMsg << "WOKOrbix_IDLSourceExtract::Execute" 
+	  ErrorMsg() << "WOKOrbix_IDLSourceExtract::Execute" 
 		   << "Invalid extension for " << filename << " should be .template" << endm;
 	  SetFailed();
 	}

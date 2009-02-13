@@ -40,7 +40,7 @@ void WOKOrbix_IDLTranslator::Load()
 
       if(astr.IsNull())
 	{
-	  ErrorMsg << "WOKOrbix_IDLTranslator::Load"
+	  ErrorMsg() << "WOKOrbix_IDLTranslator::Load"
 		   << "Invalid SHARED parameter for tool: " << Name() << endm;
 	  return;
 	}
@@ -55,7 +55,7 @@ void WOKOrbix_IDLTranslator::Load()
       
       if(libpath.IsNull())
 	{
-	  ErrorMsg << "WOKOrbix_IDLTranslator::Load"
+	  ErrorMsg() << "WOKOrbix_IDLTranslator::Load"
 		   << "Could not find file : " << Shared() << endm;
 	  return;
 	}
@@ -65,7 +65,7 @@ void WOKOrbix_IDLTranslator::Load()
   
   if(name.IsNull())
     {
-      ErrorMsg << "WOKOrbix_IDLTranslator::Load" << "Could not eval NAME for IDLTranslator" << endm;
+      ErrorMsg() << "WOKOrbix_IDLTranslator::Load" << "Could not eval NAME for IDLTranslator" << endm;
       return;
     }
 
@@ -87,7 +87,7 @@ WOKBuilder_BuildStatus WOKOrbix_IDLTranslator::Translate(const Handle(WOKOrbix_I
 {
   if(mytranslator == NULL)
     {
-      ErrorMsg << "WOKOrbix_IDLTranslator::Translate" << "Null Translator : Cannot Perform" << endm;
+      ErrorMsg() << "WOKOrbix_IDLTranslator::Translate" << "Null Translator : Cannot Perform" << endm;
       return WOKBuilder_Failed;
     }
   
@@ -98,7 +98,7 @@ WOKBuilder_BuildStatus WOKOrbix_IDLTranslator::Translate(const Handle(WOKOrbix_I
 
   if((*mytranslator)(MSchema()->MetaSchema(),afile->Path()->Name(),globlist,inctypes,insttypes,gentypes)) 
     {
-      ErrorMsg << "WOKOrbix_IDLTranslator::Translate" << "Errors occured" << endm;
+      ErrorMsg() << "WOKOrbix_IDLTranslator::Translate" << "Errors occured" << endm;
       return WOKBuilder_Failed;
     }
   return WOKBuilder_Success;
