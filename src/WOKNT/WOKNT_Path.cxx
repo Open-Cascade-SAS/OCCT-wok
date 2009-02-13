@@ -107,7 +107,7 @@ Standard_Boolean WOKNT_Path::CreateDirectory(const Standard_Boolean fCreateParen
     {
       if(!IsDirectory())
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::CreateDirectory (): ")<< myPath
+	  ErrorMsg() << TEXT( "WOKNT_Path::CreateDirectory (): ")<< myPath
 	    << TEXT( " exists and is not a directory"       )<< endm;
 	  return Standard_False;
 	}
@@ -125,7 +125,7 @@ Standard_Boolean WOKNT_Path::CreateDirectory(const Standard_Boolean fCreateParen
 	}
       else
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::CreateDirectory") 
+	  ErrorMsg() << TEXT( "WOKNT_Path::CreateDirectory") 
 	    << "Parent directory " << aParent->Name() << TEXT(" does not exist")<< endm;
 	  return Standard_False;
 	}
@@ -134,7 +134,7 @@ Standard_Boolean WOKNT_Path::CreateDirectory(const Standard_Boolean fCreateParen
     {
       if(!aParent->IsDirectory())
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::CreateDirectory") 
+	  ErrorMsg() << TEXT( "WOKNT_Path::CreateDirectory") 
 	    << "Parent  " << aParent->Name() << TEXT(" exists and is not a directory")<< endm;
 	  return Standard_False;
 	}
@@ -170,7 +170,7 @@ Standard_Boolean WOKNT_Path::CreateFile(const Standard_Boolean fCreateParents)
     {
       if(IsDirectory()) 
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::CreateFile" )
+	  ErrorMsg() << TEXT( "WOKNT_Path::CreateFile" )
 	    << myPath << TEXT( " exists and is a directory")<< endm;
 	  return Standard_False;
 	}
@@ -183,7 +183,7 @@ Standard_Boolean WOKNT_Path::CreateFile(const Standard_Boolean fCreateParents)
     {
       if(!aParent->IsDirectory()) 
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::CreateFile" )
+	  ErrorMsg() << TEXT( "WOKNT_Path::CreateFile" )
 	    << TEXT("Parent diectory ")<< aParent->Name() << TEXT(" exists and is not a directory")<< endm;
 	  return Standard_False;
 	}
@@ -208,7 +208,7 @@ Standard_Boolean WOKNT_Path::CreateFile(const Standard_Boolean fCreateParents)
   
   if(theFile == INVALID_HANDLE_VALUE) 
     {
-      ErrorMsg << TEXT( "WOKNT_Path::CreateFile")
+      ErrorMsg() << TEXT( "WOKNT_Path::CreateFile")
 	<< TEXT( "Creation of ") << myPath << " failed" << endm;
       return Standard_False;
     }
@@ -225,7 +225,7 @@ Standard_Boolean WOKNT_Path::RemoveDirectory(const Standard_Boolean fRemoveChild
 
   if( myPath.IsNull () )
     { 
-      ErrorMsg << TEXT( "WOKNT_Path	::RemoveDirectory (): " )
+      ErrorMsg() << TEXT( "WOKNT_Path	::RemoveDirectory (): " )
 	<< TEXT( " invalid directory name(null )")<< endm;
       return Standard_False;
     }
@@ -238,7 +238,7 @@ Standard_Boolean WOKNT_Path::RemoveDirectory(const Standard_Boolean fRemoveChild
       
       if(anit.More())
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::RemoveDirectory" )
+	  ErrorMsg() << TEXT( "WOKNT_Path::RemoveDirectory" )
 	    << TEXT( "Could not remove ")<< myPath  << ": directory is not empty" << endm;
 	  return Standard_False;
 	}
@@ -273,7 +273,7 @@ Standard_Boolean WOKNT_Path::RemoveDirectory(const Standard_Boolean fRemoveChild
 #endif
       if(!RemoveDirectory(myPath->ToCString()))
 	{
-	  ErrorMsg << TEXT( "WOKNT_Path::RemoveDirectory" )
+	  ErrorMsg() << TEXT( "WOKNT_Path::RemoveDirectory" )
 	    << TEXT( "could not remove ") << myPath << ": " << WOKNT::SystemMessage(GetLastError()) << endm;
 	  return Standard_False;
 	}   
@@ -283,7 +283,7 @@ Standard_Boolean WOKNT_Path::RemoveDirectory(const Standard_Boolean fRemoveChild
     }
   else
     {
-      ErrorMsg << TEXT( "WOKNT_Path::RemoveDirectory" )
+      ErrorMsg() << TEXT( "WOKNT_Path::RemoveDirectory" )
 	    << TEXT( "Could not empty ") << myPath  << endm;
       return Standard_False;
     }
@@ -294,14 +294,14 @@ Standard_Boolean WOKNT_Path::RemoveFile()
 {
   if( myPath.IsNull())
     {
-      ErrorMsg << TEXT( "WOKNT_Path::RemoveFile" )
+      ErrorMsg() << TEXT( "WOKNT_Path::RemoveFile" )
 	<< TEXT( "Invalid file name(null )")<< endm;
       return Standard_False;
     }
 
   if(!DeleteFile(myPath->ToCString()))
     {
-      ErrorMsg << TEXT( "WOKNT::RemoveFile" )
+      ErrorMsg() << TEXT( "WOKNT::RemoveFile" )
 	<< TEXT( "Failed to remove ") << myPath << ": " << WOKNT::SystemMessage(GetLastError()) << endm;
       return Standard_False;
     }
@@ -529,9 +529,9 @@ Standard_Boolean WOKNT_Path::MoveTo(const Handle(WOKNT_Path)& aDestPath)
     {
       if (!MoveFileEx(myPath->ToCString (), aDestPath->Name()->ToCString (), MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED))
 	{
-	  ErrorMsg << TEXT("WOKNT_Path::MoveTo")
+	  ErrorMsg() << TEXT("WOKNT_Path::MoveTo")
 	    << WOKNT::SystemMessage(GetLastError()) << endm;
-	  ErrorMsg << TEXT("WOKNT_Path::MoveTo")
+	  ErrorMsg() << TEXT("WOKNT_Path::MoveTo")
 	    << TEXT("Failed to move ") << myPath << " to " << aDestPath->Name() << endm;
 	  return Standard_False;
 	}
@@ -540,9 +540,9 @@ Standard_Boolean WOKNT_Path::MoveTo(const Handle(WOKNT_Path)& aDestPath)
     {
       if (!MoveFileEx(myPath->ToCString (), aDestPath->Name()->ToCString (), MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED))
 	{
-	    ErrorMsg << TEXT("WOKNT_Path::MoveTo")
+	    ErrorMsg() << TEXT("WOKNT_Path::MoveTo")
 	      << WOKNT::SystemMessage(GetLastError()) << endm;
-	    ErrorMsg << TEXT("WOKNT_Path::MoveTo")
+	    ErrorMsg() << TEXT("WOKNT_Path::MoveTo")
 	      << TEXT("Failed to move ") << myPath << " to " << aDestPath->Name() << endm;
 	    return Standard_False;
 	}

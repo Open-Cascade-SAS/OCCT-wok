@@ -54,7 +54,7 @@ void WOKNT_PathIterator::SkipDots()
 	    }
 	  else 
 	    {
-	      ErrorMsg << "WOKNT_PathIterator::Next" 
+	      ErrorMsg() << "WOKNT_PathIterator::Next" 
 		<< "Error occured in directory lookup : " << (int)GetLastError() << endm;
 	      mymore = Standard_False;
 	    }
@@ -98,7 +98,7 @@ void WOKNT_PathIterator::Push(const WOKNT_FindData& data, const WOKNT_Handle& ha
     }
   else
     {
-      ErrorMsg << "WOKNT_PathIterator::Push"
+      ErrorMsg() << "WOKNT_PathIterator::Push"
 	<< "Only a directory can be pushed in PathIterator" << endm;
     }
 }
@@ -152,7 +152,7 @@ void WOKNT_PathIterator::Next()
 		}
 	      else 
 		{
-		  ErrorMsg << "WOKNT_PathIterator::Next" 
+		  ErrorMsg() << "WOKNT_PathIterator::Next" 
 		    << "Error occured in directory lookup : " << (int)GetLastError() << endm;
 		  mymore = Standard_False;
 		}

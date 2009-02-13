@@ -236,7 +236,7 @@ void WOKNT_Shell :: Execute (  const Handle( TCollection_HAsciiString )& aCmdLin
 
      if (  fRetry || GetLastError () != ERROR_FILE_NOT_FOUND  ) {
 
-      ErrorMsg << TEXT( "WOKNT_Shell :: Execute (): can not execute " )
+      ErrorMsg() << TEXT( "WOKNT_Shell :: Execute (): can not execute " )
                << TEXT( "'" ) << cmd -> ToCString () << TEXT( "' - " )
                << _WOKNT_get_last_error_text () << endm;
 
@@ -488,7 +488,7 @@ void WOKNT_Shell :: Echo ( const Handle_TCollection_HAsciiString& aStr ) const {
 
  if ( myEcho ) {
  
-  WOKTools_Info shellInfo = InfoMsg;
+  WOKTools_Info shellInfo = InfoMsg();
 
   shellInfo.Init             ();
   shellInfo.DontPrintHeader  ();

@@ -23,13 +23,13 @@ Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_AdmFile :: Read () {
 
  if (  !Exists ()  ) {
    
-  ErrorMsg << TEXT( "WOKNT_AdmFile :: Read (): " << "file '" ) << Name ().ToCString ()
+  ErrorMsg() << TEXT( "WOKNT_AdmFile :: Read (): " << "file '" ) << Name ().ToCString ()
            << TEXT( "' does not exists" ) << endm;
   RAISE();
  
  } else if (  KindOfFile () != OSD_FILE  ) {
  
-  ErrorMsg << TEXT( "WOKNT_AdmFile :: Read (): " << "file '" ) << Name ().ToCString ()
+  ErrorMsg() << TEXT( "WOKNT_AdmFile :: Read (): " << "file '" ) << Name ().ToCString ()
            << TEXT( "' is not a file" ) << endm;
   RAISE();
   
