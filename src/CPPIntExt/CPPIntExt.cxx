@@ -72,7 +72,7 @@ void CPPInt_InterfExtract(const Handle(MS_MetaSchema)& aMeta,
   }
 
   if (api->Execute("Interface_Template.edl") != EDL_NORMAL) {
-    ErrorMsg << "CPPInt_InterfExtract" << "unable to load Interface_Template.edl" << endm;
+    ErrorMsg() << "CPPInt_InterfExtract" << "unable to load Interface_Template.edl" << endm;
     Standard_NoSuchObject::Raise();
   } 
   Handle(TCollection_HAsciiString) FileNamexx = new TCollection_HAsciiString(outdir);
@@ -127,13 +127,13 @@ void CPPInt_InterfExtract(const Handle(MS_MetaSchema)& aMeta,
       api->CloseFile("Interfiledat");
     }
     else {
-      ErrorMsg  << "CPPInt_InterfExtract" << "Cannot open file " << FileNamedat->ToCString() << endm;
+      ErrorMsg()  << "CPPInt_InterfExtract" << "Cannot open file " << FileNamedat->ToCString() << endm;
       Standard_NoSuchObject::Raise();
     }
     api->CloseFile("Interfilecxx");
   }
   else {
-    ErrorMsg << "CPPInt_InterfExtract" << "Cannot open file " << FileNamexx->ToCString() << endm;
+    ErrorMsg() << "CPPInt_InterfExtract" << "Cannot open file " << FileNamexx->ToCString() << endm;
     Standard_NoSuchObject::Raise();
   }
 }
@@ -152,7 +152,7 @@ void CPPInt_EnginExtract(const Handle(MS_MetaSchema)& aMeta,
   }
 
   if (api->Execute("Engine_Template.edl") != EDL_NORMAL) {
-    ErrorMsg  << "CPPInt_EnginExtract" << "unable to load Engine_Template.edl" << endm;
+    ErrorMsg()  << "CPPInt_EnginExtract" << "unable to load Engine_Template.edl" << endm;
     Standard_NoSuchObject::Raise();
   } 
   Handle(TCollection_HAsciiString) FileNamexx = new TCollection_HAsciiString(outdir);
@@ -202,7 +202,7 @@ void CPPInt_EnginExtract(const Handle(MS_MetaSchema)& aMeta,
 	api->CloseFile("Enginefileinit");
       }
       else {
-	ErrorMsg << "CPPInt_EnginExtract" << "Cannot open file " << FileNameInit->ToCString() << endm;
+	ErrorMsg() << "CPPInt_EnginExtract" << "Cannot open file " << FileNameInit->ToCString() << endm;
 	Standard_NoSuchObject::Raise();
       }
       
@@ -210,14 +210,14 @@ void CPPInt_EnginExtract(const Handle(MS_MetaSchema)& aMeta,
       
     }
     else {
-      ErrorMsg  << "CPPInt_EnginExtract" << "Cannot open file " << FileNamell->ToCString() << endm;
+      ErrorMsg()  << "CPPInt_EnginExtract" << "Cannot open file " << FileNamell->ToCString() << endm;
       Standard_NoSuchObject::Raise();
     }
     api->CloseFile("Enginefilecxx");
       
   }
   else {
-    ErrorMsg  << "CPPInt_EnginExtract" << "Cannot open file " << FileNamexx->ToCString() << endm;
+    ErrorMsg()  << "CPPInt_EnginExtract" << "Cannot open file " << FileNamexx->ToCString() << endm;
     Standard_NoSuchObject::Raise();
   }
 }
@@ -240,7 +240,7 @@ void CPPInt_Extract(const Handle(MS_MetaSchema)& aMeta,
     CPPInt_InterfExtract(aMeta,aName,edlsfullpath,outdir,outfile);
   }
   else {
-    ErrorMsg << "CPPInt_Extract" << aName->ToCString() << " is not an interface" << endm;
+    ErrorMsg() << "CPPInt_Extract" << aName->ToCString() << " is not an interface" << endm;
     Standard_NoSuchObject::Raise();
   }
   
@@ -259,7 +259,7 @@ void CPPEng_Extract(const Handle(MS_MetaSchema)& aMeta,
     CPPInt_EnginExtract(aMeta,aName,edlsfullpath,outdir,outfile);
   }
   else {
-    ErrorMsg << "CPPEng_Extract" << aName->ToCString() << " is not an engine" << endm;
+    ErrorMsg() << "CPPEng_Extract" << aName->ToCString() << " is not an engine" << endm;
     Standard_NoSuchObject::Raise();
   }
   

@@ -60,7 +60,7 @@ void CPPIntExt_ProcessAMethod(const Handle(MS_Method)& themet,
       }
     }
     else {
-      WarningMsg << "CPPIntExt_ProcessAMethod"
+      WarningMsg() << "CPPIntExt_ProcessAMethod"
 	<< "Cannot export method " << themet->FullName()->ToCString() << endm;
     }
   }
@@ -90,7 +90,7 @@ void CPPIntExt_ProcessAClass(const Handle(MS_Class)& theclass,
     }
   }
   else {
-    WarningMsg << "CPPIntExt_ProcessAClass" 
+    WarningMsg() << "CPPIntExt_ProcessAClass" 
       << "Cannot export class " << theclass->FullName()->ToCString() << endm;
   }
 }
