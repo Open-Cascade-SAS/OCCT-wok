@@ -17,12 +17,11 @@
 
 #include <tcl.h>
 
-//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &atrigger)
 {  
   Standard_Integer i;
+
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
 
   const WOKTools_Return& args = atrigger.Args();
 
@@ -39,7 +38,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 	    if(afile->InterpType() == WOKTools_TclInterp)
 	      {
 		WOK_TRACE {
-		  VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
+		  VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
 					    << "LoadFile : " << afile->File() << endm;
 		}
 		CurrentInterp->EvalFile(afile->File()->ToCString());
@@ -58,7 +57,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 	  Handle(TCollection_HAsciiString) acmd = new TCollection_HAsciiString(atrigger.Name());
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" << "Handler called for trigger : " << atrigger.Name() << endm;
+	    VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" << "Handler called for trigger : " << atrigger.Name() << endm;
 	    
 	    // Prise en compte des resultats
 	    const WOKTools_Return& args = atrigger.Args();
@@ -72,7 +71,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 		  case WOKTools_String:
 		    {
 		      Handle(WOKTools_StringValue) astrval = Handle(WOKTools_StringValue)::DownCast(avalue);
-		      VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" << "Arg " << i << " is : " << astrval->Value() << endm;
+		      VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" << "Arg " << i << " is : " << astrval->Value() << endm;
 		    }
 		    break;
 		  default:
@@ -101,7 +100,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 	    }
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
+	    VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
 				      << "Command is : " << acmd << endm;
 	  }
 	  if(CurrentInterp->Eval(acmd->ToCString()))
@@ -110,10 +109,10 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 	    {
 	      CurrentInterp->GetReturnValues(atrigger.ChangeReturn());
 	      WOK_TRACE {
-		if(VerboseMsg("WOK_TRIGGER").IsSet())
+		if(VerboseMsg()("WOK_TRIGGER").IsSet())
 		  {
 		    Standard_Integer i;
-		    VerboseMsg << "WOKTCL_TriggerHandler" 
+		    VerboseMsg() << "WOKTCL_TriggerHandler" 
 			       << "Command returns : " << endm;
 		    
 		    const WOKTools_Return& rets = atrigger.Return();
@@ -122,7 +121,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 		      {
 			Handle(WOKTools_ReturnValue) aval = rets.Value(i);
 			
-			VerboseMsg << "WOKTCL_TriggerHandler" 
+			VerboseMsg() << "WOKTCL_TriggerHandler" 
 				   << "             ";
 			
 			switch(aval->Type())
@@ -130,7 +129,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
 			  case WOKTools_String:
 			    {
 			      Handle(WOKTools_StringValue) astrval = Handle(WOKTools_StringValue)::DownCast(aval);
-			      VerboseMsg << "WOKTCL_TriggerHandler" 
+			      VerboseMsg() << "WOKTCL_TriggerHandler" 
 					 << "             " << i << " : " << astrval->Value() << endm;
 			    }
 			    break;
@@ -146,7 +145,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
       else
 	{
 #ifdef WOK_VERBOSE
-	  VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
+	  VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
 				    << "Trigger : " << atrigger.Name() << " not setted" << endm;
 #endif
 	  return WOKUtils_NotSetted;
@@ -155,7 +154,7 @@ Standard_EXPORT WOKUtils_TriggerStatus WOKTCL_TriggerHandler(WOKUtils_Trigger &a
   else
     {
 #ifdef WOK_VERBOSE
-	  VerboseMsg("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
+	  VerboseMsg()("WOK_TRIGGER") << "WOKTCL_TriggerHandler" 
 				    << "No Trigger Name" << endm;
 #endif
 	  return WOKUtils_NotSetted;

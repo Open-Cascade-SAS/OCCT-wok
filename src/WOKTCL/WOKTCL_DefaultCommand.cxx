@@ -41,9 +41,6 @@
 #define WOK_SESSION_KEEP 1
 #endif
 
-//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
 Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *, 
@@ -53,6 +50,8 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
 				Standard_Integer argc, char* argv[])
 #endif
 {
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
+
   volatile Standard_Integer status = 0;
 
   CData* C = (CData*) clientData;
@@ -102,9 +101,9 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
 
     // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-    ErrorMsg << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
 #else
-    ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
 #endif
 
     WOKAPI_Session* asess = (WOKAPI_Session *) &(C->i->Session());
