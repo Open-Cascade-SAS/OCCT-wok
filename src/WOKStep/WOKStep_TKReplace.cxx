@@ -185,7 +185,7 @@ void WOKStep_TKReplace::LoadTKDefs()
 	}
       else
 	{
-	  WarningMsg << "WOKStep_TKReplace::Execute" 
+	  WarningMsg() << "WOKStep_TKReplace::Execute" 
 		     << "Unreadable TOOLKITS file not taken into account" << endm;
 	}
     }
@@ -249,9 +249,9 @@ void WOKStep_TKReplace::LoadTKDefs()
 	  if(PACKAGES.IsNull()) 
 	    {
 	      if (IsAuthorized(atk)) {
-		WarningMsg << "WOKStep_TKReplace::Execute" 
+		WarningMsg() << "WOKStep_TKReplace::Execute" 
 		  << "Could not find PACKAGES file for toolkit : " << atk << endm;
-		WarningMsg << "WOKStep_TKReplace::Execute" 
+		WarningMsg() << "WOKStep_TKReplace::Execute" 
 		  << "Toolkit " << atk << "is ignored" << endm;
 	      }
 	    }
@@ -264,7 +264,7 @@ void WOKStep_TKReplace::LoadTKDefs()
 
 	      if(udsoftk.IsNull())
 		{
-		  ErrorMsg << "WOKStep_TKReplace::Execute" 
+		  ErrorMsg() << "WOKStep_TKReplace::Execute" 
 			   << "Could not read file " << PACKAGES->Path()->Name() << endm;
 		  SetFailed();
 		  return;
@@ -276,7 +276,7 @@ void WOKStep_TKReplace::LoadTKDefs()
 
 		  if(udidx == 0)
 		    {
-		      ErrorMsg << "WOKStep_TKReplace::Execute" 
+		      ErrorMsg() << "WOKStep_TKReplace::Execute" 
 			       << "Unknown unit (" << udsoftk->Value(j) << ") listed in packages of : " << atk << endm;
 		      SetFailed();
 		      return;
@@ -379,10 +379,10 @@ _TEST_BREAK();
 	    {
 	      if(!result.IsNull())
 		{
-		  WarningMsg << "WOKStep_TKReplace::GetTKForUnit"
+		  WarningMsg() << "WOKStep_TKReplace::GetTKForUnit"
 			     << "More than one toolkit contains " << aunit << " using " << result << " ignoring " << mytks(i) << endm;
 #if 0
-		  WarningMsg << "WOKStep_TKReplace::GetTKForUnit"
+		  WarningMsg() << "WOKStep_TKReplace::GetTKForUnit"
 			     << "You can specify the toolkit used using a TOOLKITS file" << endm;
 #endif
 		}
@@ -478,7 +478,7 @@ Handle(WOKMake_OutputFile) WOKStep_TKReplace::SubstituteInput(const Handle(WOKMa
 					{
 					  if(myorig.Contains(current))
 					    {
-					      WarningMsg << "WOKStep_TKReplace::SubstituteInput"
+					      WarningMsg() << "WOKStep_TKReplace::SubstituteInput"
 						<< implied << " (implied by " << curtk << " defining " << current << ")"
 						  << " implies addition of " << outfile->ID() << endm;
 					    }
@@ -511,7 +511,7 @@ Handle(WOKMake_OutputFile) WOKStep_TKReplace::SubstituteInput(const Handle(WOKMa
 	      Handle(TColStd_HSequenceOfHAsciiString) thevisib = theunitwb->Visibility();
 	      for (Standard_Integer i=2; i<= thevisib->Length(); i++) {
 		if (!strcmp(thevisib->Value(i)->ToCString(), thetknest->FullName()->ToCString())) {
-		  WarningMsg << "WOKStep_TKReplace::SubstituteInput"
+		  WarningMsg() << "WOKStep_TKReplace::SubstituteInput"
 		    << "Toolkit " << TKUnit->Name() << " in " << thetknest->Name()
 		      << " hides unit " << TheUnit->Name() << " in " << theunitwb->Name() << endm;
 		}

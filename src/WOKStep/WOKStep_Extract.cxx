@@ -147,13 +147,13 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 	case WOKBuilder_Success:
 	  {
 	    WOK_TRACE {
-	      if(VerboseMsg("WOK_EXTRACT").IsSet())
+	      if(VerboseMsg()("WOK_EXTRACT").IsSet())
 		{
-		  VerboseMsg << "WOKStep_Extract::Execute" 
+		  VerboseMsg() << "WOKStep_Extract::Execute" 
 			     << entity->Name() << " produces : " << endm;
 		  for(i=1; i<=anit.Produces()->Length(); i++)
 		    {
-		      VerboseMsg << "WOKStep_Extract::Execute" 
+		      VerboseMsg() << "WOKStep_Extract::Execute" 
 				 << "\t\t" << anit.Produces()->Value(i)->Path()->Name() << endm;
 		    }
 		}
@@ -232,11 +232,11 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 		    out->SetProduction();
 		    if(!istemplate) AddExecDepItem(tobuild->Value(j), out, Standard_True);
 
-		    InfoMsg  << "WOKStep_Extract::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
+		    InfoMsg()  << "WOKStep_Extract::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
 		    break;
 		  case WOKBuilder_Unbuilt:
 		    WOK_TRACE {
-		      VerboseMsg("WOK_EXTRACT")  << "WOKStep_Extract::Execute" 
+		      VerboseMsg()("WOK_EXTRACT")  << "WOKStep_Extract::Execute" 
 						 << "File : " << outfile->Path()->Name() << " is unchanged" << endm;
 		    }
 		    Extractor()->MSchema()->ChangeAddAction(anid, Handle(WOKBuilder_Specification)());
@@ -252,7 +252,7 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 		    Extractor()->MSchema()->ChangeActionToFailed(anid);
 
 		    SetFailed();
-		    ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << outfile->Name() << endm;
+		    ErrorMsg() << "WOKStep_Extract::Execute" << "Failed    : " << outfile->Name() << endm;
 		    break;
 		  }
 	      }
@@ -261,7 +261,7 @@ void WOKStep_Extract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 	case WOKBuilder_Failed:
 	  Extractor()->MSchema()->ChangeActionToFailed(anid);
 
-	  ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
+	  ErrorMsg() << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
 	  break;
          default: break;
 	}

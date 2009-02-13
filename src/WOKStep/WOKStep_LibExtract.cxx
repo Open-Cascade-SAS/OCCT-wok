@@ -142,7 +142,7 @@ void WOKStep_LibExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& exe
 	    case WOKBuilder_Success:
 	      {
 		Handle(WOKBuilder_ArchiveLibrary) anent = new WOKBuilder_ArchiveLibrary(liba->Path());
-		InfoMsg << "WOKStep_TKLibUnCompress::Execute" 
+		InfoMsg() << "WOKStep_TKLibUnCompress::Execute" 
 			<< "Uncompress : " << infile->File()->UserPathName() << endm;
 		
 		anext->SetArchive(anent);
@@ -158,7 +158,7 @@ void WOKStep_LibExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& exe
 	}
       else
 	{
-	  ErrorMsg << "WOKStep_LibExtract::Execute" 
+	  ErrorMsg() << "WOKStep_LibExtract::Execute" 
 		   << "Unrecognized input file : " << infile->ID() << endm;
 	  SetFailed();
 	  return;
@@ -167,7 +167,7 @@ void WOKStep_LibExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& exe
 
       if(!failed)
 	{
-	  InfoMsg << "WOKStep_LibExtract::Execute" 
+	  InfoMsg() << "WOKStep_LibExtract::Execute" 
 		  << "Extracting : " << infile->File()->UserPathName() << endm;
 	  
 	  switch(anext->Execute())
@@ -193,7 +193,7 @@ void WOKStep_LibExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& exe
 		      }
 		    else
 		      {
-			WarningMsg << "WOKStep_LibExtract::Execute" 
+			WarningMsg() << "WOKStep_LibExtract::Execute" 
 				   << "Ignoring non object result : " << anent->Path()->Name() << endm;
 			failed = Standard_True;
 		      }

@@ -145,12 +145,12 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	{
 	  if(!myinflow.Contains(internlib->LocatorName()))
 	    {
-	      WarningMsg << "WOKStep_ImplementationDep::Execute" 
+	      WarningMsg() << "WOKStep_ImplementationDep::Execute" 
 			 << "Ignoring unlisted (in FILES) located " << INTERNLIB << " file " << endm;
 	    }
 	  else
 	    {
-	      InfoMsg << "WOKStep_ImplementationDep::Execute" 
+	      InfoMsg() << "WOKStep_ImplementationDep::Execute" 
 		      << "Using " << INTERNLIB << " file for implementation dependance" << endm;
 	      
 	      InternFile = myinflow.FindFromKey(internlib->LocatorName());
@@ -165,7 +165,7 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	  
 	  if(myinflow.Contains(internlocname))
 	    {
-	      ErrorMsg << "WOKStep_ImplementationDep::Execute" 
+	      ErrorMsg() << "WOKStep_ImplementationDep::Execute" 
 		<< "Could not locate listed (in FILES) " << INTERNLIB
 		  << " in unit : " << Unit()->Name() << endm;
 	      SetFailed();
@@ -264,7 +264,7 @@ void WOKStep_ImplementationDep::Execute(const Handle(WOKMake_HSequenceOfInputFil
     }
   else
     {
-      ErrorMsg << "WOKStep_ImplementationDep::Execute"
+      ErrorMsg() << "WOKStep_ImplementationDep::Execute"
 	       << "Could not find any input to get Implementation dependencies" << endm;
       SetFailed();
       return;

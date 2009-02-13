@@ -102,7 +102,7 @@ _TEST_BREAK();
       if(msent.IsNull())
 	{
 	  SetFailed();
-	  ErrorMsg << "WOKStep_SourceExtract::Execute" 
+	  ErrorMsg() << "WOKStep_SourceExtract::Execute" 
 		   << buildfile->BuilderEntity()->Path()->Name() << " is not a MS Type" << endm;
 	}
       else
@@ -118,7 +118,7 @@ _TEST_BREAK();
 	      
 	      if(afile.IsNull())
 		{
-		  WarningMsg << "WOKStep_SourceExtract::Execute" 
+		  WarningMsg() << "WOKStep_SourceExtract::Execute" 
 			     << "Missing CDL deducted source file : " << aseq->Value(j) << endm;
 		  afile = new WOKernel_File(aseq->Value(j), Unit(), Unit()->GetFileType("source"));
 		  afile->GetPath();

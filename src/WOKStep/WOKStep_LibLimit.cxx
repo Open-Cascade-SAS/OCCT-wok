@@ -237,24 +237,24 @@ void WOKStep_LibLimit::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 	      switch(astep->Make())
 		{
 		case WOKMake_Uptodate:
-		  InfoMsg << "WOKStep_LibLimit::Execute"
+		  InfoMsg() << "WOKStep_LibLimit::Execute"
 			  << "========> " << astep->SubCode() << " is uptodate" << endm;
 		  break;
 		case WOKMake_Success:
-		  InfoMsg << "WOKStep_LibLimit::Execute"
+		  InfoMsg() << "WOKStep_LibLimit::Execute"
 			  << "========> " << astep->SubCode() << " succeeded" << endm;
 		  break;
 		case WOKMake_Incomplete:
-		  WarningMsg << "WOKStep_LibLimit::Execute"
+		  WarningMsg() << "WOKStep_LibLimit::Execute"
 			     << "========> " << astep->SubCode() << " is incomplete" << endm;
 		  break;
 		case WOKMake_Failed:
-		  ErrorMsg << "WOKStep_LibLimit::Execute"
+		  ErrorMsg() << "WOKStep_LibLimit::Execute"
 			   << "========> " << astep->SubCode() << " failed" << endm;
 		  ok = Standard_False;
 		  break;
 		case WOKMake_Unprocessed:
-		  WarningMsg << "WOKStep_LibLimit::Execute"
+		  WarningMsg() << "WOKStep_LibLimit::Execute"
 			     << "========> " << astep->SubCode() << " is still unprocessed" << endm;
 		  ok=Standard_False;
 		  break;
@@ -282,7 +282,7 @@ void WOKStep_LibLimit::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execl
 	}
       else
 	{
-	  InfoMsg << "WOKStep_LibLimit::Execute"
+	  InfoMsg() << "WOKStep_LibLimit::Execute"
 		  << "No limitation required" << endm;
 	  for( i=1; i<=execlist->Length(); i++)
 	    {

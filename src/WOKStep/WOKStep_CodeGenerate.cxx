@@ -80,7 +80,7 @@ void WOKStep_CodeGenerate::Init()
       
       if(myiterator.LoadGroup())
 	{
-	  ErrorMsg << "WOKStep_CodeGenerate::Init"
+	  ErrorMsg() << "WOKStep_CodeGenerate::Init"
 	    << "Could not load code generators definition" << endm;
 	  SetFailed();
 	  return;
@@ -163,25 +163,25 @@ void WOKStep_CodeGenerate::Execute(const Handle(WOKMake_HSequenceOfInputFile)& e
       
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
-	  InfoMsg << "WOKStep_CodeGenerate::Execute" << "-------> " << infile->File()->Name() << endm;
+	  InfoMsg() << "WOKStep_CodeGenerate::Execute" << "-------> " << infile->File()->Name() << endm;
 	}
       else
 	{
-	  InfoMsg << "WOKStep_CodeGenerate::Execute" << "-------> " << infile->File()->UserPathName() << endm;
+	  InfoMsg() << "WOKStep_CodeGenerate::Execute" << "-------> " << infile->File()->UserPathName() << endm;
 	}
       
       switch(myiterator.Execute(codegen))
 	{
 	case WOKBuilder_Success:
 	  WOK_TRACE {
-	    if(VerboseMsg("WOK_CODEGEN").IsSet())
+	    if(VerboseMsg()("WOK_CODEGEN").IsSet())
 	      {
-		VerboseMsg << "WOKStep_CodeGenerate::Execute" 
+		VerboseMsg() << "WOKStep_CodeGenerate::Execute" 
 			   << codegen->Path()->Name() << " produces : " << endm;
 
 		for(i=1; i<=myiterator.Produces()->Length(); i++)
 		  {
-		    VerboseMsg << "WOKStep_CodeGenerate::Execute"
+		    VerboseMsg() << "WOKStep_CodeGenerate::Execute"
 			       << "\t\t" << myiterator.Produces()->Value(i)->Path()->Name() << endm;
 		  }
 	      }
@@ -212,7 +212,7 @@ void WOKStep_CodeGenerate::Execute(const Handle(WOKMake_HSequenceOfInputFile)& e
 	      
 	      if(aoutfile.IsNull())
 		{
-		  ErrorMsg << "WOKStep_CodeGenerate::Execute" 
+		  ErrorMsg() << "WOKStep_CodeGenerate::Execute" 
 			   << "Unrecognized file : " << outent->Path()->Name() << endm;
 		}
 	      else
@@ -234,7 +234,7 @@ void WOKStep_CodeGenerate::Execute(const Handle(WOKMake_HSequenceOfInputFile)& e
 	  break;
 	case WOKBuilder_Failed:
 	  fails->Append(infile);
-	  ErrorMsg << "WOKStep_CodeGenerate::Execute" << "Failed    : " << infile->File()->Name() << endm;           
+	  ErrorMsg() << "WOKStep_CodeGenerate::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
         default: break;
 	}
@@ -250,15 +250,15 @@ void WOKStep_CodeGenerate::Execute(const Handle(WOKMake_HSequenceOfInputFile)& e
   
   if(fails->Length())
     {
-      InfoMsg << "WOKStep_CodeGenerate::Execute" 
+      InfoMsg() << "WOKStep_CodeGenerate::Execute" 
 	      << "----------------------- Compilation Report -----------------------" << endm;
 
       for(i=1; i<= fails->Length(); i++)
 	{
-	  InfoMsg << "WOKStep_CodeGenerate::Execute" 
+	  InfoMsg() << "WOKStep_CodeGenerate::Execute" 
 		  << "Failed : " << fails->Value(i)->File()->UserPathName() << endm;
 	}
-       InfoMsg << "WOKStep_CodeGenerate::Execute" 
+       InfoMsg() << "WOKStep_CodeGenerate::Execute" 
 	       << "-----------------------------------------------------------------" << endm;
     }
 

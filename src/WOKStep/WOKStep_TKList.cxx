@@ -85,7 +85,7 @@ Standard_Boolean WOKStep_TKList::HandleInputFile(const Handle(WOKMake_InputFile)
 
 	  if(astr.IsNull())
 	    {
-	      ErrorMsg << "WOKStep_TKList::HandleInputFile"
+	      ErrorMsg() << "WOKStep_TKList::HandleInputFile"
 		       << "Could not eval parameter %FILENAME_PACKAGES" << endm;
 	      SetFailed();
 	      return Standard_False;
@@ -127,7 +127,7 @@ Handle(TCollection_HAsciiString) WOKStep_TKList::GetUnitContributionCodes(const 
 
   if(codes.IsNull())
     {
-      WarningMsg << "WOKStep_WNTK::GetUnitContributionCodes" 
+      WarningMsg() << "WOKStep_WNTK::GetUnitContributionCodes" 
 		 << "Could not eval parameter " << paramname << " in unit " << aunit->UserPathName() << endm;
     }
   return codes;
@@ -176,7 +176,7 @@ void WOKStep_TKList::AddParcelUnitContribution(const Handle(WOKMake_InputFile)& 
   return;
 #else
 
-  ErrorMsg <<  "WOKStep_TKList::AddParcelUnitContribution " 
+  ErrorMsg() <<  "WOKStep_TKList::AddParcelUnitContribution " 
     << "Cannot add unit " << unit << " from parcel on Windows NT: feature not available" << endm;
   SetFailed();
   return;
@@ -194,7 +194,7 @@ void WOKStep_TKList::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 {
   if(execlist->Length() > 1)
     {
-      ErrorMsg << "WOKStep_TKList::Execute" << "Too many input files in step" << endm;
+      ErrorMsg() << "WOKStep_TKList::Execute" << "Too many input files in step" << endm;
       SetFailed();
       return;
     }
@@ -221,7 +221,7 @@ void WOKStep_TKList::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 
       if(unit.IsNull())
 	{
-	  ErrorMsg << "WOKStep_TKList::Execute" 
+	  ErrorMsg() << "WOKStep_TKList::Execute" 
 		   << "Could not locate unit " << astr << " listed in file PACKAGES" << endm;
 	  SetFailed();
 	  return;

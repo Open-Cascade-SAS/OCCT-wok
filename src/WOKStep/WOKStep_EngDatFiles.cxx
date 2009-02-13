@@ -138,7 +138,7 @@ void WOKStep_EngDatFiles::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 		  
 		  if(afile.IsNull())
 		    {
-		      ErrorMsg << "WOKStep_EngDatFiles::Execute"
+		      ErrorMsg() << "WOKStep_EngDatFiles::Execute"
 			       << "Unable to locate file : " << astr << " in " << aunit->Name() << endm;
 		      SetFailed();
 		    }
@@ -155,7 +155,7 @@ void WOKStep_EngDatFiles::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 	    }
 	  else
 	    {
-	      ErrorMsg << "WOKStep_EngDatFiles::Execute"
+	      ErrorMsg() << "WOKStep_EngDatFiles::Execute"
 		       << "Could not locate interface : " << amsent->Name() << endm;
 	      SetFailed();
 	    }
@@ -179,7 +179,7 @@ void WOKStep_EngDatFiles::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 	  afile = new WOKernel_File(astr, Unit(), Unit()->GetFileType(engdattype));
 	  afile->GetPath();
 
-	  InfoMsg << "WOKStep_EngDatFiles::Execute" 
+	  InfoMsg() << "WOKStep_EngDatFiles::Execute" 
 		  << "Copy of : " << adatfile->Path()->Name() << " to " << afile->Path()->Name() << endm;
 
 	  switch(acmd->Copy(adatfile->Path(), afile->Path()))
@@ -201,7 +201,7 @@ void WOKStep_EngDatFiles::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 	    break;
 	    case WOKBuilder_Failed:
 	    case WOKBuilder_Unbuilt:
-	      ErrorMsg << "WOKStep_EngDatFiles::Execute" 
+	      ErrorMsg() << "WOKStep_EngDatFiles::Execute" 
 		       << "Copy Failed" << endm;
 	      SetFailed();
 	      break;

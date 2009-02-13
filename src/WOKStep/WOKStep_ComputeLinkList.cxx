@@ -145,7 +145,7 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 
       if(PACKAGES.IsNull())
 	{
-	  ErrorMsg << "WOKStep_ComputeLinkList::Execute"
+	  ErrorMsg() << "WOKStep_ComputeLinkList::Execute"
 		   << "Could not find PACKAGES file for toolkit : " << Unit()->Name() << endm;
 	  SetFailed();
 	  return;
@@ -159,7 +159,7 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 	  
 	  if(udsoftk.IsNull())
 	    {
-	      ErrorMsg << "WOKStep_ComputeLinkList::Execute" 
+	      ErrorMsg() << "WOKStep_ComputeLinkList::Execute" 
 		       << "Could not read file " << PACKAGES->Path()->Name() << endm;
 	      SetFailed();
 	      return;
@@ -173,7 +173,7 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 	      
 	      if(aunit.IsNull())
 		{
-		  ErrorMsg << "WOKStep_ComputeLinkList::Execute" 
+		  ErrorMsg() << "WOKStep_ComputeLinkList::Execute" 
 			   << "Unknown unit (" << udsoftk->Value(j) << ") listed in PACKAGES of : " << Unit()->Name() << endm;
 		  SetFailed();
 		  return;
@@ -238,7 +238,7 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 
 	      if(unit.IsNull())
 		{
-		  ErrorMsg << "WOKStep_ComputeExecList::Execute" 
+		  ErrorMsg() << "WOKStep_ComputeExecList::Execute" 
 			   << "Cannot find the uses library unit " << aunit << endm;
 		  SetFailed();
 		  return;
@@ -278,7 +278,7 @@ void WOKStep_ComputeLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)
 	  thelist->Append(list->Value(j));
       }
       else {
-	ErrorMsg << "WOKStep_ComputeExecList::Execute" 
+	ErrorMsg() << "WOKStep_ComputeExecList::Execute" 
 	  << "Cannot find the Input ImplDep file" << endm;
 	SetFailed();
 	return;

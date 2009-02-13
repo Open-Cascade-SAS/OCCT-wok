@@ -121,7 +121,7 @@ void WOKStep_Compile::Init()
   
       if(myiterator.LoadGroup())
 	{
-	  ErrorMsg << "WOKStep_Compile::Init"
+	  ErrorMsg() << "WOKStep_Compile::Init"
 	    << "Could not load compilers definition" << endm;
 	  SetFailed();
 	  return;
@@ -209,25 +209,25 @@ _TEST_BREAK();
 //<--- EUG4YAN
       if(infile->File()->Nesting()->IsSameString(Unit()->FullName()))
 	{
-	  InfoMsg << "WOKStep_Compile::Execute" << "-------> " << infile->File()->Name() << endm;
+	  InfoMsg() << "WOKStep_Compile::Execute" << "-------> " << infile->File()->Name() << endm;
 	}
       else
 	{
-	  InfoMsg << "WOKStep_Compile::Execute" << "-------> " << infile->File()->UserPathName() << endm;
+	  InfoMsg() << "WOKStep_Compile::Execute" << "-------> " << infile->File()->UserPathName() << endm;
 	}
       
       switch(myiterator.Execute(compilable))
 	{
 	case WOKBuilder_Success:
 	  WOK_TRACE {
-	    if(VerboseMsg("WOK_COMPILE").IsSet())
+	    if(VerboseMsg()("WOK_COMPILE").IsSet())
 	      {
-		VerboseMsg << "WOKStep_Compile::Execute" 
+		VerboseMsg() << "WOKStep_Compile::Execute" 
 			   << compilable->Path()->Name() << " produces : " << endm;
 		if (!myiterator.Produces().IsNull()) {
 		  for(i=1; i<=myiterator.Produces()->Length(); i++)
 		    {
-		      VerboseMsg << "WOKStep_Compile::Execute"
+		      VerboseMsg() << "WOKStep_Compile::Execute"
 			<< "\t\t" << myiterator.Produces()->Value(i)->Path()->Name() << endm;
 		    }
 		}
@@ -289,7 +289,7 @@ _TEST_BREAK();
 	  break;
 	case WOKBuilder_Failed:
 	  fails->Append(infile);
-	  ErrorMsg << "WOKStep_Compile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
+	  ErrorMsg() << "WOKStep_Compile::Execute" << "Failed    : " << infile->File()->Name() << endm;           
 	  break;
         default: break;
 	}
@@ -305,15 +305,15 @@ _TEST_BREAK();
   
   if(fails->Length())
     {
-      InfoMsg << "WOKStep_Compile::Execute" 
+      InfoMsg() << "WOKStep_Compile::Execute" 
 	      << "----------------------- Compilation Report -----------------------" << endm;
 
       for(i=1; i<= fails->Length(); i++)
 	{
-	  InfoMsg << "WOKStep_Compile::Execute" 
+	  InfoMsg() << "WOKStep_Compile::Execute" 
 		  << "Failed : " << fails->Value(i)->File()->UserPathName() << endm;
 	}
-       InfoMsg << "WOKStep_Compile::Execute" 
+       InfoMsg() << "WOKStep_Compile::Execute" 
 	       << "-----------------------------------------------------------------" << endm;
     }
 
@@ -355,7 +355,7 @@ _TEST_BREAK();
 
     p.SystemName ( s );
 
-    ErrorMsg << "WOKStep_Compile :: Execute"
+    ErrorMsg() << "WOKStep_Compile :: Execute"
              << "could not create '" << new TCollection_HAsciiString ( s )
              << "'" << endm;
 

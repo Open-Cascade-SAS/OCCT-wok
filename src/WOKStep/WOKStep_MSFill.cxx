@@ -130,7 +130,7 @@ void WOKStep_MSFill::Execute(const Handle(WOKMake_HSequenceOfInputFile)& )
 
   if(gefile.IsNull())
     {
-      ErrorMsg << "WOKStep_MSFill::Execute" << "Missing file : " << ams->AssociatedFile(Unit()->Name()) << endm;
+      ErrorMsg() << "WOKStep_MSFill::Execute" << "Missing file : " << ams->AssociatedFile(Unit()->Name()) << endm;
       SetFailed();
       return;
     }
@@ -188,7 +188,7 @@ _TEST_BREAK();
 	    case WOKBuilder_Success:
 	      break;
 	    case WOKBuilder_Failed:
-	      ErrorMsg << "WOKStep_MSFill::Execute"
+	      ErrorMsg() << "WOKStep_MSFill::Execute"
 		       << "Errors occured while executing " << anaction->Entity()->Name() << endm;
 	      anit.Reset();
 	      stop = Standard_True;
@@ -197,7 +197,7 @@ _TEST_BREAK();
 	}
       else
 	{
-	  ErrorMsg << "WOKStep_MSFill::Execute" 
+	  ErrorMsg() << "WOKStep_MSFill::Execute" 
 		   << "No file " << astr << " in " << aunitname << endm;
 	  stop = Standard_True;
 	}
@@ -211,13 +211,13 @@ _TEST_BREAK();
       
       if(!ams->MetaSchema()->Check(Unit()->Name()))
 	{
-	  ErrorMsg << "WOKStep_MSFill::Execute" 
+	  ErrorMsg() << "WOKStep_MSFill::Execute" 
 		   << "Check of " << Unit()->Name() << " has failed" << endm;
 	  stop = Standard_True;
 	}
       else
 	{
-	  InfoMsg << "WOKStep_MSFill::Execute" 
+	  InfoMsg() << "WOKStep_MSFill::Execute" 
 		   << "Check of " << Unit()->Name() << " succeeded" << endm;
 	}
     }
@@ -249,8 +249,8 @@ _TEST_BREAK();
 	  
 	  if(infile.IsNull())
 	    {
-	      WarningMsg << "WOKStep_MSFill::Execute" << origin->LocatorName()  << " is not an input of this step" << endm;
-	      WarningMsg << "WOKStep_MSFill::Execute" << "Perhaps performing step (src) is needed" << endm;
+	      WarningMsg() << "WOKStep_MSFill::Execute" << origin->LocatorName()  << " is not an input of this step" << endm;
+	      WarningMsg() << "WOKStep_MSFill::Execute" << "Perhaps performing step (src) is needed" << endm;
 	    }
 	  else
 	    {
@@ -326,14 +326,14 @@ _TEST_BREAK();
 			    }
 			  else
 			    {
-			      ErrorMsg << "WOKStep_MSFill::Execute" 
+			      ErrorMsg() << "WOKStep_MSFill::Execute" 
 				       << "Unit : " << aunit->Name() << " should be an interface and is not" << endm;
 			      stop = Standard_True;
 			    }
 			}
 		      else
 			{
-			  ErrorMsg << "WOKStep_MSFill::Execute" 
+			  ErrorMsg() << "WOKStep_MSFill::Execute" 
 				   << "Unit : " << ints->Value(i) << " could not be located" << endm;
 			  stop = Standard_True;
 			}
@@ -361,14 +361,14 @@ _TEST_BREAK();
 			}
 		      else
 			{
-			  ErrorMsg << "WOKStep_MSFill::Execute" 
+			  ErrorMsg() << "WOKStep_MSFill::Execute" 
 				   << "Unit : " << aunit->Name() << " should be an interface and is not" << endm;
 			  stop = Standard_True;
 			}
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKStep_MSFill::Execute" 
+		      ErrorMsg() << "WOKStep_MSFill::Execute" 
 			       << "Unit : EngineInterface could not be located" << endm;
 		      stop = Standard_True;
 		    }

@@ -100,7 +100,7 @@ Handle(WOKBuilder_HSequenceOfLibrary) WOKStep_DLLink::ComputeLibraryList(const H
 	      
 		  if(alib.IsNull())
 		    {
-		      ErrorMsg << "WOKStep_Link::ComputeLibraryList" 
+		      ErrorMsg() << "WOKStep_Link::ComputeLibraryList" 
 			       << "Could not find library in unit : " << aunit->UserPathName() << endm;
 		      SetFailed();
 		    }
@@ -146,7 +146,7 @@ Handle(WOKBuilder_Library)FASTCALL _get_unit_library(
 
  else {
 
-  WarningMsg << "_get_unit_library"
+  WarningMsg() << "_get_unit_library"
              << "Unknown nesting for " << unit->UserPathName() << endm;
 
   return retVal;

@@ -64,7 +64,7 @@ Standard_Boolean WOKStep_WNTK::HandleInputFile(const Handle(WOKMake_InputFile)& 
 
       if(filePACKAGES.IsNull())
 	{
-	  ErrorMsg << "WOKStep_WNTK::HandleInputFile"
+	  ErrorMsg() << "WOKStep_WNTK::HandleInputFile"
 		   << "Could not eval parameter '%FILENAME_PACKAGES'" << endm;
 	  SetFailed();
 	  return Standard_False;
@@ -87,7 +87,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 {
    if( anExecList->Length() > 1 ) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Too many input files in step" << endm;
        SetFailed();
        return;
@@ -118,7 +118,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
    
    if(stubIn.IsNull()) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not eval parameter " << stubIn << endm;
        SetFailed();
        return;
@@ -128,7 +128,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 
    if(stubOut.IsNull()) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not eval parameter " << stubOut << endm;
        SetFailed();
        return;
@@ -141,7 +141,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 
    if(!os) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not create stub file" << endm;
        SetFailed();
        return;
@@ -163,7 +163,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
      
        if( unit.IsNull() ) 
 	 {
-	   ErrorMsg << "WOKStep_WNTK::Execute"
+	   ErrorMsg() << "WOKStep_WNTK::Execute"
 		    << "Could not locate unit " << aStr << " listed in PACKAGES file" << endm;
 	   SetFailed();
 	   return;
@@ -171,7 +171,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 
        if( !(WOKernel_IsPackage(unit) || WOKernel_IsNocdlpack(unit) || WOKernel_IsDelivery(unit) || WOKernel_IsClient(unit) || WOKernel_IsSchema ( unit ))) 
 	 {
-	   ErrorMsg << "WOKStep_WNTK::Execute"
+	   ErrorMsg() << "WOKStep_WNTK::Execute"
 		    << "Unit " << aStr << " of type " << unit->Type()
 		    << " can not be listed in PACKAGES file" << endm;
 	   SetFailed();
@@ -189,7 +189,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
    
    if( !os.good() ) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not create stub file" << endm;
        SetFailed();
        return;
@@ -202,7 +202,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 
    if( cmd.IsNull() ) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not eval template STUBS_COMPILE" << endm;
        SetFailed();
        return;
@@ -213,7 +213,7 @@ void WOKStep_WNTK::Execute(const Handle(WOKMake_HSequenceOfInputFile)& anExecLis
 
    if(sh->Status()) 
      {
-       ErrorMsg << "WOKStep_WNTK::Execute"
+       ErrorMsg() << "WOKStep_WNTK::Execute"
 		<< "Could not compile stub file" << endm;
        SetFailed();
        return;

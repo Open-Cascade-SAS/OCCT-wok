@@ -152,7 +152,7 @@ void WOKStep_WNTLibrary::Execute (const Handle(WOKMake_HSequenceOfInputFile)& an
 
        if(numRes != numProd)
    
-	 WarningMsg << "WOKStep_WNTLibrary :: Execute"
+	 WarningMsg() << "WOKStep_WNTLibrary :: Execute"
 	   << tool -> Produces () -> Value ( 1 ) -> Path () -> FileName ()
 	   << " does not contain exported symbols" << endm;
        

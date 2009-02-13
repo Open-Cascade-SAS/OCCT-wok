@@ -187,7 +187,7 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
 	    if (  fSrc.Failed ()  ) {
 	      
-	      ErrorMsg << "WOKStep_Include :: Execute"
+	      ErrorMsg() << "WOKStep_Include :: Execute"
 		       << "failed to copy '" << infile -> File () -> Path () -> Name ()
 		       << "' to '"           << pubincfile        -> Path () -> Name ()
 		       << "'" << endm;
@@ -198,7 +198,7 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 
 	    } else {
 
-	      InfoMsg << "WOKStep_Include :: Execute"
+	      InfoMsg() << "WOKStep_Include :: Execute"
 		      << "Copied : '" << infile->File()->Path()->Name()
 		      << "' to '" << pubincfile->Path()->Name()
 		      << "'" << endm;
@@ -217,7 +217,7 @@ void WOKStep_Include::Execute(const Handle(WOKMake_HSequenceOfInputFile)& tobuil
 	  } else {
 
 	    if ( !(infile -> File () -> Path ()  -> Exists () )) {
-	      InfoMsg << "WOKStep_Include :: Execute"
+	      InfoMsg() << "WOKStep_Include :: Execute"
 		<< "failed to copy '" << infile -> File () -> Path () -> Name ()
 		  << "' to '"           << pubincfile        -> Path () -> Name ()
 		    << "'" << endm;

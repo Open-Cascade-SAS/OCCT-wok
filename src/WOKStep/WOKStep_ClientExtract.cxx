@@ -199,7 +199,7 @@ Handle(WOKMake_HSequenceOfInputFile) WOKStep_ClientExtract::OutOfDateEntities()
       
       if(anent.IsNull())
 	{
-	  ErrorMsg << "WOKStep_ClientExtract::OutOfDateEntities" 
+	  ErrorMsg() << "WOKStep_ClientExtract::OutOfDateEntities" 
 		   << infile->ID() << " is not a MS Entity" << endm;
 	  SetFailed();
 	  return result;
@@ -265,13 +265,13 @@ void WOKStep_ClientExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 	case WOKBuilder_Success:
 	  {
 	    WOK_TRACE {
-	      if(VerboseMsg("WOK_EXTRACT").IsSet())
+	      if(VerboseMsg()("WOK_EXTRACT").IsSet())
 		{
-		  VerboseMsg << "WOKStep_Extract::Execute"
+		  VerboseMsg() << "WOKStep_Extract::Execute"
 			     << entity->Name() << " produces : " << endm;
 		  for(i=1; i<=anit.Produces()->Length(); i++)
 		    {
-		      VerboseMsg << "WOKStep_Extract::Execute" 
+		      VerboseMsg() << "WOKStep_Extract::Execute" 
 				 << "\t\t" << anit.Produces()->Value(i)->Path()->Name() << endm;
 		    }
 		}
@@ -349,11 +349,11 @@ void WOKStep_ClientExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 		    out->SetProduction();
 		    if(!istemplate) AddExecDepItem(tobuild->Value(j), out, Standard_True);
 
-		    InfoMsg  << "WOKStep_Extract::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
+		    InfoMsg()  << "WOKStep_Extract::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
 		    break;
 		  case WOKBuilder_Unbuilt:
 		    WOK_TRACE {
-		      VerboseMsg("WOK_EXTRACT")  << "WOKStep_Extract::Execute" 
+		      VerboseMsg()("WOK_EXTRACT")  << "WOKStep_Extract::Execute" 
 						 << "File : " << outfile->Path()->Name() << " is unchanged" << endm;
 		    }
 		    
@@ -365,14 +365,14 @@ void WOKStep_ClientExtract::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 		    break;
 		  case WOKBuilder_Failed:
 		    SetFailed();
-		    ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << outfile->Name() << endm;
+		    ErrorMsg() << "WOKStep_Extract::Execute" << "Failed    : " << outfile->Name() << endm;
 		    break;
 		  }
 	      }
 	  }
 	  break;
 	case WOKBuilder_Failed:
-	  ErrorMsg << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
+	  ErrorMsg() << "WOKStep_Extract::Execute" << "Failed    : " << entity->Name() << endm;          
 	  break;
         default: break;
 	}

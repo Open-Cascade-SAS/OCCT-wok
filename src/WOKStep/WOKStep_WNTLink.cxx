@@ -133,7 +133,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKStep_WNTLink::ComputeExternals(const 
 
 	      if(external.IsNull())
 		{
-		  WarningMsg << "WOKStep_WNTLink::ComputeExternals" 
+		  WarningMsg() << "WOKStep_WNTLink::ComputeExternals" 
 			     << "Skipped external " << infile->ID()->Token(":", 3) << "; could not eval  : " << astr << endm;
 		}
 	      else
@@ -176,7 +176,7 @@ void WOKStep_WNTLink::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 
   if(libType.IsNull())
     {
-      WarningMsg << "WOKStep_WNTLink::Execute" 
+      WarningMsg() << "WOKStep_WNTLink::Execute" 
 		 << "Unknown link : library is produced" << endm;
       libType  = Unit()->GetFileType("library");
     }
@@ -411,11 +411,11 @@ dummyStepFile:
 //---> EUG4YAN
      if ( !g_fCompOrLnk )
 //<--- EUG4YAN
-  InfoMsg << "WOKStep_WNTLink::Execute"
+  InfoMsg() << "WOKStep_WNTLink::Execute"
 	  << "------------" << endm  << "" << endm;
   
 #else
-  ErrorMsg << "WOKStep_WNTLink::Execute"
+  ErrorMsg() << "WOKStep_WNTLink::Execute"
 	   << "Step WOKStep_WNTLink is available only on WNT platforms." << endm;
   SetFailed();
 #endif // WNT

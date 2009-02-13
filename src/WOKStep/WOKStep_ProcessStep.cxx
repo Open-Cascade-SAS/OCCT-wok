@@ -140,7 +140,7 @@ Handle(TCollection_HAsciiString) WOKStep_ProcessStep::GetUnitName(const Handle(T
   if(rejectlist->Search(basename) != -1) 
     {
       WOK_TRACE {
-	VerboseMsg("WOK_IDEP") << "WOKStep_ProcessStep::GetUnitName" 
+	VerboseMsg()("WOK_IDEP") << "WOKStep_ProcessStep::GetUnitName" 
 			       << "Rejected include : " << aincpath << endm;
       }
       return unitname;
@@ -312,7 +312,7 @@ void WOKStep_ProcessStep::TreatOutput(const Handle(WOKMake_InputFile)& infile, c
 	      
       if(aoutfile.IsNull() && extens != WOKUtils_MFile)
 	{
-	  ErrorMsg << "WOKStep_ProcessStep::Execute" 
+	  ErrorMsg() << "WOKStep_ProcessStep::Execute" 
 		   << "Unrecognized file : " << outent->Path()->Name() << endm;
 	}
       if(!aoutfile.IsNull())

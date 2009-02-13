@@ -167,7 +167,7 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
 	}
       else
 	{
-	  WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
+	  WarningMsg() << "WOKStep_LinkList::GetUnitLibrary" 
 		     << "Unknown Nesting for " << aunit->UserPathName() << endm;
 	}
     }
@@ -196,13 +196,13 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
 	  Standard_Boolean mustExist = aunit->SearchInFileList(Locator(),libname);
 	  if (mustExist)
 	    {
-	      ErrorMsg << "WOKStep_LinkList::GetUnitLibrary" 
+	      ErrorMsg() << "WOKStep_LinkList::GetUnitLibrary" 
 		       << "No library (" << libname << ") found for unit " << aunit->Name() << endm;	      
 	      SetFailed();
 	    }
 	  else {
 #ifdef DEB
-	    WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
+	    WarningMsg() << "WOKStep_LinkList::GetUnitLibrary" 
 		       << "No library (" << libname << ") in unit " << aunit->Name() << endm;
 #endif
 	  }
@@ -235,7 +235,7 @@ Handle(WOKMake_OutputFile) WOKStep_LinkList::GetUnitLibrary(const Handle(WOKerne
     }
   else
     {
-      WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
+      WarningMsg() << "WOKStep_LinkList::GetUnitLibrary" 
 		 << "Unit " << aunit->UserPathName() << " is not known to have a library" << endm;
     }
 
@@ -316,7 +316,7 @@ Handle(TCollection_HAsciiString) WOKStep_LinkList::GetUnitContributionCodes(cons
 
   if(codes.IsNull())
     {
-      WarningMsg << "WOKStep_LinkList::GetUnitContributionCodes" 
+      WarningMsg() << "WOKStep_LinkList::GetUnitContributionCodes" 
 		 << "Could not eval parameter " << paramname << " in unit " << aunit->UserPathName() << endm;
     }
   return codes;
@@ -338,7 +338,7 @@ void WOKStep_LinkList::AddWorkbenchUnitContribution(const Handle(WOKMake_InputFi
       
       if(codes.IsNull())
 	{
-	  WarningMsg << "WOKStep_LinkList::GetUnitContribution" 
+	  WarningMsg() << "WOKStep_LinkList::GetUnitContribution" 
 	    << "Could not eval contribution of unit : " << aunit->UserPathName() << " in link of " << Unit()->UserPathName() << endm;
 	}
       else
@@ -352,7 +352,7 @@ void WOKStep_LinkList::AddWorkbenchUnitContribution(const Handle(WOKMake_InputFi
 	      
 	      if(!step.IsNull())
 		{
-		  InfoMsg << "WOKStep_LinkList::GetUnitContribution" 
+		  InfoMsg() << "WOKStep_LinkList::GetUnitContribution" 
 		    << "Processing step " << step->UniqueName() << endm;
 
 //---> EUG4JR
@@ -380,7 +380,7 @@ void WOKStep_LinkList::AddWorkbenchUnitContribution(const Handle(WOKMake_InputFi
 //<--- EUG4JR		  
 		  if(outfiles.IsNull())
 		    {
-		      ErrorMsg << "WOKStep_LinkList::GetUnitContribution" 
+		      ErrorMsg() << "WOKStep_LinkList::GetUnitContribution" 
 			<< "Could not obtain output list of step : " << code << " in unit " << aunit->UserPathName() << endm;
 		      failed = Standard_True;
 		    }
@@ -432,7 +432,7 @@ void WOKStep_LinkList::AddWorkbenchUnitContribution(const Handle(WOKMake_InputFi
 		}
 	      else
 		{
-		  WarningMsg << "WOKStep_ComputeLinkList" 
+		  WarningMsg() << "WOKStep_ComputeLinkList" 
 		    << "Ignoring invalid step code " << code << " in unit " << aunit->UserPathName() << endm;
 		}
 	      k++;

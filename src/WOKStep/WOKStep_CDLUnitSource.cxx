@@ -140,7 +140,7 @@ _TEST_BREAK();
         }
       else
         {
-          WarningMsg << "WOKStep_MSFill::Execute" << "No file " << astr << " in " << aunitname << endm;
+          WarningMsg() << "WOKStep_MSFill::Execute" << "No file " << astr << " in " << aunitname << endm;
           SetIncomplete();
         }
       
@@ -186,7 +186,7 @@ _TEST_BREAK();
       }
     }
     if (stop) {
-      ErrorMsg << "WOKStep_MSFill::Execute" 
+      ErrorMsg() << "WOKStep_MSFill::Execute" 
         << "Unit and cdl file definition type mismatch for unit " << Unit()->Name() << endm;
     }
   }

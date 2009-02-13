@@ -62,7 +62,7 @@ _TEST_BREAK();
       
       if(anent.IsNull())
 	{
-	  ErrorMsg << "WOKStep_HeaderExtract::OutOfDateEntities" 
+	  ErrorMsg() << "WOKStep_HeaderExtract::OutOfDateEntities" 
 		   << infile->ID() << " is not a MS Entity" << endm;
 	  SetFailed();
 	  return result;

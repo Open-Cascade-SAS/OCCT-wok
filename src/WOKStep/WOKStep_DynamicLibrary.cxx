@@ -150,7 +150,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 
   if (  !lnkfile -> Path () -> CreateFile ()  )
 
-   ErrorMsg << "WOKStep_Link::ExecuteLink" 
+   ErrorMsg() << "WOKStep_Link::ExecuteLink" 
             << "Unable to create link file '"
             << lnkfile -> Path () -> Name () -> ToCString ()
             << "'" << endm;
@@ -207,7 +207,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 //---> EUG4YAN
  if ( !g_fCompOrLnk )
 //<--- EUG4YAN
-  InfoMsg << "WOKStep_DynamicLibrary::Execute"
+  InfoMsg() << "WOKStep_DynamicLibrary::Execute"
 	  << "Creating   : " << libname << endm;
 
   switch(ldshr->Execute())
@@ -234,7 +234,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 		  outitem = new WOKernel_File(outent->Path()->FileName(), Unit(), libtype);
 		  break;
 		default:
-		  ErrorMsg << "WOKStep_DynamicLibrary::Execute"
+		  ErrorMsg() << "WOKStep_DynamicLibrary::Execute"
 			   << "Unrecognized production : " << outent->Path()->FileName() << endm;
 		  SetFailed();
 		  return;
@@ -257,7 +257,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 		}
 	    }
 	}
-      InfoMsg << "WOKStep_DynamicLibrary::Execute"
+      InfoMsg() << "WOKStep_DynamicLibrary::Execute"
 	      << "Succeeded  : " << libname << endm;
       SetSucceeded();
 //---> EUG4YAN
@@ -265,7 +265,7 @@ void WOKStep_DynamicLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 //<--- EUG4YAN
       break;
     case WOKBuilder_Failed:
-      ErrorMsg << "WOKStep_DynamicLibrary::Execute" 
+      ErrorMsg() << "WOKStep_DynamicLibrary::Execute" 
 	       << "Failed     : " <<   libname << endm;           
       SetFailed();
       break;

@@ -108,7 +108,7 @@ void WOKStep_LibUnCompress::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
 
       liba->GetPath();
 
-      InfoMsg << "WOKStep_LibUnCompress::Execute" 
+      InfoMsg() << "WOKStep_LibUnCompress::Execute" 
 	      << "Uncompress : " << infile->File()->UserPathName() << endm;
 
       switch(acmd->UnCompressTo(infile->File()->Path(), liba->Path()))

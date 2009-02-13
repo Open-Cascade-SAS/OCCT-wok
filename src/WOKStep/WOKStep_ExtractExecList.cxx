@@ -133,30 +133,30 @@ _TEST_BREAK();
 	      astep->SetTargets(Targets());
 	      astep->SetOptions(Options());
 	      
-	      InfoMsg << "WOKStep_ExtractExecList::Execute" 
+	      InfoMsg() << "WOKStep_ExtractExecList::Execute" 
 		      << "Extracting Executable list for part : "  << part << endm;
 	      
 	      switch(astep->Make())
 		{
 		case WOKMake_Uptodate:
-		  InfoMsg << "WOKMake_MetaStep::Execute"
+		  InfoMsg() << "WOKMake_MetaStep::Execute"
 			  << "========> " << astep->SubCode() << " is uptodate" << endm;
 		  break;
 		case WOKMake_Success:
-		  InfoMsg << "WOKMake_MetaStep::Execute"
+		  InfoMsg() << "WOKMake_MetaStep::Execute"
 			  << "========> " << astep->SubCode() << " succeeded" << endm;
 		  break;
 		case WOKMake_Incomplete:
-		  WarningMsg << "WOKMake_MetaStep::Execute"
+		  WarningMsg() << "WOKMake_MetaStep::Execute"
 			     << "========> " << astep->SubCode() << " is incomplete" << endm;
 		  break;
 		case WOKMake_Failed:
-		  ErrorMsg << "WOKMake_MetaStep::Execute"
+		  ErrorMsg() << "WOKMake_MetaStep::Execute"
 			   << "========> " << astep->SubCode() << " failed" << endm;
 		  ok = Standard_False;
 		  break;
 		case WOKMake_Unprocessed:
-		  WarningMsg << "WOKMake_MetaStep::Execute"
+		  WarningMsg() << "WOKMake_MetaStep::Execute"
 			     << "========> " << astep->SubCode() << " is still unprocessed" << endm;
 		  ok=Standard_False;
 		  break;
@@ -205,7 +205,7 @@ _TEST_BREAK();
 			}
 		      else
 			{
-			  WarningMsg << "WOKStep_ExtractExecList::Execute"
+			  WarningMsg() << "WOKStep_ExtractExecList::Execute"
 				     << "Missing file : " <<  files->Value(j) << " in unit : " << Unit()->Name() << endm;
 			  missings = Standard_True;
 			}
@@ -219,7 +219,7 @@ _TEST_BREAK();
 		       
 		       if(unit.IsNull())
 			 {
-			   WarningMsg << "WOKStep_ExtractExecList::Execute"
+			   WarningMsg() << "WOKStep_ExtractExecList::Execute"
 				      << "Wrong (or not found) libray uses : " << libs->Value(j) << endm;
 			   missings = Standard_True;
 			 }

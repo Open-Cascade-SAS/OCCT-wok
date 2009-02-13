@@ -121,7 +121,7 @@ void WOKStep_EngLDFile::Execute(const Handle(WOKMake_HSequenceOfInputFile)& exec
 
   if(!astream.good())
     {
-      ErrorMsg << "WOKStep_EngLDFile::Execute"
+      ErrorMsg() << "WOKStep_EngLDFile::Execute"
 	       << "Could not open " << ldfile->Path()->Name()->ToCString() << " for writing" << endm;
       SetFailed();
       return;

@@ -131,7 +131,7 @@ void WOKStep_ArchiveLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
     }
 
   // calcul de la librairie
-  InfoMsg << "WOKStep_ArchiveLibrary::Execute" << "Creating   : lib" << ar->TargetName() << ".a" << endm;
+  InfoMsg() << "WOKStep_ArchiveLibrary::Execute" << "Creating   : lib" << ar->TargetName() << ".a" << endm;
 
   switch(ar->Execute())
     {
@@ -166,12 +166,12 @@ void WOKStep_ArchiveLibrary::Execute(const Handle(WOKMake_HSequenceOfInputFile)&
 		}
 	    }
 	}
-      InfoMsg << "WOKStep_ArchiveLibrary::Execute"
+      InfoMsg() << "WOKStep_ArchiveLibrary::Execute"
 	      << "Succeeded  : lib" << ar->TargetName() << ".a" << endm;
       SetSucceeded();
       break;
     case WOKBuilder_Failed:
-      ErrorMsg << "WOKStep_ArchiveLibrary"
+      ErrorMsg() << "WOKStep_ArchiveLibrary"
 	       << "Failed     : lib" <<   ar->TargetName() << ".a" << endm;           
       SetFailed();
       break;

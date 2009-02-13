@@ -231,7 +231,7 @@ Handle(WOKMake_HSequenceOfInputFile) WOKStep_JiniExtract::OutOfDateEntities()
       
       if(anent.IsNull())
 	{
-	  ErrorMsg << "WOKStep_JiniExtract::OutOfDateEntities" 
+	  ErrorMsg() << "WOKStep_JiniExtract::OutOfDateEntities" 
 		   << infile->ID() << " is not a MS Entity" << endm;
 	  SetFailed();
 	  return result;
@@ -323,16 +323,16 @@ nextPass:
 
    case WOKBuilder_Success: {
 #ifdef WOK_VERBOSE
-    if (  VerboseMsg ( "WOK_EXTRACT" ).IsSet ()  ) {
+    if (  VerboseMsg() ( "WOK_EXTRACT" ).IsSet ()  ) {
 
-     VerboseMsg ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute"
+     VerboseMsg() ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute"
                                   << entity -> Name ()
                                   << " produces : "
                                   << endm;
 
      for (  i = 1; i <= anit.Produces () -> Length (); ++i  )
 
-      VerboseMsg ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute" 
+      VerboseMsg() ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute" 
 					               << "\t\t"
                                    << anit.Produces () -> Value ( i ) -> Path () -> Name ()
                                    << endm;
@@ -457,7 +457,7 @@ nextPass:
 
        if ( !istemplate ) AddExecDepItem (  buildSeq -> Value ( j ), out, Standard_True );
 
-       InfoMsg  << "WOKStep_Extract::Execute"
+       InfoMsg()  << "WOKStep_Extract::Execute"
                 << "File : "
                 << outfile -> Path () -> Name ()
                 << " is modified"
@@ -467,7 +467,7 @@ nextPass:
 
       case WOKBuilder_Unbuilt:
 #ifdef WOK_VERBOSE
-       VerboseMsg ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute" 
+       VerboseMsg() ( "WOK_EXTRACT" ) << "WOKStep_Extract::Execute" 
 					                << "File : "
                                     << outfile -> Path () -> Name ()
                                     << " is unchanged"
@@ -488,7 +488,7 @@ nextPass:
 
        SetFailed ();
 
-       ErrorMsg << "WOKStep_Extract::Execute"
+       ErrorMsg() << "WOKStep_Extract::Execute"
                 << "Failed    : "
                 << outfile -> Name ()
                 << endm;
@@ -505,7 +505,7 @@ nextPass:
 
    case WOKBuilder_Failed:
 
-    ErrorMsg << "WOKStep_Extract::Execute"
+    ErrorMsg() << "WOKStep_Extract::Execute"
              << "Failed    : "
              << entity -> Name ()
              << endm;          
@@ -526,7 +526,7 @@ nextPass:
 
  }  // end if
 
- InfoMsg << "WOKStep_Extract::Execute" << "Generating ClassFile.cfg" << endm;
+ InfoMsg() << "WOKStep_Extract::Execute" << "Generating ClassFile.cfg" << endm;
 #ifdef WNT
  Handle( TCollection_HAsciiString ) NL = new TCollection_HAsciiString ( "\r\n" );
 #else

@@ -82,7 +82,7 @@ void WOKStep_ResourceSource::ReadFILES(const Handle(WOKMake_InputFile)& FILES)
 		  Handle(TCollection_HAsciiString) filenameFILES = Unit()->Params().Eval("%FILENAME_FILES");
 		  if (strcmp(filenameFILES->ToCString(),astr->ToCString()))
 		    {
-		      ErrorMsg << "WOKStep_ResourceSource::ReadFILES" 
+		      ErrorMsg() << "WOKStep_ResourceSource::ReadFILES" 
 		               << "No type specified for file " << astr << endm;
 		      SetFailed();
 		    }
@@ -98,7 +98,7 @@ void WOKStep_ResourceSource::ReadFILES(const Handle(WOKMake_InputFile)& FILES)
 		    {
 		      if(theType->IsStationDependent() || theType->IsDBMSDependent())
 			{
-			  WarningMsg << "WOKStep_ResourceSource::ReadFILES" 
+			  WarningMsg() << "WOKStep_ResourceSource::ReadFILES" 
 			             << "Station or DBMS Dependent type " <<  type << " : ignoring file " << name << endm;
 			}
 		      else
@@ -107,7 +107,7 @@ void WOKStep_ResourceSource::ReadFILES(const Handle(WOKMake_InputFile)& FILES)
 		      
 			  if(afile.IsNull() == Standard_True)
 			    {
-			      ErrorMsg << "WOKStep_ResourceSource::ReadFILES" 
+			      ErrorMsg() << "WOKStep_ResourceSource::ReadFILES" 
 				       << "File " << astr->ToCString() << " could not be found" << endm;
 			      SetFailed();
 			    }
@@ -123,7 +123,7 @@ void WOKStep_ResourceSource::ReadFILES(const Handle(WOKMake_InputFile)& FILES)
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKStep_ResourceSource::ReadFILES" 
+		      ErrorMsg() << "WOKStep_ResourceSource::ReadFILES" 
 			       << "Type unknown : " << type << " for file : " << name << endm;
 		      SetFailed();
 		    }

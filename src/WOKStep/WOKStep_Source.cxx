@@ -142,7 +142,7 @@ _TEST_BREAK();
 	      
 	      if(afile.IsNull() == Standard_True)
 		{
-		  ErrorMsg << "WOKStep_Source::ReadFILES" 
+		  ErrorMsg() << "WOKStep_Source::ReadFILES" 
 			   << "File " << astr->ToCString() << " could not be found" << endm;
 		  SetFailed();
 		  return;

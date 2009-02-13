@@ -82,7 +82,7 @@ void WOKStep_EngLinkList::ComputeInterface(const Handle(WOKernel_DevUnit)& aunit
   
   if(objfile.IsNull())
     {
-      ErrorMsg << "WOKStep_EngLinkList::Execute"
+      ErrorMsg() << "WOKStep_EngLinkList::Execute"
 	<< "Could not locate object file for interface : " << aunit->Name() << endm;
       SetFailed();
     }
@@ -167,7 +167,7 @@ void WOKStep_EngLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 		}
 	      else
 		{
-		  ErrorMsg << "WOKStep_EngLinkList::Execute"
+		  ErrorMsg() << "WOKStep_EngLinkList::Execute"
 			   << "Could not locate interface : " << amsent->Name() << endm;
 		  SetFailed();
 		}
@@ -177,7 +177,7 @@ void WOKStep_EngLinkList::Execute(const Handle(WOKMake_HSequenceOfInputFile)& ex
 
   if(inengine.IsNull())
     {
-      ErrorMsg << "WOKStep_EngLinkList::Execute"
+      ErrorMsg() << "WOKStep_EngLinkList::Execute"
 	       << "Could determine current engine in InputList" << endm;
       SetFailed();
     }

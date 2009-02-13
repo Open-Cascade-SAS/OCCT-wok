@@ -244,7 +244,7 @@ Handle(WOKBuilder_HSequenceOfLibrary) WOKStep_Link::ComputeLibraryList(const Han
 		}
 	      else
 		{
-		  WarningMsg << "WOKStep_LinkList::GetUnitLibrary" 
+		  WarningMsg() << "WOKStep_LinkList::GetUnitLibrary" 
 		             << "Unknown Nesting for " << aunit->UserPathName() << endm;
 		}
 	    }
@@ -257,7 +257,7 @@ Handle(WOKBuilder_HSequenceOfLibrary) WOKStep_Link::ComputeLibraryList(const Han
 	  
 	  if(alib.IsNull())
 	    {
-	      ErrorMsg << "WOKStep_Link::ComputeLibraryList" 
+	      ErrorMsg() << "WOKStep_Link::ComputeLibraryList" 
 		       << "Could not find library in unit : " << aunit->UserPathName() << endm;
 	      SetFailed();
 	    }
@@ -390,7 +390,7 @@ Handle(WOKUtils_HSequenceOfPath) WOKStep_Link::ComputeLibrarySearchList(const Ha
     {
       if(!amapcalc.Contains(anit.Key()))
 	{
-	  WarningMsg << "WOKStep_Link::ComputeLibrarySearchList"
+	  WarningMsg() << "WOKStep_Link::ComputeLibrarySearchList"
 	             << "Library directory " << anit.Key()->Name() << " referenced in link is not in visibility" << endm;
 	}
       anit.Next();
@@ -429,7 +429,7 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
   lnkfile->GetPath();
   if(lnkfile->Path()->Exists()) lnkfile->Path()->RemoveFile();
   if (!lnkfile->Path()->CreateFile()) {
-    ErrorMsg << "WOKStep_Link::ExecuteLink" 
+    ErrorMsg() << "WOKStep_Link::ExecuteLink" 
       << "Unable to create link file " << lnkfile->Path()->Name()->ToCString() << endm;
   }
   Handle(WOKUtils_Shell) ashell = Shell();
@@ -497,7 +497,7 @@ WOKMake_Status WOKStep_Link::ExecuteLink(Handle(WOKMake_HSequenceOfOutputFile)& 
       }
       break;
     case WOKBuilder_Failed:
-      ErrorMsg << "WOKStep_Link::ExecuteLink" << "Failed    : " << mytarget << endm;
+      ErrorMsg() << "WOKStep_Link::ExecuteLink" << "Failed    : " << mytarget << endm;
       SetFailed();
       break;
     default: break;
