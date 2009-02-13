@@ -55,7 +55,7 @@ WOKUnix_SequenceOfProcess  &WOKUnix_ProcessManager::Processes()
 void WOKUnix_ProcessManager::InteruptHandler()
 {
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::InteruptHandler" 
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::InteruptHandler" 
 			    << "Interupt Signal Launched !!" << endm;
 #endif
 
@@ -76,7 +76,7 @@ void WOKUnix_ProcessManager::ChildDeathHandler()
 
   if(pid == CriticPid)
     {
-      ErrorMsg << "WOKUnix_ProcessManager::ChildDeathHandler"
+      ErrorMsg() << "WOKUnix_ProcessManager::ChildDeathHandler"
 	       << "Child " << pid << " died" << endm;
       Standard_ProgramError::Raise("unexpected child shell death");
     }
@@ -86,7 +86,7 @@ void WOKUnix_ProcessManager::ChildDeathHandler()
       if(Processes().Value(ind)->Pid() == pid)
 	{
 #ifdef WOK_VERBOSE
-	  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::ChildDeathHandler"
+	  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::ChildDeathHandler"
 				    << "Process " << pid << " died" << endm;
 #endif
 	  Processes().Value(ind)->Kill();
@@ -104,7 +104,7 @@ void WOKUnix_ProcessManager::ChildDeathHandler()
 void WOKUnix_ProcessManager::PipeHandler()
 {
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::PipeHandler" << "SIGPIPE received" << endm;
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::PipeHandler" << "SIGPIPE received" << endm;
 #endif
   return;
 }
@@ -116,13 +116,13 @@ void WOKUnix_ProcessManager::PipeHandler()
 void WOKUnix_ProcessManager::KillAll()
 {
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::PipeHandler" << "Killing all sub proccesses" << endm;
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::PipeHandler" << "Killing all sub proccesses" << endm;
 #endif
 
   for(Standard_Integer ind = 1; ind <= Processes().Length(); ind ++)
     {
 #ifdef WOK_VERBOSE
-      VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::KillAll"
+      VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::KillAll"
 				<< "Process " << Processes().Value(ind)->Pid() << " requested to die (interrupt)" << endm;
 #endif
       Processes().Value(ind)->Kill();
@@ -177,14 +177,14 @@ void WOKUnix_ProcessManager::WaitProcess(const Handle(WOKUnix_Process)& aprocess
 
   
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::WaitProcess"
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::WaitProcess"
 			    << "Waiting for process " << aprocess->Pid() << " to die" << endm;
 #endif
  
   pid = waitpid(aprocess->Pid(), &status, 0);
 
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ProcessManager::WaitProcess"
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ProcessManager::WaitProcess"
 			    << "Process " << aprocess->Pid() << " died" << endm;
 #endif
 

@@ -150,7 +150,7 @@ Standard_Boolean WOKUnix_Path::CreateDirectory(const Standard_Boolean CreatePare
       // l'inode existe deja
       if(!IsDirectory())
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::CreateDirectory" 
 	    << mypath << " exists and is not a directory" << endm; 
 	  return Standard_False;
 	}
@@ -163,16 +163,16 @@ Standard_Boolean WOKUnix_Path::CreateDirectory(const Standard_Boolean CreatePare
     {
       if(!parent->IsDirectory())
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::CreateDirectory" 
 	    << "Parent Directory " << parent->Name() << " exists and is not a directory" << endm; 
 	  return Standard_False;
 	}
 
      if(mkdir(mypath->ToCString(), 0777))
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::CreateDirectory" 
 	    << WOKUnix::LastSystemMessage() << endm;
-	  ErrorMsg << "WOKUnix_Path::CreateDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::CreateDirectory" 
 	    << "Could not create directory : " << mypath << endm;
 	  return Standard_False;
 	}
@@ -181,7 +181,7 @@ Standard_Boolean WOKUnix_Path::CreateDirectory(const Standard_Boolean CreatePare
   
   if(CreateParents == Standard_False)
     {
-      ErrorMsg << "WOKUnix_Path::CreateDirectory" 
+      ErrorMsg() << "WOKUnix_Path::CreateDirectory" 
 	<< "Parent Directory " << parent->Name() << " does not exist" << endm;
       return Standard_False;
     }
@@ -212,7 +212,7 @@ Standard_Boolean WOKUnix_Path::CreateFile(const Standard_Boolean CreateParents)
       // l'inode existe deja
       if(!IsFile())
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateFile" 
+	  ErrorMsg() << "WOKUnix_Path::CreateFile" 
 	    << mypath << " exists and is not a file" << endm; 
 	  return Standard_False;
 	}
@@ -221,7 +221,7 @@ Standard_Boolean WOKUnix_Path::CreateFile(const Standard_Boolean CreateParents)
 
   //if(apath.IsValid(mypath->ToCString()) == Standard_False) 
   //  {
-  //    ErrorMsg << "WOKUnix_Path::CreateFile" 
+  //    ErrorMsg() << "WOKUnix_Path::CreateFile" 
   //	       << mypath << " is invalid" << endm; 
   //    return Standard_False;
   //  }
@@ -232,7 +232,7 @@ Standard_Boolean WOKUnix_Path::CreateFile(const Standard_Boolean CreateParents)
     {
       if(!parent->IsDirectory())
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateFile" 
+	  ErrorMsg() << "WOKUnix_Path::CreateFile" 
 	    << "Parent Directory " << parent->Name() << " exists and is not a directory" << endm; 
 	  return Standard_False;
 	}
@@ -241,8 +241,8 @@ Standard_Boolean WOKUnix_Path::CreateFile(const Standard_Boolean CreateParents)
       
       if((fd=creat(mypath->ToCString(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) < 0)
 	{
-	  ErrorMsg << "WOKUnix_Path::CreateFile" << WOKUnix::LastSystemMessage() << endm;
-	  ErrorMsg << "WOKUnix_Path::CreateFile" << "Could not create " << mypath << endm; 
+	  ErrorMsg() << "WOKUnix_Path::CreateFile" << WOKUnix::LastSystemMessage() << endm;
+	  ErrorMsg() << "WOKUnix_Path::CreateFile" << "Could not create " << mypath << endm; 
 	  return Standard_False;
 	}
       close(fd);
@@ -250,7 +250,7 @@ Standard_Boolean WOKUnix_Path::CreateFile(const Standard_Boolean CreateParents)
     }
   else if(CreateParents == Standard_False)
     {
-      ErrorMsg << "WOKUnix_Path::CreateFile" 
+      ErrorMsg() << "WOKUnix_Path::CreateFile" 
 	<< "Parent Directory " 
 	  << parent->Name()
 	    << " does not exist" << endm;
@@ -310,16 +310,16 @@ Standard_Boolean  WOKUnix_Path::CreateSymLinkTo(const Handle(WOKUnix_Path)& apat
 {
   if(apath.IsNull() || Name().IsNull())
     {
-      ErrorMsg << "WOKUnix_Path::CreateSymLinkTo" 
+      ErrorMsg() << "WOKUnix_Path::CreateSymLinkTo" 
 	<< "Unable to create symlink : Invalid arguments" << endm;
       return Standard_False;
     }
 
   if(symlink(apath->Name()->ToCString(), Name()->ToCString()))
     {
-      ErrorMsg << "WOKUnix_Path::CreateSymLinkTo" 
+      ErrorMsg() << "WOKUnix_Path::CreateSymLinkTo" 
 	<< WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_Path::CreateSymLinkTo" 
+      ErrorMsg() << "WOKUnix_Path::CreateSymLinkTo" 
 	<< "Unable to create " << Name() << " -> " << apath->Name() << endm;
       return Standard_False;      
     }
@@ -334,7 +334,7 @@ Standard_Boolean WOKUnix_Path::RemoveDirectory(const Standard_Boolean RemoveChil
 {
   if(Name().IsNull())
     {
-      ErrorMsg << "WOKUnix_Path::RemoveDirectory" 
+      ErrorMsg() << "WOKUnix_Path::RemoveDirectory" 
 	<< "Invalid null name" << endm;
       return Standard_False;
     }
@@ -343,9 +343,9 @@ Standard_Boolean WOKUnix_Path::RemoveDirectory(const Standard_Boolean RemoveChil
     {
       if(rmdir(Name()->ToCString()) != 0)
 	{
-	  ErrorMsg << "WOKUnix_Path::RemoveDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::RemoveDirectory" 
 	    << WOKUnix::LastSystemMessage() << endm;
-	  ErrorMsg << "WOKUnix_Path::RemoveDirectory" 
+	  ErrorMsg() << "WOKUnix_Path::RemoveDirectory" 
 	    << "Could not remove : " << Name() << endm;
 	  return Standard_False;
 	}
@@ -365,15 +365,15 @@ Standard_Boolean WOKUnix_Path::RemoveFile()
 {
   if(Name().IsNull())
     {
-      ErrorMsg << "WOKUnix_Path::RemoveFile" 
+      ErrorMsg() << "WOKUnix_Path::RemoveFile" 
 	<< "Invalid null name" << endm;
       return Standard_False;
     }
   if(unlink(Name()->ToCString()))
     {
-      ErrorMsg << "WOKUnix_Path::RemoveFile" 
+      ErrorMsg() << "WOKUnix_Path::RemoveFile" 
 	<< WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_Path::RemoveFile" 
+      ErrorMsg() << "WOKUnix_Path::RemoveFile" 
 	<< "Failed to Remove : " << Name() << endm;
       return Standard_False;
     }
@@ -388,9 +388,9 @@ Standard_Boolean WOKUnix_Path::MoveTo(const Handle(WOKUnix_Path)& adestpath)
 {
   if(rename(mypath->ToCString(), adestpath->Name()->ToCString()))
     {
-      ErrorMsg << "WOKUnix_Path::MoveTo" 
+      ErrorMsg() << "WOKUnix_Path::MoveTo" 
 	<< WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_Path::MoveTo" 
+      ErrorMsg() << "WOKUnix_Path::MoveTo" 
 	<< "Failed to Move " << mypath->ToCString() << " to " << adestpath->Name()->ToCString()<< endm;
       return Standard_False;
     }
@@ -420,7 +420,7 @@ Handle(WOKUnix_Path) WOKUnix_Path::ReducedPath() const
 
       if(realpath(mypath->ToCString(), abuffer) == NULL)
 	{
-	  ErrorMsg << "WOKUnix_Path::ReducedPath" << WOKUnix::LastSystemMessage() << endm;
+	  ErrorMsg() << "WOKUnix_Path::ReducedPath" << WOKUnix::LastSystemMessage() << endm;
 	  return this;
 	}
 
@@ -473,14 +473,14 @@ Standard_Boolean WOKUnix_Path::IsSameFile(const Handle(WOKUnix_Path)& another) c
 
   if((fd1 = open(Name()->ToCString(), O_RDONLY, 0)) < 0)
     {
-      ErrorMsg << "WOKUnix_Path::IsSameFile" << WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_Path::IsSameFile" << "Can't open " << Name() << endm;
+      ErrorMsg() << "WOKUnix_Path::IsSameFile" << WOKUnix::LastSystemMessage() << endm;
+      ErrorMsg() << "WOKUnix_Path::IsSameFile" << "Can't open " << Name() << endm;
       return Standard_False;
     }
   if((fd2 = open(another->Name()->ToCString(), O_RDONLY, 0)) < 0)
     {
-      ErrorMsg << "WOKUnix_Path::IsSameFile" << WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_Path::IsSameFile" << "Can't open " << another->Name() << endm;
+      ErrorMsg() << "WOKUnix_Path::IsSameFile" << WOKUnix::LastSystemMessage() << endm;
+      ErrorMsg() << "WOKUnix_Path::IsSameFile" << "Can't open " << another->Name() << endm;
       return Standard_False;
     }
 
@@ -520,7 +520,7 @@ Standard_Boolean WOKUnix_Path::GetStats()
   if(!Exists()) return Standard_False;
   else if(stat(mypath->ToCString(), &mystats))
     {
-      ErrorMsg << "WOKUnix_Path::GetStats" 
+      ErrorMsg() << "WOKUnix_Path::GetStats" 
 	<< WOKUnix::LastSystemMessage() << endm;
       return Standard_False;
     }

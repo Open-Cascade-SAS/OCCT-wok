@@ -53,13 +53,13 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKUnix_AdmFile::Read()
 
   if(Exists() == Standard_False) 
     {
-      ErrorMsg << "WOKUnix_AdmFile::Read" <<  "File : " << Name() << "does not exists" << endm;
+      ErrorMsg() << "WOKUnix_AdmFile::Read" <<  "File : " << Name() << "does not exists" << endm;
       Standard_ProgramError::Raise("WOKUnix_AdmFile::Read : File dos not exists");
     }
   
   if(KindOfFile() != OSD_FILE)  
     {
-      ErrorMsg << "WOKUnix_AdmFile::Read" <<  "File : " << Name() << " is not a plain file" << endm;
+      ErrorMsg() << "WOKUnix_AdmFile::Read" <<  "File : " << Name() << " is not a plain file" << endm;
       Standard_ProgramError::Raise("WOKUnix_AdmFile::Read");
     }
 

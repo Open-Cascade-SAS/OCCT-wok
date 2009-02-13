@@ -76,7 +76,7 @@
 
   if(!IsLaunched())
     {
-      ErrorMsg << "WOKUnix_RemoteShell::SyncAndStatus()" << "Trying to perform sync to dead or unlaunched process" << endm;
+      ErrorMsg() << "WOKUnix_RemoteShell::SyncAndStatus()" << "Trying to perform sync to dead or unlaunched process" << endm;
       Standard_ProgramError::Raise("WOKUnix_RemoteShell::SyncAndStatus()");
     }
 

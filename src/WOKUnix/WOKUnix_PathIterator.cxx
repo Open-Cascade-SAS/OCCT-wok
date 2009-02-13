@@ -25,9 +25,9 @@ WOKUnix_PathIterator::WOKUnix_PathIterator(const Handle(WOKUnix_Path)& apath, co
 
   if(!adir) 
     {
-      ErrorMsg << "WOKUnix_PathIterator::WOKUnix_PathIterator" 
+      ErrorMsg() << "WOKUnix_PathIterator::WOKUnix_PathIterator" 
 	<< WOKUnix::LastSystemMessage() << endm;
-      ErrorMsg << "WOKUnix_PathIterator::WOKUnix_PathIterator" 
+      ErrorMsg() << "WOKUnix_PathIterator::WOKUnix_PathIterator" 
 	<< "Could not open directory " << apath->Name() << endm;
       mymore = Standard_False;
       return;

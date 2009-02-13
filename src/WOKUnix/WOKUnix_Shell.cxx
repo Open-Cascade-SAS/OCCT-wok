@@ -156,7 +156,7 @@ void WOKUnix_Shell::Echo(const Handle(TCollection_HAsciiString)& astr) const
 {
   if(myecho)
     {
-      WOKTools_Info shellinfo = InfoMsg;
+      WOKTools_Info shellinfo = InfoMsg();
       shellinfo.Init();
       shellinfo.DontPrintHeader();
       shellinfo.DontPrintContext();
@@ -279,7 +279,7 @@ void WOKUnix_Shell::SetASynchronous()
   WOKUnix_ProcessManager::SetCriticalPid(Pid());
 
   WOK_TRACE {
-    VerboseMsg("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
+    VerboseMsg()("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
 			      << "Entering SyncAndStatus" << endm;
   }
 
@@ -305,21 +305,21 @@ void WOKUnix_Shell::SetASynchronous()
       Select(fdmax, s_timeout, readfds); // process output Select
       
 #ifdef WOK_VERBOSE
-      if(VerboseMsg("WOK_PROCESS").IsSet()) {
+      if(VerboseMsg()("WOK_PROCESS").IsSet()) {
 	Standard_Integer i;
 
 	if(p_timeout) {
-	  VerboseMsg("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
+	  VerboseMsg()("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
 	    << "Entering select : timeout : " << (const int) s_timeout.tv_sec << "s " << (const int) s_timeout.tv_usec << "ms" << endm;
 	} else {
-	  VerboseMsg("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
+	  VerboseMsg()("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
 	    << "Entering select : infinite wait" << endm;
 	}
 	
 
 	for(i=0; i<fdmax; i++) {
 	  if(FD_ISSET(i,&readfds)) {
-	    VerboseMsg("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus" << "FD " << (const int) i << " is setted" << endm;
+	    VerboseMsg()("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus" << "FD " << (const int) i << " is setted" << endm;
 	  }
 	}
       }
@@ -351,7 +351,7 @@ void WOKUnix_Shell::SetASynchronous()
 	}
 
 #ifdef WOK_VERBOSE
-      VerboseMsg("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
+      VerboseMsg()("WOK_PROCESS") << "WOKUnix_Shell::SyncAndStatus"
 	<< "Aquit output" << endm;
 #endif
 

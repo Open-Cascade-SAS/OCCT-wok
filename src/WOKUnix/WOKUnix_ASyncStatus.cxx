@@ -36,7 +36,7 @@ void WOKUnix_ASyncStatus::EndCmd(const Handle(WOKUnix_Shell)& ashell)
    ashell->WOKUnix_Process::Send(abuf);
    
 #ifdef WOK_VERBOSE
-   VerboseMsg("WOK_PROCESS") << "WOKUnix_ASyncStatus::EndCmd" << "Accumulating Status" << endm;
+   VerboseMsg()("WOK_PROCESS") << "WOKUnix_ASyncStatus::EndCmd" << "Accumulating Status" << endm;
 #endif
    return;
 }
@@ -63,7 +63,7 @@ void WOKUnix_ASyncStatus::Sync(const Handle(WOKUnix_Shell)& ashell)
   mystatus = ashell->SyncAndStatus();
   
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_ASyncStatus::Sync" << "GotStatus : " << mystatus << endm;
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_ASyncStatus::Sync" << "GotStatus : " << mystatus << endm;
 #endif
 
   Reset(ashell);
@@ -80,7 +80,7 @@ void WOKUnix_ASyncStatus::Reset(const Handle(WOKUnix_Shell)& ashell)
    static Handle(TCollection_HAsciiString) abuf = new TCollection_HAsciiString("\nset wok_csh_status = 0\n");
    ashell->WOKUnix_Process::Send(abuf);
 #ifdef WOK_VERBOSE
-   VerboseMsg("WOK_PROCESS") << "WOKUnix_ASyncStatus::Reset" << "Reset Shell" << endm;
+   VerboseMsg()("WOK_PROCESS") << "WOKUnix_ASyncStatus::Reset" << "Reset Shell" << endm;
 #endif
    return;
 }

@@ -90,7 +90,7 @@ void WOKUnix_FileBuffer::Acquit(const Standard_Integer astatus, const WOKUnix_FD
   Standard_Integer nbtoread = GetFDescr().GetNbToRead();
 #endif  // __GNUC__
 #if defined( WOK_VERBOSE ) && !defined( __GNUC__ )
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_FileBuffer::Acquit"
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_FileBuffer::Acquit"
                             << "There is " << nbtoread << " bytes to read on process output" << endm;
 #endif
 #ifndef __GNUC__
@@ -113,7 +113,7 @@ void WOKUnix_FileBuffer::Dump()
   Standard_Integer maxsize;
   
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_FileBuffer::Dump"
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_FileBuffer::Dump"
     << "Dumping" << endm;
 #endif
 
@@ -136,7 +136,7 @@ void WOKUnix_FileBuffer::Dump()
     }
   WOKUnix_Buffer::Write(mybuffer);
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_FileBuffer::Dump"
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_FileBuffer::Dump"
     << "Dumped" << endm;
 #endif
 

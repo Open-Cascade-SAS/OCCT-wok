@@ -45,7 +45,7 @@ void WOKUnix_SyncStatus::EndCmd(const Handle(WOKUnix_Shell)& ashell)
   mystatus = ashell->SyncAndStatus();
 
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_PROCESS") << "WOKUnix_SyncStatus::EndCmd" << "Command ended with status : " << mystatus << endm;
+  VerboseMsg()("WOK_PROCESS") << "WOKUnix_SyncStatus::EndCmd" << "Command ended with status : " << mystatus << endm;
 #endif
 }
 

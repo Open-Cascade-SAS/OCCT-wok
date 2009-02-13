@@ -205,7 +205,7 @@ void WOKUnix_Process::Launch()
 	}
 
       WOK_TRACE {
-	VerboseMsg("WOK_PROCESS") << "WOKUnix_Process::Launch" << "Process " << mychildpid << " launched" << endm;
+	VerboseMsg()("WOK_PROCESS") << "WOKUnix_Process::Launch" << "Process " << mychildpid << " launched" << endm;
       }
 
       mylaunched = Standard_True;
@@ -305,13 +305,13 @@ void WOKUnix_Process::Send(const Handle(TCollection_HAsciiString)& astring)
   Standard_CString ptr = astring->ToCString();
 
   WOK_TRACE {
-    VerboseMsg("WOK_PROCESS") << "WOKUnix_Process::Send" 
+    VerboseMsg()("WOK_PROCESS") << "WOKUnix_Process::Send" 
 			      << "Writing : " << astring->ToCString() << "to file id : " << myinput.FileNo() << endm;
   }
 
   if(!IsLaunched())
     {
-      ErrorMsg << "WOKUnix_Process::Send" << "Trying to perform send to dead or unlaunched process" << endm;
+      ErrorMsg() << "WOKUnix_Process::Send" << "Trying to perform send to dead or unlaunched process" << endm;
       Standard_ProgramError::Raise("WOKUnix_Process::Send");
     }
 
@@ -329,7 +329,7 @@ void WOKUnix_Process::Send(const Handle(TCollection_HAsciiString)& astring)
 	      // il faut laisser le temps au temps 
 	      
 	      WOK_TRACE {
-		VerboseMsg("WOK_PROCESS") << "WOKUnix_Process::Send" 
+		VerboseMsg()("WOK_PROCESS") << "WOKUnix_Process::Send" 
 					  << "Write failed : Acquit output" << endm;
 	      }
 
