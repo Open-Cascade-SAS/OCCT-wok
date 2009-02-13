@@ -70,10 +70,10 @@ Standard_Integer WOKTclTools_MessageCmdSet(const Handle(WOKTclTools_Interpretor)
 
   WOKTools_MsgHandler ahandler = TclEndMsgHandler;
 
-  InfoMsg.SetEndMsgHandler(ahandler);
-  WarningMsg.SetEndMsgHandler(ahandler);
-  ErrorMsg.SetEndMsgHandler(ahandler);
-  VerboseMsg.SetEndMsgHandler(ahandler);
+  InfoMsg().SetEndMsgHandler(ahandler);
+  WarningMsg().SetEndMsgHandler(ahandler);
+  ErrorMsg().SetEndMsgHandler(ahandler);
+  VerboseMsg().SetEndMsgHandler(ahandler);
   return 0;
 }
 

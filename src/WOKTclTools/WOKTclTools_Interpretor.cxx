@@ -55,8 +55,6 @@ struct WOKCData {
   Handle(WOKTclTools_Interpretor) i;
 };
 
-Standard_EXPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
 static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
@@ -68,8 +66,10 @@ static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
 {
   CData* C = (CData*) clientData;
   
-  // set de l'interprete en cours
-  CurrentInterp = C->i;
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
+
+ // set de l'interprete en cours
+ CurrentInterp = C->i;
 
   // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
@@ -78,12 +78,12 @@ static Standard_Integer CommandCmd (ClientData clientData, Tcl_Interp *,
   if (C->f(C->i,argc,argv) == 0) 
 #endif
     {
-      CurrentInterp.Nullify();
+     CurrentInterp.Nullify();
       return TCL_OK;
     }
   else
     {
-      CurrentInterp.Nullify();
+     CurrentInterp.Nullify();
       return TCL_ERROR;
     }
 }
@@ -100,7 +100,7 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
   WOKCData* C = (WOKCData*) clientData;
   
   // set de l'interprete en cours
-  CurrentInterp           = C->i;
+  WOKTclTools_Interpretor::Current()           = C->i;
 
   WOKTclTools_WokCommand  acmd = C->f;
 
@@ -136,9 +136,9 @@ static Standard_Integer WOKCommand(ClientData clientData, Tcl_Interp *,
       astream << E << ends;
       // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-      ErrorMsg << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
 #else
-      ErrorMsg << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
 #endif
       WOKUtils_ProcessManager::UnArm();
       return TCL_ERROR;
@@ -290,7 +290,7 @@ Standard_Integer WOKTclTools_Interpretor::TreatReturn(const WOKTools_Return& ret
 	  case WOKTools_String:
 	    {
 	      Handle(WOKTools_StringValue) astrval = Handle(WOKTools_StringValue)::DownCast(avalue);
-	      InfoMsg << "WOKTclTools_Intepretor::TreatResult" 
+	      InfoMsg() << "WOKTclTools_Intepretor::TreatResult" 
 		      << "Returned String " << astrval->Value() << endm;
 	    }
 	    break;
@@ -299,12 +299,12 @@ Standard_Integer WOKTclTools_Interpretor::TreatReturn(const WOKTools_Return& ret
 	      Handle(WOKTools_EnvValue) aenval =  Handle(WOKTools_EnvValue)::DownCast(avalue);
 	      if(aenval->ToSet())
 		{
-		  InfoMsg << "WOKTclTools_Intepretor::TreatResult"
+		  InfoMsg() << "WOKTclTools_Intepretor::TreatResult"
 			  << "Returned SetEnvironment " << aenval->Name() << "=" << aenval->Value() << endm;
 		}
 	      else
 		{
-		  InfoMsg << "WOKTclTools_Intepretor::TreatResult" 
+		  InfoMsg() << "WOKTclTools_Intepretor::TreatResult" 
 			  << "Returned UnSetEnvironment " << aenval->Name() << endm;
 		}
 	    }
@@ -312,14 +312,14 @@ Standard_Integer WOKTclTools_Interpretor::TreatReturn(const WOKTools_Return& ret
 	  case WOKTools_ChDir:
 	    {
 	      Handle(WOKTools_ChDirValue) achdirval =  Handle(WOKTools_ChDirValue)::DownCast(avalue);
-	      InfoMsg << "WOKTclTools_Intepretor::TreatResult" 
+	      InfoMsg() << "WOKTclTools_Intepretor::TreatResult" 
 		      << "Returned Change dir " << achdirval->Path() << endm;
 	    }
 	    break;
 	  case WOKTools_InterpFile:
 	    {
 	      Handle(WOKTools_InterpFileValue) aifile =  Handle(WOKTools_InterpFileValue)::DownCast(avalue);
-	      InfoMsg << "WOKTclTools_Intepretor::TreatResult" 
+	      InfoMsg() << "WOKTclTools_Intepretor::TreatResult" 
 		      << "Returned Source File " << aifile->File() << endm;
 	    }
 	    break;
@@ -449,9 +449,9 @@ Standard_Integer WOKTclTools_Interpretor::TreatReturn(const WOKTools_Return& ret
 	      {
 		if(afilevalue->InterpType() != WOKTools_TclInterp)
 		  {
-		    ErrorMsg << "WOKTclTools_Intepretor::TreatResult" 
+		    ErrorMsg() << "WOKTclTools_Intepretor::TreatResult" 
 			     << "Cannot eval not Tcl script without wok_source_proc defined" << endm;
-		    ErrorMsg << "WOKTclTools_Intepretor::TreatResult" 
+		    ErrorMsg() << "WOKTclTools_Intepretor::TreatResult" 
 			     << "Please provide wok_source_proc to use feature" << endm;
 		    return 1;
 		  }
@@ -557,7 +557,6 @@ void WOKTclTools_Interpretor::Append(const Standard_Real i)
 //=======================================================================
 void WOKTclTools_Interpretor::AppendElement(const Standard_CString s)
 {
-
 #ifdef IRIX
   //AppendElement is declared as (Tcl_Interp *interp, char *string)
   //on SGI 32
@@ -656,6 +655,7 @@ void WOKTclTools_Interpretor::Set(const WOKTclTools_PInterp& PI)
 //=======================================================================
 Handle(WOKTclTools_Interpretor)& WOKTclTools_Interpretor::Current()
 {  
+  static Handle(WOKTclTools_Interpretor) CurrentInterp;
   return CurrentInterp;
 }
 

@@ -72,13 +72,13 @@ Standard_Integer WOKTclTools_MsgAPI::Set(const Standard_Integer argc, const WOKT
 
   if(opts.Failed()) return 1;
 
-  if(info)    {InfoMsg.Set();}
-  if(warning) {WarningMsg.Set();}
-  if(error)   {ErrorMsg.Set();}
-  if(verbose) {VerboseMsg.Set();}
+  if(info)    {InfoMsg().Set();}
+  if(warning) {WarningMsg().Set();}
+  if(error)   {ErrorMsg().Set();}
+  if(verbose) {VerboseMsg().Set();}
   if(Verbose) 
     {
-      VerboseMsg.Set();
+      VerboseMsg().Set();
 
       TCollection_AsciiString astr(VClass->String());
 
@@ -96,10 +96,10 @@ Standard_Integer WOKTclTools_MsgAPI::Set(const Standard_Integer argc, const WOKT
 	{
 	  
 	}
-      if(info)    InfoMsg.LogToFile(logfile);
-      if(warning) WarningMsg.LogToFile(logfile);
-      if(error)   ErrorMsg.LogToFile(logfile);
-      if(verbose||Verbose) VerboseMsg.LogToFile(logfile);
+      if(info)    InfoMsg().LogToFile(logfile);
+      if(warning) WarningMsg().LogToFile(logfile);
+      if(error)   ErrorMsg().LogToFile(logfile);
+      if(verbose||Verbose) VerboseMsg().LogToFile(logfile);
     }
   
   return 0;
@@ -148,10 +148,10 @@ Standard_Integer WOKTclTools_MsgAPI::UnSet(const Standard_Integer argc, const WO
     }
 
   if(opts.Failed()) return 1;
-  if(info)    {InfoMsg.UnSet(); }
-  if(warning) {WarningMsg.UnSet();}
-  if(error)   {ErrorMsg.UnSet();}
-  if(verbose) {VerboseMsg.UnSet();}
+  if(info)    {InfoMsg().UnSet(); }
+  if(warning) {WarningMsg().UnSet();}
+  if(error)   {ErrorMsg().UnSet();}
+  if(verbose) {VerboseMsg().UnSet();}
   if(Verbose) 
     {
       TCollection_AsciiString astr(VClass->ToCString());
@@ -163,10 +163,10 @@ Standard_Integer WOKTclTools_MsgAPI::UnSet(const Standard_Integer argc, const WO
 
   if(endlogging)
   {
-    if(info)              {InfoMsg.EndLogging(); }
-    if(warning)           {WarningMsg.EndLogging();}
-    if(error)             {ErrorMsg.EndLogging();}
-    if(verbose||Verbose)  {VerboseMsg.EndLogging();}
+    if(info)              {InfoMsg().EndLogging(); }
+    if(warning)           {WarningMsg().EndLogging();}
+    if(error)             {ErrorMsg().EndLogging();}
+    if(verbose||Verbose)  {VerboseMsg().EndLogging();}
   }
   return 0;
 }
@@ -206,10 +206,10 @@ Standard_Integer WOKTclTools_MsgAPI::IsSet(const Standard_Integer argc, const WO
 
   if(opts.Failed()) return 1;
 
-  if(info)    {retval.AddBooleanValue(InfoMsg.IsSet());    return 0;}
-  if(warning) {retval.AddBooleanValue(WarningMsg.IsSet()); return 0;}
-  if(error)   {retval.AddBooleanValue(ErrorMsg.IsSet());   return 0;}
-  if(verbose) {retval.AddBooleanValue(VerboseMsg.IsSet()); return 0;}
+  if(info)    {retval.AddBooleanValue(InfoMsg().IsSet());    return 0;}
+  if(warning) {retval.AddBooleanValue(WarningMsg().IsSet()); return 0;}
+  if(error)   {retval.AddBooleanValue(ErrorMsg().IsSet());   return 0;}
+  if(verbose) {retval.AddBooleanValue(VerboseMsg().IsSet()); return 0;}
   return 0;
 }
 
@@ -248,10 +248,10 @@ Standard_Integer WOKTclTools_MsgAPI::DoPrintContext(const Standard_Integer argc,
 
   if(opts.Failed()) return 1;
 
-  if(info)    {InfoMsg.DoPrintContext();    return 0;}
-  if(warning) {WarningMsg.DoPrintContext(); return 0;}
-  if(error)   {ErrorMsg.DoPrintContext();   return 0;}
-  if(verbose) {VerboseMsg.DoPrintContext(); return 0;}
+  if(info)    {InfoMsg().DoPrintContext();    return 0;}
+  if(warning) {WarningMsg().DoPrintContext(); return 0;}
+  if(error)   {ErrorMsg().DoPrintContext();   return 0;}
+  if(verbose) {VerboseMsg().DoPrintContext(); return 0;}
   return 0;
 }
 
@@ -290,10 +290,10 @@ Standard_Integer WOKTclTools_MsgAPI::DontPrintContext(const Standard_Integer arg
 
   if(opts.Failed()) return 1;
 
-  if(info)    {InfoMsg.DontPrintContext();}
-  if(warning) {WarningMsg.DontPrintContext();}
-  if(error)   {ErrorMsg.DontPrintContext();}
-  if(verbose) {VerboseMsg.DontPrintContext();}
+  if(info)    {InfoMsg().DontPrintContext();}
+  if(warning) {WarningMsg().DontPrintContext();}
+  if(error)   {ErrorMsg().DontPrintContext();}
+  if(verbose) {VerboseMsg().DontPrintContext();}
   return 0;
 }
 
@@ -332,10 +332,10 @@ Standard_Integer WOKTclTools_MsgAPI::IsPrintContext(const Standard_Integer argc,
 
   if(opts.Failed()) return 1;
 
-  if(info)    {retval.AddBooleanValue(InfoMsg.PrintContext());    return 0;}
-  if(warning) {retval.AddBooleanValue(WarningMsg.PrintContext()); return 0;}
-  if(error)   {retval.AddBooleanValue(ErrorMsg.PrintContext());   return 0;}
-  if(verbose) {retval.AddBooleanValue(VerboseMsg.PrintContext()); return 0;}
+  if(info)    {retval.AddBooleanValue(InfoMsg().PrintContext());    return 0;}
+  if(warning) {retval.AddBooleanValue(WarningMsg().PrintContext()); return 0;}
+  if(error)   {retval.AddBooleanValue(ErrorMsg().PrintContext());   return 0;}
+  if(verbose) {retval.AddBooleanValue(VerboseMsg().PrintContext()); return 0;}
   return 0;
 }
 
@@ -374,10 +374,10 @@ Standard_Integer WOKTclTools_MsgAPI::DoPrintHeader(const Standard_Integer argc, 
 
   if(opts.Failed()) return 1;
 
-  if(info)    {InfoMsg.DoPrintHeader();    return 0;}
-  if(warning) {WarningMsg.DoPrintHeader(); return 0;}
-  if(error)   {ErrorMsg.DoPrintHeader();   return 0;}
-  if(verbose) {VerboseMsg.DoPrintHeader(); return 0;}
+  if(info)    {InfoMsg().DoPrintHeader();    return 0;}
+  if(warning) {WarningMsg().DoPrintHeader(); return 0;}
+  if(error)   {ErrorMsg().DoPrintHeader();   return 0;}
+  if(verbose) {VerboseMsg().DoPrintHeader(); return 0;}
   return 0;
 }
 
@@ -416,10 +416,10 @@ Standard_Integer WOKTclTools_MsgAPI::DontPrintHeader(const Standard_Integer argc
 
   if(opts.Failed()) return 1;
 
-  if(info)    {InfoMsg.DontPrintHeader();}
-  if(warning) {WarningMsg.DontPrintHeader();}
-  if(error)   {ErrorMsg.DontPrintHeader();}
-  if(verbose) {VerboseMsg.DontPrintHeader();}
+  if(info)    {InfoMsg().DontPrintHeader();}
+  if(warning) {WarningMsg().DontPrintHeader();}
+  if(error)   {ErrorMsg().DontPrintHeader();}
+  if(verbose) {VerboseMsg().DontPrintHeader();}
   return 0;
 }
 
@@ -458,10 +458,10 @@ Standard_Integer WOKTclTools_MsgAPI::IsPrintHeader(const Standard_Integer argc, 
 
   if(opts.Failed()) return 1;
 
-  if(info)    {retval.AddBooleanValue(InfoMsg.PrintHeader());    return 0;}
-  if(warning) {retval.AddBooleanValue(WarningMsg.PrintHeader()); return 0;}
-  if(error)   {retval.AddBooleanValue(ErrorMsg.PrintHeader());   return 0;}
-  if(verbose) {retval.AddBooleanValue(VerboseMsg.PrintContext()); return 0;}
+  if(info)    {retval.AddBooleanValue(InfoMsg().PrintHeader());    return 0;}
+  if(warning) {retval.AddBooleanValue(WarningMsg().PrintHeader()); return 0;}
+  if(error)   {retval.AddBooleanValue(ErrorMsg().PrintHeader());   return 0;}
+  if(verbose) {retval.AddBooleanValue(VerboseMsg().PrintContext()); return 0;}
   return 0;
 }
 
@@ -521,27 +521,27 @@ Standard_Integer WOKTclTools_MsgAPI::PrintMessage(const Standard_Integer argc, c
 
   WOKTools_Message *mess = NULL;
 
-  if(info)    mess = &InfoMsg;
-  if(warning) mess = &WarningMsg;
-  if(error)   mess = &ErrorMsg;
+  if(info)    mess = &InfoMsg();
+  if(warning) mess = &WarningMsg();
+  if(error)   mess = &ErrorMsg();
   if(verbose) 
     {
       if(!Verbose.IsNull())
 	{
 	  static WOKTools_Verbose averb;
 	  
-	  averb = VerboseMsg.LocalSwitcher(Verbose->ToCString());
+	  averb = VerboseMsg().LocalSwitcher(Verbose->ToCString());
 	  mess  = &averb;
 	}
       else
 	{
-	  mess = &VerboseMsg;
+	  mess = &VerboseMsg();
 	}
     }
 
   if(mess == NULL)
     {
-      mess = &InfoMsg;
+      mess = &InfoMsg();
     }
 
   const WOKTools_Message& mess1 = *mess;
@@ -611,13 +611,13 @@ Standard_Integer WOKTclTools_MsgAPI::MessageInfo(const Standard_Integer argc, co
 
   if (Theinterp.IsNull())
     {
-      ErrorMsg << argv[0] << "Current TCL interpretor not initialized" << endm;
+      ErrorMsg() << argv[0] << "Current TCL interpretor not initialized" << endm;
       return 1;
     }
 
   if (Theinterp->EndMessageProc()==NULL)
     {
-      InfoMsg << argv[0] << "No message handler procedure" << endm;
+      InfoMsg() << argv[0] << "No message handler procedure" << endm;
       return 0;
     }
 
