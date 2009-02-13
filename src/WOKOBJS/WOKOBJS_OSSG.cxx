@@ -155,8 +155,8 @@ WOKBuilder_BuildStatus WOKOBJS_OSSG::Execute()
   astr = Params().Eval("OBJS_OSSG_CmdLine", Standard_True);
 
   WOK_TRACE {
-    VerboseMsg("WOK_OBJS") << "WOKOBJS_OSSG::Execute" << "OSSG line : " << endm;
-    VerboseMsg("WOK_OBJS") << "WOKOBJS_OSSG::Execute" << astr << endm;
+    VerboseMsg()("WOK_OBJS") << "WOKOBJS_OSSG::Execute" << "OSSG line : " << endm;
+    VerboseMsg()("WOK_OBJS") << "WOKOBJS_OSSG::Execute" << astr << endm;
   }
 
   Shell()->Execute(astr);
@@ -166,26 +166,26 @@ WOKBuilder_BuildStatus WOKOBJS_OSSG::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKOBJS_OSSG::Execute" << "Errors occured in Shell" << endm;
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg() << "WOKOBJS_OSSG::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg().DontPrintHeader();
       for(Standard_Integer i=1; i<= resseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKOBJS_OSSG::Execute" << resseq->Value(i) << endm;
+	  ErrorMsg() << "WOKOBJS_OSSG::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
       return WOKBuilder_Failed;
     }
   else
     {
-      Standard_Boolean ph = InfoMsg.PrintHeader();
-      InfoMsg.DontPrintHeader();
+      Standard_Boolean ph = InfoMsg().PrintHeader();
+      InfoMsg().DontPrintHeader();
       for(Standard_Integer i=1; i<= resseq->Length(); i++)
 	{
-	  InfoMsg << "WOKOBJS_OSSG::Execute" << resseq->Value(i) << endm;
+	  InfoMsg() << "WOKOBJS_OSSG::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
 
   Shell()->ClearOutput();

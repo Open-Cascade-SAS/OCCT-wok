@@ -181,7 +181,7 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
   // Verification du profile DB
   if( Unit()->Session()->DBMSystem() != WOKernel_OBJS )
     {
-      ErrorMsg << "WOKOBJS_SchGen::Execute"
+      ErrorMsg() << "WOKOBJS_SchGen::Execute"
 	       << "Wrong profile for this step : Only OBJS is valid" << endm;
       SetFailed();
       return;
@@ -217,7 +217,7 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
       
       ossg->SetSchFile(new WOKBuilder_Compilable(infile->File()->Path()));
 				
-      InfoMsg << "WOKOBJS_DDLFile" 
+      InfoMsg() << "WOKOBJS_DDLFile" 
 	      << "Extracting " << Unit()->Name() << endm;
 			
       switch(ossg->Execute())
@@ -225,14 +225,14 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 	case WOKBuilder_Success:
 	  {
 	    WOK_TRACE {
-	      if(VerboseMsg("WOK_OBJS").IsSet())
+	      if(VerboseMsg()("WOK_OBJS").IsSet())
 		{
 		  Standard_Integer i;
-		  VerboseMsg << "WOKOBJS_SchGen::Execute" 
+		  VerboseMsg() << "WOKOBJS_SchGen::Execute" 
 			     << infile->File()->Name() << " produces : " << endm;
 		  for(i=1; i<=ossg->Produces()->Length(); i++)
 		    {
-		      VerboseMsg << "WOKOBJS_SchGen::Execute" 
+		      VerboseMsg() << "WOKOBJS_SchGen::Execute" 
 				 << "\t\t" << ossg->Produces()->Value(i)->Path()->Name() << endm;
 		    }
 		}
@@ -255,7 +255,7 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 		    outfile = new WOKernel_File(anent->Path()->FileName(), Unit(), libraryfile);
 		    break;
 		  default:
-		    ErrorMsg << "WOKOBJS_SchGen::Execute"
+		    ErrorMsg() << "WOKOBJS_SchGen::Execute"
 			     << "Unrecognized output file : " << anent->Path()->FileName() << endm;
 		    break;
 		  }
@@ -294,12 +294,12 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 		      out->SetProduction();
 		      AddExecDepItem(execlist->Value(i), out, Standard_True);
 		      
-		      InfoMsg  << "WOKOBJS_SchGen::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
+		      InfoMsg()  << "WOKOBJS_SchGen::Execute" << "File : " << outfile->Path()->Name() << " is modified" << endm;
 		    }
 		    break;
 		  case WOKBuilder_Unbuilt:
 		    WOK_TRACE {
-		      VerboseMsg("WOK_OBJS")  << "WOKMake_Extract::Execute" 
+		      VerboseMsg()("WOK_OBJS")  << "WOKMake_Extract::Execute" 
 					      << "File : " << outfile->Path()->Name() << " is unchanged" << endm;
 		    }
 		    {
@@ -312,14 +312,14 @@ void WOKOBJS_SchGen::Execute(const Handle(WOKMake_HSequenceOfInputFile)& execlis
 		    break;
 		  case WOKBuilder_Failed:
 		    SetFailed();
-		    ErrorMsg << "WOKOBJS_SchGen::Execute" << "Failed    : " << outfile->Name() << endm;
+		    ErrorMsg() << "WOKOBJS_SchGen::Execute" << "Failed    : " << outfile->Name() << endm;
 		    break;
 		  }
 	      }
 	  }
 	  break;
 	case WOKBuilder_Failed:
-	  ErrorMsg << "WOKOBJS_SchGen::Execute" << "Failed    : " << Unit()->Name() << endm;          
+	  ErrorMsg() << "WOKOBJS_SchGen::Execute" << "Failed    : " << Unit()->Name() << endm;          
 	  SetFailed();
 	  break;
          default: break;

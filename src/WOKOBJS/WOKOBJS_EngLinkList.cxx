@@ -50,7 +50,7 @@ void WOKOBJS_EngLinkList::ComputeSchema(const Handle(WOKernel_DevUnit)& aunit,
   
   if(libfile.IsNull())
     {
-      ErrorMsg << "WOKStep_EngLinkList::Execute"
+      ErrorMsg() << "WOKStep_EngLinkList::Execute"
 	<< "Could not locate library file for schema : " << aunit->Name() << endm;
     }
   else
