@@ -208,7 +208,7 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     }
 
     if (!CPP_SetFriendMethod(aMeta,api,theClass->GetFriendMets(),publics)) {
-      ErrorMsg << "CPPExt" << "a friend method was not found..." << endm;
+      ErrorMsg() << "CPPExt" << "a friend method was not found..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -375,7 +375,7 @@ void CPP_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     CPP_MPVDerivated(aMeta,api,aClass,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_MPVClass - the class is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_MPVClass - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

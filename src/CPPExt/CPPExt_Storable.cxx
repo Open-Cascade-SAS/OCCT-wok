@@ -343,7 +343,7 @@ void CPP_StorableClass(const Handle(MS_MetaSchema)& aMeta,
     }
 
     if (!CPP_SetFriendMethod(aMeta,api,theClass->GetFriendMets(),publics)) {
-      ErrorMsg << "CPPExt" << "Error : a friend method was not found..." << endm;
+      ErrorMsg() << "CPPExt" << "Error : a friend method was not found..." << endm;
       Standard_NoSuchObject::Raise();
     }
   
@@ -557,7 +557,7 @@ void CPP_StorableClass(const Handle(MS_MetaSchema)& aMeta,
     CPP_StorableDerivated(aMeta,api,aClass,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_StorableClass - the class is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_StorableClass - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

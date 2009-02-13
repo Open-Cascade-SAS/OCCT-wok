@@ -40,19 +40,19 @@ Handle(EDL_API)&  CPP_LoadTemplate(const Handle(TColStd_HSequenceOfHAsciiString)
     }
 
     if (api->Execute("CPPExt_Template.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPExt" << "unable to load : CPPExt_Template.edl" << endm;
+      ErrorMsg() << "CPPExt" << "unable to load : CPPExt_Template.edl" << endm;
       Standard_NoSuchObject::Raise();
     } 
     if (api->Execute("CPPExt_TemplateOBJY.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPExt" << "unable to load : CPPExt_TemplateOBJY.edl" << endm;
+      ErrorMsg() << "CPPExt" << "unable to load : CPPExt_TemplateOBJY.edl" << endm;
       Standard_NoSuchObject::Raise();
     }
     if (api->Execute("CPPExt_TemplateCSFDB.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPExt" << "unable to load : CPPExt_TemplateCSFDB.edl" << endm;
+      ErrorMsg() << "CPPExt" << "unable to load : CPPExt_TemplateCSFDB.edl" << endm;
       Standard_NoSuchObject::Raise();
     }
     if (api->Execute("CPPExt_TemplateOBJS.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPExt" << "unable to load : CPPExt_TemplateOBJS.edl" << endm;
+      ErrorMsg() << "CPPExt" << "unable to load : CPPExt_TemplateOBJS.edl" << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -148,7 +148,7 @@ Handle(TCollection_HAsciiString) CPP_BuildType
     }
   }
   else {
-     ErrorMsg << "CPPExt" \
+     ErrorMsg() << "CPPExt" \
        << "type " << aType->FullName()->ToCString() \
 	 << " not defined..." << endm;
      Standard_NoSuchObject::Raise();
@@ -271,7 +271,7 @@ Handle(TCollection_HAsciiString) CPP_BuildParameterList(const Handle(MS_MetaSche
 	    }
 	  }
 	  else {
-	    ErrorMsg << "CPPExt" << "incomplete alias deep type in method's parameter..." << endm;
+	    ErrorMsg() << "CPPExt" << "incomplete alias deep type in method's parameter..." << endm;
 	    Standard_NoSuchObject::Raise();
 	  }
 	}
@@ -918,7 +918,7 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     srcPackage = aMeta->GetPackage(aName);
   }
   else {
-    ErrorMsg << "CPPExt" << aName->ToCString() << " not defined..." << endm;
+    ErrorMsg() << "CPPExt" << aName->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
   
@@ -943,7 +943,7 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     Handle(MS_StdClass) aClass = *((Handle(MS_StdClass)*)&srcType);
     
     if (aClass->Incomplete()) {
-      ErrorMsg << "CPPExt" << aName->ToCString() << " not complete..." << endm;
+      ErrorMsg() << "CPPExt" << aName->ToCString() << " not complete..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -965,7 +965,7 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       outfile->Append(aHandleFile);
 
       if (aClass->GetInheritsNames()->Length() == 0) {
-	ErrorMsg << "CPPExt" << "incomplete metaschema..." << endm;
+	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
 	Standard_NoSuchObject::Raise();
       }
 
@@ -990,7 +990,7 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       outfile->Append(aHandleFile);
 
       if (aClass->GetInheritsNames()->Length() == 0) {
-	ErrorMsg << "CPPExt" << "incomplete metaschema..." << endm;
+	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
 	Standard_NoSuchObject::Raise();
       }
 

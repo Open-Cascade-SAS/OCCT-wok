@@ -352,7 +352,7 @@ void CPP_PersistentClassCSFDB(const Handle(MS_MetaSchema)& aMeta,
     }
     
     if (!CPP_SetFriendMethod(aMeta,api,theClass->GetFriendMets(),publics)) {
-      ErrorMsg << "CPPExt" << "a friend method was not found..." << endm;
+      ErrorMsg() << "CPPExt" << "a friend method was not found..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -585,7 +585,7 @@ void CPP_PersistentClassCSFDB(const Handle(MS_MetaSchema)& aMeta,
     CPP_PersistentDerivatedCSFDB(aMeta,api,aClass,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_PersistentClassCSFDB - the class is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_PersistentClassCSFDB - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

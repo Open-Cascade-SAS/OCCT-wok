@@ -689,7 +689,7 @@ Handle(TCollection_HAsciiString) CPP_BuildTypeOBJY(const Handle(MS_MetaSchema)& 
 	result->AssignCat(aTypeName);
       }
       else if (aClass->IsTransient()) {
-	ErrorMsg << "CPPExt" << "type " << aType->FullName()->ToCString() << " is Transient an cannot be a field of a Persistent capable class" << endm;
+	ErrorMsg() << "CPPExt" << "type " << aType->FullName()->ToCString() << " is Transient an cannot be a field of a Persistent capable class" << endm;
 	Standard_NoSuchObject::Raise();
       }
       else {
@@ -701,7 +701,7 @@ Handle(TCollection_HAsciiString) CPP_BuildTypeOBJY(const Handle(MS_MetaSchema)& 
     }
   }
   else {
-     ErrorMsg << "CPPExt" << "type " << aType->FullName()->ToCString() << " not defined..." << endm;
+     ErrorMsg() << "CPPExt" << "type " << aType->FullName()->ToCString() << " not defined..." << endm;
      Standard_NoSuchObject::Raise();
   }
 
@@ -787,7 +787,7 @@ void CPP_PersistentClassOBJY(const Handle(MS_MetaSchema)& aMeta,
     }
     
     if (!CPP_SetFriendMethod(aMeta,api,theClass->GetFriendMets(),publics)) {
-      ErrorMsg << "CPPExt" << "a friend method was not found..." << endm;
+      ErrorMsg() << "CPPExt" << "a friend method was not found..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -996,7 +996,7 @@ void CPP_PersistentClassOBJY(const Handle(MS_MetaSchema)& aMeta,
     CPP_PersistentDerivatedOBJY(aMeta,api,aClass,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_PersistentClassOBJY - the class is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_PersistentClassOBJY - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

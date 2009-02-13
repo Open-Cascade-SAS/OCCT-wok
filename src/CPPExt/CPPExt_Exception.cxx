@@ -144,7 +144,7 @@ void CPP_ExceptionClass(const Handle(MS_MetaSchema)& aMeta,
     CPP_ExceptionDerivated(aMeta,api,aClass,outfile,FullList,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_TransientClass - the class is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_TransientClass - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

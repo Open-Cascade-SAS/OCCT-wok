@@ -278,7 +278,7 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
     CPP_PackageDerivated(aMeta,api,aPackage,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPExt" << "CPP_Package - the package is NULL..." << endm;
+    ErrorMsg() << "CPPExt" << "CPP_Package - the package is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }
