@@ -60,22 +60,22 @@ Standard_Integer WOKTclUtils_Path::FileCompare(const Standard_Integer argc,const
 
   if(!p1->Exists())
     {
-      ErrorMsg << argv[0] << "File : " << p1->Name() << " does not exists" << endm;
+      ErrorMsg() << argv[0] << "File : " << p1->Name() << " does not exists" << endm;
       return 1;
     }
   if(!p1->IsFile())
     {
-      ErrorMsg << argv[0] << "File : " << p1->Name() << " is not a plain file" << endm;
+      ErrorMsg() << argv[0] << "File : " << p1->Name() << " is not a plain file" << endm;
       return 1;
     }
   if(!p2->Exists())
     {
-      ErrorMsg << argv[0] << "File : " << p2->Name() << " does not exists" << endm;
+      ErrorMsg() << argv[0] << "File : " << p2->Name() << " does not exists" << endm;
       return 1;
     }
   if(!p2->IsFile())
     {
-      ErrorMsg << argv[0] << "File : " << p2->Name() << " is not a plain file" << endm;
+      ErrorMsg() << argv[0] << "File : " << p2->Name() << " is not a plain file" << endm;
       return 1;
     }
 
@@ -142,7 +142,7 @@ Standard_Integer WOKTclUtils_Path::DirectorySearch(const Standard_Integer argc,c
       break;
     default:
       {
-	ErrorMsg << argv[0] << argv[0] << " must have one and only one argument" << endm;
+	ErrorMsg() << argv[0] << argv[0] << " must have one and only one argument" << endm;
 	WOKTclUtils_Path_DirectorySearch_Usage(argv[0]);
       }
       return 1;
@@ -152,7 +152,7 @@ Standard_Integer WOKTclUtils_Path::DirectorySearch(const Standard_Integer argc,c
 
   if(!ext.IsNull() && !name.IsNull())
     {
-      ErrorMsg <<  argv[0] 
+      ErrorMsg() <<  argv[0] 
 	<< "Option -E cannot be used in conjuction with -F" << endm;
       WOKTclUtils_Path_DirectorySearch_Usage(argv[0]);
       return 1;
@@ -172,7 +172,7 @@ Standard_Integer WOKTclUtils_Path::DirectorySearch(const Standard_Integer argc,c
 
   if(!p->IsDirectory())
     {
-      ErrorMsg << argv[0] << "Argument : " << p->Name() << " is not a directory" << endm;
+      ErrorMsg() << argv[0] << "Argument : " << p->Name() << " is not a directory" << endm;
       return 1;
     }
 
