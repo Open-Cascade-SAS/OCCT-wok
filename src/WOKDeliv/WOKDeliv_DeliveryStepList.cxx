@@ -43,7 +43,7 @@ void WOKDeliv_DeliveryStepList::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
 	if (thesourceunit.IsNull()) {
 	  okexec = Standard_False;
-	  ErrorMsg << "WOKDeliv_DeliveryStepList::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
+	  ErrorMsg() << "WOKDeliv_DeliveryStepList::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
 	  SetFailed();
 	}
 	else {
@@ -73,7 +73,7 @@ void WOKDeliv_DeliveryStepList::Execute(const Handle(WOKMake_HSequenceOfInputFil
 		thestep->Make();
 		Handle(WOKMake_HSequenceOfOutputFile) thefiles = thestep->OutputFileList();
 		if (thefiles.IsNull()) {
-		  ErrorMsg << "WOKDeliv_DeliveryStepList::Execute"
+		  ErrorMsg() << "WOKDeliv_DeliveryStepList::Execute"
 		    << "Step " << namestep << " not done for unit " << thesourceunit->Name() << endm;
 		  okexec = Standard_False;
 		}
@@ -107,7 +107,7 @@ void WOKDeliv_DeliveryStepList::Execute(const Handle(WOKMake_HSequenceOfInputFil
       }
     }
     else {
-      ErrorMsg <<  "WOKDeliv_DeliveryStepList::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
+      ErrorMsg() <<  "WOKDeliv_DeliveryStepList::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
     }
   }
   if (okexec) {

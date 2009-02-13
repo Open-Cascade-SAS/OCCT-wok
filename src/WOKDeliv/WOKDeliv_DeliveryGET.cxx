@@ -53,7 +53,7 @@ void WOKDeliv_DeliveryGET::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
       while (itget.More()) {
 	Handle(WOKernel_File) thefile = Locator()->Locate(itget.Key());
 	if (thefile.IsNull()) {
-	  ErrorMsg << "WOKDeliv_DeliveryGET::Execute" 
+	  ErrorMsg() << "WOKDeliv_DeliveryGET::Execute" 
 	    << "cannot locate file " << itget.Key() << endm;
 	  okexec = Standard_False;
 	}
@@ -105,7 +105,7 @@ void WOKDeliv_DeliveryGET::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 	      if (first <= 1) {
 		Handle(TCollection_HAsciiString) filenameFILES = thesourceunit->Params().Eval("%FILENAME_FILES");
 		if (strcmp(filenameFILES->ToCString(),astr->ToCString())) {
-		  ErrorMsg << "WOKDeliv_DeliveryGET::Execute" 
+		  ErrorMsg() << "WOKDeliv_DeliveryGET::Execute" 
 		    << "No type specified for file " << astr << " in unit " << thesourceunit->Name() << endm;
 		  okexec = Standard_False;
 		}
@@ -116,7 +116,7 @@ void WOKDeliv_DeliveryGET::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 		
 		Handle(WOKernel_File) thefile = Locator()->Locate(thesourceunit->Name(),type,name);
 		if (thefile.IsNull()) {
-		  ErrorMsg << "WOKDeliv_DeliveryGET::Execute" 
+		  ErrorMsg() << "WOKDeliv_DeliveryGET::Execute" 
 		    << "cannot locate file " << name << endm;
 		  okexec = Standard_False;
 		}
@@ -137,7 +137,7 @@ void WOKDeliv_DeliveryGET::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 	  }
 	}
 	else {
-	  ErrorMsg << "WOKDeliv_DeliveryGET::Execute" << "cannot find file FILES in resource unit " << thesourceunit->Name() << endm;
+	  ErrorMsg() << "WOKDeliv_DeliveryGET::Execute" << "cannot find file FILES in resource unit " << thesourceunit->Name() << endm;
 	  okexec = Standard_False;
 	}
       }

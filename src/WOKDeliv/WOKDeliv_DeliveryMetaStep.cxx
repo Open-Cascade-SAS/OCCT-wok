@@ -71,12 +71,12 @@ Handle(WOKDeliv_DeliveryList) WOKDeliv_DeliveryMetaStep::ParseCOMPONENTS(const S
       WOKDeliv_Delivery_CloseFile();
     }
     else {
-      ErrorMsg << "WOKDeliv_DeliveryMetaStep::Parse" << "Error getting file COMPONENTS" << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryMetaStep::Parse" << "Error getting file COMPONENTS" << endm;
       SetFailed();
     }
   }
   else {
-    ErrorMsg << "WOKDeliv_DeliveryMetaStep::Parse" << "Error locating file COMPONENTS" << endm;
+    ErrorMsg() << "WOKDeliv_DeliveryMetaStep::Parse" << "Error locating file COMPONENTS" << endm;
     SetFailed();
   }
   return dlist;

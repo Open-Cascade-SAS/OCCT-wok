@@ -33,7 +33,7 @@ void WOKDeliv_DelivBuildSource::Execute(const Handle(WOKMake_HSequenceOfInputFil
   Handle(TCollection_HAsciiString) unitname = SubCode();
   Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(unitname);
   if (thesourceunit.IsNull()) {
-    ErrorMsg << "WOKDeliv_DelivBuildSource"
+    ErrorMsg() << "WOKDeliv_DelivBuildSource"
       << "Enable to locate unit " << unitname << endm;
     SetFailed();
   }
@@ -65,7 +65,7 @@ void WOKDeliv_DelivBuildSource::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	  case WOKUtils_Unknown:
 	  case WOKUtils_NotSetted:
 	    {
-	      ErrorMsg << "WOKDeliv_DelivBuildSource::Execute" 
+	      ErrorMsg() << "WOKDeliv_DelivBuildSource::Execute" 
 		<< "Unable to execute source on unit " << unitname << endm;
 	      SetFailed();
 	    }
@@ -73,7 +73,7 @@ void WOKDeliv_DelivBuildSource::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	  case WOKUtils_Succeeded:
 	    {
 	      WOK_TRACE {
-		VerboseMsg("WOK_DELIV") << "WOKDeliv_DelivBuildSource::Execute"
+		VerboseMsg()("WOK_DELIV") << "WOKDeliv_DelivBuildSource::Execute"
 					<< "File " << result << " created." << endm;
 	      }
 	      Handle(WOKUtils_Path) pathres = new WOKUtils_Path(result);
@@ -96,7 +96,7 @@ void WOKDeliv_DelivBuildSource::Execute(const Handle(WOKMake_HSequenceOfInputFil
 	    }
 	    break;
 	  case WOKUtils_Failed:
-	    ErrorMsg << "WOKDeliv_DelivBuildSource::Execute" 
+	    ErrorMsg() << "WOKDeliv_DelivBuildSource::Execute" 
 	      << "Failed to execute source on unit " << unitname << endm;
 	    SetFailed();
 	    break;

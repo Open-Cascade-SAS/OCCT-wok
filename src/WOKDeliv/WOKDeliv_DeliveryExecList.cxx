@@ -97,7 +97,7 @@ Standard_Boolean WOKDeliv_DeliveryExecList::ExecuteMetaStep()
 	Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
 	if (thesourceunit.IsNull()) {
 	  okexec = Standard_False;
-	  ErrorMsg << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
+	  ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
 	}
 	else {
 	  if (IsAvailable(thesourceunit)) {
@@ -123,14 +123,14 @@ Standard_Boolean WOKDeliv_DeliveryExecList::TreatDynamic()
   Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(nameunit);
 
   if (thesourceunit.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
       << "Cannot locate DevUnit : " << nameunit << endm;
     return Standard_False;
   }
   thesourceunit->Open();
   Handle(TCollection_HAsciiString) name = SubCode()->Token("_",2);
   WOK_TRACE {
-    VerboseMsg("WOK_DELIV") << "WOKDeliv_DeliveryExecList" 
+    VerboseMsg()("WOK_DELIV") << "WOKDeliv_DeliveryExecList" 
 			    << "Treating : " << nameunit << " exec : " << name << endm;
   }
 
@@ -150,12 +150,12 @@ Standard_Boolean WOKDeliv_DeliveryExecList::TreatDynamic()
   }
 
   if (thestep.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::TreatDynamic" 
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::TreatDynamic" 
       << "Enable to find linking step for unit : " << nameunit;
     if (!name.IsNull()) {
-      ErrorMsg << " for executable : " << name;
+      ErrorMsg() << " for executable : " << name;
     }
-    ErrorMsg << endm;
+    ErrorMsg() << endm;
     return Standard_False;
   }
   
@@ -191,7 +191,7 @@ Standard_Boolean WOKDeliv_DeliveryExecList::CompleteEngine()
   Handle(TCollection_HAsciiString) nameunit = SubCode()->Token("_",1);
   Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(nameunit);
   if (thesourceunit.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
       << "Cannot locate DevUnit : " << nameunit << endm;
     return Standard_False;
   }
@@ -203,13 +203,13 @@ Standard_Boolean WOKDeliv_DeliveryExecList::CompleteEngine()
 							       namedat,
 							       Handle(TCollection_HAsciiString) ());
   if (thestep.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
       << "Step " << namedat << " not done for unit " << nameunit << endm;
     return Standard_False;
   }
   Handle(WOKMake_HSequenceOfOutputFile) thefiles = thestep->OutputFileList();
   if (thefiles.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute"
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute"
       << "Step " << namedat << " unprocessed for unit " << nameunit << endm;
       return Standard_False;
   }
@@ -238,13 +238,13 @@ Standard_Boolean WOKDeliv_DeliveryExecList::CompleteEngine()
 					  namell,
 					  Handle(TCollection_HAsciiString) ());
   if (thestep.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
       << "Step " << namell << " not done for unit " << nameunit << endm;
     return Standard_False;
   }
   thefiles = thestep->OutputFileList();
   if (thefiles.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryExecList::Execute"
+    ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute"
       << "Step " << namell << " unprocessed for unit " << nameunit << endm;
       return Standard_False;
   }
@@ -289,7 +289,7 @@ Standard_Boolean WOKDeliv_DeliveryExecList::ExploreMetaStep(const Handle(WOKerne
 							 namesexec,
 							 Handle(TCollection_HAsciiString) ());
     if (themstep.IsNull()) {
-      ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+      ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
 	<< "Cannot find linking step for DevUnit : " << thesourceunit->Name() << endm;
       return Standard_False;
     }
@@ -306,7 +306,7 @@ Standard_Boolean WOKDeliv_DeliveryExecList::ExploreMetaStep(const Handle(WOKerne
 								      namesexec,
 								      Handle(TCollection_HAsciiString) ());
     if (theexecstep.IsNull()) {
-      ErrorMsg << "WOKDeliv_DeliveryExecList::Execute" 
+      ErrorMsg() << "WOKDeliv_DeliveryExecList::Execute" 
 	<< "Cannot find linking step for DevUnit : " << thesourceunit->Name() << endm;
       return Standard_False;
     }

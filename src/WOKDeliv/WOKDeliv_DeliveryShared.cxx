@@ -66,7 +66,7 @@ void WOKDeliv_DeliveryShared::ComputeOutputLIB(const Handle(WOKernel_DevUnit)& t
   if (!thestep.IsNull()) {
     Handle(WOKMake_HSequenceOfOutputFile) thefiles = thestep->OutputFileList();
     if (thefiles.IsNull()) {
-      ErrorMsg << "WOKDeliv_DeliveryShared::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryShared::Execute"
 	<< "Step " << thestep->Code() << " unprocessed for unit "
 	  << thesourceunit->Name() << endm;
     }

@@ -74,7 +74,7 @@ void WOKDeliv_DeliveryListShared::Execute(const Handle(WOKMake_HSequenceOfInputF
 							       PACKAGESname);
 	    if (filepack.IsNull()) {
 	      okexec = Standard_False;
-	      ErrorMsg << "WOKDeliv_DeliveryListShared::Execute"
+	      ErrorMsg() << "WOKDeliv_DeliveryListShared::Execute"
 		<< "Cannot locate file PACKAGES for Toolkit " << thesourceunit->Name()
 		  << endm;
 	    }

@@ -50,7 +50,7 @@ void WOKDeliv_DeliveryLIB::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 	  Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
 	  if (thesourceunit.IsNull()) {
 	    okexec = Standard_False;
-	    ErrorMsg << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
+	    ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
 	  }
 	  else {
 	    if (IsAvailable(thesourceunit)) {
@@ -98,7 +98,7 @@ void WOKDeliv_DeliveryLIB::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 	Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(SubCode());
 	if (thesourceunit.IsNull()) {
 	  okexec = Standard_False;
-	  ErrorMsg << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << SubCode() << endm;
+	  ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute" << "Cannot locate unit : " << SubCode() << endm;
 	}
 	else {
 	  // Find file ImplDep
@@ -130,7 +130,7 @@ void WOKDeliv_DeliveryLIB::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 							       PACKAGESname);
 	    if (filepack.IsNull()) {
 	      okexec = Standard_False;
-	      ErrorMsg << "WOKDeliv_DeliveryLIB::Execute"
+	      ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute"
 		       << "Cannot locate file PACKAGES for Toolkit " << thesourceunit->Name()
 		       << endm;
 	    }
@@ -201,7 +201,7 @@ void WOKDeliv_DeliveryLIB::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
       }
     }
     else {
-      ErrorMsg <<  "WOKDeliv_DeliveryCDL::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
+      ErrorMsg() <<  "WOKDeliv_DeliveryCDL::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
     }
   }
   
@@ -250,7 +250,7 @@ void WOKDeliv_DeliveryLIB::TreatStep(const Handle(WOKMake_Step)& thestep,
     else {
       Handle(WOKMake_HSequenceOfOutputFile) thefiles = thestep->OutputFileList();
       if (thefiles.IsNull()) {
-	ErrorMsg << "WOKDeliv_DeliveryLIB::Execute" 
+	ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute" 
 	  << "Step " << thestep->Code() << " unprocessed for unit "
 	    << thestep->Unit()->Name() << endm;
       }
@@ -258,7 +258,7 @@ void WOKDeliv_DeliveryLIB::TreatStep(const Handle(WOKMake_Step)& thestep,
 	for (Standard_Integer i=1; i<= thefiles->Length(); i++) {
 	  Handle(WOKernel_File) theinfile = thefiles->Value(i)->File();
 	  if (theinfile.IsNull()) {
-	    ErrorMsg << "WOKDeliv_DeliveryLIB::Execute"
+	    ErrorMsg() << "WOKDeliv_DeliveryLIB::Execute"
 	      << "Null file for output file : " << thefiles->Value(i)->ID() << endm;
 	  }
 	  else {

@@ -116,7 +116,7 @@ Standard_Boolean WOKDeliv_DelivBuildExec::MakeldFile
   
   Handle(EDL_API) anapi = new EDL_API();
   if (anapi->OpenFile("MYFILE",resfileld->Path()->Name()->ToCString()) != EDL_NORMAL) {
-    ErrorMsg << "WOKDeliv_DelivBuilExec::Execute"
+    ErrorMsg() << "WOKDeliv_DelivBuilExec::Execute"
       << "Cannot open file " << resfileld->Path()->Name() << endm;
     okexec = Standard_False;
   }
@@ -236,9 +236,9 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKDeliv_DelivBuildExec::VisibleParcels(
 	thedeliv->Open();
 	Handle(TCollection_HAsciiString) allreq = thedeliv->EvalParameter("AllRequisites",Standard_False);
 	if (allreq.IsNull()) {
-	  WarningMsg << "WOKDeliv_DelivBuildExec::VisibleParcels"
+	  WarningMsg() << "WOKDeliv_DelivBuildExec::VisibleParcels"
 	    << "Unable to get dependencies from parcel : << theparcel->Name()->ToCString()" << endm;
-	  WarningMsg << "WOKDeliv_DelivBuildExec::VisibleParcels"
+	  WarningMsg() << "WOKDeliv_DelivBuildExec::VisibleParcels"
 	    << "Missing parameter AllRequisites" << endm;
 	}
 	else {
@@ -256,7 +256,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKDeliv_DelivBuildExec::VisibleParcels(
 	}
       }
       else {
-	ErrorMsg << "WOKDeliv_DelivBuildExec::VisibleParcels"
+	ErrorMsg() << "WOKDeliv_DelivBuildExec::VisibleParcels"
 	  << " Unable to get delivery " << deliv
 	    << " from parcel " << theparcel->Name() << endm;
       }

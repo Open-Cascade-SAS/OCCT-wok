@@ -76,7 +76,7 @@ void WOKDeliv_DeliveryCopy::Execute(const Handle(WOKMake_HSequenceOfInputFile)& 
       }
     }
     else {
-      ErrorMsg <<  "WOKDeliv_DeliveryCopy::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
+      ErrorMsg() <<  "WOKDeliv_DeliveryCopy::Execute" << "Cannot find delivery : " << myList->GetName()->ToCString() << endm;
     }
   }
   if (okexec) {

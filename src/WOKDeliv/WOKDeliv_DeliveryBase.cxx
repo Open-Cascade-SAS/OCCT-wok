@@ -45,14 +45,14 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
   
   Standard_Boolean okexec = Standard_True;
   if (!myList.IsNull()) {
-    InfoMsg << "WOKDeliv_DeliveryBase" << "Process UL : " << myList->GetName()->ToCString() << endm;
+    InfoMsg() << "WOKDeliv_DeliveryBase" << "Process UL : " << myList->GetName()->ToCString() << endm;
     Handle(TCollection_HAsciiString) thename = myList->GetName();
     Handle(WOKernel_Warehouse) theWarehouse;
     Handle(WOKernel_Session) theSession = Unit()->Session();
 
     Handle(WOKernel_Parcel) theParcel = GetParcel(Unit(),thename);
     if (!theParcel.IsNull()) {
-      InfoMsg << "WOKDeliv_DeliveryBase" << "Parcel already created : update" << endm;
+      InfoMsg() << "WOKDeliv_DeliveryBase" << "Parcel already created : update" << endm;
       theParcel->Open();
       theWarehouse = theSession->GetWarehouse(theParcel->Nesting());
     }
@@ -105,7 +105,7 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
 
     Handle(WOKMake_InputFile) infileCOMPONENTS = GetInFileCOMPONENTS();
     if (infileCOMPONENTS.IsNull()) {
-      ErrorMsg << "WOKDeliv_DeliveryBase::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryBase::Execute"
 	<< "Missing File COMPONENTS, Check file FILES" << endm;
       SetFailed();
       return;
@@ -122,7 +122,7 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
     Handle(TCollection_HAsciiString) delivfilename = DELIVERIESFile->Path()->Name();
     ofstream delstream(delivfilename->ToCString(), ios::out);
     if (!delstream) {
-      ErrorMsg << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << delivfilename->ToCString() << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << delivfilename->ToCString() << endm;
       SetFailed();
       okexec = Standard_False;
     }
@@ -199,7 +199,7 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
     Handle(TCollection_HAsciiString) namedepulfilename = depulFile->Path()->Name();
     ofstream depulstream(namedepulfilename->ToCString(), ios::out);
     if (!depulstream) {
-      ErrorMsg << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << namedepulfilename->ToCString() << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << namedepulfilename->ToCString() << endm;
       SetFailed();
       okexec = Standard_False;
     }
@@ -326,7 +326,7 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
     Handle(TCollection_HAsciiString) namefilename = NAMEFile->Path()->Name();
     ofstream namestream(namefilename->ToCString(), ios::out);
     if (!namestream) {
-      ErrorMsg << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << namefilename->ToCString() << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryBase::Execute" << "Could not open " << namefilename->ToCString() << endm;
       SetFailed();
       okexec = Standard_False;
     }
@@ -354,7 +354,7 @@ void WOKDeliv_DeliveryBase::Execute(const Handle(WOKMake_HSequenceOfInputFile)&)
     while (itpck.More()) {
       Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
       if (thesourceunit.IsNull()) {
-	ErrorMsg << "WOKDeliv_DeliveryBase::Execute" << "cannot locate unit : " << itpck.Key()->ToCString() << endm;
+	ErrorMsg() << "WOKDeliv_DeliveryBase::Execute" << "cannot locate unit : " << itpck.Key()->ToCString() << endm;
 	SetFailed();
 	okexec = Standard_False;
       }

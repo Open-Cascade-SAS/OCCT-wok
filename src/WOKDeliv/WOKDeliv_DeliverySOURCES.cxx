@@ -60,7 +60,7 @@ Standard_Boolean WOKDeliv_DeliverySOURCES::ExecuteMetaStep()
     Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
     if (thesourceunit.IsNull()) {
       okexec = Standard_False;
-      ErrorMsg << "WOKDeliv_DeliverySOURCE::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
+      ErrorMsg() << "WOKDeliv_DeliverySOURCE::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
     }
     else {
       thesourceunit->Open();
@@ -109,7 +109,7 @@ Standard_Boolean WOKDeliv_DeliverySOURCES::ExecuteSubStep()
   Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(SubCode());
   if (thesourceunit.IsNull()) {
     okexec = Standard_False;
-    ErrorMsg << "WOKDeliv_DeliverySOURCE::Execute" << "Cannot locate unit : " << SubCode() << endm;
+    ErrorMsg() << "WOKDeliv_DeliverySOURCE::Execute" << "Cannot locate unit : " << SubCode() << endm;
   }
   else {
     Handle(WOKMake_InputFile) infileCOMPONENTS = GetInFileCOMPONENTS();
@@ -134,7 +134,7 @@ Standard_Boolean WOKDeliv_DeliverySOURCES::ExecuteSubStep()
 				  atype,
 				  aname);
 	if (afile.IsNull()) {
-	  ErrorMsg << "WOKDeliv_DeliverySOURCE::Execute"
+	  ErrorMsg() << "WOKDeliv_DeliverySOURCE::Execute"
 	    << "Enable to locate source file " << astr << endm;
 	  okexec = Standard_False;
 	}

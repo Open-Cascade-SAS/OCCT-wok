@@ -77,12 +77,12 @@ Handle(WOKDeliv_DeliveryList) WOKDeliv_DeliveryStep::ParseCOMPONENTS(const Stand
       WOKDeliv_Delivery_CloseFile();
     }
     else {
-      ErrorMsg << "WOKDeliv_DeliveryStep::Parse" << "Error getting file COMPONENTS" << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryStep::Parse" << "Error getting file COMPONENTS" << endm;
       SetFailed();
     }
   }
   else {
-    ErrorMsg << "WOKDeliv_DeliveryStep::Parse" << "Error locating file COMPONENTS" << endm;
+    ErrorMsg() << "WOKDeliv_DeliveryStep::Parse" << "Error locating file COMPONENTS" << endm;
     SetFailed();
   }
   return dlist;
@@ -104,7 +104,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::CopyAFile(const Handle(WOKernel_DevUnit)
       tocopy = !fromP->IsSameFile(toP);
       if (!tocopy && !silent) {
 	WOK_TRACE {
-	  VerboseMsg("WOK_DELIV") << "WOKDeliv_DeliveryStep::CopyAFile" 
+	  VerboseMsg()("WOK_DELIV") << "WOKDeliv_DeliveryStep::CopyAFile" 
 				  << "Identical file : " << fromP->Name() << " not copied." << endm;
 	}
       }
@@ -134,17 +134,17 @@ Standard_Boolean WOKDeliv_DeliveryStep::CopyAFile(const Handle(WOKernel_DevUnit)
     ashell->Execute(thecomm);
     if (ashell->Status() == 0) {
       if (!silent) {
-	InfoMsg << "WOKDeliv_DeliveryStep::CopyAFile" 
+	InfoMsg() << "WOKDeliv_DeliveryStep::CopyAFile" 
 	  << fromP->Name() << " copied to " << toP->Name() << endm;
       }
       ashell->ClearOutput();
       return Standard_True;
     }
-    ErrorMsg << "WOKDeliv_DeliveryStep::CopyAFile" 
+    ErrorMsg() << "WOKDeliv_DeliveryStep::CopyAFile" 
       << "Error occured in shell while copying " << fromP->Name() << " to " << toP->Name() << endm;
     Handle(TColStd_HSequenceOfHAsciiString) aseq = ashell->Errors();
     for(Standard_Integer i=1; i<= aseq->Length(); i++) {
-      ErrorMsg << "WOKDeliv_DeliveryStep::CopyAFile" 
+      ErrorMsg() << "WOKDeliv_DeliveryStep::CopyAFile" 
 	<< aseq->Value(i) << endm;
     }
     ashell->ClearOutput();
@@ -213,7 +213,7 @@ Handle(TCollection_HAsciiString) WOKDeliv_DeliveryStep::GetFullParcelName(const 
   Handle(WOKernel_Locator) theloc = DefineLocator();
   Handle(WOKernel_DevUnit) theunit = theloc->LocateDevUnit(aname);
   if (theunit.IsNull()) {
-    ErrorMsg << "WOKDeliv_DeliveryStep::GetFullParcelName" << "cannot locate delivery " << aname->ToCString() << endm;
+    ErrorMsg() << "WOKDeliv_DeliveryStep::GetFullParcelName" << "cannot locate delivery " << aname->ToCString() << endm;
     return 0;
   }
   Handle(WOKernel_UnitNesting) theNesting = Unit()->Session()->GetUnitNesting(theunit->Nesting());
@@ -255,7 +255,7 @@ Handle(WOKernel_Locator) WOKDeliv_DeliveryStep::DefineLocator()
 		}
 	      }
 	      else {
-		ErrorMsg << "WOKDeliv_DeliveryStep::DefineLocator" << "Error while parsing file COMPONENTS for unit " << theunit->Name()->ToCString() << endm;
+		ErrorMsg() << "WOKDeliv_DeliveryStep::DefineLocator" << "Error while parsing file COMPONENTS for unit " << theunit->Name()->ToCString() << endm;
 	      }
 	    }
 	  }
@@ -321,7 +321,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 	      Handle(WOKUtils_Path) oldpath = afile->LastPath();
 	      if (oldpath.IsNull()) return Standard_False;
 	      oldpath->RemoveFile();
-	      InfoMsg << "WOKDeliv_DeliveryStep" 
+	      InfoMsg() << "WOKDeliv_DeliveryStep" 
 		<< "Remove file " << oldpath->Name() << endm;
 	      
 	      return Standard_True;
@@ -351,7 +351,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 	    
 	    if(atempl.IsNull())
 	      {
-		WarningMsg << "WOKDeliv_DeliveryStep::HandleOutputFile"
+		WarningMsg() << "WOKDeliv_DeliveryStep::HandleOutputFile"
 		  << "Could not determine Del action for type : " << afile->File()->TypeName() << endm;
 		ashell->UnLock();
 		return Standard_False;
@@ -359,7 +359,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 	    
 	    if(! Unit()->Params().IsSet(atempl->ToCString()))
 	      {
-		ErrorMsg << "WOKDeliv_DeliveryStep::HandleOutputFile"
+		ErrorMsg() << "WOKDeliv_DeliveryStep::HandleOutputFile"
 		  << "Could not eval Del action (" << atempl << ") for type : " << afile->File()->TypeName() << endm;
 		ashell->UnLock();
 		return Standard_False;
@@ -375,7 +375,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 		
 		if(!acmd.IsNull())
 		  {
-		    InfoMsg << "WOKDeliv_DeliveryStep::HandleOutputFile"
+		    InfoMsg() << "WOKDeliv_DeliveryStep::HandleOutputFile"
 		      << "Invoking " << atempl << " on " << afile->File()->Path()->Name() << endm;
 		    
 		    ashell->Execute(acmd);
@@ -383,15 +383,15 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 		    if(ashell->Status())
 		      {
 			Handle(TColStd_HSequenceOfHAsciiString) resseq = ashell->Errors();
-			Standard_Boolean ph = ErrorMsg.PrintHeader();
+			Standard_Boolean ph = ErrorMsg().PrintHeader();
 			
-			ErrorMsg << "WOKDeliv_DeliveryStep::HandleOutputFile" << "Errors occured in Shell" << endm;
-			ErrorMsg.DontPrintHeader();
+			ErrorMsg() << "WOKDeliv_DeliveryStep::HandleOutputFile" << "Errors occured in Shell" << endm;
+			ErrorMsg().DontPrintHeader();
 			for(Standard_Integer i=1; i<= resseq->Length(); i++)
 			  {
-			    ErrorMsg << "WOKMake_Step::HandleOutputFile" << resseq->Value(i) << endm;
+			    ErrorMsg() << "WOKMake_Step::HandleOutputFile" << resseq->Value(i) << endm;
 			  }
-			if(ph) ErrorMsg.DoPrintHeader();
+			if(ph) ErrorMsg().DoPrintHeader();
 		      }
 		    OutLocator()->ChangeRemove(afile->File());
 		    ashell->ClearOutput();
@@ -402,7 +402,7 @@ Standard_Boolean WOKDeliv_DeliveryStep::HandleOutputFile(const Handle(WOKMake_Ou
 	      {
 		if(afile->File()->Path()->IsSymLink())
 		  {
-		    WarningMsg << "WOKDeliv_DeliveryStep::HandleOutputFile"
+		    WarningMsg() << "WOKDeliv_DeliveryStep::HandleOutputFile"
 		      << "Disappeared File (" << afile->File()->UserPathName() << ") does not exists " << endm;
 		  }
 	      }

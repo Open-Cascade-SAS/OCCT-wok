@@ -63,7 +63,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteMetaStep()
     Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(itpck.Key());
     if (thesourceunit.IsNull()) {
       okexec = Standard_False;
-      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
+      ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute" << "Cannot locate unit : " << itpck.Key()->ToCString() << endm;
     }
     else {
       if (WOKernel_IsFrontal(thesourceunit)) {
@@ -114,7 +114,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
   Handle(WOKernel_DevUnit) thesourceunit = Locator()->LocateDevUnit(SubCode());
   if (thesourceunit.IsNull()) {
     okexec = Standard_False;
-    ErrorMsg << "WOKDeliv_DeliveryDATA::Execute" 
+    ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute" 
       << "Cannot locate unit : " << SubCode() << endm;
   }
   else {
@@ -143,7 +143,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
     Handle(EDL_API) anapi = new EDL_API();
     anapi->AddVariable("%MYVAR",reseval->ToCString());
     if (anapi->OpenFile("MYFILE",filescript->Path()->Name()->ToCString()) != EDL_NORMAL) {
-      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute"
 	<< "Cannot open file " << filescript->Path()->Name() << endm;
       okexec = Standard_False;
     }
@@ -188,7 +188,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
     anapi->AddVariable("%MYVAR",reseval->ToCString());
 
     if (anapi->OpenFile("MYFILECCL",filescript->Path()->Name()->ToCString()) != EDL_NORMAL) {
-      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute"
 	<< "Cannot open file " << filescript->Path()->Name() << endm;
       okexec = Standard_False;
     }
@@ -219,7 +219,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
     anapi->AddVariable("%MYVAR",bineval->ToCString());
 
     if (anapi->OpenFile("MYFILEBIN",filescript->Path()->Name()->ToCString()) != EDL_NORMAL) {
-      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute"
 	<< "Cannot open file " << filescript->Path()->Name() << endm;
       okexec = Standard_False;
     }
@@ -250,7 +250,7 @@ Standard_Boolean WOKDeliv_DeliveryDATA::ExecuteSubStep()
     }
     Handle(WOKMake_HSequenceOfOutputFile) thefiles = thestep->OutputFileList();
     if (thefiles.IsNull()) {
-      ErrorMsg << "WOKDeliv_DeliveryDATA::Execute"
+      ErrorMsg() << "WOKDeliv_DeliveryDATA::Execute"
 	<< "Step " << namestep << " not done for unit " << thesourceunit->Name() << endm;
       okexec = Standard_False;
     }

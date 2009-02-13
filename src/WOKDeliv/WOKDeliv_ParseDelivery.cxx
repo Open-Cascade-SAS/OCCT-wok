@@ -110,7 +110,7 @@ extern "C" {
 	  Handle(TCollection_HAsciiString) thes = new TCollection_HAsciiString(s);
 	  getunit->AssignCat(thes);
 	  if (!thelist->ChangeMap().Add(getunit)) {
-	    WarningMsg << "WOKDeliv_ParseDelivery" << " Get "
+	    WarningMsg() << "WOKDeliv_ParseDelivery" << " Get "
 	      << getunit->ToCString() << " already sent" << endm;
 	  }
 	}
@@ -131,7 +131,7 @@ extern "C" {
       if (goandtreat) {
 	Handle(TCollection_HAsciiString) thes = new TCollection_HAsciiString(s);
 	if (!thelist->ChangeRequireMap().Add(thes)) {
-	  WarningMsg << "WOKDeliv_ParseDelivery" << " Requires "
+	  WarningMsg() << "WOKDeliv_ParseDelivery" << " Requires "
 	    << s << " already sent" << endm;
 	}
       }
@@ -165,7 +165,7 @@ extern "C" {
 	}
 	if (doit) {
 	  if (!thelist->ChangeMap().Add(curunit)) {
-	    WarningMsg << "WOKDeliv_ParseDelivery" << " Unit "
+	    WarningMsg() << "WOKDeliv_ParseDelivery" << " Unit "
 	      << curunit->ToCString() << " already sent" << endm;
 	  }
 	}
@@ -202,10 +202,10 @@ extern "C" {
   int DELIVERYerror(char* msg)
     {
       if (msg == NULL) {
-	ErrorMsg << "ParseCOMPONENTS" <<  "COMPONENTS, line " << DELIVERYlineno << " : syntax error..." << endm;
+	ErrorMsg() << "ParseCOMPONENTS" <<  "COMPONENTS, line " << DELIVERYlineno << " : syntax error..." << endm;
       }
       else {
-	ErrorMsg << "ParseCOMPONENTS" <<  "COMPONENTS, line " << DELIVERYlineno << " : " << msg << endm;
+	ErrorMsg() << "ParseCOMPONENTS" <<  "COMPONENTS, line " << DELIVERYlineno << " : " << msg << endm;
       }
       ErrorEncoutered = 1;
       return 1;
@@ -244,19 +244,19 @@ Handle(WOKDeliv_DeliveryList) WOKDeliv_Delivery_Parse(int aStep)
 
 void WOKDeliv_DeliveryList_Dump(const Handle(WOKDeliv_DeliveryList)& alist)
 {
-  InfoMsg << "Dump of DeliveryList" << endm;
-  InfoMsg << "Name" << endm;
-  InfoMsg << alist->GetName()->ToCString() << endm;
-  InfoMsg << "Requires" << endm;
+  InfoMsg() << "Dump of DeliveryList" << endm;
+  InfoMsg() << "Name" << endm;
+  InfoMsg() << alist->GetName()->ToCString() << endm;
+  InfoMsg() << "Requires" << endm;
   WOKTools_MapIteratorOfMapOfHAsciiString it1(alist->GetRequireMap());
   while (it1.More()) {
-    InfoMsg << it1.Key()->ToCString() << endm;
+    InfoMsg() << it1.Key()->ToCString() << endm;
     it1.Next();
   }
-  InfoMsg << "Content" << endm;
+  InfoMsg() << "Content" << endm;
   WOKTools_MapIteratorOfMapOfHAsciiString it2(alist->GetMap());
   while (it2.More()) {
-    InfoMsg << it2.Key()->ToCString() << endm;
+    InfoMsg() << it2.Key()->ToCString() << endm;
     it2.Next();
   }
 }

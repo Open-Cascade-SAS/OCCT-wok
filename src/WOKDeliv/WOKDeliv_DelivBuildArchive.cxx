@@ -178,7 +178,7 @@ Standard_Boolean WOKDeliv_DelivBuildArchive::BuildArchive
       break;
     case WOKBuilder_Failed:
       ashell->UnLock();
-      ErrorMsg << "WOKStep_ArchiveLibrary"
+      ErrorMsg() << "WOKStep_ArchiveLibrary"
 	       << "Failed     : " <<   libpath->Name() << endm;           
       return Standard_False;
      default: break;
