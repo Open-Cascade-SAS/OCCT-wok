@@ -82,7 +82,7 @@ Handle(EDL_API)&  CSFDBSchema_LoadTemplate(const Handle(TColStd_HSequenceOfHAsci
     }
 
     if (api->Execute("CSFDBSchema_Template.edl") != EDL_NORMAL) {
-      ErrorMsg << "CSFDBSchema" << "unable to load : CSBDBSchema_Template.edl" << endm;
+      ErrorMsg() << "CSFDBSchema" << "unable to load : CSBDBSchema_Template.edl" << endm;
       Standard_NoSuchObject::Raise();
     } 
   }
@@ -301,7 +301,7 @@ Handle(TCollection_HAsciiString) CSFDBSchema_BuildConvertFunction(const Handle(M
       result = api->GetVariableValue("%Result");
     }
     else {
-      ErrorMsg << "CSFDBSchema" << "unknown primitive type :" << tname->ToCString() << endm;
+      ErrorMsg() << "CSFDBSchema" << "unknown primitive type :" << tname->ToCString() << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -347,7 +347,7 @@ Handle(TCollection_HAsciiString) CSFDBSchema_BuildDriverFunction(const Handle(MS
       result = new TCollection_HAsciiString("PutExtCharacter");
     }
     else {
-      ErrorMsg << "CSFDBSchema" << "unknown primitive type :" << tname->ToCString() << endm;
+      ErrorMsg() << "CSFDBSchema" << "unknown primitive type :" << tname->ToCString() << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -773,7 +773,7 @@ void CSFDBSchema_BuildCodeBody(const Handle(MS_MetaSchema)& aMeta,
   Handle(MS_HSequenceOfField) theFields;
 
   for (i = 1; i <= classList->Length(); i++) {
-    InfoMsg << "CSFDBSchema" << "Processing : "<< classList->Value(i)->ToCString() << endm;
+    InfoMsg() << "CSFDBSchema" << "Processing : "<< classList->Value(i)->ToCString() << endm;
     // HXX
     //
     tmpType = aMeta->GetType(classList->Value(i));
@@ -921,7 +921,7 @@ Standard_Boolean CSFDBSchema_ClassMustHaveAddFunction(const Handle(MS_MetaSchema
     stdClass = Handle(MS_StdClass)::DownCast(aType);
   }
   else {
-    ErrorMsg << "CSFDBSchema" << "type " << aClassName->ToCString() << " not defined." << endm;
+    ErrorMsg() << "CSFDBSchema" << "type " << aClassName->ToCString() << " not defined." << endm;
     return Standard_False;
   }
 
@@ -1004,7 +1004,7 @@ void CSFDBSchema_Extract(const Handle(MS_MetaSchema)& aMeta,
     aSchema   = aMeta->GetSchema(aName); 
   }
   else {
-    ErrorMsg << "CSFDBSchema" << aName->ToCString() << " is not a schema..." << endm;
+    ErrorMsg() << "CSFDBSchema" << aName->ToCString() << " is not a schema..." << endm;
     Standard_NoSuchObject::Raise();
   }
   
