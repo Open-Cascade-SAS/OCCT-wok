@@ -122,12 +122,12 @@ WOKBuilder_BuildStatus WOKBuilder_Command::ReplaceIfChanged(const Handle(WOKUtil
       Shell()->ClearOutput();
       return WOKBuilder_Success;
     case 2:
-      ErrorMsg << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg() << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
 	}
       Shell()->ClearOutput();
       return WOKBuilder_Failed;
@@ -167,12 +167,12 @@ WOKBuilder_BuildStatus WOKBuilder_Command::ReplaceIfChangedWith(const Handle(WOK
       Shell()->ClearOutput();
       return WOKBuilder_Success;
     case 2:
-      ErrorMsg << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg() << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
 	}
       Shell()->ClearOutput();
       return WOKBuilder_Failed;
@@ -274,12 +274,12 @@ WOKBuilder_BuildStatus WOKBuilder_Command::Execute()
 
   if(Shell()->Status())
     {
-      ErrorMsg << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg() << "WOKBuilder_Command::Execute" << "Errors occured in Shell" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Command::Execute" << aseq->Value(i) << endm;
 	}
       Shell()->ClearOutput();
       return WOKBuilder_Failed;

@@ -31,7 +31,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSExtractorIterator::Execute(const Handle(WOKB
 
   myextractor->SetEntity(anentity);
 
-  InfoMsg << "WOKBuilder_MSExtractorIterator::Execute" << "Extracting " << anentity->Name() << endm;
+  InfoMsg() << "WOKBuilder_MSExtractorIterator::Execute" << "Extracting " << anentity->Name() << endm;
 
   status = myextractor->Extract(mymeta, anentity);
   myproduction = myextractor->Produces();
@@ -52,7 +52,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSExtractorIterator::Execute(const Handle(WOKB
 
   myextractor->SetEntity(anentity);
 
-  InfoMsg << "WOKBuilder_MSExtractorIterator::Execute" << "Extracting " << anentity->Name() << endm;
+  InfoMsg() << "WOKBuilder_MSExtractorIterator::Execute" << "Extracting " << anentity->Name() << endm;
 
   status = myextractor->Extract(mymeta, anentity, amode);
   myproduction = myextractor->Produces();

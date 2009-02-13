@@ -103,7 +103,7 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
 
   if(objtempl.IsNull())
     {
-      ErrorMsg << "WOKBuilder_Archiver::Execute" 
+      ErrorMsg() << "WOKBuilder_Archiver::Execute" 
 	       << "Could not eval Tool Parameter " << Name() << "_ObjectRef" << endm;
       return WOKBuilder_Failed;
     }
@@ -137,7 +137,7 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
   
   if(!objstream.good())
     {
-      ErrorMsg << "WOKBuilder_Archiver::Execute" 
+      ErrorMsg() << "WOKBuilder_Archiver::Execute" 
 	       << "Could not open " << objlistpath->Name() << " for writing" << endm;
       return WOKBuilder_Failed;
     }
@@ -166,12 +166,12 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
 
   if(Shell()->Status())
     {
-      ErrorMsg << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during begin" << endm;
+      ErrorMsg() << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during begin" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
 	}
 
       return WOKBuilder_Failed;
@@ -198,7 +198,7 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
       astr = Params().Eval("LDAR_Iter");
       
       WOK_TRACE {
-	VerboseMsg("WOK_LDAR") << "WOKBuilder_Archiver::Execute" 
+	VerboseMsg()("WOK_LDAR") << "WOKBuilder_Archiver::Execute" 
 			       << "Archive line : " << astr << endm;
       }
       
@@ -206,12 +206,12 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
       
       if(Shell()->Status())
 	{
-	  ErrorMsg << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during iteration" << endm;
+	  ErrorMsg() << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during iteration" << endm;
 	  Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
 	  
 	  for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	    {
-	      ErrorMsg << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
+	      ErrorMsg() << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
 	    }
 	  
 	  return WOKBuilder_Failed;
@@ -222,7 +222,7 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
   astr = Params().Eval("LDAR_End");
   
   WOK_TRACE {
-    VerboseMsg("WOK_LDAR") << "WOKBuilder_Archiver::Execute" 
+    VerboseMsg()("WOK_LDAR") << "WOKBuilder_Archiver::Execute" 
 			   << "Archive line : " << astr << endm;
   }
   
@@ -230,12 +230,12 @@ WOKBuilder_BuildStatus WOKBuilder_Archiver::Execute()
   
   if(Shell()->Status())
     {
-      ErrorMsg << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during end" << endm;
+      ErrorMsg() << "WOKBuilder_Archiver::Execute" << "Errors occured in Shell during end" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Archiver::Execute" << aseq->Value(i) << endm;
 	}
       
       return WOKBuilder_Failed;

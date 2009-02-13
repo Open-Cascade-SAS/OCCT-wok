@@ -181,7 +181,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_ToolInShell::OptionLine() const
 	{
 	  if(!Params().IsSet(args->Value(i)->ToCString()))
 	    {
-	      ErrorMsg << "WOKBuilder_ToolInShell::OptionLine" 
+	      ErrorMsg() << "WOKBuilder_ToolInShell::OptionLine" 
 		       << "Could not eval ToolInShell option argument : " << args->Value(i)->ToCString() << endm;
 	      return result;
 	    }
@@ -211,7 +211,7 @@ Handle(WOKBuilder_HSequenceOfEntity) WOKBuilder_ToolInShell::EvalProduction() co
 
   if(prodlist.IsNull())
     {
-      ErrorMsg << "WOKBuilder_ToolInShell::EvalProduction"
+      ErrorMsg() << "WOKBuilder_ToolInShell::EvalProduction"
 	       << "Coul not eval production of " << Name() << endm;
       return nullseq;
     }

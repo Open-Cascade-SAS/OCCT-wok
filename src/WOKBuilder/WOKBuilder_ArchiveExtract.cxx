@@ -92,7 +92,7 @@ WOKBuilder_BuildStatus WOKBuilder_ArchiveExtract::Execute()
   astr = Params().Eval(Template()->ToCString());
 
   WOK_TRACE {
-    VerboseMsg("WOK_ARX") << "WOKBuilder_ArchiveExtract::Execute" 
+    VerboseMsg()("WOK_ARX") << "WOKBuilder_ArchiveExtract::Execute" 
 			  << "Archive line : " << astr << endm;
   }
 
@@ -100,12 +100,12 @@ WOKBuilder_BuildStatus WOKBuilder_ArchiveExtract::Execute()
 
   if(Shell()->Status())
     {
-      ErrorMsg << "WOKBuilder_ArchiveExtract::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg() << "WOKBuilder_ArchiveExtract::Execute" << "Errors occured in Shell" << endm;
       Handle(TColStd_HSequenceOfHAsciiString) aseq = Shell()->Errors();
       
       for(Standard_Integer i=1; i<= aseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_ArchiveExtract::Execute" << aseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_ArchiveExtract::Execute" << aseq->Value(i) << endm;
 	}
 
       return WOKBuilder_Failed;
@@ -129,7 +129,7 @@ WOKBuilder_BuildStatus WOKBuilder_ArchiveExtract::Execute()
 	}
       else
 	{
-	  ErrorMsg << "WOKBuilder_ArchiveExtract::Execute"
+	  ErrorMsg() << "WOKBuilder_ArchiveExtract::Execute"
 		   << "Object " << aseq->Value(i) << " listed in archive was not extracted" << endm;
 	  failed = Standard_True;
 	}
@@ -140,7 +140,7 @@ WOKBuilder_BuildStatus WOKBuilder_ArchiveExtract::Execute()
 
   if(failed)
     {
-      ErrorMsg << "WOKBuilder_ArchiveExtract::Execute"
+      ErrorMsg() << "WOKBuilder_ArchiveExtract::Execute"
 	       << "Object(s) not found" << endm;
       return WOKBuilder_Failed;
     }

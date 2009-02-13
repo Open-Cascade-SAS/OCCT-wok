@@ -163,11 +163,11 @@ WOKBuilder_MSActionStatus WOKBuilder_MSJiniExtractor::ExtractionStatus(const Han
 #ifdef WOK_VERBOSE
       WOKUtils_TimeStat depdate = GetTypeMDate(astr);
 
-      VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
+      VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
                                 << "Comparing extraction   date : " 
 			        << (Standard_Integer) anaction->Date() << " of " << anaction->Entity()->Name() << endm;
   
-      VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
+      VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
 	                        << "with      modification date : " 
 			        << (Standard_Integer) depdate << " of " << astr << endm;
 #endif
@@ -175,7 +175,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSJiniExtractor::ExtractionStatus(const Han
       if( GetTypeMDate(astr) > anaction->Date())
 	{
 #ifdef WOK_VERBOSE
-	  VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
+	  VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
 	                            << anaction->Entity()->Name() << " is out of date compared to " << astr << endm;
 #endif
 	  return WOKBuilder_OutOfDate;
@@ -183,14 +183,14 @@ WOKBuilder_MSActionStatus WOKBuilder_MSJiniExtractor::ExtractionStatus(const Han
       else
 	{
 #ifdef WOK_VERBOSE
-	  VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
+	  VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
 	                            << anaction->Entity()->Name() << " is up to date compared to : " << astr << endm;
 #endif
 	}
     }
   
 #ifdef WOK_VERBOSE
-  VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
+  VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSJiniExtractor::ExtractionStatus" 
                             << anaction->Entity()->Name() << " is up to date" << endm;
 #endif  
 

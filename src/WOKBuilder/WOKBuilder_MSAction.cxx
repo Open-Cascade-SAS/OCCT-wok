@@ -97,7 +97,7 @@ void WOKBuilder_MSAction::GetDate()
   mydate = time(NULL);
   if(mydate == -1)
     {
-      ErrorMsg << "WOKBuilder_MSAction::GetDate" << "Could not obtain current date" << endm;
+      ErrorMsg() << "WOKBuilder_MSAction::GetDate" << "Could not obtain current date" << endm;
       Standard_ProgramError::Raise("WOKBuilder_MSAction::GetDate");
     }
 }

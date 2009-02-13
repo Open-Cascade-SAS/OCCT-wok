@@ -69,12 +69,12 @@ void WOKBuilder_CodeGeneratorIterator::Init(const Handle(WOKUtils_Shell)& ashell
 	      
 	      if(optline.IsNull())
 		{
-		  ErrorMsg << "WOKBuilder_CodeGeneratorIterator::Init"
+		  ErrorMsg() << "WOKBuilder_CodeGeneratorIterator::Init"
 		    << "Could not eval code generator " << acodegen->Name() << " options" << endm;
 		  return;
 		}
 	      
-	      InfoMsg << "WOKBuilder_CodeGeneratorIterator::Init" << optline << endm;
+	      InfoMsg() << "WOKBuilder_CodeGeneratorIterator::Init" << optline << endm;
 	    }
 	}
     }
@@ -106,7 +106,7 @@ WOKBuilder_BuildStatus WOKBuilder_CodeGeneratorIterator::Execute(const Handle(WO
 
   if(aCodeGenerator.IsNull())
     {
-      ErrorMsg << "WOKBuilder_CodeGeneratorIterator::Execute" 
+      ErrorMsg() << "WOKBuilder_CodeGeneratorIterator::Execute" 
 	<< "Could not find appropriate CodeGenerator for " << aCodeGenFile->Path()->Name() << endm;
       return WOKBuilder_Failed;
     }

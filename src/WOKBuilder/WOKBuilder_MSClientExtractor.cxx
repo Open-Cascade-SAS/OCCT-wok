@@ -163,11 +163,11 @@ WOKBuilder_MSActionStatus WOKBuilder_MSClientExtractor::ExtractionStatus(const H
       WOKUtils_TimeStat depdate = GetTypeMDate(astr);
 
       WOK_TRACE {
-	VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
+	VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
 				  << "Comparing extraction   date : " 
 				  << (Standard_Integer) anaction->Date() << " of " << anaction->Entity()->Name() << endm;
 	
-	VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
+	VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
 				  << "with      modification date : " 
 				  << (Standard_Integer) depdate << " of " << astr << endm;
       }
@@ -175,7 +175,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSClientExtractor::ExtractionStatus(const H
       if( GetTypeMDate(astr) > anaction->Date())
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
+	    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
 				      << anaction->Entity()->Name() << " is out of date compared to " << astr << endm;
 	  }
 	  return WOKBuilder_OutOfDate;
@@ -183,14 +183,14 @@ WOKBuilder_MSActionStatus WOKBuilder_MSClientExtractor::ExtractionStatus(const H
       else
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
+	    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
 				      << anaction->Entity()->Name() << " is up to date compared to : " << astr << endm;
 	  }
 	}
     }
   
   WOK_TRACE {
-    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
+    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSClientExtractor::ExtractionStatus" 
 			      << anaction->Entity()->Name() << " is up to date" << endm;
   }
 

@@ -80,7 +80,7 @@ Handle( TColStd_HSequenceOfHAsciiString )
 
   WOK_TRACE {
 
-   VerboseMsg ( "WOK_EXTRACT" ) << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
+   VerboseMsg() ( "WOK_EXTRACT" ) << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
                                 << "Package not yet Implemented : out of date"
                                 << endm;
   }  // end WOK_TRACE
@@ -97,7 +97,7 @@ Handle( TColStd_HSequenceOfHAsciiString )
       
   if (  apk.IsNull ()  ) {
 
-   ErrorMsg << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
+   ErrorMsg() << "WOKBuilder_MSHeaderExtractor::ExtractionStatus"
             << aName
             << " is not a known package and not a known type"
             << endm;
@@ -272,17 +272,17 @@ WOKBuilder_MSActionStatus WOKBuilder_MSHeaderExtractor::ExtractionStatus(const H
       WOKUtils_TimeStat depdate = GetTypeMDate(astr);
 
       WOK_TRACE {
-	VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
+	VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
 				  << "Comparing extraction   date : " << (Standard_Integer) anaction->Date() << " of " << anaction->Entity()->Name() << endm;
 
-	VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
+	VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
 				  << "with      modification date : " << (Standard_Integer) depdate << " of " << astr << endm;
       }
 
       if( GetTypeMDate(astr) > anaction->Date())
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
+	    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
 				      << anaction->Entity()->Name() << " is out of date compared to " << astr << endm;
 	  }
 	  return WOKBuilder_OutOfDate;
@@ -290,14 +290,14 @@ WOKBuilder_MSActionStatus WOKBuilder_MSHeaderExtractor::ExtractionStatus(const H
       else
 	{
 	  WOK_TRACE {
-	    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
+	    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
 				      << anaction->Entity()->Name() << " is up to date compared to : " << astr << endm;
 	  }
 	}
     }
   
   WOK_TRACE {
-    VerboseMsg("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
+    VerboseMsg()("WOK_EXTRACT") << "WOKBuilder_MSHeaderExtractor::ExtractionStatus" 
 			      << anaction->Entity()->Name() << " is up to date" << endm;
   }
 

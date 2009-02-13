@@ -162,7 +162,7 @@ Standard_Integer WOKBuilder_ToolInShellIterator::LoadGroup()
 
   if(mygroup.IsNull())
     {
-      ErrorMsg << "WOKBuilder_ToolInShellIterator::LoadGroup"
+      ErrorMsg() << "WOKBuilder_ToolInShellIterator::LoadGroup"
 	       << "Cannot not load an unamed tool group" << endm;
       return 1;
     }
@@ -175,7 +175,7 @@ Standard_Integer WOKBuilder_ToolInShellIterator::LoadGroup()
 
   if(toolsnames.IsNull())
     {
-      ErrorMsg << "WOKBuilder_ToolInShellIterator::LoadGroup"
+      ErrorMsg() << "WOKBuilder_ToolInShellIterator::LoadGroup"
 	       << "Cannot not eval tool list for group : " << mygroup << " (parameter : " << varname << ")" << endm;
       return 1;
     }
@@ -192,7 +192,7 @@ Standard_Integer WOKBuilder_ToolInShellIterator::LoadGroup()
 
       if(atool.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_ToolInShellIterator::LoadGroup"
+	  ErrorMsg() << "WOKBuilder_ToolInShellIterator::LoadGroup"
 		   << "Cannot not get Tool : " << toolname << endm;
 	  return 1;
 	}
@@ -213,10 +213,10 @@ Standard_Integer WOKBuilder_ToolInShellIterator::LoadGroup()
 		{
 		  Handle(WOKBuilder_ToolInShell) prevtool = myexts.Find(extseq->Value(j));
 
-		  WarningMsg << "WOKBuilder_ToolInShellIterator::LoadGroup"
+		  WarningMsg() << "WOKBuilder_ToolInShellIterator::LoadGroup"
 		             << "Extension " << extseq->Value(j) << " is already recognized by " << prevtool->Name() << endm;
 		  
-		  WarningMsg << "WOKBuilder_ToolInShellIterator::LoadGroup"
+		  WarningMsg() << "WOKBuilder_ToolInShellIterator::LoadGroup"
 		             << "It is ignored for " << atool->Name() << endm;
 		}
 	      else
@@ -270,14 +270,14 @@ Handle(WOKBuilder_ToolInShell) WOKBuilder_ToolInShellIterator::AppropriateTool(c
 
   if(anent.IsNull())
     {
-      ErrorMsg << "WOKBuilder_ToolInShellIterator::AppropriateTool" 
+      ErrorMsg() << "WOKBuilder_ToolInShellIterator::AppropriateTool" 
 	       << "Cannot determine Tool for Null Entity" << endm;
       return NULLTOOL;
     }
 
   if(anent->Path().IsNull())
     {
-      ErrorMsg << "WOKBuilder_ToolInShellIterator::AppropriateTool" 
+      ErrorMsg() << "WOKBuilder_ToolInShellIterator::AppropriateTool" 
 	       << "Cannot determine Tool for Null path entity" << endm;
       return NULLTOOL;
     }

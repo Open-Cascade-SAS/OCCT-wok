@@ -45,7 +45,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_ExecutableLinker::EvalHeader()
 
   if(templ.IsNull())
     {
-      ErrorMsg << "WOKBuilder_ExecutableLinker::EvalHeader" << "Could not eval parameter : " << templname << endm;
+      ErrorMsg() << "WOKBuilder_ExecutableLinker::EvalHeader" << "Could not eval parameter : " << templname << endm;
       return line;
     }
 

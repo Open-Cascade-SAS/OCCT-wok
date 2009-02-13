@@ -87,14 +87,14 @@ void WOKBuilder_CompilerIterator::Init(const Handle(WOKUtils_Shell)& ashell,
 	  
 	  if(optline.IsNull())
 	    {
-	      ErrorMsg << "WOKBuilder_CompilerIterator::Init"
+	      ErrorMsg() << "WOKBuilder_CompilerIterator::Init"
 		<< "Could not eval compiler " << acompiler->Name() << " options" << endm;
 	      return;
 	    }
 //---> EUG4YAN
  if ( !g_fCompOrLnk )
 //<--- EUG4YAN	  
-	  InfoMsg << "WOKBuilder_CompilerIterator::Init" << optline << endm;
+	  InfoMsg() << "WOKBuilder_CompilerIterator::Init" << optline << endm;
 	}
     }
 }
@@ -134,7 +134,7 @@ WOKBuilder_BuildStatus WOKBuilder_CompilerIterator::Execute(const Handle(WOKBuil
 //<--- EUG4YAN
   if(acompiler.IsNull())
     {
-      ErrorMsg << "WOKBuilder_CompilerIterator::Execute" 
+      ErrorMsg() << "WOKBuilder_CompilerIterator::Execute" 
 	<< "Could not find appropriate Compiler for " << acompilable->Path()->Name() << endm;
       return WOKBuilder_Failed;
     }

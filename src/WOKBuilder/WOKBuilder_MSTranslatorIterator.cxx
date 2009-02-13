@@ -255,7 +255,7 @@ void WOKBuilder_MSTranslatorIterator::AddInStack(const Handle(TCollection_HAscii
     }
 
   WOK_TRACE {
-    if(VerboseMsg("WOK_TRANSIT").IsSet())
+    if(VerboseMsg()("WOK_TRANSIT").IsSet())
       {
 	Standard_CString actionstr;
 	switch(action)
@@ -331,12 +331,12 @@ void WOKBuilder_MSTranslatorIterator::AddInStack(const Handle(TCollection_HAscii
 	  }
 	if(!added)
 	  {
-	    VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::AddInStack" 
+	    VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::AddInStack" 
 				      << "Adding : " << aname << " as " << actionstr << " not added : Already in stack" << endm;
 	  }
 	else
 	  {
-	    VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::AddInStack" 
+	    VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::AddInStack" 
 				      << "Adding : " << aname << " as " << actionstr  << endm;
 	  }
       }

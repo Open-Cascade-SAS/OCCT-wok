@@ -67,8 +67,8 @@ WOKBuilder_BuildStatus WOKBuilder_CodeGenerator::Execute()
   astr = Params().Eval(Template()->ToCString(), Standard_True);
 
   WOK_TRACE {
-    VerboseMsg("WOK_CODEGEN") << "WOKBuilder_Compiler::Execute" << "Compilation line : " << endm;
-    VerboseMsg("WOK_CODEGEN") << "WOKBuilder_Compiler::Execute" << astr << endm;
+    VerboseMsg()("WOK_CODEGEN") << "WOKBuilder_Compiler::Execute" << "Compilation line : " << endm;
+    VerboseMsg()("WOK_CODEGEN") << "WOKBuilder_Compiler::Execute" << astr << endm;
   }
 
   Shell()->Execute(astr);
@@ -78,26 +78,26 @@ WOKBuilder_BuildStatus WOKBuilder_CodeGenerator::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKBuilder_Compiler::Execute" << "Errors occured in Shell" << endm;
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg() << "WOKBuilder_Compiler::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg().DontPrintHeader();
       for(Standard_Integer i=1; i<= resseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
       return WOKBuilder_Failed;
     }
   else
     {
-      Standard_Boolean ph = InfoMsg.PrintHeader();
-      InfoMsg.DontPrintHeader();
+      Standard_Boolean ph = InfoMsg().PrintHeader();
+      InfoMsg().DontPrintHeader();
       for(Standard_Integer i=1; i<= resseq->Length(); i++)
 	{
-	  InfoMsg << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
+	  InfoMsg() << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
   Shell()->ClearOutput();
 

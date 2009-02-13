@@ -48,7 +48,7 @@ Standard_Boolean WOKBuilder_WNTCollector::OpenCommandFile()
 
  if(ext.IsNull()) 
    {
-     ErrorMsg << "WOKBuilder_WNTCollector::OpenCommandFile"
+     ErrorMsg() << "WOKBuilder_WNTCollector::OpenCommandFile"
        << "Could not evaluate extension for tool command file" << endm;
    }
  else {
@@ -60,7 +60,7 @@ Standard_Boolean WOKBuilder_WNTCollector::OpenCommandFile()
 
      if(myCommandFile.Failed())
        {
-	 ErrorMsg << "WOKBuilder_WNTCollector :: OpenCommandFile"
+	 ErrorMsg() << "WOKBuilder_WNTCollector :: OpenCommandFile"
 	   << "Could not create tool command file '" << fileName << "' - " << endm;
 	 myCommandFile.Perror ();
        } 
@@ -78,7 +78,7 @@ Standard_Boolean WOKBuilder_WNTCollector::CloseCommandFile()
 
   if(myCommandFile.Failed()) 
     {
-      ErrorMsg << "WOKBuilder_WNTCollector :: OpenCommandFile"
+      ErrorMsg() << "WOKBuilder_WNTCollector :: OpenCommandFile"
 	<< "Could not create tool command file - " << endm;
       myCommandFile.Perror ();  
     }
@@ -137,22 +137,22 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKBuilder_WNTCollector :: Execute" << "Errors Occured :" << endm;
+      ErrorMsg() << "WOKBuilder_WNTCollector :: Execute" << "Errors Occured :" << endm;
 
       errmsgs = Shell()->Errors();
 
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg().DontPrintHeader();
       
       for( i=1; i<=errmsgs->Length(); i++) 
 	{
 	  if(linkerLogo->Match(errmsgs->Value(i)) != -1) continue;
 
-	  ErrorMsg << "WOKBuilder_WNTCollector :: Execute" << errmsgs -> Value ( i ) << endm;
+	  ErrorMsg() << "WOKBuilder_WNTCollector :: Execute" << errmsgs -> Value ( i ) << endm;
 	}  
       
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
 
       _print_output("Failed     : ", this);
 
@@ -163,9 +163,9 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
   else
     {
       Handle(WOKBuilder_Entity) ent;
-      Standard_Boolean          ph = InfoMsg.PrintHeader();
+      Standard_Boolean          ph = InfoMsg().PrintHeader();
 
-      InfoMsg << "WOKBuilder_WNTCollector::Execute" << "Succeeded  : ";
+      InfoMsg() << "WOKBuilder_WNTCollector::Execute" << "Succeeded  : ";
 
       for( i=1; i<=Produces()->Length(); ++i)
 	{
@@ -175,11 +175,11 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
 	  
 	  prodPath = ent->Path();
 	  if(prodPath->Exists())
-	    InfoMsg << prodPath->FileName() << " ";
+	    InfoMsg() << prodPath->FileName() << " ";
 	} 
 
-      InfoMsg << endm;
-      InfoMsg.DontPrintHeader();
+      InfoMsg() << endm;
+      InfoMsg().DontPrintHeader();
   
       errmsgs = Shell()->Errors();
 
@@ -187,10 +187,10 @@ WOKBuilder_BuildStatus WOKBuilder_WNTCollector::Execute()
 	{
 	  if(linkerLogo->Match(errmsgs->Value(i))!=-1) continue;
 
-	  InfoMsg << "WOKBuilder_WNTCollector::Execute" << errmsgs->Value(i) << endm;
+	  InfoMsg() << "WOKBuilder_WNTCollector::Execute" << errmsgs->Value(i) << endm;
 	}
 
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
   
   Shell()->ClearOutput();
@@ -226,7 +226,7 @@ static void FASTCALL  _print_output( Standard_CString msg, WOKBuilder_Tool* tool
 {
   Handle(WOKBuilder_Entity) ent;
   
-  InfoMsg << "WOKBuilder_WNTCollector::Execute"
+  InfoMsg() << "WOKBuilder_WNTCollector::Execute"
     << msg;
 
   for(Standard_Integer i=1; i<=tool->Produces()->Length(); ++i) 
@@ -235,8 +235,8 @@ static void FASTCALL  _print_output( Standard_CString msg, WOKBuilder_Tool* tool
 
       if(ent->IsKind(STANDARD_TYPE(WOKBuilder_ExportLibrary))) continue;
 
-      InfoMsg <<  ent -> Path () -> FileName () << " ";
+      InfoMsg() <<  ent -> Path () -> FileName () << " ";
     }
 
-  InfoMsg << endm;
+  InfoMsg() << endm;
 }

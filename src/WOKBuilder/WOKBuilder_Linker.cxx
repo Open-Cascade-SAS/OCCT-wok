@@ -125,7 +125,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::LibraryRefLine(const Handle(
 	templname = "ArchiveFullPath";
       break;
     default:
-      ErrorMsg << "WOKBuilder_Linker::LibraryRefLine" << "Unknown Library Ref Type" << endm;
+      ErrorMsg() << "WOKBuilder_Linker::LibraryRefLine" << "Unknown Library Ref Type" << endm;
       return line;
     }
   
@@ -133,7 +133,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::LibraryRefLine(const Handle(
 
   if(templ.IsNull())
     {
-      ErrorMsg << "WOKBuilder_Linker::LibraryRefLine" << "Could not eval parameter : " << templname << endm;
+      ErrorMsg() << "WOKBuilder_Linker::LibraryRefLine" << "Could not eval parameter : " << templname << endm;
       return line;
     }
 
@@ -270,7 +270,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalLibSearchDirectives()
 	    }
 	  else
 	    {
-	      WarningMsg << "WOKBuilder_Linker::EvalLibSearchDirectives" 
+	      WarningMsg() << "WOKBuilder_Linker::EvalLibSearchDirectives" 
 		<< "Could not eval lib directive: LD_LibSearchPath" << endm;
 	    }
 	}
@@ -304,7 +304,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalDatabaseDirectives()
 	    }
 	  else
 	    {
-	      WarningMsg << "WOKBuilder_Linker::EvalDatabaseDirectives" 
+	      WarningMsg() << "WOKBuilder_Linker::EvalDatabaseDirectives" 
 		<< "Could not eval database directive: LD_DBDirective" << endm;
 	    }
 	}
@@ -382,7 +382,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalFooter()
       
       if(astr.IsNull())
 	{
-	  WarningMsg << "WOKBuilder_Linker::EvalFooter" 
+	  WarningMsg() << "WOKBuilder_Linker::EvalFooter" 
 		     << "Could not eval ExternLib : " << myexterns->Value(i) << endm;
 	}
       else
@@ -396,7 +396,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_Linker::EvalFooter()
 
   if(templ.IsNull())
     {
-      ErrorMsg << "WOKBuilder_Linker::EvalFooter" << "Could not eval parameter : " << Name() << "_Footer" << endm;
+      ErrorMsg() << "WOKBuilder_Linker::EvalFooter" << "Could not eval parameter : " << Name() << "_Footer" << endm;
       return line;
     }
   
@@ -440,7 +440,7 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
   
   if(!objstream.good())
     {
-      ErrorMsg << "WOKBuilder_Linker::Execute" 
+      ErrorMsg() << "WOKBuilder_Linker::Execute" 
 	       << "Could not open " << objlistpath->Name() << " for writing" << endm;
       return WOKBuilder_Failed;
     }
@@ -585,12 +585,12 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKBuilder_Linker::Execute" << "Errors Occured :" << endm;
+      ErrorMsg() << "WOKBuilder_Linker::Execute" << "Errors Occured :" << endm;
 
       errmsgs = Shell()->Errors();
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg().DontPrintHeader();
       for(Standard_Integer i=1; i<= errmsgs->Length(); i++)
 	{
 #ifndef WNT
@@ -601,15 +601,15 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
                 errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
           ) continue;
 #endif  // SOLARIS
-	  ErrorMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
       return WOKBuilder_Failed;
     }
   else
     {
-      Standard_Boolean ph = InfoMsg.PrintHeader();
-      InfoMsg.DontPrintHeader();
+      Standard_Boolean ph = InfoMsg().PrintHeader();
+      InfoMsg().DontPrintHeader();
       errmsgs = Shell()->Errors();
 #if defined (__sun) || defined(SOLARIS)
       if (   !(  errmsgs -> Length () == 4 &&
@@ -628,9 +628,9 @@ WOKBuilder_BuildStatus WOKBuilder_Linker::Execute()
                 errmsgs -> Value ( i ) -> Length () - skipStr1 -> Length () + 1
           ) continue;
 #endif  // SOLARIS
-	  InfoMsg << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
+	  InfoMsg() << "WOKBuilder_Linker::Execute" << errmsgs->Value(i) << endm;
 	}
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
 
   Shell()->ClearOutput();

@@ -229,7 +229,7 @@ void WOKBuilder_MSchema::RemoveAutoTypes() const
 	  if(!instclass.IsNull())
 	    {
 	      WOK_TRACE {
-		VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::RemoveAutoTypes" 
+		VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::RemoveAutoTypes" 
 					  << "Shooting Auto type : " << toshoot->Value(i) << endm;
 	      }
 	      myschema->RemoveType(toshoot->Value(i), Standard_False);
@@ -898,7 +898,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKBuilder_MSchema::SortedSchemaClasses(
 
       if(aclass.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_MSchema::SortedSchemaClasses"
+	  ErrorMsg() << "WOKBuilder_MSchema::SortedSchemaClasses"
 		   << "Name " << aseq->Value(i) << " is not a known class name" << endm;
 	  Handle(TColStd_HSequenceOfHAsciiString) result;
 	  return result;
@@ -1036,7 +1036,7 @@ Handle(WOKBuilder_MSAction) WOKBuilder_MSchema::GetAction(const WOKBuilder_MSAct
 	    }
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetAction"
+	    VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetAction"
 				      << "Created Action " << theid.Name() << endm;
 	  }
 	  
@@ -1047,7 +1047,7 @@ Handle(WOKBuilder_MSAction) WOKBuilder_MSchema::GetAction(const WOKBuilder_MSAct
 	  theresult = myactions.Find(theid);
 	  
 	  WOK_TRACE {
-	    VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetAction"
+	    VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetAction"
 				      << "Found Action " << theid.Name() << " with date : " << (Standard_Integer) theresult->Date()<< endm;
 	  }
 	  
@@ -1083,7 +1083,7 @@ void WOKBuilder_MSchema::ChangeActionToFailed(const WOKBuilder_MSActionID& anid)
   theaction->SetStatus(WOKBuilder_HasFailed);
 
   WOK_TRACE {
-    VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::"
+    VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::"
 			      << "Failed Action " << theid.Name() << endm;
   }
   return;
@@ -1113,7 +1113,7 @@ void WOKBuilder_MSchema::ChangeAddAction(const WOKBuilder_MSActionID& anid, cons
   theaction->SetStatus(WOKBuilder_UpToDate);
 
   WOK_TRACE {
-    VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::ChangeAddAction"
+    VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::ChangeAddAction"
 			      << "Added Action " << theid.Name() << " with date " << (Standard_Integer) theaction->Date() << endm;
   }
   return;
@@ -1131,14 +1131,14 @@ WOKBuilder_MSActionStatus WOKBuilder_MSchema::GetActionStatus(const WOKBuilder_M
   if(!myactions.IsBound(theid)) 
     {
       WOK_TRACE {
-	VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetActionStatus"
+	VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetActionStatus"
 				  << "Could not get Action " << theid.Name() << endm;
       }
       
       return WOKBuilder_NotDefined;
     }
   WOK_TRACE {
-    VerboseMsg("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetActionStatus"
+    VerboseMsg()("WOK_MSCHEMA") << "WOKBuilder_MSchema::GetActionStatus"
 			      << "Got Action " << theid.Name() << endm;
   }
   

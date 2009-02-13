@@ -75,7 +75,7 @@ void WOKBuilder_MSExtractor::Load()
 
       if(myshared.IsNull() == Standard_True)
 	{
-	  ErrorMsg << "WOKBuilder_MSExtractor::Load" 
+	  ErrorMsg() << "WOKBuilder_MSExtractor::Load" 
 		   << "Parameter " << astr << " could not be evaluated" << endm;
 	  return;
 	}
@@ -89,7 +89,7 @@ void WOKBuilder_MSExtractor::Load()
       libpath = Params().SearchFile(myshared);
       if(libpath.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_MSExtractor::Load" 
+	  ErrorMsg() << "WOKBuilder_MSExtractor::Load" 
 		   << "WOKBuilder_MSExtractor::Load Could not find file : " << myshared << endm;
 	}
     }
@@ -100,7 +100,7 @@ void WOKBuilder_MSExtractor::Load()
       
       if(myprefix.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_MSExtractor::Load" << "Parameter " << astr << " could not be evaluated" << endm;
+	  ErrorMsg() << "WOKBuilder_MSExtractor::Load" << "Parameter " << astr << " could not be evaluated" << endm;
 	  return;
 	}
     }
@@ -109,7 +109,7 @@ void WOKBuilder_MSExtractor::Load()
 
   if(ashared.DlOpen(OSD_RTLD_NOW) == Standard_False)
     {
-      ErrorMsg << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
       return;
     }
 
@@ -120,7 +120,7 @@ void WOKBuilder_MSExtractor::Load()
   
   if( mytemplfunc == NULL) 
     {
-      ErrorMsg << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
       return;
     }
   
@@ -131,7 +131,7 @@ void WOKBuilder_MSExtractor::Load()
 
   if(myextractfunc == NULL) 
     {
-      ErrorMsg << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_MSExtractor::Load" << ashared.DlError() << endm;
       return;
     }
 
@@ -218,7 +218,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSExtractor::Extract(const Handle(WOKBuilder_M
 
   if(adbms.IsNull())
     {
-      WarningMsg << "WOKBuilder_MSExtractor::Extract" 
+      WarningMsg() << "WOKBuilder_MSExtractor::Extract" 
 		 << "No DBMS profile specified : using DFLT" << endm;
       adbms = new TCollection_HAsciiString("DFLT");
     }

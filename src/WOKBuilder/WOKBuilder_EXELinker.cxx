@@ -30,7 +30,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_EXELinker::EvalHeader()
    {
      retVal = new TCollection_HAsciiString(val);
 
-     InfoMsg << "WOKBuilder_EXELinker::EvalHeader"
+     InfoMsg() << "WOKBuilder_EXELinker::EvalHeader"
        << '\'' << retVal << "' is using" << endm;
    } 
  else

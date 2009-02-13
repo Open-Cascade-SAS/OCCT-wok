@@ -33,7 +33,7 @@ void WOKBuilder_ToolInProcess::Load(const Handle(WOKUtils_Path)& alibrary,
       libpath = Params().SearchFile(alibrary->Name());
       if(libpath.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_ToolInProcess::Load"
+	  ErrorMsg() << "WOKBuilder_ToolInProcess::Load"
 		   << "Could not find file : " << alibrary->Name() << endm;
 	  return;
 	}
@@ -48,7 +48,7 @@ void WOKBuilder_ToolInProcess::Load(const Handle(WOKUtils_Path)& alibrary,
 
   if(mylib.DlOpen(OSD_RTLD_LAZY) == Standard_False) 
     {
-      ErrorMsg << "WOKBuilder_ToolInProcess" << mylib.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_ToolInProcess" << mylib.DlError() << endm;
       Standard_ProgramError::Raise("WOKBuilder_ToolInProcess");
     }
 
@@ -56,8 +56,8 @@ void WOKBuilder_ToolInProcess::Load(const Handle(WOKUtils_Path)& alibrary,
 
   if(myfunc == NULL)
     {
-      ErrorMsg << "WOKBuilder_ToolInProcess" << mylib.DlError() << endm;
-      ErrorMsg << "WOKBuilder_ToolInProcess" << "Error in DlSymb of : " << afunc << endm;
+      ErrorMsg() << "WOKBuilder_ToolInProcess" << mylib.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_ToolInProcess" << "Error in DlSymb of : " << afunc << endm;
       Standard_ProgramError::Raise("WOKBuilder_ToolInProcess");
     }
   SetLoaded();

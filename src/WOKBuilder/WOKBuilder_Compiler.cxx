@@ -74,7 +74,7 @@ void WOKBuilder_Compiler::SetIncludeDirectories(const Handle(WOKUtils_HSequenceO
 	}
       else
 	{
-	  WarningMsg << "WOKBuilder_Compiler::SetIncludeDirectories" 
+	  WarningMsg() << "WOKBuilder_Compiler::SetIncludeDirectories" 
 	    << "Could not eval database directive: CMPLRS_IncDirective" << endm;
 	}
     }
@@ -123,7 +123,7 @@ void WOKBuilder_Compiler::SetDatabaseDirectories(const Handle(WOKUtils_HSequence
 	    }
 	  else
 	    {
-	      WarningMsg << "WOKBuilder_Compiler::SetDatabaseDirectories" 
+	      WarningMsg() << "WOKBuilder_Compiler::SetDatabaseDirectories" 
 		<< "Could not eval database directive: CMPLRS_DBDirective" << endm;
 	    }
 	}
@@ -197,9 +197,9 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
   astr = EvalToolTemplate(Template()->ToCString());
 
   WOK_TRACE {
-    VerboseMsg("WOK_CMPLRS") << "WOKBuilder_Compiler::Execute" 
+    VerboseMsg()("WOK_CMPLRS") << "WOKBuilder_Compiler::Execute" 
 			     << "Compilation line : " << endm;
-    VerboseMsg("WOK_CMPLRS") << "WOKBuilder_Compiler::Execute" 
+    VerboseMsg()("WOK_CMPLRS") << "WOKBuilder_Compiler::Execute" 
 			     << astr << endm;
   }
 //---> EUG4YAN
@@ -218,26 +218,26 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
 
   if(Shell()->Status())
     {
-      Standard_Boolean ph = ErrorMsg.PrintHeader();
+      Standard_Boolean ph = ErrorMsg().PrintHeader();
 
-      ErrorMsg << "WOKBuilder_Compiler::Execute" << "Errors occured in Shell" << endm;
-      ErrorMsg.DontPrintHeader();
+      ErrorMsg() << "WOKBuilder_Compiler::Execute" << "Errors occured in Shell" << endm;
+      ErrorMsg().DontPrintHeader();
       for(Standard_Integer i=start; i<= resseq->Length(); i++)
 	{
-	  ErrorMsg << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
+	  ErrorMsg() << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) ErrorMsg.DoPrintHeader();
+      if(ph) ErrorMsg().DoPrintHeader();
       return WOKBuilder_Failed;
     }
   else
     {
-      Standard_Boolean ph = InfoMsg.PrintHeader();
-      InfoMsg.DontPrintHeader();
+      Standard_Boolean ph = InfoMsg().PrintHeader();
+      InfoMsg().DontPrintHeader();
       for(Standard_Integer i=start; i<= resseq->Length(); i++)
 	{
-	  InfoMsg << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
+	  InfoMsg() << "WOKBuilder_Compiler::Execute" << resseq->Value(i) << endm;
 	}
-      if(ph) InfoMsg.DoPrintHeader();
+      if(ph) InfoMsg().DoPrintHeader();
     }
   Shell()->ClearOutput();
 
@@ -305,7 +305,7 @@ WOKBuilder_BuildStatus WOKBuilder_Compiler::Execute()
 
      dPath.SystemName ( name );
 
-     ErrorMsg << "WOKBuilder_Compiler::Execute"
+     ErrorMsg() << "WOKBuilder_Compiler::Execute"
               << "could not create '" << new TCollection_HAsciiString ( name )
               << "'" << endm;
 

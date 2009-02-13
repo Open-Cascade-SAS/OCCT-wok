@@ -124,7 +124,7 @@ void WOKBuilder_MSTranslator::Load()
       
       if(libpath.IsNull())
 	{
-	  ErrorMsg << "WOKBuilder_MSTranslator::Load"
+	  ErrorMsg() << "WOKBuilder_MSTranslator::Load"
 		   << "Could not find file : " << Shared() << endm;
 	  return;
 	}
@@ -134,7 +134,7 @@ void WOKBuilder_MSTranslator::Load()
 
   if(ashared.DlOpen(OSD_RTLD_NOW) == Standard_False)
     {
-      ErrorMsg << "WOKBuilder_MSTranslator::Load" << ashared.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_MSTranslator::Load" << ashared.DlError() << endm;
       return;
     }
 
@@ -142,7 +142,7 @@ void WOKBuilder_MSTranslator::Load()
 
   if( mytranslator == NULL) 
     {
-      ErrorMsg << "WOKBuilder_MSTranslator::Load" << ashared.DlError() << endm;
+      ErrorMsg() << "WOKBuilder_MSTranslator::Load" << ashared.DlError() << endm;
       return;
     }
 
@@ -214,7 +214,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 		    if(!oldspec->Path()->Name()->IsSameString(anewcdl->Path()->Name()))
 		      {
 			WOK_TRACE {
-			  VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
+			  VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
 						    << anaction->Entity()->Name() << " is OutofDate because files are not the same" << endm;
 			}
 			return WOKBuilder_OutOfDate;
@@ -222,7 +222,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 		    else
 		      {
 			  WOK_TRACE {
-			     VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
+			     VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
 						    << "NewFile : " << anewcdl->Path()->Name() << " is same than old : " 
 						    << oldspec->Path()->Name() << endm;
 			     }
@@ -234,7 +234,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 
     if((fd=open(tempath, O_RDONLY)) == -1)
       {
-        WarningMsg << "WOKStep_MSFill::Execute"
+        WarningMsg() << "WOKStep_MSFill::Execute"
                  << "Could not create : " << tempath << endm;
         perror(tempath);
       }
@@ -248,7 +248,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
         struct stat buf;
         if(stat(tempath, &buf))
           {
-            ErrorMsg << "WOKStep_MSFill::Execute"
+            ErrorMsg() << "WOKStep_MSFill::Execute"
                      << "Could not stat : " << tempath << endm;
           }
 
@@ -257,7 +257,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 
         if(curdate == -1)
           {
-            ErrorMsg << "WOKStep_MSFill::Execute"
+            ErrorMsg() << "WOKStep_MSFill::Execute"
                      << "Could not obtain current date" << endm;
           }        
        if(buf.st_atime - curdate > 0)
@@ -270,7 +270,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 		if(anewcdl->Path()->MDate()- decal > oldaction->Date())
 		  {
 		    WOK_TRACE {
-		      VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
+		      VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
 						<< anaction->Entity()->Name()  << "is OutOfDate because of dates : " 
 						<< "stored(" << (Standard_Integer) oldaction->Date() << ") file(" << (Standard_Integer) anewcdl->Path()->MDate() << ")" << endm;
 		    }
@@ -279,7 +279,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 		else
 		  {
 		    WOK_TRACE {
-		      VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
+		      VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslator::MSActionStatus"
 						<< anaction->Entity()->Name()  << " is up to date : " 
 						<< "stored(" << (Standard_Integer) oldaction->Date() << ") file(" << (Standard_Integer) anewcdl->Path()->MDate() << ")" << endm;
 		    }
@@ -293,7 +293,7 @@ WOKBuilder_MSActionStatus WOKBuilder_MSTranslator::MSActionStatus(const Handle(W
 	    case WOKBuilder_PackageMethods:
 	      break;
 	    default:
-	      ErrorMsg << "WOKBuilder_MSTranslator::MSActionStatus"
+	      ErrorMsg() << "WOKBuilder_MSTranslator::MSActionStatus"
 		<< "Unknown action type : " << anid.Type() << endm;
 	      Standard_ProgramError::Raise("WOKBuilder_MSTranslator::MSActionStatus : Unknown action type");
 	      break;
@@ -316,7 +316,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::Translate(const Handle(WOKBuilde
 {
   if(mytranslator == NULL)
     {
-      ErrorMsg << "WOKBuilder_MSTranslator::Translate" << "Null Translator : Cannot Perform" << endm;
+      ErrorMsg() << "WOKBuilder_MSTranslator::Translate" << "Null Translator : Cannot Perform" << endm;
       return WOKBuilder_Failed;
     }
   
@@ -327,7 +327,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::Translate(const Handle(WOKBuilde
 
   if((*mytranslator)(MSchema()->MetaSchema(),afile->Path()->Name(),globlist,unkowntypelist,instlist,genlist)) 
     {
-      ErrorMsg << "WOKBuilder_MSTranslator::Translate" << "Errors occured" << endm;
+      ErrorMsg() << "WOKBuilder_MSTranslator::Translate" << "Errors occured" << endm;
       return WOKBuilder_Failed;
     }
   return WOKBuilder_Success;
@@ -379,7 +379,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildPackage(const Handle(WOKBui
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSTranslator::BuildPackage" 
+	InfoMsg() << "WOKBuilder_MSTranslator::BuildPackage" 
 	  << "Package     : " << afile->Path()->Name() << endm;
 
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -479,7 +479,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildPackage(const Handle(WOKBui
 	      }
 	    else
 	      {
-		WarningMsg << "WOKBuilder_MSTranslator::BuildPackage" 
+		WarningMsg() << "WOKBuilder_MSTranslator::BuildPackage" 
 			 << "Type " << fullname << " is not defined" << endm;
 		//MSchema()->ChangeActionToFailed(theid);
 		//return WOKBuilder_Failed;
@@ -553,7 +553,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildSchema(const Handle(WOKBuil
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 		<< "Schema      : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -637,7 +637,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildInterface(const Handle(WOKB
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 		<< "Interface   : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -708,7 +708,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildClient(const Handle(WOKBuil
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 		<< "Client      : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -783,7 +783,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildEngine(const Handle(WOKBuil
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSTranslator::BuildEngine" 
+	InfoMsg() << "WOKBuilder_MSTranslator::BuildEngine" 
 	  << "Engine      : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -848,7 +848,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildSchUses(const Handle(WOKBui
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSTranslator::BuildDirectUses" 
+	InfoMsg() << "WOKBuilder_MSTranslator::BuildDirectUses" 
 	  << "Sch Uses    : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -940,7 +940,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildDirectUses(const Handle(WOK
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSTranslator::BuildDirectUses" 
+	InfoMsg() << "WOKBuilder_MSTranslator::BuildDirectUses" 
 	  << "Direct use  : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1035,7 +1035,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildUses(const Handle(WOKBuilde
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
   
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 	  << "Used        : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1113,7 +1113,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildGlobEnt(const Handle(WOKBui
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
   
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 	  << "Used        : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1158,7 +1158,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildExecutable(const Handle(WOK
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
   
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 		<< "Executable  : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1203,7 +1203,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildComponent(const Handle(WOKB
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
   
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::Execute" 
 		<< "Component   : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1276,7 +1276,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildPackageMethods(const Handle
 
   if(apk.IsNull())
     {
-      ErrorMsg << "WOKBuilder_MSTranslatorIterator::BuildPackageMethods" 
+      ErrorMsg() << "WOKBuilder_MSTranslatorIterator::BuildPackageMethods" 
 	<< anaction->Entity()->Name() << " was not found or not an interface\n" << endm;
       return WOKBuilder_Failed;
     }
@@ -1316,7 +1316,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildInterfaceTypes(const  Handl
 
   if(aninter.IsNull())
     {
-      ErrorMsg << "WOKBuilder_MSTranslatorIterator::BuildInterface" 
+      ErrorMsg() << "WOKBuilder_MSTranslatorIterator::BuildInterface" 
 	       << anaction->Entity()->Name() << " was not found or not an interface\n" << endm;
       return WOKBuilder_Failed;
     }
@@ -1356,7 +1356,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildInterfaceTypes(const  Handl
 	}
       else
 	{
-	  ErrorMsg << "WOKBuilder_MSTranslator::BuildInterfaceTypes" 
+	  ErrorMsg() << "WOKBuilder_MSTranslator::BuildInterfaceTypes" 
 	    << "Name " << name << " is not a package name or a type name and is exported in " << anaction->Entity()->Name() << endm;
 	  return WOKBuilder_Failed;
 	}
@@ -1379,7 +1379,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildSchemaTypes(const  Handle(W
 
   if(aschema.IsNull())
     {
-      ErrorMsg << "WOKBuilder_MSTranslatorIterator::BuildSchema" 
+      ErrorMsg() << "WOKBuilder_MSTranslatorIterator::BuildSchema" 
 	       << anaction->Entity()->Name() << " was not found or not an Schema\n" << endm;
       return WOKBuilder_Failed;
     }
@@ -1432,7 +1432,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildInstToStd(const Handle(WOKB
 
   if(theGenTypes->Length() > instclass->InstTypes()->Length())
     {
-      ErrorMsg << "WOKBuilder_MSTranslator::BuildInstToStd"
+      ErrorMsg() << "WOKBuilder_MSTranslator::BuildInstToStd"
 	       << "Wrong instantiation types number in " << instclass->FullName() << ": please remedy" << endm;
       return WOKBuilder_Failed;
     }
@@ -1468,7 +1468,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildGenClass(const Handle(WOKBu
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::BuildGenClass" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::BuildGenClass" 
 	  << "Generic     : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1638,7 +1638,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildCompleteType(const Handle(W
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::BuildCompleteType" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::BuildCompleteType" 
 	  << "Complete    : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1729,7 +1729,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildSchemaType(const Handle(WOK
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
 
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::BuildSchemaType" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::BuildSchemaType" 
 	  << "Schema Type : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1821,7 +1821,7 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::BuildTypeUsed(const Handle(WOKBu
       {
 	Handle(TColStd_HSequenceOfHAsciiString) uses, inctypes, insttypes, gentypes;
  
-	InfoMsg << "WOKBuilder_MSEntityTranslatorIterator::BuildTypeUsed" 
+	InfoMsg() << "WOKBuilder_MSEntityTranslatorIterator::BuildTypeUsed" 
 	  << "Type used   : " << afile->Path()->Name() << endm;
 	
 	switch(Translate(anaction, afile, uses, inctypes, insttypes, gentypes))
@@ -1909,147 +1909,147 @@ WOKBuilder_BuildStatus WOKBuilder_MSTranslator::Execute(const Handle(WOKBuilder_
     {
     case WOKBuilder_Package:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Package    : " << anaction->Entity()->Name() <<endm;
       }
       return BuildPackage(anaction, afile, anit);
 
     case WOKBuilder_Schema:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Schema     : " << anaction->Entity()->Name() <<endm;
       }
       return BuildSchema(anaction, afile, anit);
 
     case WOKBuilder_Interface:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Interface  : " << anaction->Entity()->Name() <<endm;
       }
       return BuildInterface(anaction, afile, anit);
 
     case WOKBuilder_Client:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Client     : " << anaction->Entity()->Name() <<endm;
       }
       return BuildClient(anaction, afile, anit);
 
     case WOKBuilder_Engine:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Engine     : " << anaction->Entity()->Name() <<endm;
       }
       return BuildEngine(anaction, afile, anit);
 
     case WOKBuilder_Executable:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Executable : " << anaction->Entity()->Name() <<endm;
       }
       return BuildExecutable(anaction, afile, anit);
 
     case WOKBuilder_Component:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Component  : " << anaction->Entity()->Name() <<endm;
       }
       return BuildComponent(anaction, afile, anit);
 
     case WOKBuilder_DirectUses:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "DirectUses : " << anaction->Entity()->Name() <<endm;
       }
       return BuildDirectUses(anaction, afile, anit);
 
     case WOKBuilder_SchUses:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "SchUses    : " << anaction->Entity()->Name() <<endm;
       }
       return BuildSchUses(anaction, afile, anit);
 
     case WOKBuilder_Uses:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Uses       : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildUses(anaction, afile, anit);
 
     case WOKBuilder_GlobEnt:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Uses       : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildGlobEnt(anaction, afile, anit);
 
     case WOKBuilder_Instantiate:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Instantiate : " << anaction->Entity()->Name() <<endm;
       }
       return BuildInstantiate(anaction, afile, anit);
 
     case WOKBuilder_GenType:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "GenType : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildGenClass(anaction, afile, anit);
 
     case WOKBuilder_InterfaceTypes:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Interface types : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildInterfaceTypes(anaction, afile, anit);
 
     case WOKBuilder_SchemaTypes:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Schema types : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildSchemaTypes(anaction, afile, anit);
 
     case WOKBuilder_PackageMethods:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Package methods : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildPackageMethods(anaction, afile, anit);
 
     case WOKBuilder_InstToStd:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "InstToStd : " << anaction->Entity()->Name() <<endm;
       }
       return BuildInstToStd(anaction, afile, anit);
 
     case WOKBuilder_CompleteType:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "CompleteType : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildCompleteType(anaction, afile, anit);
 
     case WOKBuilder_SchemaType:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "SchemaType : " << anaction->Entity()->Name()  <<endm;
       }
       return BuildSchemaType(anaction, afile, anit);
 
     case WOKBuilder_Inherits:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "Inherits : " << anaction->Entity()->Name() <<endm;
       }
       return BuildInherits(anaction, afile, anit);
 
     case WOKBuilder_TypeUses:
       WOK_TRACE {
-	VerboseMsg("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
+	VerboseMsg()("WOK_TRANSIT") << "WOKBuilder_MSTranslatorIterator::Execute" 
 				  << "TypeUses : " << anaction->Entity()->Name() <<endm;
       }
       return BuildTypeUsed(anaction, afile, anit);

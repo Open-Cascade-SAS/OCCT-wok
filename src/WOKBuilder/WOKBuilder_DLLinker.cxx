@@ -28,7 +28,7 @@ Handle(TCollection_HAsciiString) WOKBuilder_DLLinker::EvalHeader()
     {
       retVal = new TCollection_HAsciiString ( val );
 
-      InfoMsg << "WOKBuilder_DLLinker :: EvalHeader"
+      InfoMsg() << "WOKBuilder_DLLinker :: EvalHeader"
 	<< '\'' << retVal << "' is using" << endm;
     } 
   else
