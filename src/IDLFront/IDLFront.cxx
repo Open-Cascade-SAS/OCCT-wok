@@ -59,11 +59,11 @@ extern "C" {
    // The unix like error declaration 
    //
    if (text == NULL) {
-     ErrorMsg << "IDL" << "\"" << IDLFileName->ToCString() << "\"" <<  ", line " << IDLlineno << ": syntax error..." << endm;
+     ErrorMsg() << "IDL" << "\"" << IDLFileName->ToCString() << "\"" <<  ", line " << IDLlineno << ": syntax error..." << endm;
      MS_TraductionError::Raise("Syntax error");
    }
    else {
-     ErrorMsg << "IDL" << "\"" << IDLFileName->ToCString() << "\"" <<  ", line " << IDLlineno << ": " << text << endm;
+     ErrorMsg() << "IDL" << "\"" << IDLFileName->ToCString() << "\"" <<  ", line " << IDLlineno << ": " << text << endm;
      YY_nb_error++;
    }
  }
@@ -127,7 +127,7 @@ int TraductionMain(char *FileName)
 
 
   if (IDLin == NULL) {
-    ErrorMsg << "IDL" << " File not found : " << FileName << endm;
+    ErrorMsg() << "IDL" << " File not found : " << FileName << endm;
     MS_TraductionError::Raise("File not found.");
   }
 
@@ -139,11 +139,11 @@ int TraductionMain(char *FileName)
   fclose(IDLin);
 
   if (YY_nb_error > 0) {
-    ErrorMsg << "IDL" << YY_nb_error << " errors." << endm;
+    ErrorMsg() << "IDL" << YY_nb_error << " errors." << endm;
   } 
   
   if (YY_nb_warning > 0) {
-    WarningMsg << "IDL" << YY_nb_warning << " warnings." << endm;
+    WarningMsg() << "IDL" << YY_nb_warning << " warnings." << endm;
   }
 
   return YY_nb_error;
