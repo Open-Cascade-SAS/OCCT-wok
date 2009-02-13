@@ -72,7 +72,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Parcel::BuildParameters(const WOKAP
 
   if (!anesting.IsValid())
     {
-      ErrorMsg << "WOKAPI_Parcel::BuildParameters"
+      ErrorMsg() << "WOKAPI_Parcel::BuildParameters"
 	       << "Invalid nesting to create parcel : " << name << endm;
       return aseq;
     }
@@ -138,7 +138,7 @@ Standard_Boolean WOKAPI_Parcel::Declare(const WOKAPI_Session& ,
   Handle(WOKUtils_HSequenceOfParamItem) aseq =  aparc->BuildParameters(someparams, usedefaults);
 
   if (valnamedel.IsNull()) {
-    ErrorMsg << "WOKAPI_Parcel::Declare"
+    ErrorMsg() << "WOKAPI_Parcel::Declare"
 	     << "Delivery name not given" << endm;
     return Standard_False;
   }
@@ -193,20 +193,20 @@ void WOKAPI_Parcel::Delivery(WOKAPI_Unit& unit) const
 
 	  if(aunit.IsNull())
 	    {
-	      ErrorMsg << "WOKAPI_Parcel::Deliveries"
+	      ErrorMsg() << "WOKAPI_Parcel::Deliveries"
 		       << "Invalid name : " << adel << " in parcel " << aparcel->UserPathName() << endm;
 	      return;
 	    }
 	  if(!WOKernel_IsDelivery(aunit))
 	    {
-	      ErrorMsg << "WOKAPI_Parcel::Deliveries"
+	      ErrorMsg() << "WOKAPI_Parcel::Deliveries"
 			<< "Invalid type for " << adel << " in parcel " << aparcel->UserPathName() << endm;
 	      return;
 	    }
 	}
       else
 	{
-	  ErrorMsg << "WOKAPI_Parcel::Units"
+	  ErrorMsg() << "WOKAPI_Parcel::Units"
 		   << "Invalid name : " << adel << " in parcel " << aparcel->UserPathName() << endm;
 	  return;
 	}
@@ -250,7 +250,7 @@ Standard_Boolean WOKAPI_Parcel::NestedEntities(WOKAPI_SequenceOfEntity& aseq) co
 	  
 	  if(aunit.IsNull())
 	    {
-	      ErrorMsg << "WOKAPI_Parcel::NestedEntities"
+	      ErrorMsg() << "WOKAPI_Parcel::NestedEntities"
 		       << "Invalid name : " << afullseq->Value(i) << " in allcomponents of " << aparcel->UserPathName() << endm;
 	      aseq.Clear();
 	      return Standard_False;
@@ -258,7 +258,7 @@ Standard_Boolean WOKAPI_Parcel::NestedEntities(WOKAPI_SequenceOfEntity& aseq) co
 	}
       else
 	{
-	  ErrorMsg << "WOKAPI_Parcel::NestedEntities"
+	  ErrorMsg() << "WOKAPI_Parcel::NestedEntities"
 		   << "Invalid name : " << afullseq->Value(i) << " in allcomponents of " << aparcel->UserPathName() << endm;
 	  aseq.Clear();
 	  return Standard_False;
@@ -300,7 +300,7 @@ void WOKAPI_Parcel::Units(WOKAPI_SequenceOfUnit& units) const
 
 	  if(aunit.IsNull())
 	    {
-	      ErrorMsg << "WOKAPI_Parcel::Units"
+	      ErrorMsg() << "WOKAPI_Parcel::Units"
 		       << "Invalid name : " << afullseq->Value(i) << " in allcomponents of " << aparcel->UserPathName() << endm;
 	      units.Clear();
 	      return;
@@ -308,7 +308,7 @@ void WOKAPI_Parcel::Units(WOKAPI_SequenceOfUnit& units) const
 	}
       else
 	{
-	  ErrorMsg << "WOKAPI_Parcel::Units"
+	  ErrorMsg() << "WOKAPI_Parcel::Units"
 		       << "Invalid name : " << afullseq->Value(i) << " in allcomponents of " << aparcel->UserPathName() << endm;
 	  units.Clear();
 	  return;

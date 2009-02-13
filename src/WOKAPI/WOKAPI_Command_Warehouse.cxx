@@ -157,7 +157,7 @@ Standard_Integer WOKAPI_Command::WarehouseInfo(const WOKAPI_Session& asession,
   
   if(!aware.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WarehouseInfo"
+      ErrorMsg() << "WOKAPI_Command::WarehouseInfo"
 	       << "Could not determine Warehouse : Specify Warehouse in command line or use wokcd" << endm;
       return 1;
     }
@@ -201,7 +201,7 @@ Standard_Integer WOKAPI_Command::WarehouseDestroy(const WOKAPI_Session& asession
       switch(opts.Option())
 	{
 	case 'R':
-	  ErrorMsg << "WOKAPI_Command::WarehouseDestroy" << "-R not yet implemented" << endm;
+	  ErrorMsg() << "WOKAPI_Command::WarehouseDestroy" << "-R not yet implemented" << endm;
 	  return 1;
 	default:
 	  break;
@@ -225,7 +225,7 @@ Standard_Integer WOKAPI_Command::WarehouseDestroy(const WOKAPI_Session& asession
   
   if(!aware.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WarehouseDestroy"
+      ErrorMsg() << "WOKAPI_Command::WarehouseDestroy"
 	       << "Could not determine Warehouse : Specify Warehouse in command line or use wokcd" << endm;
       return 1;
     }
@@ -286,7 +286,7 @@ Standard_Integer WOKAPI_Command::WarehouseDeclare(const WOKAPI_Session& asession
     }
   
   if (parcelname.IsNull()) {
-    ErrorMsg << "WOKAPI_Command::WarehouseDeclare"
+    ErrorMsg() << "WOKAPI_Command::WarehouseDeclare"
 	     << "Parcel name is missing" << endm;
     WOKAPI_WarehouseDeclare_Usage(argv[0]);
     return 1;
@@ -310,7 +310,7 @@ Standard_Integer WOKAPI_Command::WarehouseDeclare(const WOKAPI_Session& asession
   
   if(!aware.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WarehouseDeclare"
+      ErrorMsg() << "WOKAPI_Command::WarehouseDeclare"
 	       << "Could not determine Warehouse : Specify Warehouse in command line or use wokcd" << endm;
       return 1;
     }
@@ -336,7 +336,7 @@ Standard_Integer WOKAPI_Command::WarehouseDeclare(const WOKAPI_Session& asession
   
   WOKAPI_Parcel aparcel(asession,parcelname,Standard_False);
   if (aparcel.IsValid()) {
-    ErrorMsg << "WOKAPI_Command::WarehouseDeclare"
+    ErrorMsg() << "WOKAPI_Command::WarehouseDeclare"
 	     << "Parcel " << parcelname << " is already declared in Warehouse " << aware.Name() << endm;
     return 1;
   }
@@ -347,7 +347,7 @@ Standard_Integer WOKAPI_Command::WarehouseDeclare(const WOKAPI_Session& asession
 		     aware,
 		     opts.Defines(),
 		     getdefault)) {
-    ErrorMsg << "WOKAPI_Command::WarehouseDeclare"
+    ErrorMsg() << "WOKAPI_Command::WarehouseDeclare"
 	     << "Unable to declare parcel " << parcelname << " in Warehouse " << aware.Name() << endm;
     return 1;
   }

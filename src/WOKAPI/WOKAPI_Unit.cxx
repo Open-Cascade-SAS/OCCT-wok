@@ -121,7 +121,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Unit::BuildParameters(const WOKAPI_
 
   if(!abench.IsValid())
     {
-      ErrorMsg << "WOKAPI_Unit::Build"
+      ErrorMsg() << "WOKAPI_Unit::Build"
 	       << "Invalid nesting (" << nestname << ") to create workbench : " << name << endm;
       return aseq;
     }
@@ -160,7 +160,7 @@ Standard_Boolean WOKAPI_Unit::Build(const WOKAPI_Session& asession,
 
   if(!abench.IsValid())
     {
-      ErrorMsg << "WOKAPI_Unit::Build"
+      ErrorMsg() << "WOKAPI_Unit::Build"
 	       << "Invalid nesting (" << nestname << ") to create unit : " << name << endm;
       return Standard_True;
     }
@@ -171,7 +171,7 @@ Standard_Boolean WOKAPI_Unit::Build(const WOKAPI_Session& asession,
   
   if(Kunit.IsNull())
     {
-      ErrorMsg << "WOKAPI_Unit::Build"
+      ErrorMsg() << "WOKAPI_Unit::Build"
 	       << "Could not obtain unit : wrong type code : " << acode << endm;
       return Standard_True;
     }

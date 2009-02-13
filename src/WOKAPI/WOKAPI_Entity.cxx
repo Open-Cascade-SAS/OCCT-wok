@@ -354,7 +354,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Entity::GetBuildParameters(const WO
 
   if(anent.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::BuildParameters" 
+      ErrorMsg() << "WOKAPI_Entity::BuildParameters" 
 	       << "There is already an entity with name : " << myEntity->UserPathName() << endm;
       return result;
     }
@@ -392,7 +392,7 @@ Standard_Boolean WOKAPI_Entity::BuildEntity(const WOKAPI_Session& asession,
 
   if(!anesting.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::BuildParameters" 
+      ErrorMsg() << "WOKAPI_Entity::BuildParameters" 
 	       << "Invalid Nesting : " << anesting.Entity()->UserPathName() << endm;
       return Standard_True;
     }
@@ -401,7 +401,7 @@ Standard_Boolean WOKAPI_Entity::BuildEntity(const WOKAPI_Session& asession,
 
   if(anent.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::BuildParameters" 
+      ErrorMsg() << "WOKAPI_Entity::BuildParameters" 
 	       << "There is already an entity with name : " << myEntity->UserPathName() << endm;
       return Standard_True;
     }
@@ -417,7 +417,7 @@ Standard_Boolean WOKAPI_Entity::BuildEntity(const WOKAPI_Session& asession,
 
       if(item.Value().IsNull())
 	{
-	  ErrorMsg << "WOKAPI_Entity::Build"
+	  ErrorMsg() << "WOKAPI_Entity::Build"
 		   << "Needed parameter : " << item.Name() << " is not setted" << endm;
 	  failed = Standard_True;
 	}
@@ -427,7 +427,7 @@ Standard_Boolean WOKAPI_Entity::BuildEntity(const WOKAPI_Session& asession,
 	  Handle(WOKUtils_Path) apathname = new WOKUtils_Path(item.Value());
 	  if (!apathname->FileName()->IsSameString(aname)) {
 	    failed = Standard_True;
-	    ErrorMsg << "WOKAPI_Entity::Build"
+	    ErrorMsg() << "WOKAPI_Entity::Build"
 	      << "Invalid home directory " << apathname->Name() << " for entity " << Name() << endm;
 	  }
 	}
@@ -435,7 +435,7 @@ Standard_Boolean WOKAPI_Entity::BuildEntity(const WOKAPI_Session& asession,
     }
 
   if (!myEntity->IsValidName()) {
-    ErrorMsg << "WOKAPI_Entity::Build"
+    ErrorMsg() << "WOKAPI_Entity::Build"
              << "Invalid name for entity : " << Name() << endm;
     failed = Standard_True;
   }    
@@ -482,7 +482,7 @@ void WOKAPI_Entity::UpdateBeforeDestroy(const Handle(WOKernel_Entity)& anesting)
 
       if(!IsValid()) 
 	{
-	  ErrorMsg << "WOKAPI_Entity::UpdateEntityList"
+	  ErrorMsg() << "WOKAPI_Entity::UpdateEntityList"
 	           << "Entity " << ausername << " no longer exists" << endm;
 	  return;
 	}
@@ -751,7 +751,7 @@ void WOKAPI_Entity::ParameterSet(const Handle(TCollection_HAsciiString)& aname,
 
   if(aname->Value(1) != '%') 
     {
-      ErrorMsg << "WOKAPI_Entity::ParameterSet" << "Variable name must begin with %" << endm;
+      ErrorMsg() << "WOKAPI_Entity::ParameterSet" << "Variable name must begin with %" << endm;
       return;
     }
   if(!myEntity->IsOpened()) myEntity->Open();
@@ -769,7 +769,7 @@ void WOKAPI_Entity::ParameterUnSet(const Handle(TCollection_HAsciiString)& aname
   if(!myEntity->IsOpened()) myEntity->Open();
   if(aname->Value(1) != '%') 
     {
-      ErrorMsg << "WOKAPI_Entity::ParameterUnSet" << "Variable name must begin with %" << endm;
+      ErrorMsg() << "WOKAPI_Entity::ParameterUnSet" << "Variable name must begin with %" << endm;
       return;
     }
 
@@ -920,12 +920,12 @@ Standard_Boolean WOKAPI_Entity::CheckDirs(const Standard_Boolean createifmissing
 		  {
 		    if(createifmissing)
 		      {
-			WarningMsg << "WOKAPI_Entity::CheckDirs"
+			WarningMsg() << "WOKAPI_Entity::CheckDirs"
 			  << "Creating missing directory " << Kdirseq->Value(i) << " in " << UserPath() << endm;
 		      }
 		    else
 		      {
-			WarningMsg << "WOKAPI_Entity::CheckDirs"
+			WarningMsg() << "WOKAPI_Entity::CheckDirs"
 			  << "Missing directory " << Kdirseq->Value(i) << " in " << UserPath() << endm;
 		      }
 		  }
@@ -939,7 +939,7 @@ Standard_Boolean WOKAPI_Entity::CheckDirs(const Standard_Boolean createifmissing
 	      }
 	    else
 	      {
-		ErrorMsg << "WOKAPI_Entity::CheckDirs"
+		ErrorMsg() << "WOKAPI_Entity::CheckDirs"
 		  << Kdirseq->Value(i) << " exists and is not a directory" << endm;
 		status = Standard_False;
 	      }
@@ -1209,7 +1209,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 
   if(!thefact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+      ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 	       << "Could not determine factory : Nothing done" << endm;
       return 1;
     }
@@ -1218,7 +1218,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 
   if(!theshop.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+      ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 	       << "Could not determine workshop : Nothing done" << endm;
       return 1;
     }
@@ -1227,7 +1227,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
       
   if(!thebench.IsValid())
     {
-      ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+      ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 	       << "Could not determine workbench : Nothing done" << endm;
       return 1;
     }
@@ -1259,7 +1259,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 	      
       if(homedir.IsNull())
 	{
-	  ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+	  ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 		   << "Could not determine HomeDir of parcel : " << parcel.UserPath() << endm;
 	  return 1;
 	}
@@ -1286,7 +1286,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
       
   if(pathvarname.IsNull())
     {
-      ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+      ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 	       << "Could not eval %ENV_PATH (path environment variable name)" << endm;
       return 1;
     }
@@ -1299,7 +1299,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 
   if(PATH.Value().IsEmpty())
     {
-      WarningMsg << "WOKAPI_Entity::GetEnvActions" 
+      WarningMsg() << "WOKAPI_Entity::GetEnvActions" 
 	         << "Environment variable " << pathvarname << " is not setted" << endm;
     }
   
@@ -1311,7 +1311,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
   
   if(ldpathvarname.IsNull())
     {
-      ErrorMsg << "WOKAPI_Entity::GetEnvActions" 
+      ErrorMsg() << "WOKAPI_Entity::GetEnvActions" 
 	       << "Could not eval %ENV_LDPATH (library path environment variable name)" << endm;
       return 1;
     }
@@ -1329,7 +1329,7 @@ Standard_Integer WOKAPI_Entity::GetEnvActions(const WOKAPI_Session& asession,
 
   if(LDPATH.Value().IsEmpty())
     {
-      WarningMsg << "WOKAPI_Entity::GetEnvActions" 
+      WarningMsg() << "WOKAPI_Entity::GetEnvActions" 
 	         << "Environment variable " << ldpathvarname << " is not setted" << endm;    
     }
 

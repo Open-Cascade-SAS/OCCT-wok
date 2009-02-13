@@ -98,7 +98,7 @@ Standard_Boolean WOKAPI_Factory::Build(const WOKAPI_Session& asession,
 
   if(!asession.IsValid())
     {
-      ErrorMsg << "WOKAPI_Factory::Build"
+      ErrorMsg() << "WOKAPI_Factory::Build"
 	       << "Invalid session to create factory : " << name << endm;
       return Standard_True;
     }
@@ -130,7 +130,7 @@ Standard_Boolean WOKAPI_Factory::Destroy()
 
   if(afact->Workshops()->Length())
     {
-      ErrorMsg << "WOKAPI_Factory::Destroy"
+      ErrorMsg() << "WOKAPI_Factory::Destroy"
 	       << "Cannot destroy not empty factory" << endm;
       return Standard_True;
     }

@@ -169,14 +169,14 @@ Standard_Integer WOKAPI_Command::WorkshopInfo(const WOKAPI_Session& asession,
 
   if(!ashop.IsValid())
     {
-      ErrorMsg << argv[0]
+      ErrorMsg() << argv[0]
 	       << "Could not determine workshop : Specify workshop in command line or use wokcd" << endm;
       return 1;
     }
 
   if(gettree == Standard_True)
     {
-      ErrorMsg << argv[0] << "Option -t not yet implemented\n";
+      ErrorMsg() << argv[0] << "Option -t not yet implemented\n";
       return 1;
     }
 
@@ -232,7 +232,7 @@ Standard_Integer WOKAPI_Command::WorkshopDestroy(const WOKAPI_Session& asession,
       switch(opts.Option())
 	{
 	case 'R':
-	  ErrorMsg << "WOKAPI_Command::WorkshopDestroy" << "-R not yet implemented" << endm;
+	  ErrorMsg() << "WOKAPI_Command::WorkshopDestroy" << "-R not yet implemented" << endm;
 	  return 1;
 	default:
 	  break;
@@ -256,7 +256,7 @@ Standard_Integer WOKAPI_Command::WorkshopDestroy(const WOKAPI_Session& asession,
   
   if(!ashop.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WorkshopDestroy"
+      ErrorMsg() << "WOKAPI_Command::WorkshopDestroy"
 	       << "Could not determine workshop : Specify workshop in command line or use wokcd" << endm;
       return 1;
     }

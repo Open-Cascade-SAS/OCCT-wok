@@ -103,14 +103,14 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
     
   if(sessionname->IsEmpty() == Standard_True)
     {
-      ErrorMsg << "WOKAPI_Session::Open" << "Symbol WOK_SESSIONID is not setted" << endm;
+      ErrorMsg() << "WOKAPI_Session::Open" << "Symbol WOK_SESSIONID is not setted" << endm;
       return 1;
     }
  Handle(TCollection_HAsciiString) rootname = new TCollection_HAsciiString(root.Value());
     
   if(rootname->IsEmpty() == Standard_True)
     {
-      ErrorMsg << "WOKAPI_Session::Open" << "Symbol WOK_ROOTADMDIR is not setted" << endm;
+      ErrorMsg() << "WOKAPI_Session::Open" << "Symbol WOK_ROOTADMDIR is not setted" << endm;
       return 1;
     }
 
@@ -118,7 +118,7 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
     
   if(libpathname->IsEmpty() == Standard_True)
     {
-      ErrorMsg << "WOKAPI_Session::Open" << "Symbol WOK_LIBPATH is not setted" << endm;
+      ErrorMsg() << "WOKAPI_Session::Open" << "Symbol WOK_LIBPATH is not setted" << endm;
       return 1;
     }
    
@@ -126,7 +126,7 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
 
   apath = new WOKUtils_Path(sessionname);
   if (!apath->CreateDirectory()) {
-    ErrorMsg << "WOKAPI_Session::Open" << "Unable to create directory " << sessionname->ToCString() << endm;
+    ErrorMsg() << "WOKAPI_Session::Open" << "Unable to create directory " << sessionname->ToCString() << endm;
     return 1;
   }
 
@@ -165,7 +165,7 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
   apath = new WOKUtils_Path(apath->Name()->ToCString(), "WOK.edl");
 
   if (!apath->CreateFile()) {
-    ErrorMsg << "WOKAPI_Session::Open" << "Unable to create directory " << apath->Name()->ToCString() << endm;
+    ErrorMsg() << "WOKAPI_Session::Open" << "Unable to create directory " << apath->Name()->ToCString() << endm;
     return 1;
   }
     
@@ -207,7 +207,7 @@ Standard_Integer WOKAPI_Session::Open(const Handle(TCollection_HAsciiString)& al
 	  }
 	else
 	  {
-	    ErrorMsg << "WOKAPI_Session::Open" 
+	    ErrorMsg() << "WOKAPI_Session::Open" 
 		     << "Wrong value : " << astr << " for session parameter : " << WOK_DEBUG << " (has to be : True|False" << endm;
 	  }
     }
@@ -308,13 +308,13 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
     
     
     WOK_TRACE {
-      VerboseMsg("WOK_API") << "WOKAPI_Session::GeneralFailure" 
+      VerboseMsg()("WOK_API") << "WOKAPI_Session::GeneralFailure" 
 			    << "Killing processes" << endm;
     }
     WOKUtils_ProcessManager::KillAll();
     
     WOK_TRACE {
-      VerboseMsg("WOK_API") << "WOKAPI_Session::GeneralFailure" 
+      VerboseMsg()("WOK_API") << "WOKAPI_Session::GeneralFailure" 
 			    << "Reopen session" << endm;
     }
     Close();
@@ -331,9 +331,9 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
     Handle(Standard_Failure) E = Standard_Failure::Caught();
     Standard_SStream astream;
     astream << E << ends;
-    ErrorMsg << "WOKAPI_Session::GeneralFailure" 
+    ErrorMsg() << "WOKAPI_Session::GeneralFailure" 
 	     << "Exception was raised : " << GetSString(astream) << endm;
-    ErrorMsg << "WOKAPI_Session::GeneralFailure" 
+    ErrorMsg() << "WOKAPI_Session::GeneralFailure" 
 	     << "Could not recover session after Failure : Session is reinitialized" << endm;
     
     WOKUtils_ProcessManager::UnArm();
@@ -348,7 +348,7 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
       FailedInOpen = Standard_False;
     }
     else {
-      ErrorMsg << "WOKAPI_Session::GeneralFailure" 
+      ErrorMsg() << "WOKAPI_Session::GeneralFailure" 
 	<< "Session recovering Failed" << endm;
     }
   }
@@ -401,7 +401,7 @@ void WOKAPI_Session::SaveToFile()  const
 
   if(!myparams.Write(mypath, aseq)) 
     {
-      ErrorMsg << "WOKAPI_Session::SaveToFile"
+      ErrorMsg() << "WOKAPI_Session::SaveToFile"
 	<< "Could not save session parameters to file : " << mypath->Name() << endm;
     }
 }
@@ -504,7 +504,7 @@ Handle(WOKernel_Factory) WOKAPI_Session::GetFactory(const Handle(TCollection_HAs
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetFactory"
+	      ErrorMsg() << "WOKAPI_Session::GetFactory"
 		       << "Could not find any nesting factory to your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -532,7 +532,7 @@ Handle(WOKernel_Factory) WOKAPI_Session::GetFactory(const Handle(TCollection_HAs
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetFactory"
+	      ErrorMsg() << "WOKAPI_Session::GetFactory"
 		       << "Entity " << apath << " is not a factory" << endm;
 	    }
 	  return NULLRESULT;
@@ -571,7 +571,7 @@ Handle(WOKernel_Warehouse) WOKAPI_Session::GetWarehouse(const Handle(TCollection
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWarehouse"
+	      ErrorMsg() << "WOKAPI_Session::GetWarehouse"
 		       << "Could not find any nesting warehouse to your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -596,7 +596,7 @@ Handle(WOKernel_Warehouse) WOKAPI_Session::GetWarehouse(const Handle(TCollection
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWarehouse"
+	      ErrorMsg() << "WOKAPI_Session::GetWarehouse"
 		       << "Entity " << apath << " is not a warehouse" << endm;
 	    }
 	  return NULLRESULT;
@@ -635,7 +635,7 @@ Handle(WOKernel_Parcel) WOKAPI_Session::GetParcel(const Handle(TCollection_HAsci
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetParcel"
+	      ErrorMsg() << "WOKAPI_Session::GetParcel"
 		       << "Could not find any parcel from your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -658,7 +658,7 @@ Handle(WOKernel_Parcel) WOKAPI_Session::GetParcel(const Handle(TCollection_HAsci
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetParcel"
+	      ErrorMsg() << "WOKAPI_Session::GetParcel"
 		       << "Entity " << apath << " is not a parcel" << endm;
 	    }
 	  return NULLRESULT;
@@ -698,7 +698,7 @@ Handle(WOKernel_Workshop) WOKAPI_Session::GetWorkshop(const Handle(TCollection_H
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWorkshop"
+	      ErrorMsg() << "WOKAPI_Session::GetWorkshop"
 		       << "Could not find any nesting workshop to your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -723,7 +723,7 @@ Handle(WOKernel_Workshop) WOKAPI_Session::GetWorkshop(const Handle(TCollection_H
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWorkshop"
+	      ErrorMsg() << "WOKAPI_Session::GetWorkshop"
 		       << "Entity " << apath << " is not a workshop" << endm;
 	    }
 	  return NULLRESULT;
@@ -763,7 +763,7 @@ Handle(WOKernel_Workbench) WOKAPI_Session::GetWorkbench(const Handle(TCollection
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWorkbench"
+	      ErrorMsg() << "WOKAPI_Session::GetWorkbench"
 		       << "Could not find any workbench from your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -787,7 +787,7 @@ Handle(WOKernel_Workbench) WOKAPI_Session::GetWorkbench(const Handle(TCollection
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetWorkbench"
+	      ErrorMsg() << "WOKAPI_Session::GetWorkbench"
 		       << "Entity " << apath << " is not a workbench" << endm;
 	    }
 	  return NULLRESULT;
@@ -823,7 +823,7 @@ Handle(WOKernel_DevUnit) WOKAPI_Session::GetDevUnit(const Handle(TCollection_HAs
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetDevUnit"
+	      ErrorMsg() << "WOKAPI_Session::GetDevUnit"
 		       << "Could not find any Dev Unit from your current position : " << cwe.Entity()->UserPathName() << endm;
 	    }
 	  return NULLRESULT;
@@ -843,7 +843,7 @@ Handle(WOKernel_DevUnit) WOKAPI_Session::GetDevUnit(const Handle(TCollection_HAs
 	{
 	  if(fatal)
 	    {
-	      ErrorMsg << "WOKAPI_Session::GetDevUnit"
+	      ErrorMsg() << "WOKAPI_Session::GetDevUnit"
 		       << "Entity " << apath << " is not a devunit" << endm;
 	    }
 	  return NULLRESULT;
@@ -863,7 +863,7 @@ void WOKAPI_Session::Factories( WOKAPI_SequenceOfFactory& factseq) const
 
   if(!myEntity->IsOpened()) 
     {
-      ErrorMsg << "WOKAPI_Session::Factories" 
+      ErrorMsg() << "WOKAPI_Session::Factories" 
 	       << "Internal Error : Session is not opened" << endm;
       return;
     }
@@ -913,9 +913,9 @@ Standard_Boolean WOKAPI_Session::SetStation(const Handle(TCollection_HAsciiStrin
 
   if(!WOKernel_Station::IsNameKnown(astation))
     {
-      ErrorMsg << "WOKAPI_Session::SetStation" 
+      ErrorMsg() << "WOKAPI_Session::SetStation" 
 	       << astation << " is not known as a " << endm;
-      ErrorMsg << "WOKAPI_Session::SetStation" 
+      ErrorMsg() << "WOKAPI_Session::SetStation" 
 	       << "Station is unchanged" << endm;
       return Standard_True;
     }
@@ -951,9 +951,9 @@ Standard_Boolean WOKAPI_Session::SetDBMSystem(const Handle(TCollection_HAsciiStr
 
   if(!WOKernel_DBMSystem::IsNameKnown(adbms))
     {
-      ErrorMsg << "WOKAPI_Session::SetDBMSystem" 
+      ErrorMsg() << "WOKAPI_Session::SetDBMSystem" 
 	       << adbms << " is not known as a DBMSystem" << endm;
-      ErrorMsg << "WOKAPI_Session::SetDBMSystem" 
+      ErrorMsg() << "WOKAPI_Session::SetDBMSystem" 
 	       << "DBMS is unchanged" << endm;
       return Standard_True;
     }
@@ -1012,7 +1012,7 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 
   if(apath.IsNull()) 
     {
-      ErrorMsg << "WOKAPI_Session::OpenPath" << "Invalid NULL input" << endm;
+      ErrorMsg() << "WOKAPI_Session::OpenPath" << "Invalid NULL input" << endm;
       return anentity;
     }
 
@@ -1048,7 +1048,7 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 	{
 	  if(!besilent)
 	    {
-	      ErrorMsg << "WOKAPI_Session::OpenPath" << "You cannot move in " << apath << endm;
+	      ErrorMsg() << "WOKAPI_Session::OpenPath" << "You cannot move in " << apath << endm;
 	    }
 	}
       return anentity;
@@ -1082,7 +1082,7 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 		{
 		  if(!besilent)
 		    {
-		      ErrorMsg << "WOKAPI_Session::OpenPath" 
+		      ErrorMsg() << "WOKAPI_Session::OpenPath" 
 			       << "No entity is matching path: " << thepath << endm;
 		    }
 		  return Handle(WOKernel_Entity)();
@@ -1100,7 +1100,7 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 		{
 		  if(!besilent)
 		    {
-		      ErrorMsg << "WOKAPI_Session::OpenPath" 
+		      ErrorMsg() << "WOKAPI_Session::OpenPath" 
 			       << "No entity is matching path: " << thepath << endm;
 		    }
 		  return Handle(WOKernel_Entity)();
@@ -1194,14 +1194,14 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 	    {
 	      if(!besilent)
 		{
-		  ErrorMsg << "WOKAPI_Session::OpenPath" 
+		  ErrorMsg() << "WOKAPI_Session::OpenPath" 
 		           << "No entity is matching your path be more precise in: " << endm;
 		  for(i=1; i<=apartialseq->Length(); i++)
 		    {
 		      anentity = Session()->GetEntity(apartialseq->Value(i));
 		      if(!anentity.IsNull())
 			{
-			  ErrorMsg << "WOKAPI_Session::OpenPath" << "\t" << anentity->UserPathName() << endm;
+			  ErrorMsg() << "WOKAPI_Session::OpenPath" << "\t" << anentity->UserPathName() << endm;
 			}
 		    }
 		}
@@ -1211,7 +1211,7 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
 	    {
 	      if(!besilent)
 		{
-		  ErrorMsg << "WOKAPI_Session::OpenPath" 
+		  ErrorMsg() << "WOKAPI_Session::OpenPath" 
 		           << "No entity is matching path: " << apath << endm;
 		}
 	      return Handle(WOKernel_Entity)();
@@ -1223,10 +1223,10 @@ Handle(WOKernel_Entity) WOKAPI_Session::OpenPath(const Handle(TCollection_HAscii
     default:
       if(!besilent)
 	{
-	  ErrorMsg << "WOKAPI_Session::OpenPath" << "Abnormal Mulitple choice in Nesting : " << endm;
+	  ErrorMsg() << "WOKAPI_Session::OpenPath" << "Abnormal Mulitple choice in Nesting : " << endm;
 	  for(Standard_Integer i=1; i<=aseq->Length(); i++)
 	    {
-	      ErrorMsg << "WOKAPI_Session::OpenPath" << "\t\t" << aseq->Value(i) << endm;
+	      ErrorMsg() << "WOKAPI_Session::OpenPath" << "\t\t" << aseq->Value(i) << endm;
 	    }
 	}
       return Handle(WOKernel_Entity)();

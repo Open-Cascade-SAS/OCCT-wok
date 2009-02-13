@@ -191,7 +191,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Workshop::BuildParameters(const WOK
 
   if(!afact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workshop::Build"
+      ErrorMsg() << "WOKAPI_Workshop::Build"
 	       << "Invalid nesting (" << nestname << ") to create workshop : " << name << endm;
       return aseq;
     }
@@ -199,7 +199,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Workshop::BuildParameters(const WOK
   WOKAPI_Warehouse aware = afact.Warehouse();
   if(!aware.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workshop::Build"
+      ErrorMsg() << "WOKAPI_Workshop::Build"
 	       << "No valid warehouse in factory : " << afact.Name() << endm;
       return aseq;
     }
@@ -236,7 +236,7 @@ Standard_Boolean WOKAPI_Workshop::Build(const WOKAPI_Session& asession,
 
   if(!afact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workshop::Build"
+      ErrorMsg() << "WOKAPI_Workshop::Build"
 	       << "Invalid nesting (" << nestname << ") to create workshop : " << name << endm;
       return Standard_True;
     }
@@ -245,7 +245,7 @@ Standard_Boolean WOKAPI_Workshop::Build(const WOKAPI_Session& asession,
 
   if(!aware.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workshop::Build"
+      ErrorMsg() << "WOKAPI_Workshop::Build"
 	       << "No valid warehouse in factory : " << afact.Name() << endm;
       return Standard_True;
     }
@@ -284,7 +284,7 @@ Standard_Boolean WOKAPI_Workshop::Destroy()
 
   if(aworkshop->Workbenches()->Length())
     {
-      ErrorMsg << "WOKAPI_Workshop::Destroy"
+      ErrorMsg() << "WOKAPI_Workshop::Destroy"
 	       << "Cannot destroy not empty workshop" << endm;
       return Standard_True;
     }

@@ -103,9 +103,9 @@ Standard_Integer WOKAPI_Command::AddInputFile(const WOKAPI_Session& ,
   
   if(thestep.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "No Tiggered Step currently in run" << endm;
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << argv[0] << " can only be called during a umake process" << endm;
       return 1;
     }
@@ -119,7 +119,7 @@ Standard_Integer WOKAPI_Command::AddInputFile(const WOKAPI_Session& ,
       
       if(file.IsNull())
 	{
-	  ErrorMsg << argv[0] 
+	  ErrorMsg() << argv[0] 
 		   << "Cannot locate file (locateable and physical) : " << anid 
 		   << " while processing " << thestep->Unit()->UserPathName() << endm;
 	  return 1;
@@ -136,7 +136,7 @@ Standard_Integer WOKAPI_Command::AddInputFile(const WOKAPI_Session& ,
 	}
       else
 	{
-	  WarningMsg << argv[0]
+	  WarningMsg() << argv[0]
 		     << "Ingnoring given path for locateable physical file" << endm;
 	}
     }
@@ -215,9 +215,9 @@ Standard_Integer WOKAPI_Command::InputFileInfo(const WOKAPI_Session& ,
 
   if(thestep.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "No Tiggered Step currently in run" << endm;
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << argv[0] << " can only be called during a umake process" << endm;
       return 1;
     }
@@ -226,7 +226,7 @@ Standard_Integer WOKAPI_Command::InputFileInfo(const WOKAPI_Session& ,
 
   if(infile.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << anid << " is not an input of step " << thestep->Code() << endm;
       return 1;
     }
@@ -250,7 +250,7 @@ Standard_Integer WOKAPI_Command::InputFileInfo(const WOKAPI_Session& ,
 	}
       else
 	{
-	  ErrorMsg << argv[0] 
+	  ErrorMsg() << argv[0] 
 		   << "Cannot obtain path for ID : " << anid << endm;
 	  return 1;
 	}
@@ -356,9 +356,9 @@ Standard_Integer WOKAPI_Command::AddOutputFile(const WOKAPI_Session& ,
   
   if(thestep.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "No Tiggered Step currently in run" << endm;
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << argv[0] << " can only be called during a umake process" << endm;
       return 1;
     }
@@ -372,7 +372,7 @@ Standard_Integer WOKAPI_Command::AddOutputFile(const WOKAPI_Session& ,
       
       if(file.IsNull())
 	{
-	  ErrorMsg << argv[0] 
+	  ErrorMsg() << argv[0] 
 		   << "Cannot locate file (locateable and physical) : " << anid 
 		   << " while processing " << thestep->Unit()->UserPathName() << endm;
 	  return 1;
@@ -389,7 +389,7 @@ Standard_Integer WOKAPI_Command::AddOutputFile(const WOKAPI_Session& ,
 	}
       else
 	{
-	  WarningMsg << argv[0]
+	  WarningMsg() << argv[0]
 		     << "Ingnoring given path for locateable physical file" << endm;
 	}
     }
@@ -478,9 +478,9 @@ Standard_Integer WOKAPI_Command::OutputFileInfo(const WOKAPI_Session& ,
 
   if(thestep.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "No Tiggered Step currently in run" << endm;
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << argv[0] << " can only be called during a umake process" << endm;
       return 1;
     }
@@ -489,7 +489,7 @@ Standard_Integer WOKAPI_Command::OutputFileInfo(const WOKAPI_Session& ,
 
   if(infile.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << anid << " is not an Output of step " << thestep->Code() << endm;
       return 1;
     }
@@ -513,7 +513,7 @@ Standard_Integer WOKAPI_Command::OutputFileInfo(const WOKAPI_Session& ,
 	}
       else
 	{
-	  ErrorMsg << argv[0] 
+	  ErrorMsg() << argv[0] 
 		   << "Cannot obtain path for ID : " << anid << endm;
 	  return 1;
 	}
@@ -579,9 +579,9 @@ Standard_Integer WOKAPI_Command::AddExecDepItem(const WOKAPI_Session& ,
   
   if(thestep.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "No Tiggered Step currently in run" << endm;
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << argv[0] << " can only be called during a umake process" << endm;
       return 1;
     }
@@ -591,7 +591,7 @@ Standard_Integer WOKAPI_Command::AddExecDepItem(const WOKAPI_Session& ,
 
   if(infile.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "Input file ID : " << inid << " is not an input of this step" << endm;
       return 1;
     }
@@ -600,7 +600,7 @@ Standard_Integer WOKAPI_Command::AddExecDepItem(const WOKAPI_Session& ,
 
   if(outfile.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	       << "Output file ID : " << outid << " is not an output of this step" << endm;
       return 1;
     }

@@ -239,7 +239,7 @@ Standard_Integer WOKAPI_Command::MoveTo(const WOKAPI_Session& asession,
 	  
 	  if(!anentity.IsValid()) 
 	    {
-	      ErrorMsg << argv[0]
+	      ErrorMsg() << argv[0]
 		       << "Could not move to entity  : " << apath << endm;
 	      return 1;
 	    }
@@ -374,7 +374,7 @@ Standard_Integer WOKAPI_Command::EnvironmentMgr(const WOKAPI_Session& asession,
 
   if(!theent.IsValid()) 
     {
-      ErrorMsg << argv[0] << "Could not determine entity to operate on." << endm;
+      ErrorMsg() << argv[0] << "Could not determine entity to operate on." << endm;
       return 1;
     }
   
@@ -388,12 +388,12 @@ Standard_Integer WOKAPI_Command::EnvironmentMgr(const WOKAPI_Session& asession,
 	{
 	  if(filename.IsNull())
 	    {
-	      ErrorMsg << argv[0] << "Missing file name for test environnement settings" << endm;
+	      ErrorMsg() << argv[0] << "Missing file name for test environnement settings" << endm;
 	      return 1;
 	    }
 	  if(format.IsNull())
 	    {
-	      ErrorMsg << argv[0] << "Missing format for test environnement settings" << endm;
+	      ErrorMsg() << argv[0] << "Missing format for test environnement settings" << endm;
 	      return 1;
 	    }
 	  
@@ -401,7 +401,7 @@ Standard_Integer WOKAPI_Command::EnvironmentMgr(const WOKAPI_Session& asession,
 
 	  if(theent.GetEnvActions(asession, actions))
 	    {
-	      ErrorMsg << argv[0] 
+	      ErrorMsg() << argv[0] 
 		       << "Could not obtain informations for test environnement" << endm;
 	      return 1;
 	    }
@@ -414,7 +414,7 @@ Standard_Integer WOKAPI_Command::EnvironmentMgr(const WOKAPI_Session& asession,
 	    
 	    if(!stream.good())
 	      {
-		ErrorMsg << argv[0] 
+		ErrorMsg() << argv[0] 
 			 << "Could not open " << filename << " for writing" << endm;
 		return 1;
 	      }
@@ -637,18 +637,18 @@ Standard_Integer WOKAPI_Command::ProfileMgt(const WOKAPI_Session& asession,
 
   if(getprof)
     {
-      InfoMsg << argv[0] << "Profile in   : " << asession.GetCWEntity().UserPath() << endm;
-      InfoMsg << argv[0] << endm;
-      InfoMsg << argv[0] << "Extractor    : " << asession.DBMSystem() << endm;
+      InfoMsg() << argv[0] << "Profile in   : " << asession.GetCWEntity().UserPath() << endm;
+      InfoMsg() << argv[0] << endm;
+      InfoMsg() << argv[0] << "Extractor    : " << asession.DBMSystem() << endm;
       if(asession.DebugMode())
 	{
-	  InfoMsg << argv[0] << "Compile Mode : Debug" << endm;
+	  InfoMsg() << argv[0] << "Compile Mode : Debug" << endm;
 	}
       else
 	{
-	  InfoMsg << argv[0] << "Compile Mode : Optimized" << endm;
+	  InfoMsg() << argv[0] << "Compile Mode : Optimized" << endm;
 	}
-      InfoMsg << argv[0] << "Station Type : " << asession.Station() << endm;
+      InfoMsg() << argv[0] << "Station Type : " << asession.Station() << endm;
       return 0;
     }
   return 0;
@@ -766,7 +766,7 @@ Standard_Integer WOKAPI_Command::ParametersMgr(const WOKAPI_Session& asession,
 
   if(!theent.IsValid()) 
     {
-      ErrorMsg << argv[0] << "Could not determine entity to operate on." << endm;
+      ErrorMsg() << argv[0] << "Could not determine entity to operate on." << endm;
       return 1;
     }
   
@@ -802,7 +802,7 @@ Standard_Integer WOKAPI_Command::ParametersMgr(const WOKAPI_Session& asession,
 
       if(result.IsNull())
 	{
-	  ErrorMsg << argv[0] << "Could not eval " << aoptarg << " in " << theent.UserPath() << endm;
+	  ErrorMsg() << argv[0] << "Could not eval " << aoptarg << " in " << theent.UserPath() << endm;
 	  return 1;
 	}
 
@@ -817,7 +817,7 @@ Standard_Integer WOKAPI_Command::ParametersMgr(const WOKAPI_Session& asession,
       
       if(result.IsNull())
 	{
-	  ErrorMsg << argv[0] << "No value for " << aoptarg << " in " << theent.UserPath() << endm;
+	  ErrorMsg() << argv[0] << "No value for " << aoptarg << " in " << theent.UserPath() << endm;
 	  return 1;
 	}
 
@@ -1025,7 +1025,7 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
 
   if(!theent.IsValid())
     {
-      ErrorMsg << argv[0] << "Invalid Entity specification" << endm;
+      ErrorMsg() << argv[0] << "Invalid Entity specification" << endm;
       return 1;
     }
 
@@ -1054,7 +1054,7 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
     {
       if(!theent.IsFileType(aoptarg))
 	{
-	  ErrorMsg << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
+	  ErrorMsg() << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
 	  return 1;
 	}
       returns.AddStringValue(theent.GetFileTypeDefinition(aoptarg));
@@ -1064,7 +1064,7 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
     {
       if(!theent.IsFileType(aoptarg))
 	{
-	  ErrorMsg << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
+	  ErrorMsg() << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
 	  return 1;
 	}
 
@@ -1093,7 +1093,7 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
 
 	  if(!theent.IsFileType(type))
 	    {
-	      ErrorMsg << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
+	      ErrorMsg() << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
 	      return 1;
 	    }
       
@@ -1103,13 +1103,13 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
 	{
 	  if(!theent.IsFileType(aoptarg))
 	    {
-	      ErrorMsg << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
+	      ErrorMsg() << argv[0] << aoptarg << " is not a valid type for entity : " << theent.UserPath() << endm;
 	      return 1;
 	    }
 
 	  if(theent.IsFileTypeFileDependent(aoptarg))
 	    {
-	      ErrorMsg << argv[0] << aoptarg << " is a FileDependant type for entity : " << theent.UserPath() << endm;
+	      ErrorMsg() << argv[0] << aoptarg << " is a FileDependant type for entity : " << theent.UserPath() << endm;
 	      return 1;
 	    }
 	  returns.AddStringValue(theent.GetFilePath(aoptarg));
@@ -1129,7 +1129,7 @@ Standard_Integer WOKAPI_Command::EntityInfo(const WOKAPI_Session& asession,
       
       if(!nesting.IsValid())
 	{
-	  ErrorMsg << argv[0] << "Could not obtain nesting of " << theent.UserPath() << endm;
+	  ErrorMsg() << argv[0] << "Could not obtain nesting of " << theent.UserPath() << endm;
 	  return 1;
 	}
 
@@ -1289,7 +1289,7 @@ Standard_Integer WOKAPI_Command::EntityClose(const WOKAPI_Session& asession,
       
       if(!theent.IsValid())
 	{
-	  ErrorMsg << argv[0] << "Invalid Entity specification" << endm;
+	  ErrorMsg() << argv[0] << "Invalid Entity specification" << endm;
 	  return 1;
 	}
       theent.Close();
@@ -1377,7 +1377,7 @@ Standard_Integer WOKAPI_Command::Locate(const WOKAPI_Session& asession,
       
       if(!bench.IsValid())
 	{
-	  ErrorMsg << argv[0]
+	  ErrorMsg() << argv[0]
 		   << "Could not determine visibility : Specify workbench in command line or use wokcd" << endm;
 	  return 1;
 	}
@@ -1386,7 +1386,7 @@ Standard_Integer WOKAPI_Command::Locate(const WOKAPI_Session& asession,
     }
   else
     {
-      ErrorMsg << argv[0]
+      ErrorMsg() << argv[0]
 	       << "Option -V not yet implemented : use Workbench to determine visibility" << endm;
       return 1;
     }

@@ -163,7 +163,7 @@ Standard_Integer WOKAPI_Command::FactoryInfo(const WOKAPI_Session& asession,
 
   if(!afact.IsValid())
     {
-      ErrorMsg << argv[0]
+      ErrorMsg() << argv[0]
 	       << "Could not determine factory : Specify factory in command line or use wokcd" << endm;
       return 1;
     }
@@ -222,7 +222,7 @@ Standard_Integer WOKAPI_Command::FactoryDestroy(const WOKAPI_Session& asession,
       switch(opts.Option())
 	{
 	case 'R':
-	  ErrorMsg << "WOKAPI_Command::FactoryDestroy" << "-R not yet implemented" << endm;
+	  ErrorMsg() << "WOKAPI_Command::FactoryDestroy" << "-R not yet implemented" << endm;
 	  return 1;
 	default:
 	  break;
@@ -246,7 +246,7 @@ Standard_Integer WOKAPI_Command::FactoryDestroy(const WOKAPI_Session& asession,
   
   if(!afact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::FactoryDestroy"
+      ErrorMsg() << "WOKAPI_Command::FactoryDestroy"
 	       << "Could not determine factory : Specify factory in command line or use wokcd" << endm;
       return 1;
     }

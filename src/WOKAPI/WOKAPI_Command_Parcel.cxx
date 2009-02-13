@@ -82,7 +82,7 @@ Standard_Integer WOKAPI_Command::ParcelInfo(const WOKAPI_Session& asession,
   
   if(!aparcel.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WarehouseInfo"
+      ErrorMsg() << "WOKAPI_Command::WarehouseInfo"
 	       << "Could not determine Warehouse : Specify Warehouse in command line or use wokcd" << endm;
       return 1;
     }

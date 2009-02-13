@@ -87,14 +87,14 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Workbench::BuildParameters(const WO
 
   if(!ashop.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workbench::BuildParameters"
+      ErrorMsg() << "WOKAPI_Workbench::BuildParameters"
 	       << "Invalid nesting (" << nestname << ") to create workbench : " << name << endm;
       return aseq;
     }
 
   if(!WOKernel_Entity::IsValidName(name))
     {
-      ErrorMsg << "WOKAPI_Workbench::BuildParameters"
+      ErrorMsg() << "WOKAPI_Workbench::BuildParameters"
 	       << "Invalid name (" << name << ") to create workbench" << endm;
       return aseq;
     }
@@ -110,7 +110,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Workbench::BuildParameters(const WO
       
       if(!father.IsValid())
 	{
-	  ErrorMsg << "WOKAPI_Workbench::BuildParameters"
+	  ErrorMsg() << "WOKAPI_Workbench::BuildParameters"
 		   << "Invalid father (" << afather << ") to create workbench : " << name << endm;
 	  return aseq;
 	}
@@ -147,7 +147,7 @@ Standard_Boolean WOKAPI_Workbench::Build(const WOKAPI_Session& asession,
 
   if(!ashop.IsValid())
     {
-      ErrorMsg << "WOKAPI_Workbench::Build"
+      ErrorMsg() << "WOKAPI_Workbench::Build"
 	       << "Invalid nesting (" << nestname << ") to create workbench : " << name << endm;
       return Standard_True;
     }
@@ -155,7 +155,7 @@ Standard_Boolean WOKAPI_Workbench::Build(const WOKAPI_Session& asession,
 
   if(!WOKernel_Entity::IsValidName(name))
     {
-      ErrorMsg << "WOKAPI_Workbench::Build"
+      ErrorMsg() << "WOKAPI_Workbench::Build"
 	       << "Invalid name (" << name << ") to create workbench" << endm;
       return Standard_True;
     }
@@ -174,7 +174,7 @@ Standard_Boolean WOKAPI_Workbench::Build(const WOKAPI_Session& asession,
       
       if(!father.IsValid())
 	{
-	  ErrorMsg << "WOKAPI_Workbench::Build"
+	  ErrorMsg() << "WOKAPI_Workbench::Build"
 		   << "Invalid father (" << afather << ") to create workbench : " << name << endm;
 	  return Standard_True;
 	}
@@ -217,7 +217,7 @@ Standard_Boolean WOKAPI_Workbench::Destroy()
 
   if(aworkbench->Units()->Length())
     {
-      ErrorMsg << "WOKAPI_Workbench::Destroy"
+      ErrorMsg() << "WOKAPI_Workbench::Destroy"
 	       << "Cannot destroy not empty workbench" << endm;
       return Standard_True;
     }
@@ -444,7 +444,7 @@ void WOKAPI_Workbench::UnitsOfType(const Handle(TCollection_HAsciiString)& atype
 
   if(typedescr.IsNull())
     {
-      ErrorMsg << "WOKAPI_Workbench::UnitsOfType"
+      ErrorMsg() << "WOKAPI_Workbench::UnitsOfType"
 	       << "Requesting unit type (" << atype << " is not a valid type in " << UserPath() << endm;
       return;
     }
@@ -551,7 +551,7 @@ void WOKAPI_Workbench::ImplSuppliers(const Handle(TCollection_HAsciiString)& aun
 
       if (aunit.IsNull())
 	{
-	  ErrorMsg << "WOKAPI_Workbench::ImplSuppliers"
+	  ErrorMsg() << "WOKAPI_Workbench::ImplSuppliers"
 	           << "Unit " << aname << " : unit does not exist in workbench visibility" << endm;
 	  return;
 	}
@@ -559,7 +559,7 @@ void WOKAPI_Workbench::ImplSuppliers(const Handle(TCollection_HAsciiString)& aun
 	{
 	  if(!WOKernel_IsExecutable(aunit))
 	    {
-	      ErrorMsg << "WOKAPI_Workbench::ImplSuppliers"
+	      ErrorMsg() << "WOKAPI_Workbench::ImplSuppliers"
 		<< "Unit " << aname << " is not an executable" << endm;
 	      return;
 	    }
@@ -581,7 +581,7 @@ void WOKAPI_Workbench::ImplSuppliers(const Handle(TCollection_HAsciiString)& aun
     }
   else 
     {
-      ErrorMsg << "WOKAPI_Workbench::ImplSuppliers"
+      ErrorMsg() << "WOKAPI_Workbench::ImplSuppliers"
 	       << "Failed during getting suppliers of " << aunitname << endm;
       return;
     }
@@ -617,7 +617,7 @@ void WOKAPI_Workbench::ImplClients(const Handle(TCollection_HAsciiString)& aunit
 
   if (aunit.IsNull())
     {     
-      ErrorMsg << "WOKAPI_Workbench::ImplClients"
+      ErrorMsg() << "WOKAPI_Workbench::ImplClients"
 	       << "Unit " << aunitname << " : unit does not exist in workbench visibility" << endm;
       return;
     }
@@ -656,7 +656,7 @@ void WOKAPI_Workbench::ImplClients(const Handle(TCollection_HAsciiString)& aunit
 			}
 		      else 
 			{
-			  ErrorMsg << "WOKAPI_Workbench::ImplClients"
+			  ErrorMsg() << "WOKAPI_Workbench::ImplClients"
 			    << "Failed during getting clients of " << aunitname << endm;
 			  return;
 			}
@@ -727,7 +727,7 @@ void WOKAPI_Workbench::SortUnitList(const Handle(TColStd_HSequenceOfHAsciiString
 	  
 	  if (aunit.IsNull())
 	    {
-	      ErrorMsg << "WOKAPI_Workbench::SortUnitList"
+	      ErrorMsg() << "WOKAPI_Workbench::SortUnitList"
 		       << "Unit " << anexecname << " : unit does not exist in workbench visibility" << endm;
 	      return;
 	    }
@@ -735,7 +735,7 @@ void WOKAPI_Workbench::SortUnitList(const Handle(TColStd_HSequenceOfHAsciiString
 	    {
 	      if(!WOKernel_IsExecutable(aunit))
 		{
-		  ErrorMsg << "WOKAPI_Workbench::SortUnitList"
+		  ErrorMsg() << "WOKAPI_Workbench::SortUnitList"
 	                   << "Unit " << anexecname << " is not an executable" << endm;
 		  return;
 		}
@@ -746,7 +746,7 @@ void WOKAPI_Workbench::SortUnitList(const Handle(TColStd_HSequenceOfHAsciiString
 	      Handle(TColStd_HSequenceOfHAsciiString) execsuppliers = aunit->ImplementationDep(apart,agraph);
 	      if ( execsuppliers.IsNull() )
 		{
-		  ErrorMsg << "WOKAPI_Workbench::SortUnitList"
+		  ErrorMsg() << "WOKAPI_Workbench::SortUnitList"
 		           << "Failed during getting sorted unit list" << endm;
 		  return;
 		}
@@ -769,7 +769,7 @@ void WOKAPI_Workbench::SortUnitList(const Handle(TColStd_HSequenceOfHAsciiString
 
   if ( unitsuppliers.IsNull() )
     {
-      ErrorMsg << "WOKAPI_Workbench::SortUnitList"
+      ErrorMsg() << "WOKAPI_Workbench::SortUnitList"
 	       << "Failed during getting sorted unit list" << endm;
       return;
     }

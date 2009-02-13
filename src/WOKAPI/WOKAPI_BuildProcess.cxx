@@ -57,7 +57,7 @@ Standard_Boolean WOKAPI_BuildProcess::Init(const WOKAPI_Workbench& abench)
  
   if(!abench.IsValid()) 
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Init" 
+      ErrorMsg() << "WOKAPI_BuildProcess::Init" 
 	       << "Invalid workbench for build process init" << endm;
       return myinit= Standard_False;
     }
@@ -119,7 +119,7 @@ void WOKAPI_BuildProcess::Add(const WOKAPI_Unit& adevunit)
 {
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return;
     }
@@ -143,13 +143,13 @@ void WOKAPI_BuildProcess::Add(const WOKAPI_Unit& adevunit)
       
       if(!ancien.IsNull() && nouveau.IsNull())
 	{
-	  WarningMsg << "WOKAPI_BuildProcess::Add"  
+	  WarningMsg() << "WOKAPI_BuildProcess::Add"  
 		     << "Unit " << adevunit.Name() << " contains a " << umakename << " file and no " << stepsname << endm;
 	}
 
       if(!adevunit.CheckDirs())
 	{
-	  WarningMsg << "WOKAPI_BuildProcess::Add"  
+	  WarningMsg() << "WOKAPI_BuildProcess::Add"  
 	    << "Unit " << adevunit.Name() << " is missing directories : ignored" << endm;
 	}
       else
@@ -157,7 +157,7 @@ void WOKAPI_BuildProcess::Add(const WOKAPI_Unit& adevunit)
     }
   else
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Development unit is invalid" << endm;
       return;
     }
@@ -172,7 +172,7 @@ void WOKAPI_BuildProcess::Add(const WOKAPI_SequenceOfUnit& units)
 {
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return;
     }
@@ -219,7 +219,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnGroups(const WOKAPI_Unit& aunit,
   
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -311,7 +311,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnGroups(const WOKAPI_SequenceOfUnit
 
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -340,7 +340,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnGroups(const WOKAPI_SequenceOfUnit
 	  const TColStd_SequenceOfHAsciiString& aseq = agrp->Steps();
 	  
 	  if (aseq.IsEmpty()) {
-	    InfoMsg << "WOKAPI_BuildProcess::SelectOnGroups"
+	    InfoMsg() << "WOKAPI_BuildProcess::SelectOnGroups"
 	      << "group " << groups.Value(j) << " is empty " << endm;
 	  }
 	  for(Standard_Integer i=1; i<=aseq.Length(); i++)
@@ -419,7 +419,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnTypesAndGroups(const TColStd_Seque
 
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -520,7 +520,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnSteps(const WOKAPI_Unit& aunit,
   
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -610,7 +610,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnSteps(const WOKAPI_Unit& aunit,
 	}
       if(!endwasfound)
 	{
-	  ErrorMsg << "WOKAPI_BuildProcess::SelectOnSteps"   
+	  ErrorMsg() << "WOKAPI_BuildProcess::SelectOnSteps"   
 	    << "Specified end step (" << aend << " was not found" << endm;
 	  UnSelectAll();
 	  return 0;
@@ -618,7 +618,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnSteps(const WOKAPI_Unit& aunit,
     }
   else
     {
-      ErrorMsg << "WOKAPI_BuildProcess::SelectOnSteps"   
+      ErrorMsg() << "WOKAPI_BuildProcess::SelectOnSteps"   
 	<< "Unit is invalid" << endm;
       return 0;
     }
@@ -638,7 +638,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnSteps(const WOKAPI_SequenceOfUnit&
 {
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::Add"   
+      ErrorMsg() << "WOKAPI_BuildProcess::Add"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -663,7 +663,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
 {
   if(!myinit)
     {
-      ErrorMsg << "WOKAPI_BuildProcess::SelectOnDefines"   
+      ErrorMsg() << "WOKAPI_BuildProcess::SelectOnDefines"   
 	       << "Build process is not initialized" << endm;
       return 0;
     }
@@ -784,7 +784,7 @@ Standard_Integer WOKAPI_BuildProcess::SelectOnDefines(const Handle(WOKTools_HSeq
 
   if(!(amap.IsEmpty() || axmap.IsEmpty())  && !(types.IsEmpty() || xtypes.IsEmpty()))
     {
-      ErrorMsg << "WOKAPI_BuildProcess::SelectOnDefines"
+      ErrorMsg() << "WOKAPI_BuildProcess::SelectOnDefines"
 	<< "Cannot use Units or XUnits in conjunction with UnitTypes or XUnitTypes" << endm;
       return 0;
     }
@@ -1021,35 +1021,35 @@ void WOKAPI_BuildProcess::PrintBanner() const
 
   if(asession.IsNull()) return;
 
-  InfoMsg.DontPrintHeader();
+  InfoMsg().DontPrintHeader();
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" << "\n" << endm;
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" << "\n" << endm;
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           <<  TIRETS << endm;
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           << "Workbench       :       " << mybench.UserPath() << endm;
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           << "Extraction mode :       " << WOKernel_DBMSystem::GetName(asession->DBMSystem()) << endm;
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           << "Station         :       " << WOKernel_Station::GetName(asession->Station()) << endm;
 
   if(asession->DebugMode())
     {
-      InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+      InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 	<< "Compile mode    :       Debug" << endm;
     }
   else
     {
-      InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+      InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 	<< "Compile mode    :       Optimized" << endm;
     }
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           << "Step number     :       " << myselect << endm;
 
-  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
           << TIRETS << endm;
 
   const WOKMake_DataMapOfHAsciiStringOfSequenceOfHAsciiString& units = myprocess->Units();
@@ -1080,17 +1080,17 @@ void WOKAPI_BuildProcess::PrintBanner() const
 	  
 	  if(codes.Length())
 	    {
-	      InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+	      InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 		      << "Unit            :       " << aunit.Type() << " " << aunit.Name() << endm;
 	      
 	      if(codes.Length() > 1)
 		{
-		  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+		  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 			  << "Steps           :       " ;
 		}
 	      else
 		{
-		  InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+		  InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 			  << "Step            :       " ;
 		}
 
@@ -1102,22 +1102,22 @@ void WOKAPI_BuildProcess::PrintBanner() const
 		  
 		  if(len > WIDTH )
 		    {
-		      InfoMsg << endm;
-		      InfoMsg << "WOKAPI_BuildProcess::PrintBanner" << "                        " ;
+		      InfoMsg() << endm;
+		      InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" << "                        " ;
 		      len = DEBUT;
 		    }
-		  InfoMsg << code << " ";
+		  InfoMsg() << code << " ";
 		}
 
-	      InfoMsg << endm;
-	      InfoMsg << "WOKAPI_BuildProcess::PrintBanner" 
+	      InfoMsg() << endm;
+	      InfoMsg() << "WOKAPI_BuildProcess::PrintBanner" 
 		      << TIRETS << endm;
 	    }
 	}
       anit.Next();
     }
  
-  InfoMsg.DoPrintHeader();
+  InfoMsg().DoPrintHeader();
   return;
 }
 

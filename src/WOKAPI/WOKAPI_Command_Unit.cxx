@@ -136,7 +136,7 @@ Standard_Integer WOKAPI_Command::UnitCreate(const WOKAPI_Session& asession,
   
   if(typecode != 0 && !typesstr.IsNull())
     {
-      ErrorMsg << argv[0] 
+      ErrorMsg() << argv[0] 
 	<< "Option -T cannot be used in conjunction with type key!" << endm;
       return 1;
     }
@@ -157,12 +157,12 @@ Standard_Integer WOKAPI_Command::UnitCreate(const WOKAPI_Session& asession,
       if(aprev.IsValid())
   	{
   	  typecode = aprev.TypeKey();
-  	  InfoMsg << argv[0] 
+  	  InfoMsg() << argv[0] 
   	    << "No type specified : using type of " << aprev.UserPath() << " : " << aprev.Type() << " (eq : ucreate -" << typecode << ")" << endm;
   	}
       else 
   	{
-  	  InfoMsg << argv[0] 
+  	  InfoMsg() << argv[0] 
  	    << "No type specified : using package (eq : ucreate -p)" << endm;
   	  typecode = 'p';
   	}
@@ -186,7 +186,7 @@ Standard_Integer WOKAPI_Command::UnitCreate(const WOKAPI_Session& asession,
        }
      if(!found) 
        {
-	 ErrorMsg << argv[0]
+	 ErrorMsg() << argv[0]
 	   << "Invalid type specification : " << typesstr << " (see ucreate -P for possibilities)" << endm;
 	 return 1;
        }
@@ -206,7 +206,7 @@ Standard_Integer WOKAPI_Command::UnitCreate(const WOKAPI_Session& asession,
     	  {
     	    if(typecode == keys->Value(i))
     	      {
-    		InfoMsg << argv[0] 
+    		InfoMsg() << argv[0] 
 		  << "Creating " << aseq.Value(i) << " " << aname
 		    << " in " << abench.UserPath() << endm;
     		found = Standard_True;
@@ -214,7 +214,7 @@ Standard_Integer WOKAPI_Command::UnitCreate(const WOKAPI_Session& asession,
     	  } 
     	if(!found) 
     	  {
-    	    ErrorMsg << argv[0] 
+    	    ErrorMsg() << argv[0] 
 	      << "Invalid type key specified : " << typecode << endm;
     	    return 1;
     	  }
@@ -324,19 +324,19 @@ Standard_Integer WOKAPI_Command::UnitInfo(const WOKAPI_Session& asession,
   
   if(missingfilter && localfilter)
     {
-      ErrorMsg << argv[0] << "Mixing -l and -m is nonsense" << endm;
+      ErrorMsg() << argv[0] << "Mixing -l and -m is nonsense" << endm;
       return 1;
     }
   
   if(missingfilter && existsfilter)
     {
-      ErrorMsg << argv[0] << "Mixing -e and -m is nonsense" << endm;
+      ErrorMsg() << argv[0] << "Mixing -e and -m is nonsense" << endm;
       return 1;
     }
   
   if(missingfilter && getpathes)
     {
-      ErrorMsg << argv[0] << "Mixing -m and -p is nonsense" << endm;
+      ErrorMsg() << argv[0] << "Mixing -m and -p is nonsense" << endm;
       return 1;
     }
   
@@ -356,7 +356,7 @@ Standard_Integer WOKAPI_Command::UnitInfo(const WOKAPI_Session& asession,
   
   if(!aunit.IsValid())
     {
-      ErrorMsg << argv[0] << "Could not determine unit : Specify unit in command line or use wokcd" << endm;
+      ErrorMsg() << argv[0] << "Could not determine unit : Specify unit in command line or use wokcd" << endm;
       return 1;
     }
   
@@ -374,7 +374,7 @@ Standard_Integer WOKAPI_Command::UnitInfo(const WOKAPI_Session& asession,
 	
     	if(!abench.IsValid())
     	  {
-    	    ErrorMsg << argv[0] << "Could not determine workbench" << endm;
+    	    ErrorMsg() << argv[0] << "Could not determine workbench" << endm;
     	    return 1;
     	  }
 	
@@ -385,7 +385,7 @@ Standard_Integer WOKAPI_Command::UnitInfo(const WOKAPI_Session& asession,
 	
     	if(!aparcel.IsValid())
     	  {
-    	    ErrorMsg << argv[0] << "Could not determine parcel" << endm;
+    	    ErrorMsg() << argv[0] << "Could not determine parcel" << endm;
     	    return 1;
     	  }
     	
@@ -396,7 +396,7 @@ Standard_Integer WOKAPI_Command::UnitInfo(const WOKAPI_Session& asession,
       
       if(!locator.IsValid())
     	{
-    	  ErrorMsg << argv[0] << "Could not initialize locator with " << aunit.NestingEntity().UserPath() << endm;
+    	  ErrorMsg() << argv[0] << "Could not initialize locator with " << aunit.NestingEntity().UserPath() << endm;
     	  return 1;
     	}
       
@@ -569,7 +569,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     	  // only
     	  if(hasstart||hasend)
     	    {
-    	      ErrorMsg << "WOKAPI_Unit::Make" << "Only option associated with start, end or until option is illegal" << endm;
+    	      ErrorMsg() << "WOKAPI_Unit::Make" << "Only option associated with start, end or until option is illegal" << endm;
     	      WOKAPI_UnitMake_Usage(argv[0]);
     	      return 1;
     	    }
@@ -580,7 +580,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     	case 's':
     	  if(hasonly||hasstart)
     	    {
-    	      ErrorMsg << "WOKAPI_Unit::Make" << "Start option associated with start, only or until option is illegal" << endm;
+    	      ErrorMsg() << "WOKAPI_Unit::Make" << "Start option associated with start, only or until option is illegal" << endm;
     	      WOKAPI_UnitMake_Usage(argv[0]);
     	      return 1;
     	    }
@@ -591,7 +591,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     	case 'e':
     	  if(hasonly||hasend)
     	    {
-    	      ErrorMsg << "WOKAPI_Unit::Make" << "End option associated to only or until option is illegal" << endm;
+    	      ErrorMsg() << "WOKAPI_Unit::Make" << "End option associated to only or until option is illegal" << endm;
     	      WOKAPI_UnitMake_Usage(argv[0]);
     	      return 1;
     	    }
@@ -607,7 +607,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     	  // no targets for the moment
     	  if(curstepcode.IsNull())
     	    {
-    	      WarningMsg << argv[0] << "No step code to associate target " << opts.OptionArgument() << " with : target ignored" << endm;
+    	      WarningMsg() << argv[0] << "No step code to associate target " << opts.OptionArgument() << " with : target ignored" << endm;
     	    }
     	  else
     	    {
@@ -644,7 +644,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
   
   if(!aunit.IsValid()) 
     {
-      ErrorMsg << argv[0] << "Could not determine unit : Specify unit in command line or use wokcd" << endm;
+      ErrorMsg() << argv[0] << "Could not determine unit : Specify unit in command line or use wokcd" << endm;
       return 1;
     }
   
@@ -655,7 +655,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
   
   if(!aprocess.Init(abench))
     {
-      ErrorMsg << argv[0]
+      ErrorMsg() << argv[0]
 	<< "Could not initialize BuildProcess" << endm;
       return 1;
     }
@@ -712,7 +712,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
       
       if(!aprocess.SelectedStepsNumber())
     	{
-    	  InfoMsg << argv[0] << "No step to execute : check command line" << endm;
+    	  InfoMsg() << argv[0] << "No step to execute : check command line" << endm;
     	}
       else
     	{
@@ -812,7 +812,7 @@ Standard_Integer WOKAPI_Command::UnitDestroy(const WOKAPI_Session& asession,
   
   if(!aunit.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::UnitDestroy"
+      ErrorMsg() << "WOKAPI_Command::UnitDestroy"
 	<< "Could not determine unit : Specify unit in command line or use wokcd" << endm;
       return 1;
     }

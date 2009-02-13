@@ -238,7 +238,7 @@ Standard_Integer WOKAPI_Command::WorkbenchInfo(const WOKAPI_Session& asession,
 
   if(!abench.IsValid())
     {
-      ErrorMsg << argv[0]
+      ErrorMsg() << argv[0]
 	       << "Could not determine workbench : Specify workbench in command line or use wokcd" << endm;
       return 1;
     }
@@ -410,7 +410,7 @@ Standard_Integer WOKAPI_Command::WorkbenchMove(const WOKAPI_Session& asession,
   WOKAPI_Workbench abench(asession,name);
   
   if (!abench.IsValid()) {
-    ErrorMsg << "WOKAPI_Command::WorkbenchMove"
+    ErrorMsg() << "WOKAPI_Command::WorkbenchMove"
       << "Could not determine workbench : Specify workbench in command line or use wokcd" << endm;
     return 1;
   }
@@ -418,7 +418,7 @@ Standard_Integer WOKAPI_Command::WorkbenchMove(const WOKAPI_Session& asession,
   WOKAPI_Workbench afather(asession,father);
 
   if (!abench.IsValid()) {
-    ErrorMsg << "WOKAPI_Command::WorkbenchMove"
+    ErrorMsg() << "WOKAPI_Command::WorkbenchMove"
       << "Unable to find father workbench : Try to specify the complete workbench path in command line" << endm;
     return 1;
   }
@@ -458,7 +458,7 @@ Standard_Integer WOKAPI_Command::WorkbenchDestroy(const WOKAPI_Session& asession
       switch(opts.Option())
 	{
 	case 'R':
-	  ErrorMsg << "WOKAPI_Command::WorkbenchDestroy" << "-R not yet implemented" << endm;
+	  ErrorMsg() << "WOKAPI_Command::WorkbenchDestroy" << "-R not yet implemented" << endm;
 	  return 1;
 	default:
 	  break;
@@ -488,7 +488,7 @@ Standard_Integer WOKAPI_Command::WorkbenchDestroy(const WOKAPI_Session& asession
   
   if(!abench.IsValid())
     {
-      ErrorMsg << "WOKAPI_Command::WorkbenchDestroy"
+      ErrorMsg() << "WOKAPI_Command::WorkbenchDestroy"
 	       << "Could not determine workbench : Specify workbench in command line or use wokcd" << endm;
       return 1;
     }
@@ -613,7 +613,7 @@ Standard_Integer WOKAPI_Command::WorkbenchProcess(const WOKAPI_Session& asession
     {
       if(debug && optim) 
 	{
-	  ErrorMsg << "WOKAPI_Command::WorkbenchProcess"
+	  ErrorMsg() << "WOKAPI_Command::WorkbenchProcess"
 	    << "Optimised and debug mode cannot be combined" << endm;
 	  return 1;
 	}
@@ -651,7 +651,7 @@ Standard_Integer WOKAPI_Command::WorkbenchProcess(const WOKAPI_Session& asession
       
       if(!abench.IsValid())
 	{
-	  ErrorMsg << "WOKAPI_Command::WorkbenchProcess"
+	  ErrorMsg() << "WOKAPI_Command::WorkbenchProcess"
 	    << "Could not determine workbench : Specify workbench in command line or use wokcd" << endm;
 	  return 1;
 	}
@@ -666,7 +666,7 @@ Standard_Integer WOKAPI_Command::WorkbenchProcess(const WOKAPI_Session& asession
       
       if(!aproc.SelectedStepsNumber())
 	{
-	  InfoMsg << argv[0] << "No step to execute : check command line" << endm;
+	  InfoMsg() << argv[0] << "No step to execute : check command line" << endm;
 	}
       else
 	{

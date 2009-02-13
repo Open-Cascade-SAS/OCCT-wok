@@ -61,7 +61,7 @@ Standard_Boolean WOKAPI_Process::Init(const Handle(TCollection_HAsciiString)& ab
 
   if(!mybp.Init(thebench))
     {
-      ErrorMsg << "WOKAPI_Process::Init"
+      ErrorMsg() << "WOKAPI_Process::Init"
 	       << "Could not initialize build process" << endm;
       return Standard_False;
     }
@@ -121,7 +121,7 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
 			initcomplete = Standard_True;
 		      else
 			{
-			  ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+			  ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 			    << "Section flag " << line << " inside :Init section" << endm;
 			  return -1;
 			}
@@ -150,14 +150,14 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
 			    error = right;
 			  else
 			    {
-			      ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+			      ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 				<< "Unrecognized line in :Init section : " << line << endm;
 			      return -1;
 			    }
 			}
 		      else
 			{
-			  ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+			  ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 			    << "Malformed line in :Init section: " << line << endm;
 			  return -1;
 			}
@@ -171,14 +171,14 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
 
   if(!initcomplete)
     {
-      ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+      ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 	<< "Could not find :Init section in file" << endm;
       return Standard_False;
     }
 
   if(workbench.IsNull())
     {
-      ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+      ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 	<< "Could not find required field Workbench= in :Init section" << endm;
       return -1;
     }
@@ -187,7 +187,7 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
 
   if(!abench.IsValid())
     {
-      ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+      ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 	<< "Could not find " << workbench << " or this is not a workbench name" << endm;
       return -1;
     }
@@ -206,7 +206,7 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
 	}
       else
 	{
-	  ErrorMsg << "WOKAPI_Process::ExploreInitSection"
+	  ErrorMsg() << "WOKAPI_Process::ExploreInitSection"
 	    << "Invalid mode specification " << mode << " is ignored" << endm;
 	  return -1;
 	}
@@ -218,7 +218,7 @@ Standard_Integer WOKAPI_Process::ExploreInitSection(const Handle(TColStd_HSequen
     {
       if(!WOKernel_DBMSystem::IsNameKnown(dbms))
 	{
-	  ErrorMsg << "WOKAPI_::SetDBMSystem" 
+	  ErrorMsg() << "WOKAPI_::SetDBMSystem" 
 	    << dbms << " is not known as a DBMSystem" << endm;
 	  return -1;
 	}
@@ -279,7 +279,7 @@ Standard_Integer WOKAPI_Process::AdvanceToNextValidSection(const Handle(TColStd_
 		    }
 		  else
 		    {
-		      ErrorMsg << "WOKAPI_Process::AdvanceToNextValidSection"
+		      ErrorMsg() << "WOKAPI_Process::AdvanceToNextValidSection"
 			<< "Unrecognized conditional (" << token << ") in line: " << line << endm;
 		      return -1;
 		    }
@@ -345,7 +345,7 @@ Standard_Integer WOKAPI_Process::ExploreTclSection(const Handle(TColStd_HSequenc
 			tclcomplete = Standard_True;
 		      else
 			{
-			  ErrorMsg << "WOKAPI_Process::ExploreTclSection"
+			  ErrorMsg() << "WOKAPI_Process::ExploreTclSection"
 			    << "Section flag " << line << " inside :Tcl section" << endm;
 			  return -1;
 			}
@@ -403,7 +403,7 @@ Standard_Integer WOKAPI_Process::ExploreBuildSection(const Handle(TColStd_HSeque
 			buildcomplete = Standard_True;
 		      else
 			{
-			  ErrorMsg << "WOKAPI_Process::ExploreBuildSection"
+			  ErrorMsg() << "WOKAPI_Process::ExploreBuildSection"
 			    << "Section flag " << line << " inside :Build section" << endm;
 			  return -1;
 			}

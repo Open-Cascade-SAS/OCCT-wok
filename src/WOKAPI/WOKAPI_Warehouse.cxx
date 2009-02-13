@@ -94,7 +94,7 @@ Handle(WOKUtils_HSequenceOfParamItem) WOKAPI_Warehouse::BuildParameters(const WO
 
   if(!afact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Warehouse::Build"
+      ErrorMsg() << "WOKAPI_Warehouse::Build"
 	       << "Invalid nesting (" << nestname << ") to create Warehouse : " << name << endm;
       return aseq;
     }
@@ -131,7 +131,7 @@ Standard_Boolean WOKAPI_Warehouse::Build(const WOKAPI_Session& asession,
 
   if(!afact.IsValid())
     {
-      ErrorMsg << "WOKAPI_Warehouse::Build"
+      ErrorMsg() << "WOKAPI_Warehouse::Build"
 	       << "Invalid nesting (" << nestname << ") to create Warehouse : " << name << endm;
       return Standard_True;
     }
@@ -234,7 +234,7 @@ Standard_Boolean WOKAPI_Warehouse::Destroy()
 
   if(awarehouse->Parcels()->Length())
     {
-      ErrorMsg << "WOKAPI_Warehouse::Destroy"
+      ErrorMsg() << "WOKAPI_Warehouse::Destroy"
 	       << "Cannot destroy not empty warehouse" << endm;
       return Standard_True;
     }
