@@ -81,7 +81,7 @@ Standard_Integer MSAPI_StdClass::Info(const Standard_Integer argc, const WOKTool
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsDefined(name) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a known type name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a known type name" << endm;
       return 1;
     }
 
@@ -89,7 +89,7 @@ Standard_Integer MSAPI_StdClass::Info(const Standard_Integer argc, const WOKTool
 
   if(type->IsKind(STANDARD_TYPE(MS_StdClass)) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a class name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a class name" << endm;
       return 1;
     }
 

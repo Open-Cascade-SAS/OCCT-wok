@@ -77,7 +77,7 @@ Standard_Integer MSAPI_ExternMet::Info(const Standard_Integer argc, const WOKToo
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsMethod(name) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a known method name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a known method name" << endm;
       return 1;
     }
 
@@ -85,7 +85,7 @@ Standard_Integer MSAPI_ExternMet::Info(const Standard_Integer argc, const WOKToo
 
   if(method->IsKind(STANDARD_TYPE(MS_ExternMet)) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a extern method name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a extern method name" << endm;
       return 1;
     }
 

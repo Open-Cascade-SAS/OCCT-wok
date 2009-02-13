@@ -82,7 +82,7 @@ Standard_Integer MSAPI_MemberMet::Info(const Standard_Integer argc, const WOKToo
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsMethod(name) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name << ") is not a known method name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name << ") is not a known method name" << endm;
       return 1;
     }
 
@@ -90,7 +90,7 @@ Standard_Integer MSAPI_MemberMet::Info(const Standard_Integer argc, const WOKToo
 
   if(method->IsKind(STANDARD_TYPE(MS_MemberMet)) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name << ") is not a member method name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name << ") is not a member method name" << endm;
       return 1;
     }
 

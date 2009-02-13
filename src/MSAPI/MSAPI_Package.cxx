@@ -123,7 +123,7 @@ Standard_Integer MSAPI_Package::Info(const Standard_Integer argc, const WOKTools
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsPackage(pkname) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Given name (" << pkname->ToCString() << ") is not a known package" << endm;
+      ErrorMsg() << argv[0] << "Given name (" << pkname->ToCString() << ") is not a known package" << endm;
     }
 
   apk = WOKBuilder_MSTool::GetMSchema()->MetaSchema()->GetPackage(pkname);

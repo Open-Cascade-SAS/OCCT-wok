@@ -103,7 +103,7 @@ Standard_Integer MSAPI_Schema::Info(const Standard_Integer argc, const WOKTools_
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsSchema(schname) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Given name (" << schname->ToCString() << ") is not a known Schema" << endm;
+      ErrorMsg() << argv[0] << "Given name (" << schname->ToCString() << ") is not a known Schema" << endm;
     }
 
   asch = WOKBuilder_MSTool::GetMSchema()->MetaSchema()->GetSchema(schname);

@@ -119,7 +119,7 @@ Standard_Integer MSAPI_Method::Info(const Standard_Integer argc, const WOKTools_
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsMethod(name) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a known method name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a known method name" << endm;
       return 1;
     }
 
@@ -173,7 +173,7 @@ Standard_Integer MSAPI_Method::Info(const Standard_Integer argc, const WOKTools_
     {
       if(method->IsKind(STANDARD_TYPE(MS_MemberMet))) {values.AddStringValue("membermet");return 0;}
       if(method->IsKind(STANDARD_TYPE(MS_ExternMet))) {values.AddStringValue("externmet");return 0;}
-      ErrorMsg << argv[0] << "Unknown method type of " << method->FullName() << endm;
+      ErrorMsg() << argv[0] << "Unknown method type of " << method->FullName() << endm;
       return 1;
     }
 

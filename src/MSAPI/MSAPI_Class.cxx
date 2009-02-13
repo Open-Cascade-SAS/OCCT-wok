@@ -162,7 +162,7 @@ Standard_Integer MSAPI_Class::Info(const Standard_Integer argc, const WOKTools_A
   
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->IsDefined(name) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a known type name" << endm;;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a known type name" << endm;;
       return 1;
     }
 
@@ -170,7 +170,7 @@ Standard_Integer MSAPI_Class::Info(const Standard_Integer argc, const WOKTools_A
 
   if(type->IsKind(STANDARD_TYPE(MS_Class)) == Standard_False)
     {
-      ErrorMsg << argv[0] << "Name (" << name->ToCString() << ") is not a class name" << endm;
+      ErrorMsg() << argv[0] << "Name (" << name->ToCString() << ") is not a class name" << endm;
       return 1;
     }
 
@@ -202,7 +202,7 @@ Standard_Integer MSAPI_Class::Info(const Standard_Integer argc, const WOKTools_A
 	}
       if(aclass->IsKind(STANDARD_TYPE(MS_GenClass))  == Standard_True) {values.AddStringValue("genclass");  return 0;}
       if(aclass->IsKind(STANDARD_TYPE(MS_InstClass)) == Standard_True) {values.AddStringValue("instclass"); return 0;}
-      ErrorMsg << argv[0] << "Unknown class type of " << aclass->FullName() << endm;
+      ErrorMsg() << argv[0] << "Unknown class type of " << aclass->FullName() << endm;
       return 1;
     }
 
@@ -222,7 +222,7 @@ Standard_Integer MSAPI_Class::Info(const Standard_Integer argc, const WOKTools_A
 
   if(aclass->Incomplete() == Standard_True)
     {
-      ErrorMsg << argv[0] << "Class (" << name->ToCString() << ") is incomplete" << endm;
+      ErrorMsg() << argv[0] << "Class (" << name->ToCString() << ") is incomplete" << endm;
       return 1;
     }
 

@@ -226,7 +226,7 @@ Standard_Integer MSAPI_MetaSchema::Translate(const Standard_Integer argc, const 
 	}
       else
 	{
-	  WarningMsg << argv[0] << "No file for : " << action->Entity()->Name() << endm;
+	  WarningMsg() << argv[0] << "No file for : " << action->Entity()->Name() << endm;
 	}
       anit.Next();
     }
@@ -274,11 +274,11 @@ Standard_Integer MSAPI_MetaSchema::Check(const Standard_Integer argc, const WOKT
  
   if(WOKBuilder_MSTool::GetMSchema()->MetaSchema()->Check(aname))
     {
-      InfoMsg << argv[0] << aname << " successfully checked" << endm;
+      InfoMsg() << argv[0] << aname << " successfully checked" << endm;
     }
   else
     {
-      ErrorMsg << argv[0] << aname << " check has failed" << endm;
+      ErrorMsg() << argv[0] << aname << " check has failed" << endm;
     }
   return 0;
 }
@@ -409,7 +409,7 @@ Standard_Integer MSAPI_MetaSchema::Extract(const Standard_Integer argc, const WO
     {
       theentity = Handle(WOKBuilder_MSEntity)::DownCast(extr_entities->Value(j));
       
-      InfoMsg << argv[0] << "Extracting : " << theentity->Name() << endm;
+      InfoMsg() << argv[0] << "Extracting : " << theentity->Name() << endm;
       
       anit.Execute(theentity);
       
@@ -417,7 +417,7 @@ Standard_Integer MSAPI_MetaSchema::Extract(const Standard_Integer argc, const WO
       
       for(Standard_Integer i=1; i<=aseq->Length(); i++)
 	{
-	  InfoMsg << argv[0] << "File " << aseq->Value(i)->Path()->Name() << " is extracted" << endm;
+	  InfoMsg() << argv[0] << "File " << aseq->Value(i)->Path()->Name() << " is extracted" << endm;
 	}
       
     }
@@ -585,7 +585,7 @@ Standard_Integer MSAPI_MetaSchema::Remove(const Standard_Integer argc, const WOK
     {
       if(ameta->IsDefined(name) == Standard_False)
 	{
-	  ErrorMsg << argv[0] << "Name (" << name << ") is unknown" << endm;
+	  ErrorMsg() << argv[0] << "Name (" << name << ") is unknown" << endm;
 	  return 1;
 	}
       ameta->RemoveEntity(name);
@@ -595,7 +595,7 @@ Standard_Integer MSAPI_MetaSchema::Remove(const Standard_Integer argc, const WOK
     {
       if(ameta->IsDefined(name) == Standard_False)
 	{
-	  ErrorMsg << argv[0] << "Name (" << name << ") is unknown" << endm;
+	  ErrorMsg() << argv[0] << "Name (" << name << ") is unknown" << endm;
 	  return 1;
 	}
       ameta->RemoveType(name);
