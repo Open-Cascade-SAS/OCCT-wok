@@ -10,9 +10,6 @@
 #include <WOKTclUtils_Path.hxx>
 #include <WOKTclTools_Package.hxx>
 
-//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 #ifdef WNT
 # ifdef _DEBUG
 extern "C" void _debug_break ( char* );
@@ -26,6 +23,8 @@ extern "C" int WOKUTILS_EXPORT Wokutils_Init(WOKTclTools_PInterp);
 
 int Wokutils_Init(WOKTclTools_PInterp interp)
 {
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
+
   if(WOKTclTools_Interpretor::Current().IsNull())
     {
       CurrentInterp = new WOKTclTools_Interpretor(interp);

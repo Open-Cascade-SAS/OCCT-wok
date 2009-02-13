@@ -21,9 +21,6 @@
 #include <MSAPI_ExternMet.hxx>
 #include <MSAPI_MemberMet.hxx>
 
-//extern Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-Standard_IMPORT Handle(WOKTclTools_Interpretor) CurrentInterp;
-
 #ifdef WNT
 # ifdef _DEBUG
 extern "C" void _debug_break ( char* );
@@ -40,6 +37,8 @@ int Ms_Init(WOKTclTools_PInterp interp)
   
   OSD::SetSignal();                  //==== Armed the signals. =============
  
+  Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
+
   if(WOKTclTools_Interpretor::Current().IsNull())
     {
       CurrentInterp = new WOKTclTools_Interpretor;
