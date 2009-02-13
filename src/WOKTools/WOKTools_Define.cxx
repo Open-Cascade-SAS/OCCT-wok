@@ -41,14 +41,14 @@ void WOKTools_Define::GetDefineIn(const Handle(TCollection_HAsciiString)& aline)
   if( apos == 0 )
     {
       // il n'y a pas de = dans la ligne
-      ErrorMsg << "WOKTools_Define::GetDefineIn" << "Missing = in line : " << aline << endm;
+      ErrorMsg() << "WOKTools_Define::GetDefineIn" << "Missing = in line : " << aline << endm;
       Standard_ProgramError::Raise("WOKTools_Define::GetDefineIn");
     }
 
   if( apos == 1 )
     {
       // il n'y a pas de nom du parametre dans la ligne
-      ErrorMsg << "WOKTools_Define::GetDefineIn" << "Missing parameter name in line : " << aline << endm;
+      ErrorMsg() << "WOKTools_Define::GetDefineIn" << "Missing parameter name in line : " << aline << endm;
       Standard_ProgramError::Raise("WOKTools_Define::GetDefineIn");
     }  
   // evaluation de du nom
@@ -144,7 +144,7 @@ Standard_Boolean WOKTools_Define::IsValueValid(const Handle(TCollection_HAsciiSt
   
   if(!valid)
     {
-      ErrorMsg << "WOKTools_Define::IsValueValid" 
+      ErrorMsg() << "WOKTools_Define::IsValueValid" 
 	       << "Parameter value with ~ or * in : " << avalue << " is illegal" << endm;
     }
   return valid;

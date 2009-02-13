@@ -95,8 +95,8 @@ void WOKTools_Options::Next()
 	    {
 	      mymore = Standard_False;
 	      myerrflg = Standard_True;
-	      ErrorMsg << myargv[0] << "option - is illegal" << endm;
-	      ErrorMsg << myargv[0] << endm;
+	      ErrorMsg() << myargv[0] << "option - is illegal" << endm;
+	      ErrorMsg() << myargv[0] << endm;
 	      if(myusage != NULL) (*myusage)(myargv[0]);
 	    }
 	  else
@@ -113,8 +113,8 @@ void WOKTools_Options::Next()
 	    }
 	  else
 	    {
-	      ErrorMsg << myargv[0] << "Option " << (char)mycuropt << " is exclusive with : " << (char)myexclflg << endm;
-	      ErrorMsg << myargv[0] << endm;
+	      ErrorMsg() << myargv[0] << "Option " << (char)mycuropt << " is exclusive with : " << (char)myexclflg << endm;
+	      ErrorMsg() << myargv[0] << endm;
 	      if(myusage != NULL) (*myusage)(myargv[0]);
 	      myerrflg = Standard_True;
 	    }
@@ -256,13 +256,13 @@ void WOKTools_Options::Define(const Handle(TCollection_HAsciiString)& aname, con
 {
   if(aname.IsNull())
     { 
-      ErrorMsg << "WOKTools_Options::Define"
+      ErrorMsg() << "WOKTools_Options::Define"
 	       << "Invalid Null name for define" << endm;
       return;
     }
   if(avalue.IsNull())
     { 
-      ErrorMsg << "WOKTools_Options::Define"
+      ErrorMsg() << "WOKTools_Options::Define"
 	       << "Invalid Null value for define" << endm;
       return;
     }

@@ -400,4 +400,26 @@ WOKTools_Message& flushm(WOKTools_Message& amsgq)
   return result;
 }
 
+WOKTools_Info& InfoMsg()
+{
+  static WOKTools_Info InfoMsg;
+  return InfoMsg;
+}
 
+WOKTools_Warning& WarningMsg()
+{
+  static WOKTools_Warning WarningMsg;
+  return WarningMsg;
+}
+
+WOKTools_Error& ErrorMsg()
+{
+  static WOKTools_Error ErrorMsg;
+  return ErrorMsg;
+}
+
+WOKTools_Verbose& VerboseMsg()
+{
+  static WOKTools_Verbose VerboseMsg;
+  return VerboseMsg;
+}

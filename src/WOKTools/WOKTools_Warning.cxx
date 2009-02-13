@@ -5,7 +5,7 @@
 
 #include <WOKTools_Warning.ixx>
 
-Standard_EXPORT WOKTools_Warning WarningMsg;
+Standard_EXPORT WOKTools_Warning WarningMsg();
 
 WOKTools_Warning::WOKTools_Warning() : WOKTools_Message("WOK_WARNING", "Warning : ")
 {

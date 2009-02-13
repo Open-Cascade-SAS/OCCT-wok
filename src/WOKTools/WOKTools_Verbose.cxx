@@ -15,7 +15,7 @@
 
 #include <WOKTools_Verbose.ixx>
 
-Standard_EXPORT WOKTools_Verbose VerboseMsg;
+Standard_EXPORT WOKTools_Verbose VerboseMsg();
 
 WOKTools_Verbose::WOKTools_Verbose(const Standard_CString astr) : WOKTools_Message(astr, "Verbose : ")
 {
@@ -43,4 +43,3 @@ WOKTools_Verbose& WOKTools_Verbose::LocalSwitcher(const Standard_CString aswitch
 
 Standard_Character WOKTools_Verbose::Code() const 
 {return 'V';}
-

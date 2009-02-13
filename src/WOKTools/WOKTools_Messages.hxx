@@ -23,10 +23,10 @@
 # endif  // WNT
 #endif  // __WOKTools_API
 
-extern __WOKTools_API WOKTools_Info    InfoMsg;
-extern __WOKTools_API WOKTools_Warning WarningMsg;
-extern __WOKTools_API WOKTools_Error   ErrorMsg;
-extern __WOKTools_API WOKTools_Verbose VerboseMsg;
+extern __WOKTools_API WOKTools_Info&    InfoMsg();
+extern __WOKTools_API WOKTools_Warning& WarningMsg();
+extern __WOKTools_API WOKTools_Error&   ErrorMsg();
+extern __WOKTools_API WOKTools_Verbose& VerboseMsg();
 
 extern __WOKTools_API WOKTools_Message& endm(WOKTools_Message&);
 extern __WOKTools_API WOKTools_Message& flushm(WOKTools_Message&);
@@ -35,11 +35,11 @@ extern __WOKTools_API WOKTools_Message& flushm(WOKTools_Message&);
 #define WOK_VERBOSE 1
 #endif
 
-#define WOK_TRACE0(msg) if(VerboseMsg.IsSet()) { msg }
+#define WOK_TRACE0(msg) if(VerboseMsg().IsSet()) { msg }
 
-#define WOK_TRACE if(VerboseMsg.IsSet())
+#define WOK_TRACE if(VerboseMsg().IsSet())
 
 
-#define WOK_BEGIN_TRACE  if(VerboseMsg.IsSet()) {
+#define WOK_BEGIN_TRACE  if(VerboseMsg().IsSet()) {
 #define WOK_END_TRACE    }
 #endif

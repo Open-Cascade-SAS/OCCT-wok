@@ -5,7 +5,7 @@
 
 #include <WOKTools_Error.ixx>
 
-Standard_EXPORT WOKTools_Error ErrorMsg;
+Standard_EXPORT WOKTools_Error ErrorMsg();
 
 WOKTools_Error::WOKTools_Error() : WOKTools_Message("WOK_ERROR", "Error   : ")
 {
