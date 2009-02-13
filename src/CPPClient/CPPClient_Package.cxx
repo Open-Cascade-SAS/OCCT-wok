@@ -198,7 +198,7 @@ void CPPClient_Package(const Handle(MS_MetaSchema)& aMeta,
     CPPClient_PackageDerivated(aMeta,api,aPackage,outfile,incp,Supplement);
   }
   else {
-    ErrorMsg << "CPPClient" << "CPPClient_Package - the package is NULL..." << endm;
+    ErrorMsg() << "CPPClient" << "CPPClient_Package - the package is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

@@ -62,14 +62,14 @@ void CPPClient_Init(const Handle(MS_MetaSchema)& aMeta,
 	}
       }
       else {
-	ErrorMsg << "CPPClient" << "Init : Method " << asyncmet->Value(i) << " not found..." << endm;
+	ErrorMsg() << "CPPClient" << "Init : Method " << asyncmet->Value(i) << " not found..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }
     
   }
   else {
-    ErrorMsg << "CPPClient" << "Init : Client " << aName << " not found..." << endm;
+    ErrorMsg() << "CPPClient" << "Init : Client " << aName << " not found..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }
@@ -111,11 +111,11 @@ Handle(EDL_API)&  CPPClient_LoadTemplate(const Handle(TColStd_HSequenceOfHAsciiS
     }
 
     if (api->Execute("CPPClient_Template.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPClient" << "unable to load : CPPClient_Template.edl" << endm;
+      ErrorMsg() << "CPPClient" << "unable to load : CPPClient_Template.edl" << endm;
       Standard_NoSuchObject::Raise();
     } 
     if (api->Execute("CPPClient_General.edl") != EDL_NORMAL) {
-      ErrorMsg << "CPPClient" << "unable to load : CPPClient_General.edl" << endm;
+      ErrorMsg() << "CPPClient" << "unable to load : CPPClient_General.edl" << endm;
       Standard_NoSuchObject::Raise();
     } 
   }
@@ -265,7 +265,7 @@ void CPPClient_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 	thetype = aMeta->GetType(parname);
       }
       else {
-	ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }
@@ -291,7 +291,7 @@ void CPPClient_MethodUsedTypes(const Handle(MS_MetaSchema)& aMeta,
 	  thetype = aMeta->GetType(parname);
 	}
 	else {
-	  ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+	  ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
 	  Standard_NoSuchObject::Raise();
 	}
       }
@@ -382,7 +382,7 @@ Handle(TCollection_HAsciiString) CPPClient_BuildType(const Handle(MS_MetaSchema)
 	aType = aMeta->GetType(parname);
       }
       else {
-	ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+	ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
 	Standard_NoSuchObject::Raise();
       }
     }
@@ -414,7 +414,7 @@ Handle(TCollection_HAsciiString) CPPClient_BuildType(const Handle(MS_MetaSchema)
     }
   }
   else {
-    ErrorMsg << "CPPClient" << "Type " << aTypeName << " not defined..." << endm;
+    ErrorMsg() << "CPPClient" << "Type " << aTypeName << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
 
@@ -457,7 +457,7 @@ Handle(TCollection_HAsciiString) CPPClient_BuildParameterList(const Handle(MS_Me
 	    aType = aMeta->GetType(parname);
 	  }
 	  else {
-	    ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+	    ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
 	    Standard_NoSuchObject::Raise();
 	  }
 	}
@@ -596,8 +596,8 @@ void CPPClient_BuildAsynchronousMethod(const Handle(MS_MetaSchema)& aMeta,
   theArgList = CPPClient_BuildParameterList(aMeta,m->Params(),forDeclaration);
 
   if (theArgList == CPPClient_ErrorArgument) {
-    WarningMsg << "CPPClient" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
-    WarningMsg << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
+    WarningMsg() << "CPPClient" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
+    WarningMsg() << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
     api->AddVariable(VMethod,CPPClient_ErrorArgument->ToCString());
     return;
   }
@@ -636,8 +636,8 @@ void CPPClient_BuildAsynchronousMethod(const Handle(MS_MetaSchema)& aMeta,
     Handle(TCollection_HAsciiString) returnT = CPPClient_BuildType(aMeta,retType->TypeName());
 
     if (returnT == CPPClient_ErrorArgument) {
-      WarningMsg << "CPPClient" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
-      WarningMsg << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
+      WarningMsg() << "CPPClient" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
+      WarningMsg() << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
       api->AddVariable(VMethod,CPPClient_ErrorArgument->ToCString());
       return;
     }
@@ -785,8 +785,8 @@ void CPPClient_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     theArgList = CPPClient_BuildParameterList(aMeta,m->Params(),forDeclaration);
     
     if (theArgList == CPPClient_ErrorArgument) {
-      WarningMsg << "CPPClient" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
-      WarningMsg << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
+      WarningMsg() << "CPPClient" << "Bad argument type in method (pointer or imported type) " << m->FullName() << endm;
+      WarningMsg() << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
       api->AddVariable(VMethod,CPPClient_ErrorArgument->ToCString());
       return;
     }
@@ -819,8 +819,8 @@ void CPPClient_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
       Handle(TCollection_HAsciiString) returnT = CPPClient_BuildType(aMeta,retType->TypeName());
       
       if (returnT == CPPClient_ErrorArgument) {
-	WarningMsg << "CPPClient" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
-	WarningMsg << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
+	WarningMsg() << "CPPClient" << "Return type (pointer or imported type) of " << m->FullName() << " not exportable." << endm;
+	WarningMsg() << "CPPClient" << "Method : " << m->FullName() << " not exported." << endm;
 	api->AddVariable(VMethod,CPPClient_ErrorArgument->ToCString());
 	return;
       }
@@ -983,7 +983,7 @@ Handle(TCollection_HAsciiString) CPPClient_BuildAsynchronousReturnCode(const Han
       rtype = aMeta->GetType(parname);
     }
     else {
-      ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+      ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -1047,7 +1047,7 @@ Handle(TCollection_HAsciiString) CPPClient_BuildReturnCode(const Handle(MS_MetaS
       rtype = aMeta->GetType(parname);
     }
     else {
-      ErrorMsg << "CPPClient" << "Type " << parname << " not defined..." << endm;
+      ErrorMsg() << "CPPClient" << "Type " << parname << " not defined..." << endm;
       Standard_NoSuchObject::Raise();
     }
   }
@@ -1354,7 +1354,7 @@ void CPPClient_TypeExtract(const Handle(MS_MetaSchema)& aMeta,
     srcPackage = aMeta->GetPackage(aName);
   }
   else {
-    ErrorMsg << "CPPClient" << aName->ToCString() << " not defined..." << endm;
+    ErrorMsg() << "CPPClient" << aName->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
   
@@ -1594,14 +1594,14 @@ void CPPClient_Extract(const Handle(MS_MetaSchema)& aMeta,
     else if (strcmp(Mode,"CPPClient_INCOMPLETE") == 0)   {theMode = CPPClient_INCOMPLETE;}
     else if (strcmp(Mode,"CPPClient_SEMICOMPLETE") == 0) {theMode = CPPClient_SEMICOMPLETE;}
     else {
-      ErrorMsg << "CPPClient" << "Unknown extraction mode:" << Mode << endm;
+      ErrorMsg() << "CPPClient" << "Unknown extraction mode:" << Mode << endm;
       Standard_NoSuchObject::Raise();
     }
     
     CPPClient_TypeExtract(aMeta,aTypeName,edlsfullpath,outdir,outfile,theMode);
   }
   else {
-    ErrorMsg << "CPPClient" << "Type " << aTypeName << " not defined..." << endm;
+    ErrorMsg() << "CPPClient" << "Type " << aTypeName << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

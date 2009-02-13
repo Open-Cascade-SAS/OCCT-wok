@@ -248,7 +248,7 @@ void CPPClient_MPVClass(const Handle(MS_MetaSchema)& aMeta,
     }
   }
   else {
-    ErrorMsg << "CPPClient" << "CPPClient_TransientClass - the class is NULL..." << endm;
+    ErrorMsg() << "CPPClient" << "CPPClient_TransientClass - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }

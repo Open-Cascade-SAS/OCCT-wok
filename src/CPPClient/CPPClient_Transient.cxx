@@ -291,7 +291,7 @@ void CPPClient_TransientClass(const Handle(MS_MetaSchema)& aMeta,
     CPPClient_TransientDerivated(aMeta,api,aClass,outfile,incp,Supplement,MustBeComplete);
   }
   else {
-    ErrorMsg << "CPPClient" << "CPPClient_TransientClass - the class is NULL..." << endm;
+    ErrorMsg() << "CPPClient" << "CPPClient_TransientClass - the class is NULL..." << endm;
     Standard_NoSuchObject::Raise();
   }
 }
