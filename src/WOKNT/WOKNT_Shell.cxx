@@ -127,7 +127,7 @@ void WOKNT_Shell :: Execute (  const Handle( TCollection_HAsciiString )& aCmdLin
 
 
 #ifdef WOK_VERBOSE
-   VerboseMsg("WOK_COMMAND") << "WOKNT_Shell::Execute" << aCmdLine << endm;
+   VerboseMsg()("WOK_COMMAND") << "WOKNT_Shell::Execute" << aCmdLine << endm;
 #endif
 
 
@@ -304,7 +304,7 @@ void WOKNT_Shell :: Send ( const Handle(TCollection_HAsciiString)& aString ) {
 
 
 #ifdef WOK_VERBOSE
-   VerboseMsg("WOK_COMMAND") << "WOKNT_Shell::Send" << aString << endm;
+   VerboseMsg()("WOK_COMMAND") << "WOKNT_Shell::Send" << aString << endm;
 #endif
 
  myCmdLine -> AssignCat ( aString );
