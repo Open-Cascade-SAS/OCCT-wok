@@ -40,7 +40,7 @@
 #include <CPPJini_Define.hxx>
 #include <CPPJini_ClientInfo.hxx>
 #include <CPPJini_ExtractionType.hxx>
-#include <CPPJini_DataMapOfAsciiStringInteger.hxx>
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
 
 extern Standard_Boolean CPPJini_HasComplete (
                          const Handle( TCollection_HAsciiString )&,
@@ -226,7 +226,7 @@ void CPPJini_TransientClass (
 
    if (  methods -> Length () > 0  )  {
 
-    CPPJini_DataMapOfAsciiStringInteger mapnames;
+    TColStd_DataMapOfAsciiStringInteger mapnames;
     TColStd_Array1OfInteger             theindexes (  1, methods -> Length ()  );
 
     theindexes.Init ( 0 );

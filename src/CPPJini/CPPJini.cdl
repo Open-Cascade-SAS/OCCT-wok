@@ -19,14 +19,6 @@ package CPPJini
   private class SequenceOfClientInfo instantiates
    Sequence from TCollection ( ClientInfo ); 
 
-
-  class DataMapOfAsciiStringInteger instantiates
-   DataMap from TCollection (
-                 AsciiString from TCollection,
-                 Integer     from Standard,
-                 AsciiString from TCollection
-                );
-
   enumeration ExtractionType is
 
    COMPLETE,

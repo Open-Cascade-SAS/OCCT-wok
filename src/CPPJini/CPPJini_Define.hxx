@@ -41,7 +41,7 @@ extern Handle(TCollection_HAsciiString) CPPJini_InterfaceName;
 
 Handle(TCollection_HAsciiString)& CPPJini_TransientRootName();
 
-class CPPJini_DataMapOfAsciiStringInteger;
+class TColStd_DataMapOfAsciiStringInteger;
 class TColStd_Array1OfInteger;
 
 void CPPJini_WriteFile(const Handle(EDL_API)& api,
@@ -68,7 +68,7 @@ void CPPJini_Enum(const Handle(MS_MetaSchema)& aMeta,
 
 void CPPJini_CheckMethod(const Standard_Integer index,
 			 const Handle(TCollection_HAsciiString)& thename,
-			 CPPJini_DataMapOfAsciiStringInteger& themap,
+			 TColStd_DataMapOfAsciiStringInteger& themap,
 			 TColStd_Array1OfInteger& theindexes);
 			 
 

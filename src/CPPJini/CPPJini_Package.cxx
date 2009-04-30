@@ -30,6 +30,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
 
 #include <WOKTools_Messages.hxx>
 #include <WOKTools_MapOfHAsciiString.hxx>
@@ -37,7 +38,6 @@
 
 #include <CPPJini_Define.hxx>
 #include <CPPJini_ExtractionType.hxx>
-#include <CPPJini_DataMapOfAsciiStringInteger.hxx>
 
 extern WOKTools_MapOfHAsciiString                   g_ImportMap;
 extern WOKTools_DataMapOfHAsciiStringOfHAsciiString g_SkipMap;
@@ -146,7 +146,7 @@ void CPPJini_Package (
 
    if (  methods -> Length () > 0  )  {
 
-    CPPJini_DataMapOfAsciiStringInteger mapnames;	
+    TColStd_DataMapOfAsciiStringInteger mapnames;	
     TColStd_Array1OfInteger             theindexes (  1, methods -> Length ()  );
 
     theindexes.Init ( 0 );	

@@ -31,6 +31,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 
@@ -40,7 +41,6 @@
 #include <CPPJini_Define.hxx>
 #include <CPPJini_ClientInfo.hxx>
 #include <CPPJini_ExtractionType.hxx>
-#include <CPPJini_DataMapOfAsciiStringInteger.hxx>
 
 extern WOKTools_MapOfHAsciiString   g_ImportMap;
 extern Handle( CPPJini_ClientInfo ) g_Client;
@@ -193,7 +193,7 @@ void CPPJini_MPVClass (
 #endif  // CPPJini_CREATE_EMPTY_JAVA_CONSTRUCTOR
   if ( MustBeComplete != CPPJini_INCOMPLETE ) {
 
-   CPPJini_DataMapOfAsciiStringInteger mapnames;
+   TColStd_DataMapOfAsciiStringInteger mapnames;
       
    TColStd_Array1OfInteger theindexes (  1, methods -> Length ()  );
    theindexes.Init( 0 );

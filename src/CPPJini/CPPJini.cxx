@@ -1,5 +1,4 @@
 #include <CPPJini.hxx>
-#include <CPPJini_DataMapOfAsciiStringInteger.hxx>
 #include <CPPJini_ClientInfo.hxx>
 #include <CPPJini_SequenceOfClientInfo.hxx>
 
@@ -16,6 +15,7 @@
 
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_DataMapOfAsciiStringInteger.hxx>
 
 #include <Standard_ProgramError.hxx>
 
@@ -989,7 +989,7 @@ Handle( TCollection_HAsciiString ) CPPJini_BuildParameterList (
 void CPPJini_CheckMethod (
       const Standard_Integer                    index,
       const Handle( TCollection_HAsciiString )& thename,
-      CPPJini_DataMapOfAsciiStringInteger&      themap,
+      TColStd_DataMapOfAsciiStringInteger&      themap,
       TColStd_Array1OfInteger&                  theindexes
      ) {
 
