@@ -121,13 +121,8 @@ is
     class HSequenceOfDefine 
     	instantiates HSequence from TCollection ( Define from WOKTools,  SequenceOfDefine  from WOKTools);
 
-    class SequenceOfBoolean instantiates
-	  Sequence from TCollection(Boolean from Standard);
-    class HSequenceOfBoolean instantiates
-	  HSequence from TCollection(Boolean from Standard,SequenceOfBoolean);  
     class Array1OfHAsciiString instantiates 
     	  Array1 from TCollection(HAsciiString from TCollection);
-    
     class SortOfHAsciiString instantiates 
     	  HeapSort from SortTools(HAsciiString from TCollection,
     	    	    	    	  Array1OfHAsciiString from WOKTools,

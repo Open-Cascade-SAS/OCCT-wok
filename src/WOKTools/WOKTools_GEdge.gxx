@@ -1,5 +1,3 @@
-#include <WOKTools_HSequenceOfBoolean.hxx>
-
 WOKTools_GEdge::WOKTools_GEdge()
 {
 }

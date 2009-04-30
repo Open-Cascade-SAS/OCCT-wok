@@ -1,4 +1,3 @@
-#include <WOKTools_HSequenceOfBoolean.hxx>
 #include WOKTools_GEdge_hxx
 
 WOKTools_GNode::WOKTools_GNode(const GraphItem& anItem)
