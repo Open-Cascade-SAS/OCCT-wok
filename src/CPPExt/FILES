@@ -12,6 +12,8 @@ CPPExt_Alias.cxx
 CPPExt_Pointer.cxx
 CPPExt_TemplateCSFDB.edl
 CPPExt_Template.edl
+CPPExt_TemplateOBJS.edl
+CPPExt_TemplateOBJY.edl
 CPPExt.hxx
 CPPExt_Define.hxx
 FILES
