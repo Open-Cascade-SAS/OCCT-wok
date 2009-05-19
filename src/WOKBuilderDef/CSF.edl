@@ -307,7 +307,7 @@
    @if (%Station == "wnt") then
 
       --<< TODO : If applicable , modify the root location where C++ compiler is installed.
-      @set %CSF_CXX_COMPILER = "D:/DevTools/VStudio/VC98/bin/cl ";
+      @set %CSF_CXX_COMPILER = "D:/DevTools/VStudio/VC7/bin/cl ";
       -->> END TODO
       @set %STLPortHome = "";
       @if ( %STLPortHome != "") then
@@ -326,7 +326,7 @@
       @set %CSF_CXX_ModeOptDeb = " -MDd -Gm -GX -Od -Zi -DDEB -D_DEBUG ";
 
       --<< TODO : If applicable , modify the root location where c compiler is installed (same as above).
-      @set %CSF_C_COMPILER   = "D:/DevTools/VStudio/VC98/bin/cl ";
+      @set %CSF_C_COMPILER   = "D:/DevTools/VStudio/VC7/bin/cl ";
       @string %CSF_C_INCLUDE +=  "";
       -->> END TODO
 
@@ -346,7 +346,7 @@
       @set %CSF_F77_ModeOpt = " -DNDEBUG -DNo_Exception ";
       @set %CSF_F77_ModeOptDeb = " -DDEB -D_DEBUG ";
 
-      @set %CSF_LINKER = "D:/DevTools/VStudio/VC98/bin/link ";
+      @set %CSF_LINKER = "D:/DevTools/VStudio/VC7/bin/link ";
       @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER ;
       @set %CSF_VirtualDevice = "Q:";
       @set %CSF_LINKER_DBMSOpt = "";
@@ -357,7 +357,7 @@
       @set %CSF_LINKER_SysOpt = "-nologo -incremental:no -machine:IX86 -debug ";
       @set %CSF_LINKER_SysLib = "";
 
-      @set %CSF_LibraryHeaderLib = "D:/DevTools/VStudio/VC98/bin/lib ";
+      @set %CSF_LibraryHeaderLib = "D:/DevTools/VStudio/VC7/bin/lib ";
       @set %CSF_LibraryHeaderOpt = "-nologo ";
 
       --<< TODO : If applicable , modify the root location where Java is installed.
