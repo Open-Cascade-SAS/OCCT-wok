@@ -70,7 +70,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="/DLL __TKDEP__"
+				AdditionalDependencies="__TKDEP__"
+				OutputFile=".\..\..\..\win64\bind\__XQTNAM__.__XQTEXT__"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\win64\libd"
@@ -164,7 +165,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="/DLL __TKDEP__"
+				AdditionalDependencies="__TKDEP__"
+				OutputFile=".\..\..\..\win64\bin\__XQTNAM__.__XQTEXT__"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\..\win64\lib"

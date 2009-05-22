@@ -1232,10 +1232,15 @@ proc osutils:vc8x_64 { dir tkloc {tmplat {} } {fmtcpp {} } } {
     #puts "$temp3 $files"
     regsub -all -- {__FILES__} $temp3 $files temp4
     regsub -all -- {__CONF__} $temp4 $binext temp5
+    if { $binext == 2 } {
+	regsub -all -- {__XQTEXT__} $temp5 "dll" temp6
+    } else {
+	regsub -all -- {__XQTEXT__} $temp5 "exe" temp6
+    }
     set fp [open [set fdsp [file join $dir ${tf}.vcproj]] w]
     fconfigure $fp -translation crlf
  
-    puts $fp $temp5
+    puts $fp $temp6
     set fout [lappend fout $fdsp]
     close $fp
    }
