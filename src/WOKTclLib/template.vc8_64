@@ -212,7 +212,7 @@
 		<Filter
 			Name="Source files"
 			>
-                        __FILES__
+__FILES__
 		</Filter>
 	</Files>
 	<Globals>

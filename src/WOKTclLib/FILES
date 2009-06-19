@@ -154,6 +154,10 @@ srcinc:::template.vc8
 srcinc:::template.vc8x
 srcinc:::template.vc8_64
 srcinc:::template.vc8x_64
+srcinc:::template.vc9
+srcinc:::template.vc9x
+srcinc:::template.vc9_64
+srcinc:::template.vc9x_64
 srcinc:::osutils.tcl
 srcinc:::config.h
 srcinc:::opencascade.gif

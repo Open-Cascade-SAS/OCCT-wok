@@ -38,7 +38,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win32\bin/TKernel.tlb"
+				TypeLibraryName=".\..\..\..\win32\bin/__TKNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -134,7 +134,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win32\bind/TKernel.tlb"
+				TypeLibraryName=".\..\..\..\win32\bind/__TKNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -211,7 +211,7 @@
 		<Filter
 			Name="Source files"
 			>
-                        __FILES__
+__FILES__
 		</Filter>
 	</Files>
 	<Globals>

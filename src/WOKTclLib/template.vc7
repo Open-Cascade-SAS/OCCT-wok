@@ -148,7 +148,7 @@
 		<Filter
 			Name="Source files"
 			Filter="">
-                        __FILES__
+__FILES__
 		</Filter>
 	</Files>
 	<Globals>
