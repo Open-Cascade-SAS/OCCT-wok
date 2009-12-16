@@ -142,7 +142,6 @@ proc wokIntegrebase  { } {
             ;#
             ;# Lecture du report
             ;#  
-	    catch { unset table info notes }
             set stat [wokStore:Report:Process normal $REPORT table info notes]
             if { $stat == -1 } {
                 wokIntegreCleanup $broot table [list $jnlid] $dirtmp 
@@ -162,7 +161,8 @@ proc wokIntegrebase  { } {
             set cmdid [open $cmdtmp w]
             
             wokIntegre:BASE:UpdateRef $broot table $version $comment $cmdid
-            wokIntegre:BASE:EOF $cmdid ; close $cmdid
+            wokIntegre:BASE:EOF $cmdid  
+	    close $cmdid
 
             ;#
             ;# 1 bis. Tester [id user] peut ecrire dans le workbench qui sert de REFCOPY
@@ -199,7 +199,8 @@ proc wokIntegrebase  { } {
             ;#
             ;# 4. Fermer le journal temporaire
             ;#
-            wokIntegre:Journal:WriteNotes $notes $jnlid ; close $jnlid
+            wokIntegre:Journal:WriteNotes $notes $jnlid  
+	    close $jnlid
             set saved_notes $notes
             ;#
             ;# 5. Mettre a jour le journal , le scoop et le compteur 
@@ -221,8 +222,8 @@ proc wokIntegrebase  { } {
             wokIntegre:RefCopy:GetPathes  table $curwb
             set dirtmpu /tmp/wintegrecreateunits[pid]
             catch {
-                wokUtils:FILES:rmdir $dirtmpu 
-                wokUtils:FILES:mkdir $dirtmpu
+                rmdir -nocomplain $dirtmpu 
+                mkdir -path $dirtmpu
             }
             set chkout $dirtmpu/checkout.cmd
             set chkid  [open $chkout w]
@@ -283,7 +284,7 @@ proc wokIntegreCleanup { broot table listid dirtmp } {
     }
     if [info exists dirtmp] {
         foreach d $dirtmp {
-            catch { wokUtils:FILES:rmdir $d }
+            catch { wokUtils:FILES:removedir $d }
         }
     }
     return
@@ -402,14 +403,14 @@ proc wokIntegre:BASE:InitRef { broot table vrs comment fileid } {
 proc wokIntegre:BASE:Fill { broot elmin {action move} } {
     set bdir $broot
     if ![file exists $bdir] {
-        wokUtils:FILES:mkdir $bdir
-        wokUtils:FILES:chmod 0777 $bdir
+        mkdir -path $bdir
+        chmod 0777 $bdir
     }
  
     foreach e $elmin {
         if { [file isfile $e] } {
             set bna [file tail $e]
-            catch { wokUtils:FILES:rename $e $bdir/$bna }
+            catch { frename $e $bdir/$bna }
         } elseif { [file isdirectory $e] } {
             set dl {}
             foreach f [wokUtils:EASY:readdir $e] {
@@ -457,7 +458,7 @@ proc wokIntegre:BASE:LS { } {
 proc wokIntegre:BASE:BTMPCreate { broot Unit {create 0} } {
     if { $create } {
         wokIntegre:BASE:BTMPDelete $broot $Unit
-        wokUtils:FILES:mkdir  $broot/$Unit/tmp
+        mkdir -path $broot/$Unit/tmp
     }
     return $broot/$Unit/tmp
 }
@@ -467,7 +468,13 @@ proc wokIntegre:BASE:BTMPCreate { broot Unit {create 0} } {
 # Le directory courant ne doit pas etre unit/tmp
 #;<
 proc wokIntegre:BASE:BTMPDelete { broot Unit } {
-    catch { wokUtils:FILES:rmdir $broot/$Unit/tmp }
+    set R $broot/$Unit/tmp
+    if [file exists $R] {
+        foreach f [wokUtils:EASY:readdir $R] {
+            unlink $R/$f
+        }
+        rmdir -nocomplain $R
+    }
     return 1
 }
 #
@@ -526,7 +533,7 @@ proc wokIntegre:RefCopy:SetWritable { table user } {
         foreach e [lrange $TLOC($UD) 1 end] {
             set file $dirsrc/[lindex $e 0]
             if [file owned $file] {
-                wokUtils:FILES:chmod u+w $file
+                chmod u+w $file
             } else {
                 msgprint -c WOKVC -e "Protection of $file cannot be modified (File not found or not owner)."
                 return -1
@@ -556,7 +563,7 @@ proc wokIntegre:RefCopy:FillRef {  table {fileid stdout} } {
             set file [lindex $elm 0]
             if { [string compare $vrs x.x] != 0 } {
                 if [file writable $dirsrc/$file] {
-                    wokUtils:FILES:rename $dirsrc/$file $dirsrc/${file}-sav
+                    frename $dirsrc/$file $dirsrc/${file}-sav
                     msgprint -c WOKVC -i "File $dirsrc/$file renamed ${file}-sav"
                 }
                 set Sfile $root/[wokIntegre:BASE:ftos $file $vrs]
@@ -590,7 +597,7 @@ proc wokIntegre:RefCopy:FillUser {  table {force 0} {fileid stdout} {mask 644} }
                 if [file exists $dirsrc/$file] {
                     if { $force } {
                         if { [file writable $dirsrc/$file] } {
-                            wokUtils:FILES:rename $dirsrc/$file $dirsrc/${file}-sav
+                            frename $dirsrc/$file $dirsrc/${file}-sav
                             msgprint -c WOKVC -i "File $dirsrc/$file renamed ${file}-sav"
                             set Sfile $root/[wokIntegre:BASE:ftos $file $vrs]
                             wokIntegre:BASE:GetFile $Sfile $vrs $fileid
@@ -810,7 +817,7 @@ proc wokGetcopy { } {
         foreach e $RES {
             if { [file exists [file join $to $e]] } {
                 msgprint -c WOKVC -w "Renamed [file join $to $e] [file join $to $e]-sav"
-                wokUtils:FILES:rename [file join $to $e] [file join $to $e]-sav
+                frename [file join $to $e] [file join $to $e]-sav
             }
             if { $VERBOSE } { msgprint -c WOKVC -i "Copying [file join $from $e] to [file join $to $e]" } 
             wokUtils:FILES:copy [file join $from $e] [file join $to $e]
@@ -890,8 +897,8 @@ proc wokGetbase { } {
             puts [exec cat $dirtmp/checkout.cmd]
         }
         
-        wokUtils:FILES:delete $chkout
-        wokUtils:FILES:rmdir  $dirtmp
+        unlink $chkout
+        rmdir -nocomplain $dirtmp
         return $statx
     }
 }

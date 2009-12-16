@@ -6,7 +6,7 @@
 ;;; Variables
 
 (defconst wok-comm-AtFS-Header
-  "$Header: /disk4/QA/cvsroot/test/ros/src/WOKTclLib/wok-comm.el,v 1.3 2008-03-07 17:43:17 cascade Exp $")
+  "$Header: /disk4/QA/cvsroot/test/ros/src/WOKTclLib/wok-comm.el,v 1.4 2009-12-16 08:40:00 mnt Exp $")
 
 (defvar wok-comm-initialized nil
   "If non-nil, the Wok communication module has already been initialized.")
