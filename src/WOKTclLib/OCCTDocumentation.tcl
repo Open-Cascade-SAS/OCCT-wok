@@ -1,1078 +1,253 @@
-set OCCTDoc_DescriptionUnit "OS"
 
-proc OCCTDoc_UpdateDoxygenDocumentation {OCCTDoc_DocLocation isSearch} {
-    global OCCTDoc_DescriptionUnit
-    
-    set path_RWorkbench [pwd]
-    
-    # verify is file Modules.tcl present in specific location
-    if {[file exists $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/Modules.tcl] != 1} {
-	puts "File $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/Modules.tcl is absent."
-	puts "     It is impossible to continue the scripts."
-	return
+# generate Doxygen configuration file for specified OCCT module of toolkit
+proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
+
+    # by default take all modules
+    if { [llength $modules] <= 0 } {
+	set modules [OS -lm]
     }
+
+    # create target directory
+    if { ! [file exists $outDir] } {
+	mkdir $outDir
+    }
+ 
+    # set context
+    set one_module [expr [llength $modules] == 1]
+    if { $one_module } {
+	set title "OCCT [$modules:name]"
+	set name $modules
+    } else {
+	set title "Open CASCADE Technology"
+	set name OCCT
+    }
+
+    # get list of header files in the specified modules
+    set filelist {}
+    foreach module $modules {
+	if {[lsearch [OS -lm] $module] == -1 } {
+	    puts "Error: no module $module is known in current workbench"
+	    continue
+	}
+	foreach tk [$module:toolkits] {
+	    foreach pk [osutils:tk:units [woklocate -u $tk]] {
+		lappend filelist [uinfo -p -T pubinclude $pk]
+	    }
+	}
+    } 
+
+    # filter out files Handle_*.hxx and *.lxx
+    set hdrlist {}
+    foreach fileset $filelist {
+        set hdrset {}
+        foreach hdr $fileset {
+	    if { ! [regexp {Handle_.*[.]hxx} $hdr] && ! [regexp {.*[.]lxx} $hdr] } {
+		lappend hdrset $hdr
+	    }
+	}
+	lappend hdrlist $hdrset
+    }
+    set filelist $hdrlist
+
+    # get OCCT version number
+    set occt_version ""
+    set verfile [woklocate -p "Standard:source:Standard_Version.hxx"]
+    if { "$verfile" != "" && [file readable $verfile] } {
+	set vfd [open $verfile "r"]
+	set vmajor ""
+	set vminor ""
+	set vpatch ""
+	set vbuild ""
+	while { [gets $vfd line] >= 0 } {
+	    if { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MAJOR[ \t]*([0-9]+)} $line str num] } {
+		set vmajor $num
+	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MINOR[ \t]*([0-9]+)} $line str num] } {
+		set vminor $num
+	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MAINTENANCE[ \t]*([0-9]+)} $line str num] ||
+                        [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_PATCH[ \t]*([0-9]+)} $line str num] } {
+		set vpatch $num
+	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_BUILD[ \t]*([0-9]+)} $line str num] } {
+		set vbuild .$num
+	    }
+	}
+	close $vfd
+        set occt_version $vmajor.$vminor.$vpatch$vbuild
+    }
+
+    set filename "$outDir/$name.Doxyfile"
+    msgprint -i -c "WOKStep_DocGenerate:Execute" "Generating Doxygen file for $title in $filename"
+    set fileid [open $filename "w"]
+
+    set path_prefix "$outDir/"
+
+    puts $fileid "PROJECT_NAME = \"$title\""
+    puts $fileid "PROJECT_NUMBER = $occt_version "
+    puts $fileid "OUTPUT_DIRECTORY = ${path_prefix}."
+    puts $fileid "CREATE_SUBDIRS   = NO"
+    puts $fileid "OUTPUT_LANGUAGE  = English"
+    puts $fileid "MULTILINE_CPP_IS_BRIEF = YES"
+    puts $fileid "INHERIT_DOCS           = YES"
+    puts $fileid "REPEAT_BRIEF           = NO"
+    puts $fileid "ALWAYS_DETAILED_SEC    = NO"
+    puts $fileid "INLINE_INHERITED_MEMB  = NO"
+    puts $fileid "FULL_PATH_NAMES        = NO"
+    puts $fileid "OPTIMIZE_OUTPUT_FOR_C  = YES"
+    puts $fileid "SUBGROUPING      = YES"
+    puts $fileid "DISTRIBUTE_GROUP_DOC   = YES"
+    puts $fileid "EXTRACT_ALL	= YES"
+    puts $fileid "EXTRACT_PRIVATE	= NO"
+    puts $fileid "EXTRACT_LOCAL_CLASSES = NO"
+    puts $fileid "EXTRACT_LOCAL_METHODS = NO"
+    puts $fileid "HIDE_FRIEND_COMPOUNDS = YES"
+    puts $fileid "HIDE_UNDOC_MEMBERS = NO"
+    puts $fileid "INLINE_INFO = YES"
+    puts $fileid "SHOW_DIRECTORIES	= NO"
+    puts $fileid "VERBATIM_HEADERS = NO"
+    puts $fileid "QUIET		= YES"
+    puts $fileid "WARNINGS		= NO"
+    puts $fileid "ENABLE_PREPROCESSING = YES"
+    puts $fileid "MACRO_EXPANSION = YES"
+    puts $fileid "EXPAND_ONLY_PREDEF = YES"
+    puts $fileid "PREDEFINED = Standard_EXPORT __Standard_API __Draw_API Handle(a):=Handle<a>"
+    puts $fileid "GENERATE_HTML	= YES"
+    puts $fileid "GENERATE_LATEX   = NO"
+    puts $fileid "SEARCH_INCLUDES  = YES"
+    puts $fileid "GENERATE_TAGFILE = ${path_prefix}${name}.tag"
+    puts $fileid "ALLEXTERNALS = NO"
+    puts $fileid "EXTERNAL_GROUPS = NO"
     
-    # get the list of modules
-    set modulesList {}
-    source $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/Modules.tcl
-    set modulesList [$OCCTDoc_DescriptionUnit:Modules]
-    
-    # processing the list of modules and prepare the list of toolkits
-    set toolkitsListOfList {}
-    foreach moduleName $modulesList {
-	set toolkitsList {}
-	if {[file exists $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/$moduleName.tcl]==1} {
-	    source $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/$moduleName.tcl
-	    set toolkitsList [$moduleName:toolkits]
+    # add tag files for OCCT modules (except current one and depending);
+    # this is based on file Modules.tcl in unit "OS" which defines list of modules
+    # in the order of their dependency
+    if { [llength $tagFiles] > 0 } {
+	set tagdef {}
+	foreach tagfile $tagFiles {
+	    if [file exists ${path_prefix}$tagname.tag] {
+		set tagdef "$tagdef \\\n           ${path_prefix}${tagname}.tag=../../${tagname}/html"
+	    }
+	}
+	puts $fileid "TAGFILES = $tagdef"
+    }
+
+    if { $useSearch } {
+	puts $fileid "SEARCHENGINE     = $useSearch"
+#	puts $fileid "SERVER_BASED_SEARCH = NO"
+    }
+    if { "$graphvizPath" == "" && [info exists env(GRAPHVIZ_HOME)] } {
+	set graphvizPath $env(GRAPHVIZ_HOME)
+    }
+    if { "$graphvizPath" != "" } {
+	puts $fileid "HAVE_DOT		= YES"
+	puts $fileid "DOT_PATH		= $graphvizPath"
+    } else {
+	puts "Warning: DOT is not found; use environment variable GRAPHVIZ_HOME or command argument to specify its location"
+	puts $fileid "HAVE_DOT		= NO"
+	puts $fileid "DOT_PATH		= "
+    }
+
+    puts $fileid "COLLABORATION_GRAPH = NO"
+    puts $fileid "ENABLE_PREPROCESSING = YES"
+    puts $fileid "INCLUDE_FILE_PATTERNS = *.hxx *.pxx"
+    puts $fileid "EXCLUDE_PATTERNS = */Handle_*.hxx"
+    puts $fileid "SKIP_FUNCTION_MACROS = YES"
+    puts $fileid "INCLUDE_GRAPH = NO"
+    puts $fileid "INCLUDED_BY_GRAPH = NO"
+    puts $fileid "DOT_MULTI_TARGETS = YES"
+    puts $fileid "DOT_IMAGE_FORMAT = png"
+    puts $fileid "INLINE_SOURCES   = NO"
+
+    # include dirs
+    set incdirs ""
+    foreach wb [w_info -A] {
+	set incdirs "$incdirs [wokparam -v %${wb}_Home]/inc"
+    }
+    puts $fileid "INCLUDE_PATH = $incdirs"
+
+    # list of files to generate
+    set mainpage [OCCDoc_MakeMainPage $outDir/$name.dox $modules]
+    puts $fileid "INPUT		= $mainpage \\"
+    foreach header $filelist {
+	puts $fileid "               $header \\"
+    } 
+    puts $fileid ""
+
+    close $fileid
+
+    return $filename
+}
+
+# generate main page file describing module structure
+proc OCCDoc_MakeMainPage {outFile modules} {
+    set one_module [expr [llength $modules] == 1]
+
+    set fd [open $outFile "w"]
+
+    # main page: list of modules
+    if { ! $one_module } {
+	puts $fd "/**"
+	puts $fd "\\mainpage Open CASCADE Technology"
+	foreach mod $modules {
+	    puts $fd "\\li \\subpage [string tolower module_$mod]"
+	}
+	puts $fd "**/\n"
+    }
+
+    # one page per module: list of toolkits
+    set toolkits {}
+    foreach mod $modules {
+        puts $fd "/**"
+	if { $one_module } {
+	    puts $fd "\\mainpage OCCT Module [$mod:name]"
 	} else {
-	    puts "File $path_RWorkbench/src/$OCCTDoc_DescriptionUnit/$moduleName.tcl is absent."
-	    puts "     It is impossible to get information about toolkits in the module $moduleName."
+	    puts $fd "\\page [string tolower module_$mod] Module [$mod:name]"
 	}
-	# Corrected accordning to the SZV request - alphabetical order
-	set toolkitsList [lsort $toolkitsList]
-	# ------------------------------------------------------------
-	lappend toolkitsListOfList $toolkitsList
-    }
-    
-    # processing the list of toolkits and prepare the list of packages
-    set packagesListOfListOfList {}
-    foreach toolkitsListList $toolkitsListOfList {
-	set packagesListOfList {}
-	foreach toolkitName $toolkitsListList {
-	    set packagesList {}
-	    if {[file exists $path_RWorkbench/src/$toolkitName/PACKAGES] == 1} {
-		set file_PACKAGES [open $path_RWorkbench/src/$toolkitName/PACKAGES RDONLY]
-		while {[eof $file_PACKAGES] == 0} {
-		    set packageName [string trim [gets $file_PACKAGES]]
-		    if {[string length $packageName]!=0} {
-			lappend packagesList $packageName
-		    }
-		}
-		close $file_PACKAGES
-	    } else {
-		puts "File $path_RWorkbench/src/$toolkitName/PACKAGES is absent."
-		puts "     It is impossible to get information about packages in the toolkit $toolkitName."
-	    }
-	    # Corrected accordning to the SZV request - alphabetical order
-	    set packagesList [lsort $packagesList]
-	    # ------------------------------------------------------------
-	    lappend packagesListOfList $packagesList
+	foreach tk [lsort [$mod:toolkits]] {
+	    lappend toolkits $tk
+	    puts $fd "\\li \\subpage [string tolower toolkit_$tk]"
 	}
-	lappend packagesListOfListOfList $packagesListOfList
+        puts $fd "**/\n"
     }
 
-    # creating of main HTML page
-    set retValue [OCCTDoc_CreateMainDoc $OCCTDoc_DocLocation $isSearch $modulesList $toolkitsListOfList $packagesListOfListOfList]
-    if {$retValue == 1} {
-	puts "It is impossible to update documentation created by doxygen."
-	return
+    # one page per toolkit: list of packages
+    set packages {}
+    foreach tk $toolkits {
+        puts $fd "/**"
+	puts $fd "\\page [string tolower toolkit_$tk] Toolkit $tk"
+	foreach pk [lsort [osutils:tk:units [woklocate -u $tk]]] {
+	    lappend packages $pk
+	    set u [wokinfo -n $pk]
+	    puts $fd "\\li \\subpage [string tolower package_$u]"
+	}
+	puts $fd "**/\n"
     }
-}
 
-proc OCCTDoc_CreateMainDoc {OCCTDoc_DocLocation isSearch modulesList toolkitsListOfList packagesListOfListOfList} {
-    set file_modulesHTML [open $OCCTDoc_DocLocation/index.html {CREAT TRUNC RDWR}]
-    puts $file_modulesHTML "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-    puts $file_modulesHTML "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\">"
-    puts $file_modulesHTML "<title>OpenCASCADE Modules</title>"
-    puts $file_modulesHTML "<link href=\"doxygen.css\" rel=\"stylesheet\" type=\"text/css\">"
-    puts $file_modulesHTML "</head><body>"
-    puts $file_modulesHTML "<h1>OpenCASCADE<br>Modules</h1>"
-    puts $file_modulesHTML "<hr size=\"1\">"
-    puts $file_modulesHTML "<ul>"
-    set isPrepared 0
-    for {set indexOfList 0} {$indexOfList < [llength $modulesList]} {incr indexOfList 1} {
-	set moduleName [lindex $modulesList $indexOfList]
-	if {[file exists $OCCTDoc_DocLocation/$moduleName] == 1} {
-	    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/index.html] == 1} {
-		if {[file exists $OCCTDoc_DocLocation/$moduleName/html/doxygen.css] == 1} {
-		    exec cp $OCCTDoc_DocLocation/$moduleName/html/index.html $OCCTDoc_DocLocation/$moduleName/html/$moduleName\_index.html
-		    puts $file_modulesHTML "<li><a class=\"el\" href=\"$moduleName/html/$moduleName\_index.html\">$moduleName</a>"
-		    OCCTDoc_UpdateModuleIndex $OCCTDoc_DocLocation $isSearch $moduleName
-		    OCCTDoc_CreateToolkitHTML $OCCTDoc_DocLocation $isSearch $moduleName [lindex $toolkitsListOfList $indexOfList] [lindex $packagesListOfListOfList $indexOfList]
-		    OCCTDoc_CreatePackageHTML $OCCTDoc_DocLocation $isSearch $moduleName [lindex $toolkitsListOfList $indexOfList] [lindex $packagesListOfListOfList $indexOfList]
-		    if {$isPrepared == 0} {
-			exec cp $OCCTDoc_DocLocation/$moduleName/html/doxygen.css $OCCTDoc_DocLocation/doxygen.css
-			set isPrepared 1
-		    }
-		}
+    # one page per package: list of classes
+    foreach pk $packages {
+	set u [wokinfo -n $pk]
+        puts $fd "/**"
+	puts $fd "\\page [string tolower package_$u] Package $u"
+	foreach hdr [lsort [uinfo -f -T pubinclude $pk]] {
+	    if { ! [regexp {^Handle_} $hdr] && [regexp {(.*)[.]hxx} $hdr str obj] } {
+		puts $fd "\\li \\subpage $obj"
 	    }
-	} else {
-	    puts "Dirrectory $OCCTDoc_DocLocation/$moduleName is absent."
-	    puts "     It is impossible to create full documentation."
 	}
+	puts $fd "**/\n"
     }
-    puts $file_modulesHTML "</ul>"
-    puts $file_modulesHTML "<hr size=\"1\">"
-    puts $file_modulesHTML "</body>"
-    puts $file_modulesHTML "</html>"
-    close $file_modulesHTML
-    if {$isPrepared == 0} {
-	exec rm $OCCTDoc_DocLocation/index.html
-	exec rm $OCCTDoc_DocLocation/doxygen.css
-	return 1
-    }
-    return 0
-}
 
-proc OCCTDoc_UpdateModuleIndex {OCCTDoc_DocLocation isSearch moduleName} {
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/$moduleName\_index.html] == 1} {
-	set file_newModuleIndex [open $OCCTDoc_DocLocation/$moduleName/html/$moduleName\_index.html {TRUNC RDWR}]
-	set file_oldModuleIndex [open $OCCTDoc_DocLocation/$moduleName/html/index.html RDONLY]
-	while {[eof $file_oldModuleIndex] == 0} {
-	    set isLineWrited 0
-	    set line_OfFile [string trim [gets $file_oldModuleIndex]]
-	    if {[string compare [string range $line_OfFile 0 6] "<title>"] == 0} {
-		puts $file_newModuleIndex "<title>OpenCASCADE: $moduleName</title>"
-		set isLineWrited 1
-	    }
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $line_OfFile 0 8] "<a class="] == 0} {
-		    puts $file_newModuleIndex "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindexHL\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-		    set isLineWrited 1
-		}
-	    } else {
-		if {[string compare [string range $line_OfFile 0 10] "<div class="] == 0} {
-		    puts $file_newModuleIndex "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindexHL\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-		    set isLineWrited 1
-		}
-	    }
-	    if {[string compare [string range $line_OfFile 0 3] "<h1>"] == 0} {
-		puts $file_newModuleIndex "<h1>$moduleName Documentation</h1>"
-		set isLineWrited 1
-	    }
-	    if {$isLineWrited == 0} {
-		puts $file_newModuleIndex $line_OfFile
-	    }
-	}
-	close $file_oldModuleIndex
-	close $file_newModuleIndex
-	OCCTDoc_UpdateModuleHTMLFiles $OCCTDoc_DocLocation $isSearch $moduleName
-    } else {
-	puts "File $OCCTDoc_DocLocation/$moduleName/html/$moduleName\_index.html is absent."
-	puts "     Documentation for $moduleName is not updated."
-    }
-}
+    # one page per class: set reference to package
+#    foreach pk $packages {
+#	set u [wokinfo -n $pk]
+#	foreach hdr [uinfo -f -T pubinclude $pk] {
+#	    if { ! [regexp {^Handle_} $hdr] && [regexp {(.*)[.]hxx} $hdr str obj] } {
+#		puts $fd "/**"
+#		puts $fd "\\class $obj"
+#		puts $fd "Contained in \\ref [string tolower package_$u]"
+##		puts $fd "\\addtogroup package_$u"
+#		puts $fd "**/\n"
+#	    }
+#	}
+#    }
 
-proc OCCTDoc_UpdateModuleHTMLFiles {OCCTDoc_DocLocation isSearch moduleName} {
-    # Processing the file annotated.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/annotated.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/annotated.html $OCCTDoc_DocLocation/$moduleName/html/annotated.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/annotated.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/annotated.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-    		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindexHL\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindexHL\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file files.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/files.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/files.html $OCCTDoc_DocLocation/$moduleName/html/files.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/files.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/files.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindexHL\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindexHL\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions.html $OCCTDoc_DocLocation/$moduleName/html/functions.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_enum.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_enum.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_enum.html $OCCTDoc_DocLocation/$moduleName/html/functions_enum.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_enum.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_enum.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_eval.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_eval.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_eval.html $OCCTDoc_DocLocation/$moduleName/html/functions_eval.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_eval.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_eval.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_func.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_func.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_func.html $OCCTDoc_DocLocation/$moduleName/html/functions_func.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_func.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_func.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_rela.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_rela.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_rela.html $OCCTDoc_DocLocation/$moduleName/html/functions_rela.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_rela.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_rela.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_vars.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_vars.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_vars.html $OCCTDoc_DocLocation/$moduleName/html/functions_vars.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_vars.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_vars.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file functions_type.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/functions_type.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/functions_type.html $OCCTDoc_DocLocation/$moduleName/html/functions_type.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/functions_type.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/functions_type.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindexHL\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals.html $OCCTDoc_DocLocation/$moduleName/html/globals.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_defs.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_defs.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_defs.html $OCCTDoc_DocLocation/$moduleName/html/globals_defs.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_defs.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_defs.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_enum.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_enum.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_enum.html $OCCTDoc_DocLocation/$moduleName/html/globals_enum.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_enum.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_enum.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_eval.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_eval.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_eval.html $OCCTDoc_DocLocation/$moduleName/html/globals_eval.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_eval.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_eval.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_func.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_func.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_func.html $OCCTDoc_DocLocation/$moduleName/html/globals_func.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_func.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_func.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_type.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_type.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_type.html $OCCTDoc_DocLocation/$moduleName/html/globals_type.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_type.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_type.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file globals_vars.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/globals_vars.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/globals_vars.html $OCCTDoc_DocLocation/$moduleName/html/globals_vars.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/globals_vars.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/globals_vars.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindexHL\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file graph_legend.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/graph_legend.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/graph_legend.html $OCCTDoc_DocLocation/$moduleName/html/graph_legend.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/graph_legend.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/graph_legend.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file hierarchy.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindexHL\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindexHL\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-    # Processing the file inherits.html
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/inherits.html] == 1} {
-	exec cp $OCCTDoc_DocLocation/$moduleName/html/inherits.html $OCCTDoc_DocLocation/$moduleName/html/inherits.html.old
-	set isLineWrited 0
-	set file_new [open $OCCTDoc_DocLocation/$moduleName/html/inherits.html {RDWR TRUNC}]
-	set file_old [open $OCCTDoc_DocLocation/$moduleName/html/inherits.html.old RDONLY]
-	while {[eof $file_old] == 0} {
-	    set fileLine [string trim [gets $file_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $fileLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    } else {
-		if {[string compare [string range $fileLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			set isLineWrited 1
-		    } else {
-			puts $file_new $fileLine
-		    }
-		} else {
-		    puts $file_new $fileLine
-		}
-	    }
-	}
-	close $file_old
-	close $file_new
-    }
-}
-
-proc OCCTDoc_CreateToolkitHTML {OCCTDoc_DocLocation isSearch moduleName toolkitsList packagesListOfList} {
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/toolkits] == 0} {
-	exec mkdir $OCCTDoc_DocLocation/$moduleName/html/toolkits
-    }
-    set file_toolkitsHTML [open $OCCTDoc_DocLocation/$moduleName/html/toolkits.html {CREAT TRUNC RDWR}]
-    puts $file_toolkitsHTML "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-    puts $file_toolkitsHTML "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\">"
-    puts $file_toolkitsHTML "<title>$moduleName: Toolkits</title>"
-    puts $file_toolkitsHTML "<link href=\"doxygen.css\" rel=\"stylesheet\" type=\"text/css\">"
-    puts $file_toolkitsHTML "</head><body>"
-    if {[string compare $isSearch "TRUE"] == 0} {
-	puts $file_toolkitsHTML "<div class=\"qindex\"> <form class=\"search\" action=\"search.php\" method=\"get\">"
-	puts $file_toolkitsHTML "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindexHL\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-    } else {
-	puts $file_toolkitsHTML "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindexHL\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-    }
-    puts $file_toolkitsHTML "<h1>$moduleName<br>Toolkits</h1>"
-    puts $file_toolkitsHTML "<hr size=\"1\">"
-    puts $file_toolkitsHTML "<ul>"
-    for {set indexOfList 0} {$indexOfList < [llength $toolkitsList]} {incr indexOfList 1} {
-	set toolkitName [lindex $toolkitsList $indexOfList]
-	puts $file_toolkitsHTML "<li><a class=\"el\" href=\"toolkits/$toolkitName.html\">$toolkitName</a>"
-	OCCTDoc_ProcessToolkitsHTML $OCCTDoc_DocLocation $isSearch $moduleName $toolkitName [lindex $packagesListOfList $indexOfList]
-    }
-    puts $file_toolkitsHTML "</ul>"
-    puts $file_toolkitsHTML "<hr size=\"1\">"
-    puts $file_toolkitsHTML "</body>"
-    puts $file_toolkitsHTML "</html>"
-    close $file_toolkitsHTML
-}
-
-proc OCCTDoc_CreatePackageHTML {OCCTDoc_DocLocation isSearch moduleName toolkitsList packagesListOfList} {
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/packages] == 0} {
-	exec mkdir $OCCTDoc_DocLocation/$moduleName/html/packages
-    }
-    set file_packagesHTML [open $OCCTDoc_DocLocation/$moduleName/html/packages.html {CREAT TRUNC RDWR}]
-    puts $file_packagesHTML "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-    puts $file_packagesHTML "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\">"
-    puts $file_packagesHTML "<title>$moduleName: Packages</title>"
-    puts $file_packagesHTML "<link href=\"doxygen.css\" rel=\"stylesheet\" type=\"text/css\">"
-    puts $file_packagesHTML "</head><body>"
-    if {[string compare $isSearch "TRUE"] == 0} {
-	puts $file_packagesHTML "<div class=\"qindex\"> <form class=\"search\" action=\"search.php\" method=\"get\">"
-	puts $file_packagesHTML "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindexHL\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-    } else {
-	puts $file_packagesHTML "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindexHL\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-    }
-    puts $file_packagesHTML "<h1>$moduleName<br>Packages</h1>"
-    puts $file_packagesHTML "<hr size=\"1\">"
-    puts $file_packagesHTML "<ul>"
-    # Corrected accordning to the SZV request - alphabetical order
-    set packagesFullList {}
-    # ------------------------------------------------------------
-    for {set indexOfList_1 0} {$indexOfList_1 < [llength $toolkitsList]} {incr indexOfList_1 1} {
-	set toolkitName [lindex $toolkitsList $indexOfList_1]
-	set packagesList [lindex $packagesListOfList $indexOfList_1]
-	for {set indexOfList_2 0} {$indexOfList_2 < [llength $packagesList]} {incr indexOfList_2 1} {
-	    set packageName [lindex $packagesList $indexOfList_2]
-	    # Corrected accordning to the SZV request - alphabetical order
-	    # puts $file_packagesHTML "<li><a class=\"el\" href=\"packages/$packageName.html\">$packageName</a>"
-	    lappend packagesFullList $packageName
-	    # ------------------------------------------------------------
-	    OCCTDoc_ProcessPackagesHTML $OCCTDoc_DocLocation $isSearch $moduleName $toolkitName $packageName
-	}
-    }
-    # Corrected accordning to the SZV request - alphabetical order
-    set packagesFullList [lsort $packagesFullList]
-    for {set indexOfList 0} {$indexOfList < [llength $packagesFullList]} {incr indexOfList 1} {
-	set packageName [lindex $packagesFullList $indexOfList]
-	puts $file_packagesHTML "<li><a class=\"el\" href=\"packages/$packageName.html\">$packageName</a>"
-    }
-    # ------------------------------------------------------------
-    puts $file_packagesHTML "</ul>"
-    puts $file_packagesHTML "<hr size=\"1\">"
-    puts $file_packagesHTML "</body>"
-    puts $file_packagesHTML "</html>"
-    close $file_packagesHTML
-}
-
-proc OCCTDoc_ProcessToolkitsHTML {OCCTDoc_DocLocation isSearch moduleName toolkitName packagesList} {
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/toolkits] == 0} {
-	exec mkdir $OCCTDoc_DocLocation/$moduleName/html/toolkits
-    }
-    set file_toolkitHTML [open $OCCTDoc_DocLocation/$moduleName/html/toolkits/$toolkitName.html {CREAT TRUNC RDWR}]
-    puts $file_toolkitHTML "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-    puts $file_toolkitHTML "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\">"
-    puts $file_toolkitHTML "<title>$moduleName: $toolkitName: Packages</title>"
-    puts $file_toolkitHTML "<link href=\"../doxygen.css\" rel=\"stylesheet\" type=\"text/css\">"
-    puts $file_toolkitHTML "</head><body>"
-    if {[string compare $isSearch "TRUE"] == 0} {
-	puts $file_toolkitHTML "<div class=\"qindex\"> <form class=\"search\" action=\"../search.php\" method=\"get\">"
-	puts $file_toolkitHTML "<a class=\"qindex\" href=\"../../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"../$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"../toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"../packages.html\">Packages</a> | <a class=\"qindex\" href=\"../hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"../annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"../files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"../functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"../globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-    } else {
-	puts $file_toolkitHTML "<div class=\"qindex\"><a class=\"qindex\" href=\"../../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"../$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"../toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"../packages.html\">Packages</a> | <a class=\"qindex\" href=\"../hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"../annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"../files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"../functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"../globals.html\">Globals</a></div>"
-    }
-    puts $file_toolkitHTML "<h1>$moduleName<br>$toolkitName<br>Packages</h1>"
-    puts $file_toolkitHTML "<hr size=\"1\">"
-    puts $file_toolkitHTML "<ul>"
-    for {set indexOfList 0} {$indexOfList < [llength $packagesList]} {incr indexOfList 1} {
-	set packageName [lindex $packagesList $indexOfList]
-	puts $file_toolkitHTML "<li><a class=\"el\" href=\"../packages/$packageName.html\">$packageName</a>"
-    }
-    puts $file_toolkitHTML "</ul>"
-    puts $file_toolkitHTML "<hr size=\"1\">"
-    puts $file_toolkitHTML "</body>"
-    puts $file_toolkitHTML "</html>"
-    close $file_toolkitHTML
-}
-
-proc OCCTDoc_ProcessPackagesHTML {OCCTDoc_DocLocation isSearch moduleName toolkitName packageName} {
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/packages] == 0} {
-	exec mkdir $OCCTDoc_DocLocation/$moduleName/html/packages
-    }
-    set file_packageHTML [open $OCCTDoc_DocLocation/$moduleName/html/packages/$packageName.html {CREAT TRUNC RDWR}]
-    puts $file_packageHTML "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-    puts $file_packageHTML "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=iso-8859-1\">"
-    puts $file_packageHTML "<title>$moduleName: $toolkitName: $packageName: Classes</title>"
-    puts $file_packageHTML "<link href=\"../doxygen.css\" rel=\"stylesheet\" type=\"text/css\">"
-    puts $file_packageHTML "</head><body>"
-    if {[string compare $isSearch "TRUE"] == 0} {
-	puts $file_packageHTML "<div class=\"qindex\"> <form class=\"search\" action=\"../search.php\" method=\"get\">"
-	puts $file_packageHTML "<a class=\"qindex\" href=\"../../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"../$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"../toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"../packages.html\">Packages</a> | <a class=\"qindex\" href=\"../hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"../annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"../files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"../functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"../globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-    } else {
-	puts $file_packageHTML "<div class=\"qindex\"><a class=\"qindex\" href=\"../../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"../$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"../toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"../packages.html\">Packages</a> | <a class=\"qindex\" href=\"../hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"../annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"../files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"../functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"../globals.html\">Globals</a></div>"
-    }
-    puts $file_packageHTML "<h1>$moduleName<br><a href=\"../toolkits/$toolkitName.html\">$toolkitName</a><br>$packageName<br>Classes</h1>"
-    puts $file_packageHTML "<hr size=\"1\">"
-    puts $file_packageHTML "<ul>"
-    if {[file exists $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html] == 1} {
-	set file_hierarchyHTML [open $OCCTDoc_DocLocation/$moduleName/html/hierarchy.html RDONLY]
-	# Corrected accordning to the SZV request - alphabetical order
-	set listClassName {}
-	set listLinkPath {}
-	# ------------------------------------------------------------
-	while {[eof $file_hierarchyHTML] == 0} {
-	    set hierarchyLine [string trim [gets $file_hierarchyHTML]]
-	    if {[string compare [string range $hierarchyLine 0 12] "<li><a class="] == 0} {
-		if {[regexp $packageName $hierarchyLine] == 1} {
-		    set className [string trim [string range $hierarchyLine 0 [expr {[string last < $hierarchyLine] - 1}]]]
-		    set className [string trim [string range $className [expr {[string last > $className] + 1}] [string length $className]]]
-		    set packageClassName [string trim [string range $className 0 [expr {[string first _ $className] - 1}]]]
-		    # Corrected accordning to the SZV request - include package name to the list of package classes
-		    if {[string length $packageClassName] == 0} {
-			if {[string compare $packageName $className] == 0} {
-			    set packageClassName $className
-			}
-		    }
-		    # ---------------------------------------------------------------------------------------------
-		    if {[string compare $packageName $packageClassName] == 0} {
-			set linkPath [string trim [string range $hierarchyLine 0 [expr {[string last \" $hierarchyLine] - 1}]]]
-			set linkPath [string trim [ string range $linkPath [expr {[string last \" $linkPath] + 1}] [string length $linkPath]]]
-			if {[string length $className] != 0} {
-			    OCCTDoc_UpdateClassDescriptionFile $OCCTDoc_DocLocation $isSearch $linkPath $moduleName $toolkitName $packageName
-			    # Corrected accordning to the SZV request - alphabetical order
-			    #puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
-			    lappend listClassName $className
-			    lappend listLinkPath $linkPath
-			    # ------------------------------------------------------------
-			}
-		    }
-		}
-	    }
-	}
-	close $file_hierarchyHTML
-	# Corrected accordning to the SZV request - alphabetical order
-	set listClassName [lsort $listClassName]
-	# OCCTR20503
-	# set listLinkPath [lsort $listLinkPath]
-	# OCCTR20503 - end
-	for {set indexOfList 0} {$indexOfList < [llength $listClassName]} {incr indexOfList 1} {
-	    set className [lindex $listClassName $indexOfList]
-	    # OCCTR20503
-	    # set linkPath [lindex $listLinkPath $indexOfList]
-	    set linkPath ""
-	    set currentPackageName [string trim [string range $className 0 [expr {[string first _ $className] - 1}]]]
-	    set currentPackageClassName [string trim [string range $className [expr {[string first _ $className] + 1}] [string length $className]]]
-	    set currentFileName "${currentPackageName}__${currentPackageClassName}.html"
-	    if {[string compare [string range $currentFileName 0 0] "_"] == 0} {
-		set currentFileName "${className}.html"
-	    }
-	    for {set indexOfLinkList 0} {$indexOfLinkList < [llength $listLinkPath]} {incr indexOfLinkList 1} {
-		set currentLinkPath [lindex $listLinkPath $indexOfLinkList]
-		if {[regexp $currentFileName $currentLinkPath] == 1} {
-		    set linkPath $currentLinkPath
-		}
-	    }
-	    # OCCTR20503 - end
-	    puts $file_packageHTML "<li><a class=\"el\" href=\"../$linkPath\">$className</a>"
-	}
-	# ------------------------------------------------------------
-    }
-    puts $file_packageHTML "</ul>"
-    puts $file_packageHTML "</ul>"
-    puts $file_packageHTML "<hr size=\"1\">"
-    puts $file_packageHTML "</body>"
-    puts $file_packageHTML "</html>"
-    close $file_packageHTML
-}
-
-proc OCCTDoc_UpdateClassDescriptionFile {OCCTDoc_DocLocation isSearch pathToFile moduleName toolkitName packageName} {
-    set updatedPath [string trim $pathToFile]
-    set backPath ""
-    set empty 0
-    while {$empty == 0} {
-	set positionNumber [string first / $updatedPath]
-	if {$positionNumber == -1} {
-	    break
-	} else {
-	    append backPath "../"
-	    set updatedPath [string trim [string range $updatedPath [expr {$positionNumber + 1}] [string length $updatedPath]]]
-	}
-    }
-    set file_ClassHTML_old "$OCCTDoc_DocLocation/$moduleName/html/$pathToFile.old"
-    set file_ClassHTML_new "$OCCTDoc_DocLocation/$moduleName/html/$pathToFile"
-    if {[file exists $file_ClassHTML_new] == 1} {
-	exec cp $file_ClassHTML_new $file_ClassHTML_old
-	set isLineWrited 0
-	set file_classHTML_new [open $file_ClassHTML_new {RDWR TRUNC}]
-	set file_classHTML_old [open $file_ClassHTML_old RDONLY]
-	while {[eof $file_classHTML_old] == 0} {
-	    set classLine [string trim [gets $file_classHTML_old]]
-	    if {[string compare $isSearch "TRUE"] == 0} {
-		if {[string compare [string range $classLine 0 8] "<a class="] == 0} {
-		    if {$isLineWrited == 0} {
-			puts $file_classHTML_new "<a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a> | <span class=\"search\"><u>S</u>earch&nbsp;for&nbsp;<input class=\"search\" type=\"text\" name=\"query\" value=\"\" size=\"20\" accesskey=\"s\"/></span></form></div>"
-			puts $file_classHTML_new "<h1>$moduleName<br><a href=\"toolkits/$toolkitName.html\">$toolkitName</a><br><a href=\"packages/$packageName.html\">$packageName</a></h1>"
-			puts $file_classHTML_new "<hr size=\"1\">"
-			set isLineWrited 1
-		    } else {
-			puts $file_classHTML_new $classLine
-		    }
-		} else {
-		    puts $file_classHTML_new $classLine
-		}
-	    } else {
-		if {[string compare [string range $classLine 0 10] "<div class="] == 0} {
-		    if {$isLineWrited == 0} {
-		    	puts $file_classHTML_new "<div class=\"qindex\"><a class=\"qindex\" href=\"../../index.html\">OCC&nbsp;Main&nbsp;Page</a> | <a class=\"qindex\" href=\"$moduleName\_index.html\">$moduleName</a> | <a class=\"qindex\" href=\"toolkits.html\">Toolkits</a> | <a class=\"qindex\" href=\"packages.html\">Packages</a> | <a class=\"qindex\" href=\"hierarchy.html\">Class&nbsp;Hierarchy</a> | <a class=\"qindex\" href=\"annotated.html\">Data&nbsp;Structures</a> | <a class=\"qindex\" href=\"files.html\">File&nbsp;List</a> | <a class=\"qindex\" href=\"functions.html\">Data&nbsp;Fields</a> | <a class=\"qindex\" href=\"globals.html\">Globals</a></div>"
-			puts $file_classHTML_new "<h1>$moduleName<br><a href=\"toolkits/$toolkitName.html\">$toolkitName</a><br><a href=\"packages/$packageName.html\">$packageName</a></h1>"
-			puts $file_classHTML_new "<hr size=\"1\">"
-			set isLineWrited 1
-		    } else {
-			puts $file_classHTML_new $classLine
-		    }
-		} else {
-		    puts $file_classHTML_new $classLine
-		}
-	    }
-	}
-	close $file_classHTML_old
-	close $file_classHTML_new
-    } else {
-	puts "$file_ClassHTML_new is absent"
-    }
+    close $fd
+    return $outFile
 }

@@ -163,5 +163,4 @@ srcinc:::config.h
 srcinc:::opencascade.gif
 srcinc:::woksh.el
 srcinc:::wok-comm.el
-srcinc:::DocGenerate.tcl
 srcinc:::OCCTDocumentation.tcl
