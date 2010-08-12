@@ -277,7 +277,7 @@ $
 $                                                              
 $	default:                                                            
 $          Err << ErrMsg; aSignature->Display(Err);  Err << (char) 0;         
-$	  Engine::Return(GetSString(Err),-1);                            
+$	   Engine::Return(Err,-1);                            
 $          Eng_Status = Engine_Error;                                        
 $	  break;                                                            
 $      }                                                                     
@@ -292,15 +292,14 @@ $      Err << "Exception: ";
 $      aSignature->Display(Err);                                              
 $      Err << ": raises the exception: "                                   
 $          <<Standard_Failure::Caught();                                     
-$      Err << (char) 0;                                                      
-$      Engine::Return(GetSString(Err),-1);                                
+$      Engine::Return(Err,-1);
 $      Eng_Status = Engine_Exception;                                        
 $    }                                                                       
 $  }                                                                         
 $                                                                            
 $  switch(Eng_Status) {                                                      
-$    case Engine_Exception:Engine_MethodException::Raise(GetSString(Err));
-$    case Engine_Error    :Engine_ExecutionError::Raise(GetSString(Err)); 
+$    case Engine_Exception:Engine_MethodException::Raise(Err);
+$    case Engine_Error    :Engine_ExecutionError::Raise(Err); 
 $    default:
 $      break;	
 $  }                                                                         
@@ -311,7 +310,7 @@ $}
 $                                                              
 $      if ((theCase <= 0)  || (theCase >= %IntMaxCase)) {                                               
 $          Err << ErrMsg; aSignature->Display(Err);  Err << (char) 0;         
-$	   Engine::Return(GetSString(Err),-1);                            
+$	   Engine::Return(Err,-1);                            
 $          Eng_Status = Engine_Error;                                        
 $      }                                                                     
 $                                                                            
@@ -326,14 +325,14 @@ $      aSignature->Display(Err);
 $      Err << ": raises the exception: "                                   
 $          <<Standard_Failure::Caught();                                     
 $      Err << (char) 0;                                                      
-$      Engine::Return(GetSString(Err),-1);                                
+$      Engine::Return(Err,-1);                                
 $      Eng_Status = Engine_Exception;                                        
 $    }                                                                       
 $  }                                                                         
 $                                                                            
 $  switch(Eng_Status) {                                                      
-$    case Engine_Exception:Engine_MethodException::Raise(GetSString(Err));
-$    case Engine_Error    :Engine_ExecutionError::Raise(GetSString(Err)); 
+$    case Engine_Exception:Engine_MethodException::Raise(Err);
+$    case Engine_Error    :Engine_ExecutionError::Raise(Err); 
 $    default:
 $      break;	
 $  }                                                                         

@@ -81,10 +81,7 @@ $try {
 $%MBody
 $}
 $catch (Standard_Failure) {
-$  Standard_SStream Err;
-$  Err <<   Standard_Failure::Caught(); 
-$  Err << (char) 0;
-$  jcas_ThrowException(env,GetSString(Err));
+$  jcas_ThrowException(env,Standard_Failure::Caught()->GetMessageString());
 $}
 $}
 $alock.Release();
@@ -104,10 +101,7 @@ $try {
 $%MBody
 $}
 $catch (Standard_Failure) {
-$  Standard_SStream Err;
-$  Err <<   Standard_Failure::Caught(); 
-$  Err << (char) 0;
-$  jcas_ThrowException(env,GetSString(Err));
+$  jcas_ThrowException(env,Standard_Failure::Caught()->GetMessageString());
 $}
 $OS_END_FAULT_HANDLER;
 $}

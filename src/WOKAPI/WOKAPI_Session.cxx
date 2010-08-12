@@ -329,12 +329,10 @@ void WOKAPI_Session::GeneralFailure(const Handle(Standard_Failure)& )
   }
   catch(Standard_Failure)  {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
-    Standard_SStream astream;
-    astream << E << ends;
     ErrorMsg() << "WOKAPI_Session::GeneralFailure" 
-	     << "Exception was raised : " << GetSString(astream) << endm;
+	       << "Exception was raised : " << E->GetMessageString() << endm;
     ErrorMsg() << "WOKAPI_Session::GeneralFailure" 
-	     << "Could not recover session after Failure : Session is reinitialized" << endm;
+	       << "Could not recover session after Failure : Session is reinitialized" << endm;
     
     WOKUtils_ProcessManager::UnArm();
     WOKMake_TriggerStep::CurrentTriggerStep() = Handle(WOKMake_TriggerStep)();

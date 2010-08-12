@@ -120,9 +120,7 @@ int main(int argc, char **argv)
   }
   catch(Standard_Failure) {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
-    Standard_SStream astream;
-    astream << E << ends;
-    ErrorMsg() << "WOKTCL_AppInit" << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << "WOKTCL_AppInit" << "Exception was raised : " << E->GetMessageString() << endm;
     WOKUtils_ProcessManager::UnArm();
     return TCL_ERROR;
   }

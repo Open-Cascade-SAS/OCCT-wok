@@ -227,10 +227,7 @@ WOKMake_Status WOKMake_BuildProcessIterator::MakeStep()
 	  }
 	else
 	  {
-	    Standard_SStream astream;
-	     astream << E << ends;
-	    
-	    ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << GetSString(astream) << endm;
+	    ErrorMsg() << "WOKMake_BuildProcessIterator::MakeStep" << "Exception was raised : " << E->GetMessageString() << endm;
 	  }	
       }
       

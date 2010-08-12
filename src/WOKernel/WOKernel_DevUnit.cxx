@@ -1037,10 +1037,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplementationDep(cons
   catch (Standard_Failure )  
     { 
       Handle(Standard_Failure) E = Standard_Failure::Caught();	
-      Standard_SStream astream;
-      astream << E << ends;
-
-      ErrorMsg() << "WOKernel_DevUnit::ImplementationDep" << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << "WOKernel_DevUnit::ImplementationDep" << "Exception was raised : " << E->GetMessageString() << endm;
       return NULLRESULT ;
     }
   return NULLRESULT;
@@ -1139,10 +1136,7 @@ Handle(TColStd_HSequenceOfHAsciiString) WOKernel_DevUnit::ImplClients(const Hand
   catch (Standard_Failure )  
     { 
       Handle(Standard_Failure) E = Standard_Failure::Caught();	
-      Standard_SStream astream;
-      astream << E << ends;
-
-      ErrorMsg() << "WOKernel_DevUnit::ImplClients" << "Exception was raised : " << GetSString(astream) << endm;
+      ErrorMsg() << "WOKernel_DevUnit::ImplClients" << "Exception was raised : " << E->GetMessageString() << endm;
       return NULLRESULT ;
     }
    return NULLRESULT ;

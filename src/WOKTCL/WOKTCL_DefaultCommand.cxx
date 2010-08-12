@@ -95,15 +95,12 @@ Standard_Integer DefaultCommand(ClientData clientData, Tcl_Interp *,
   }
   catch (Standard_Failure) {
     Handle(Standard_Failure) E = Standard_Failure::Caught();
-    
-    Standard_SStream astream;
-    astream << E << ends;
 
     // MKV 24.08.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-    ErrorMsg() << (char*)argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << (char*)argv[0] << "Exception was raised : " << E->GetMessageString() << endm;
 #else
-    ErrorMsg() << argv[0] << "Exception was raised : " << GetSString(astream) << endm;
+    ErrorMsg() << argv[0] << "Exception was raised : " << E->GetMessageString() << endm;
 #endif
 
     WOKAPI_Session* asess = (WOKAPI_Session *) &(C->i->Session());

@@ -1536,7 +1536,7 @@ void CPPJini_ReturnBuilder (
             Handle( TCollection_HAsciiString )& RetOut
      ) {
 
- char* objType = "jobject";
+const  char* objType = "jobject";
 
  if (  !m -> Returns ().IsNull ()  ) {
 
@@ -1589,7 +1589,7 @@ void CPPJini_ReturnBuilder (
 
    } else {
 
-    objType = (char *)RetInDecl -> ToCString ();
+    objType = RetInDecl -> ToCString ();
     RetInCall -> AssignCat ( " thejret = " );
     RetInCall -> AssignCat ( MethodCall    );
     RetInCall -> AssignCat ( ";\n"         );
