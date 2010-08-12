@@ -158,9 +158,14 @@ srcinc:::template.vc9
 srcinc:::template.vc9x
 srcinc:::template.vc9_64
 srcinc:::template.vc9x_64
+srcinc:::template.vc10
+srcinc:::template.vc10x
+srcinc:::template.vc10_64
+srcinc:::template.vc10x_64
 srcinc:::osutils.tcl
 srcinc:::config.h
 srcinc:::opencascade.gif
 srcinc:::woksh.el
 srcinc:::wok-comm.el
 srcinc:::OCCTDocumentation.tcl
+srcinc:::OS.tcl

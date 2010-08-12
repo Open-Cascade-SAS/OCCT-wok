@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="__XQTNAM__"
+	ProjectGUID="__PROJECT_GUID__"
 	>
 	<Platforms>
 		<Platform
@@ -14,8 +15,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\..\..\..\win64\bind"
-			IntermediateDirectory=".\..\..\..\win64\objd\__XQTNAM__"
+			OutputDirectory=".\..\..\..\win64\vc8\bind"
+			IntermediateDirectory=".\..\..\..\win64\vc8\objd\__XQTNAM__"
 			ConfigurationType="__CONF__"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -38,7 +39,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win64\bind/__XQTNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win64\vc8\bind\__XQTNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -49,9 +50,9 @@
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				AssemblerListingLocation=".\..\..\..\win64\objd\__XQTNAM__/"
-				ObjectFile=".\..\..\..\win64\objd\__XQTNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win64\objd\__XQTNAM__/"
+				AssemblerListingLocation=".\..\..\..\win64\vc8\objd\__XQTNAM__/"
+				ObjectFile=".\..\..\..\win64\vc8\objd\__XQTNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win64\vc8\objd\__XQTNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -71,14 +72,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="__TKDEP__"
-				OutputFile=".\..\..\..\win64\bind\__XQTNAM__.__XQTEXT__"
+				OutputFile=".\..\..\..\win64\vc8\bind\__XQTNAM__.__XQTEXT__"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\win64\libd"
+				AdditionalLibraryDirectories="..\..\..\win64\vc8\libd"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\..\..\win64\bind/__XQTNAM__.pdb"
+				ProgramDatabaseFile=".\..\..\..\win64\vc8\bind\__XQTNAM__.pdb"
 				SubSystem="1"
-				ImportLibrary="..\..\..\win64\libd\__XQTNAM__.lib"
+				ImportLibrary="..\..\..\win64\vc8\libd\__XQTNAM__.lib"
 				TargetMachine="X64"
 			/>
 			<Tool
@@ -108,8 +109,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\..\..\..\win64\bin"
-			IntermediateDirectory=".\..\..\..\win64\obj\__XQTNAM__"
+			OutputDirectory=".\..\..\..\win64\vc8\bin"
+			IntermediateDirectory=".\..\..\..\win64\vc8\obj\__XQTNAM__"
 			ConfigurationType="__CONF__"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -132,7 +133,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win64\bin/__XQTNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win64\vc8\bin\__XQTNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -145,9 +146,9 @@
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				AssemblerListingLocation=".\..\..\..\win64\obj\__XQTNAM__/"
-				ObjectFile=".\..\..\..\win64\obj\__XQTNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win64\obj\__XQTNAM__/"
+				AssemblerListingLocation=".\..\..\..\win64\vc8\obj\__XQTNAM__/"
+				ObjectFile=".\..\..\..\win64\vc8\obj\__XQTNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win64\vc8\obj\__XQTNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -166,13 +167,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="__TKDEP__"
-				OutputFile=".\..\..\..\win64\bin\__XQTNAM__.__XQTEXT__"
+				OutputFile=".\..\..\..\win64\vc8\bin\__XQTNAM__.__XQTEXT__"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\win64\lib"
-				ProgramDatabaseFile=".\..\..\..\win64\bin/__XQTNAM__.pdb"
+				AdditionalLibraryDirectories="..\..\..\win64\vc8\lib"
+				ProgramDatabaseFile=".\..\..\..\win64\vc8\bin\__XQTNAM__.pdb"
 				SubSystem="1"
-				ImportLibrary="..\..\..\win64\lib\__XQTNAM__.lib"
+				ImportLibrary="..\..\..\win64\vc8\lib\__XQTNAM__.lib"
 				TargetMachine="X64"
 			/>
 			<Tool

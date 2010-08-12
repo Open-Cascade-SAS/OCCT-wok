@@ -3,6 +3,8 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="__TKNAM__"
+	ProjectGUID="__PROJECT_GUID__"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -14,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\..\..\..\win64\bin"
-			IntermediateDirectory=".\..\..\..\win64\obj\__TKNAM__"
+			OutputDirectory=".\..\..\..\win64\vc9\bin"
+			IntermediateDirectory=".\..\..\..\win64\vc9\obj\__TKNAM__"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -38,7 +40,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win64\bin/__TKNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win64\vc9\bin\__TKNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -51,10 +53,10 @@
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\..\..\..\win64\obj\__TKNAM__/__TKNAM__.pch"
-				AssemblerListingLocation=".\..\..\..\win64\obj\__TKNAM__/"
-				ObjectFile=".\..\..\..\win64\obj\__TKNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win64\obj\__TKNAM__/"
+				PrecompiledHeaderFile=".\..\..\..\win64\vc9\obj\__TKNAM__\__TKNAM__.pch"
+				AssemblerListingLocation=".\..\..\..\win64\vc9\obj\__TKNAM__/"
+				ObjectFile=".\..\..\..\win64\vc9\obj\__TKNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win64\vc9\obj\__TKNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DisableSpecificWarnings="4996"
@@ -72,17 +74,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
-				OutputFile=".\..\..\..\win64\bin/__TKNAM__.dll"
+				OutputFile=".\..\..\..\win64\vc9\bin\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\win64\lib"
-				ProgramDatabaseFile=".\..\..\..\win64\bin/__TKNAM__.pdb"
+				AdditionalLibraryDirectories="..\..\..\win64\vc9\lib"
+				ProgramDatabaseFile=".\..\..\..\win64\vc9\bin\__TKNAM__.pdb"
 				SubSystem="2"
-				ImportLibrary="..\..\..\win64\lib\__TKNAM__.lib"
+				ImportLibrary="..\..\..\win64\vc9\lib\__TKNAM__.lib"
 				TargetMachine="X64"
 			/>
 			<Tool
- 				Name="VCALinkTool"
+				Name="VCALinkTool"
 			/>
 			<Tool
 				Name="VCManifestTool"
@@ -105,8 +107,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\..\..\..\win64\bind"
-			IntermediateDirectory=".\..\..\..\win64\objd\__TKNAM__"
+			OutputDirectory=".\..\..\..\win64\vc9\bind"
+			IntermediateDirectory=".\..\..\..\win64\vc9\objd\__TKNAM__"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -130,7 +132,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win64\bind/__TKNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win64\vc9\bind\__TKNAM__.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -141,10 +143,10 @@
 				PreprocessorDefinitions="DEB;_DEBUG;WIN64;_WINDOWS;WNT;CSFDB;_OCC64"
 				ExceptionHandling="2"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\..\..\..\win64\objd\__TKNAM__/__TKNAM__.pch"
-				AssemblerListingLocation=".\..\..\..\win64\objd\__TKNAM__/"
-				ObjectFile=".\..\..\..\win64\objd\__TKNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win64\objd\__TKNAM__/"
+				PrecompiledHeaderFile=".\..\..\..\win64\vc9\objd\__TKNAM__\__TKNAM__.pch"
+				AssemblerListingLocation=".\..\..\..\win64\vc9\objd\__TKNAM__/"
+				ObjectFile=".\..\..\..\win64\vc9\objd\__TKNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win64\vc9\objd\__TKNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -165,14 +167,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="__TKDEP__ ws2_32.lib vfw32.lib"
-				OutputFile=".\..\..\..\win64\bind/__TKNAM__.dll"
+				OutputFile=".\..\..\..\win64\vc9\bind\__TKNAM__.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\win64\libd"
+				AdditionalLibraryDirectories="..\..\..\win64\vc9\libd"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\win64\bind\__TKNAM__.pdb"
+				ProgramDatabaseFile="..\..\..\win64\vc9\bind\__TKNAM__.pdb"
 				SubSystem="2"
-				ImportLibrary="..\..\..\win64\libd\__TKNAM__.lib"
+				ImportLibrary="..\..\..\win64\vc9\libd\__TKNAM__.lib"
 				TargetMachine="X64"
 			/>
 			<Tool

@@ -13,8 +13,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\..\..\win32\bind"
-			IntermediateDirectory=".\..\..\..\win32\objd\__XQTNAM__"
+			OutputDirectory=".\..\..\..\win32\vc7\bind"
+			IntermediateDirectory=".\..\..\..\win32\vc7\objd\__XQTNAM__"
 			ConfigurationType="__CONF__"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
@@ -25,9 +25,9 @@
 				PreprocessorDefinitions="WIN32;DEB;_DEBUG;_WINDOWS;WNT;CSFDB;"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				AssemblerListingLocation=".\..\..\..\win32\objd\__XQTNAM__/"
-				ObjectFile=".\..\..\..\win32\objd\__XQTNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win32\objd\__XQTNAM__/"
+				AssemblerListingLocation=".\..\..\..\win32\vc7\objd\__XQTNAM__/"
+				ObjectFile=".\..\..\..\win32\vc7\objd\__XQTNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win32\vc7\objd\__XQTNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="3"/>
@@ -38,11 +38,11 @@
 				AdditionalDependencies="__TKDEP__"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\win32\libd"
+				AdditionalLibraryDirectories="..\..\..\win32\vc7\libd"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\..\..\..\win32\bind/__XQTNAM__.pdb"
+				ProgramDatabaseFile=".\..\..\..\win32\vc7\bind\__XQTNAM__.pdb"
 				SubSystem="1"
-				ImportLibrary="..\..\..\win32\libd\__XQTNAM__.lib"
+				ImportLibrary="..\..\..\win32\vc7\libd\__XQTNAM__.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -50,7 +50,7 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win32\bind/__XQTNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win32\vc7\bind\__XQTNAM__.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -75,8 +75,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\..\..\..\win32\bin"
-			IntermediateDirectory=".\..\..\..\win32\obj\__XQTNAM__"
+			OutputDirectory=".\..\..\..\win32\vc7\bin"
+			IntermediateDirectory=".\..\..\..\win32\vc7\obj\__XQTNAM__"
 			ConfigurationType="__CONF__"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
@@ -89,9 +89,9 @@
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
-				AssemblerListingLocation=".\..\..\..\win32\obj\__XQTNAM__/"
-				ObjectFile=".\..\..\..\win32\obj\__XQTNAM__/"
-				ProgramDataBaseFileName=".\..\..\..\win32\obj\__XQTNAM__/"
+				AssemblerListingLocation=".\..\..\..\win32\vc7\obj\__XQTNAM__/"
+				ObjectFile=".\..\..\..\win32\vc7\obj\__XQTNAM__/"
+				ProgramDataBaseFileName=".\..\..\..\win32\vc7\obj\__XQTNAM__/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
@@ -101,10 +101,10 @@
 				AdditionalDependencies="__TKDEP__"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\win32\lib"
-				ProgramDatabaseFile=".\..\..\..\win32\bin/__XQTNAM__.pdb"
+				AdditionalLibraryDirectories="..\..\..\win32\vc7\lib"
+				ProgramDatabaseFile=".\..\..\..\win32\vc7\bin\__XQTNAM__.pdb"
 				SubSystem="1"
-				ImportLibrary="..\..\..\win32\lib\__XQTNAM__.lib"
+				ImportLibrary="..\..\..\win32\vc7\lib\__XQTNAM__.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -112,7 +112,7 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\win32\bin/__XQTNAM__.tlb"
+				TypeLibraryName=".\..\..\..\win32\vc7\bin\__XQTNAM__.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
