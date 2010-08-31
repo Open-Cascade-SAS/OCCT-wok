@@ -936,11 +936,15 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
 }
 
 # Generate Visual Studio project file for executable
-proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
-    if { $tmplat == {} } {set tmplat [osutils:vcproj:readtemplate $vc $plat 1]}
+proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
     if { $fmtcpp == {} } {set fmtcpp [osutils:vcproj:fmtcppx]}
     set fout {}
     foreach f [osutils:tk:files $tkloc osutils:compilable 0] {
+	if { $tmplat0 == {} } {
+	    set tmplat [osutils:vcproj:readtemplate $vc $plat 1]
+	} else {
+	    set tmplat $tmplat0
+	}
         set tf [file rootname [file tail $f]]   
         set l_compilable [osutils:compilable]
         regsub -all -- {__XQTNAM__} $tmplat $tf tmplat
