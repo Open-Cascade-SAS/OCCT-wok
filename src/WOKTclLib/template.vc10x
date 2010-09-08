@@ -53,7 +53,7 @@
       <AdditionalOptions>/DWNT %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;WNT;No_Exception;CSFDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;WNT;No_Exception;CSFDB;HAVE_TBB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -91,7 +91,7 @@
       <AdditionalOptions>/DWNT %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;HAVE_TBB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AssemblerListingLocation>.\..\..\..\win32\vc10\objd\__XQTNAM__/</AssemblerListingLocation>
