@@ -939,7 +939,6 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
 
 # Generate Visual Studio project file for executable
 proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
-    puts "VTN: osutils:vcprojx"
     if { $fmtcpp == {} } {set fmtcpp [osutils:vcproj:fmtcppx]}
     set fout {}
     foreach f [osutils:tk:files $tkloc osutils:compilable 0] {
