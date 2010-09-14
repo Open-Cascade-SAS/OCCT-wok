@@ -939,6 +939,7 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
 
 # Generate Visual Studio project file for executable
 proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
+    puts "VTN: osutils:vcprojx"
     if { $fmtcpp == {} } {set fmtcpp [osutils:vcproj:fmtcppx]}
     set fout {}
     foreach f [osutils:tk:files $tkloc osutils:compilable 0] {
@@ -972,7 +973,7 @@ proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
 	    if {[wokparam -t %$element] != 0} {
                 set elemlist [wokparam -v "%$element"]
 		foreach fl [split [wokparam -v %$element] \{\ \}] {
-		set felem [file tail $fl] 
+		    set felem [file tail $fl] 
 		    if {[lsearch $tkused $felem] == "-1"} {
 			if {$felem != "\{\}"} {
 			    #puts "was found $element $felem"	   
@@ -981,6 +982,7 @@ proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
 		    }   
 		}
 	    }
+	  }
 	}
 	set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]]
 	if { [regexp {WOKStep_DLLink} $WOKSteps_exec_link] || [regexp {WOKStep_Libink} $WOKSteps_exec_link] } { 
