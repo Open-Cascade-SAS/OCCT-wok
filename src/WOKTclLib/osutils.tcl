@@ -848,13 +848,15 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
     foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]] $tkloc] {
 	foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
 	    if {[wokparam -t %$element] != 0} {
-		set felem [file tail [lindex [wokparam -v "%$element"] 0]]
-	      if {[lsearch $tkused $felem] == "-1"} {
-		if {$felem != "\{\}"} {
-		    set tkused [concat $tkused $felem]
-		}
-	     }   
-	   }
+		foreach fl [split [wokparam -v %$element] \{\ \}] {
+		    set felem [file tail $fl]
+		    if {[lsearch $tkused $felem] == "-1"} {
+			if {$felem != "\{\}"} {
+			    set tkused [concat $tkused $felem]
+			}
+		    }
+		}   
+	    }
 	}
     }
 
@@ -969,15 +971,16 @@ proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
 	  foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]]  {
 	    if {[wokparam -t %$element] != 0} {
                 set elemlist [wokparam -v "%$element"]
-		set felem [file tail [lindex $elemlist 0]] 
-	      if {[lsearch $tkused $felem] == "-1"} {
-		if {$felem != "\{\}"} {
-                    #puts "was found $element $felem"	   
-		    set tkused [concat $tkused $felem]
+		foreach fl [split [wokparam -v %$element] \{\ \}] {
+		set felem [file tail $fl] 
+		    if {[lsearch $tkused $felem] == "-1"} {
+			if {$felem != "\{\}"} {
+			    #puts "was found $element $felem"	   
+			    set tkused [concat $tkused $felem]
+			}
+		    }   
 		}
-	      }   
 	    }
-	 }
 	}
 	set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $tkloc]]
 	if { [regexp {WOKStep_DLLink} $WOKSteps_exec_link] || [regexp {WOKStep_Libink} $WOKSteps_exec_link] } { 
