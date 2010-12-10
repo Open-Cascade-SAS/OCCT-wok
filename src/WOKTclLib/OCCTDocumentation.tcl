@@ -50,29 +50,7 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
     set filelist $hdrlist
 
     # get OCCT version number
-    set occt_version ""
-    set verfile [woklocate -p "Standard:source:Standard_Version.hxx"]
-    if { "$verfile" != "" && [file readable $verfile] } {
-	set vfd [open $verfile "r"]
-	set vmajor ""
-	set vminor ""
-	set vpatch ""
-	set vbuild ""
-	while { [gets $vfd line] >= 0 } {
-	    if { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MAJOR[ \t]*([0-9]+)} $line str num] } {
-		set vmajor $num
-	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MINOR[ \t]*([0-9]+)} $line str num] } {
-		set vminor $num
-	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MAINTENANCE[ \t]*([0-9]+)} $line str num] ||
-                        [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_PATCH[ \t]*([0-9]+)} $line str num] } {
-		set vpatch $num
-	    } elseif { [regexp {^[ \t]*\#define[ \t]*OCC_VERSION_BUILD[ \t]*([0-9]+)} $line str num] } {
-		set vbuild .$num
-	    }
-	}
-	close $vfd
-        set occt_version $vmajor.$vminor.$vpatch$vbuild
-    }
+    set occt_version [OCCTGetVersion]
 
     set filename "$outDir/$name.Doxyfile"
     msgprint -i -c "WOKStep_DocGenerate:Execute" "Generating Doxygen file for $title in $filename"

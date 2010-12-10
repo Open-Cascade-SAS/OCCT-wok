@@ -169,3 +169,4 @@ srcinc:::woksh.el
 srcinc:::wok-comm.el
 srcinc:::OCCTDocumentation.tcl
 srcinc:::OS.tcl
+srcinc:::OCCTGetVersion.tcl
