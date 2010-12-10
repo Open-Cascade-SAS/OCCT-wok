@@ -17,12 +17,12 @@
 @if ( %Station != "wnt" ) then
 
  @if ( %Station == "lin" ) then
-  @set %CODEGEN_FlexBisHome = "/usr";
+  @set %CODEGEN_FlexBisHome = "${WOKHOME}/lib/lin";
  @else
   @if ( %Station == "mac" ) then
    @set %CODEGEN_FlexBisHome = "/sw";
   @else
-   @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125";
+   @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125/bin";
   @endif;
  @endif;
 
@@ -31,12 +31,12 @@ $lex.%BaseName.c
 @end;
 
 @template CODEGEN_LEX_OptLine  (%CODEGEN_FlexBisHome) is
-$%CODEGEN_FlexBisHome/bin/flex -f -P <Module>  -L -8 -f <LexFile>
+$%CODEGEN_FlexBisHome/flex -f -P<Module>  -L -8 -f <LexFile>
 @end;
 
 @template CODEGEN_LEX_CmdLine  ( %CODEGEN_FlexBisHome, %Source, %BaseName, %OutputDir ) is
 $cd %OutputDir
-$%CODEGEN_FlexBisHome/bin/flex -f -P%BaseName  -L -8 -f %Source
+$%CODEGEN_FlexBisHome/flex -f -P%BaseName  -L -8 -f %Source
 @end;
 
 
@@ -45,13 +45,14 @@ $%BaseName.tab.h %BaseName.tab.c
 @end;
 
 @template CODEGEN_YACC_OptLine (%CODEGEN_FlexBisHome) is
-$%CODEGEN_FlexBisHome/bin/bison -d -b <Module> -p <Module> <YaccFile>
+$%CODEGEN_FlexBisHome/bison -d -b <Module> -p <Module> <YaccFile>
 @end;
 
 @template CODEGEN_YACC_CmdLine ( %CODEGEN_FlexBisHome, %Source, %BaseName, %OutputDir ) is
 $cd %OutputDir
-$%CODEGEN_FlexBisHome/bin/bison -d -b %BaseName -p %BaseName %Source -o %BaseName.tab.c
+$%CODEGEN_FlexBisHome/bison -d -b %BaseName -p %BaseName %Source -o %BaseName.tab.c
 @end;
+
 @else
 
 @template CODEGEN_LEX_Production ( %BaseName ) is
