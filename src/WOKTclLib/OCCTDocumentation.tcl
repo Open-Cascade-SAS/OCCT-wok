@@ -1,3 +1,9 @@
+# general procedure for generation Doxygen documentation
+# it launches both generation process and post process
+proc OCCDoc_GenerateDoc {outDir {modules {}} {doxygenPath {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
+    catch {exec $doxygenPath/doxygen [OCCDoc_MakeDoxyfile $outDir $modules $graphvizPath]}
+    OCCDoc_PostProcessor $outDir
+}
 
 # generate Doxygen configuration file for specified OCCT module of toolkit
 proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
@@ -228,4 +234,85 @@ proc OCCDoc_MakeMainPage {outFile modules} {
 
     close $fd
     return $outFile
+}
+
+# parse generated files to add a navigation path 
+proc OCCDoc_PostProcessor {outDir} {
+    puts "Post-process is started..."
+    append outDir "/html"
+    set files [glob -nocomplain -type f $outDir/package__*]
+    if { $files != {} } {
+        foreach f [lsort $files] {
+	    set packageFilePnt [open $f r]
+            set packageFile [read $packageFilePnt]
+            set navPath [OCCDoc_GetNodeContents "div" " class=\"navpath\"" $packageFile]
+            set packageName [OCCDoc_GetNodeContents "h1" "" $packageFile]
+	    regsub -all {<[^<>]*>} $packageName "" packageName 
+	    
+	    # add package link to nav path
+	    set first [expr 1 + [string last "/" $f]]
+	    set last [expr [string length $f] - 1]
+	    set packageFileName [string range $f $first $last]
+	    append navPath "&nbsp;&raquo;&nbsp; <a class=\"el\" href=\"$packageFileName\">$packageName</a>" 
+	    
+	    # get list of files to update
+	    set listContents [OCCDoc_GetNodeContents "div" " class=\"contents\"" $packageFile]
+	    set listContents [OCCDoc_GetNodeContents "ul" "" $listContents]
+	    set lines [split $listContents "\n"]
+	    foreach line $lines {
+		#puts "mLine:  $line"
+		if {[regexp {href=\"([^\"]*)\"} $line tmpLine classFileName]} {
+		    # check if anchor is there
+		    set anchorPos [string first "#" $classFileName]
+		    if {$anchorPos != -1} {
+			set classFileName [string range $classFileName 0 [expr $anchorPos - 1]]
+		    }
+		    # read class file
+		    set classFilePnt [open $outDir/$classFileName r+]
+		    set classFile [read $classFilePnt]
+		    # find position of content block 
+		    set contentPos [string first "<div class=\"contents\">" $classFile]
+		    set navPart [string range $classFile 0 [expr $contentPos - 1]]
+		    # position where to insert nav path
+		    set posToInsert [string last "</div>" $navPart]
+		    set prePart [string range $classFile 0 [expr $posToInsert - 1]]
+		    set postPart [string range $classFile $posToInsert [string length $classFile]]
+		    set newClassFile ""
+		    append newClassFile $prePart "<div class=\"navpath\">" $navPath "</div>" $postPart
+		    # write updated content
+		    seek $classFilePnt 0
+		    puts $classFilePnt $newClassFile
+		    close $classFilePnt
+		} 
+	
+	    }
+	    
+	    
+	   close $packageFilePnt
+        }
+    } else {
+        puts "no files found"
+    }
+}
+
+# get contents of the given html node
+proc OCCDoc_GetNodeContents {node props html} {
+    set openTag "<$node$props>"
+    set closingTag "</$node>"
+    set start [string first $openTag $html]
+ 
+    if {$start == -1} {
+	return ""
+    }
+    set start [expr $start + [string length $openTag]]
+    set end [string length $html]
+    set html [string range $html $start $end]
+    
+    set start [string first $closingTag $html]
+    set end [string length $html]
+    if {$start == -1} {
+	return ""
+    }
+    set start [expr $start - 1]
+    return [string range $html 0 $start]
 }
