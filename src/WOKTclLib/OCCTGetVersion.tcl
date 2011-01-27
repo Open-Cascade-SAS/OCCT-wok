@@ -12,7 +12,7 @@ proc OCCTGetVersion {} {
 		set v_major $num
 	    } elseif {[regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MINOR[ \t]*([0-9]+)} $line str num]} {
 		set v_minor $num
-	    } elseif {[regexp {^[ \t]*\#define[ \t]*OCC_VERSION_BUILD[ \t]*([0-9]+)} $line str num]} {
+	    } elseif {[regexp {^[ \t]*\#define[ \t]*OCC_VERSION_MAINTENANCE[ \t]*([0-9]+)} $line str num]} {
 		set v_build $num
 	    }
 	}
