@@ -1763,6 +1763,7 @@ proc TESTAM { {root} {modules {}} {ll {}} } {
 	    puts " toolkit: $unit ==> [woklocate -p ${unit}:source:EXTERNLIB]"
 	    wokUtils:FILES:rmdir $root/$unit
 	    wokUtils:FILES:mkdir $root/$unit
+	    osutils:tk:mkam $root/$unit $unit
 	}
 	foreach unit [OS:executable $theModule] {
 	    wokUtils:FILES:rmdir $root/$unit
