@@ -241,6 +241,10 @@ proc osutils:mak:fmtcppx { } {
 proc osutils:compilable { } {
     return [list .c .cxx .cpp]
 }
+
+proc osutils:optinal_libs { } {
+    return [list tbb.lib tbbmalloc.lib FreeImage.lib FreeImagePlus.lib gl2ps.lib]
+} 
 ;#
 ;# remove from listloc OpenCascade units indesirables on NT
 ;#
@@ -851,8 +855,11 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
 		foreach fl [split [wokparam -v %$element] \{\ \}] {
 		    set felem [file tail $fl]
 		    if {[lsearch $tkused $felem] == "-1"} {
-			if {$felem != "\{\}"} {
-			    set tkused [concat $tkused $felem]
+			if {$felem != "\{\}" & $felem != "lib"} {
+			    #puts "$fl $tkused $felem"
+			    if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
+			        set tkused [concat $tkused $felem]
+			    }
 			}
 		    }
 		}   
@@ -862,6 +869,7 @@ proc osutils:vcproj { vc plat dir tkloc _guids {tmplat {} } {fmtcpp {} } } {
 
     # correct names of referred third-party libraries that are named with suffix
     # depending on VC version
+    
     regsub -all -- {vc[0-9]+} $tkused $vc tkused
 
     # and put this list to project file
@@ -975,8 +983,10 @@ proc osutils:vcprojx { vc plat dir tkloc _guids {tmplat0 {} } {fmtcpp {} } } {
 		    set felem [file tail $fl] 
 		    if {[lsearch $tkused $felem] == "-1"} {
 			if {$felem != "\{\}"} {
-			    #puts "was found $element $felem"	   
-			    set tkused [concat $tkused $felem]
+			    if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
+			        set tkused [concat $tkused $felem] 
+			    }
+
 			}
 		    }   
 		}
@@ -1753,7 +1763,6 @@ proc TESTAM { {root} {modules {}} {ll {}} } {
 	    puts " toolkit: $unit ==> [woklocate -p ${unit}:source:EXTERNLIB]"
 	    wokUtils:FILES:rmdir $root/$unit
 	    wokUtils:FILES:mkdir $root/$unit
-	    osutils:tk:mkam $root/$unit $unit
 	}
 	foreach unit [OS:executable $theModule] {
 	    wokUtils:FILES:rmdir $root/$unit
