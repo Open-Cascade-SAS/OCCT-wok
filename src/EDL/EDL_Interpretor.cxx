@@ -6,6 +6,7 @@
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <OSD_Environment.hxx>
 #include <EDL_FunctionSignature.hxx>
 #include <EDL_ProcedureSignature.hxx>
 #include <Standard_PCharacter.hxx>
@@ -144,14 +145,14 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
   Standard_Integer DirCount = 1;
 
   Handle(TColStd_HSequenceOfAsciiString) IncludeDirectory = GlobalInter->GetIncludeDirectory();
-  
+
   if (aFile != NULL) {
     FILE *fic = 0L;
     DirCount  = 1;
 #ifndef WNT
-    if( !access(aFile, F_OK) ) 
+    if( !access(aFile, F_OK) )
 #else
-    if ( GetFileAttributes(aFile) != 0xFFFFFFFF ) 
+    if ( GetFileAttributes(aFile) != 0xFFFFFFFF )
 #endif
     {
       if (   (  fic = fopen ( aFile, "r" )  ) != NULL   ) {
@@ -164,23 +165,23 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
       const TCollection_AsciiString& adir = IncludeDirectory->Value(DirCount);
       memcpy(tmpName, adir.ToCString(), adir.Length());
       tmpName[adir.Length()] = '/';
-      strcpy(&(tmpName[adir.Length()+1]),aFile);  
-      
+      strcpy(&(tmpName[adir.Length()+1]),aFile);
+
 #ifndef WNT
-      if( !access(tmpName, F_OK) ) 
+      if( !access(tmpName, F_OK) )
 #else
-      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF ) 
+      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF )
 #endif
       {
 	if (   (  fic = fopen ( tmpName, "r" )  ) != NULL   ) {
 	  IsFound = Standard_True;
 	}
       }
-      
+
       //delete [] tmpName;
       DirCount++;
     }
-    
+
     if (fic) {
       edlstring edlstr;
       edlstr.str = (char *)aFile;
@@ -227,7 +228,7 @@ EDL_Error EDL_Interpretor::AddFile(const Standard_CString aVariable, const Stand
 {
   TCollection_AsciiString  anAscName(aVariable);
   char                    *realFilename = (char *)filename;
-  
+
   // we can open a file with a name defined by a string or a variable
   //
   if (myParameterType == EDL_VARIABLE) {
@@ -292,28 +293,40 @@ void EDL_Interpretor::RemoveFile(const Standard_CString aVariable)
   }
 }
 
-EDL_Error EDL_Interpretor::AddVariable(const Standard_CString aVariable, const Standard_CString aValue)
+EDL_Error EDL_Interpretor::AddVariable (const Standard_CString theVariable,
+                                        const Standard_CString theValue)
 {
-  if (aVariable != NULL && aValue != NULL) {
-    TCollection_AsciiString  anAscName(aVariable);
-
-    if (aVariable[0] != '%')       {
+  if (theVariable != NULL && theValue != NULL)
+  {
+    TCollection_AsciiString aVarName (theVariable);
+    TCollection_AsciiString aValue (theValue);
+    if (theVariable[0] != '%')
+    {
       // Raise
-      //
-      anAscName.AssignCat(" : wrong indirection...");
-      EDL::PrintError(EDL_VARNOTFOUND,anAscName.ToCString());
+      aVarName.AssignCat (" : wrong indirection...");
+      EDL::PrintError (EDL_VARNOTFOUND, aVarName.ToCString());
       Standard_NoSuchObject::Raise();
     }
 
-    if (mySymbolTable.IsBound(anAscName)) {
-      mySymbolTable.ChangeFind(anAscName).SetValue(aValue);
+    Standard_Integer aValLen = aValue.Length();
+    if (aValLen > 3 && theValue[0] == '$' && theValue[1] == '{' && theValue[aValLen - 1] == '}')
+    {
+      OSD_Environment anEnvVar (aValue.SubString (3, aValLen - 1));
+      aValue = anEnvVar.Value();
     }
-    else {
-      EDL_Variable aVar(aVariable,aValue);
-      mySymbolTable.Bind(anAscName,aVar);
+
+    if (mySymbolTable.IsBound (aVarName))
+    {
+      mySymbolTable.ChangeFind (aVarName).SetValue (aValue.ToCString());
+    }
+    else
+    {
+      EDL_Variable aEdlVar (theVariable, aValue.ToCString());
+      mySymbolTable.Bind (aVarName, aEdlVar);
     }
   }
-  else {
+  else
+  {
     return EDL_SYNTAXERROR;
   }
 
@@ -323,7 +336,7 @@ EDL_Error EDL_Interpretor::AddVariable(const Standard_CString aVariable, const S
 EDL_Variable& EDL_Interpretor::GetVariable(const Standard_CString aVariable)
 {
   if (aVariable != NULL) {
-    
+
     TCollection_AsciiString  anAscName(aVariable);
 
     if (mySymbolTable.IsBound(anAscName)) {
@@ -347,7 +360,7 @@ EDL_Variable& EDL_Interpretor::GetVariable(const Standard_CString aVariable)
 Standard_Boolean EDL_Interpretor::IsDefined(const Standard_CString aVariable) const
 {
  if (aVariable != NULL) {
-    
+
     TCollection_AsciiString  anAscName(aVariable);
 
     if (mySymbolTable.IsBound(anAscName) ||myTemplateTable.IsBound(anAscName)) {
@@ -365,9 +378,9 @@ Standard_Boolean EDL_Interpretor::IsDefined(const Standard_CString aVariable) co
 Standard_Boolean EDL_Interpretor::IsFile(const Standard_CString aFileName) const
 {
  if (aFileName != NULL) {
-    
+
     TCollection_AsciiString  fname(aFileName);
-    
+
     Standard_Boolean IsFound  = Standard_False;
     Standard_Integer DirCount = 1;
 
@@ -379,12 +392,12 @@ Standard_Boolean EDL_Interpretor::IsFile(const Standard_CString aFileName) const
       const TCollection_AsciiString& adir = IncludeDirectory->Value(DirCount);
       memcpy(tmpName, adir.ToCString(), adir.Length());
       tmpName[adir.Length()] = '/';
-      strcpy(&(tmpName[adir.Length()+1]),aFileName);  
-      
+      strcpy(&(tmpName[adir.Length()+1]),aFileName);
+
 #ifndef WNT
-      if( !access(tmpName, F_OK) ) 
+      if( !access(tmpName, F_OK) )
 #else
-      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF ) 
+      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF )
 #endif
 	{
 	  IsFound = Standard_True;
@@ -424,11 +437,11 @@ EDL_Error EDL_Interpretor::AddTemplate(const Standard_CString aTemplate)
 {
   if (aTemplate != NULL) {
     myCurrentTemplate = aTemplate;
-    
+
     if (myTemplateTable.IsBound(myCurrentTemplate)) {
       myTemplateTable.UnBind(myCurrentTemplate);
     }
-    
+
     EDL_Template aTmp(aTemplate);
     myTemplateTable.Bind(myCurrentTemplate,aTmp);
   }
@@ -444,7 +457,7 @@ EDL_Error EDL_Interpretor::AddTemplate(const Standard_CString aTemplate)
 EDL_Error EDL_Interpretor::AddToTemplate(const Standard_CString aTemplate)
 {
   if (aTemplate != NULL) {
-    
+
     if (myTemplateTable.IsBound(myCurrentTemplate)) {
       myCurrentTemplate = aTemplate;
     }
@@ -549,13 +562,13 @@ void EDL_Interpretor::EvalTemplate(const Standard_CString aTemplate, const Stand
 
 //=======================================================================
 //function : RemoveTemplate
-//purpose  : 
+//purpose  :
 //=======================================================================
 void EDL_Interpretor::RemoveTemplate(const Standard_CString aTemplate)
 {
   if (aTemplate != NULL) {
     TCollection_AsciiString TmpName(aTemplate);
-    
+
     if (myTemplateTable.IsBound(TmpName)) {
       myTemplateTable.UnBind(TmpName);
     }
@@ -577,11 +590,11 @@ EDL_Error EDL_Interpretor::AddLibrary(const Standard_CString aLibrary)
     else {
       EDL_Library aLib(aLibrary);
       char        *aStatus = (char *)aLib.GetStatus();
-      
+
       if (aStatus != NULL) {
 	EDL::PrintError(EDL_LIBNOTOPEN,aStatus);
 	return EDL_LIBNOTOPEN;
-      } 
+      }
       else {
 	myLibraryTable.Bind(anAscName,aLib);
       }
@@ -599,7 +612,7 @@ EDL_Library& EDL_Interpretor::GetLibrary(const Standard_CString aLibrary)
 {
   if (aLibrary != NULL) {
     TCollection_AsciiString aName(aLibrary);
-    
+
     if (myLibraryTable.IsBound(aName)) {
       return myLibraryTable.ChangeFind(aName);
     }
@@ -617,11 +630,11 @@ EDL_Library& EDL_Interpretor::GetLibrary(const Standard_CString aLibrary)
   return myLibraryTable.ChangeFind(TCollection_AsciiString());
 }
 
-EDL_Error EDL_Interpretor::CallFunction(const Standard_CString libname, const Standard_CString funcname, const Standard_CString returnName) 
+EDL_Error EDL_Interpretor::CallFunction(const Standard_CString libname, const Standard_CString funcname, const Standard_CString returnName)
 {
   if (libname != NULL) {
     TCollection_AsciiString  anAscName(libname);
-    
+
     if (!myLibraryTable.IsBound(anAscName)) {
       EDL::PrintError(EDL_LIBRARYNOTFOUND,libname);
       return EDL_LIBRARYNOTFOUND;
@@ -667,7 +680,7 @@ void EDL_Interpretor::RemoveLibrary(const Standard_CString aLibrary)
 {
   if (aLibrary != NULL) {
     TCollection_AsciiString aName(aLibrary);
-    
+
     if (myLibraryTable.IsBound(aName)) {
       myLibraryTable.UnBind(aName);
     }
@@ -693,7 +706,7 @@ void EDL_Interpretor::AddExecutionStatus(const Standard_Boolean aValue)
 Standard_Boolean EDL_Interpretor::RemoveExecutionStatus()
 {
   Standard_Boolean aResult;
-  
+
   if (!myExecutionStatus.IsEmpty()) {
     aResult = myExecutionStatus.Top();
     myExecutionStatus.Pop();
@@ -701,7 +714,7 @@ Standard_Boolean EDL_Interpretor::RemoveExecutionStatus()
   else {
     aResult = Standard_True;
   }
-  
+
   return aResult;
 }
 
@@ -734,10 +747,10 @@ void EDL_Interpretor::AddExpressionMember(const Standard_Boolean aValue)
   myExpressionMember.Push(aValue);
 }
 
-Standard_Boolean EDL_Interpretor::GetExpressionMember() 
+Standard_Boolean EDL_Interpretor::GetExpressionMember()
 {
   Standard_Boolean aResult = myExpressionMember.Top();
-  
+
   myExpressionMember.Pop();
 
   return aResult;
@@ -777,7 +790,7 @@ void EDL_Interpretor::AddToVariableList(const Standard_CString aVariable)
 {
   if (aVariable != NULL) {
     TCollection_AsciiString aVar(aVariable);
-    
+
     if (!mySymbolTable.IsBound(aVar)) {
       EDL::PrintError(EDL_VARNOTFOUND,aVariable);
       // Raise
@@ -804,7 +817,7 @@ void EDL_Interpretor::AddToArgList(const Standard_CString aVariable)
 {
   if (aVariable != NULL) {
     TCollection_AsciiString aVar(aVariable);
-    
+
     if (!mySymbolTable.IsBound(aVar)) {
       EDL::PrintError(EDL_VARNOTFOUND,aVariable);
       // Raise
@@ -863,8 +876,8 @@ Standard_Boolean edl_must_execute()
 
 // destruction of a variable :
 //
-void edl_unset_var(const edlstring varname) 
-{ 
+void edl_unset_var(const edlstring varname)
+{
   if (!edl_must_execute()) return;
 
   GlobalInter->RemoveVariable(varname.str);
@@ -872,19 +885,19 @@ void edl_unset_var(const edlstring varname)
 
 // destruction of a pointer variable :
 //
-void edl_unset_pvar(const edlstring varname) 
-{ 
+void edl_unset_pvar(const edlstring varname)
+{
   if (!edl_must_execute()) return;
   char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
-  
+
   GlobalInter->RemoveVariable(aString);
 }
 
 // assign or creation of a variable :
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_var(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_var(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
 
   GlobalInter->AddVariable(varname.str,value.str);
@@ -893,8 +906,8 @@ void edl_set_var(const edlstring varname, const edlstring value)
 // assign or creation of a variable with an other variable:
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_varvar(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_varvar(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
 
   // we need to erase the quote
@@ -907,8 +920,8 @@ void edl_set_varvar(const edlstring varname, const edlstring value)
 // assign or creation of a variable with a pointer:
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_varevalvar(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_varevalvar(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
 
   // we need to erase the quote
@@ -921,19 +934,19 @@ void edl_set_varevalvar(const edlstring varname, const edlstring value)
 // assign or creation of a variable :
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_pvar(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_pvar(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
   char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
-  
+
   GlobalInter->AddVariable(aString,value.str);
 }
 
 // assign or creation of a variable with an other variable:
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_pvarvar(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_pvarvar(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
 
   // we need to erase the quote
@@ -947,8 +960,8 @@ void edl_set_pvarvar(const edlstring varname, const edlstring value)
 // assign or creation of a variable with a pointer:
 //     if the variable doesnt exist we create it , otherwise we change its value...
 //
-void edl_set_pvarevalvar(const edlstring varname, const edlstring value) 
-{ 
+void edl_set_pvarevalvar(const edlstring varname, const edlstring value)
+{
   if (!edl_must_execute()) return;
 
   // we need to erase the quote
@@ -974,30 +987,30 @@ void edl_test_condition(const edlstring varname, int ope, const edlstring value)
 
   char             *aString1 = (char *)GlobalInter->GetVariable(varname.str).GetValue(),
                    *aString2 = value.str;
-  
+
   Standard_Integer  aResult = strcmp(aString1,aString2);
   Standard_Boolean  aMember;
-  
+
   switch (ope) {
     case EQ: if (aResult == 0) {
                 aMember = Standard_True;
              }
              else {
-                aMember = Standard_False; 
+                aMember = Standard_False;
              }
              break;
     case NEQ: if (aResult != 0) {
 	        aMember = Standard_True;
 	      }
 	      else {
-	        aMember = Standard_False; 
+	        aMember = Standard_False;
 	      }
               break;
     default:
       EDLerror((char*)"wrong logical operator...",(char*)"");
       exit(EDL_SYNTAXERROR);
    }
-  
+
   // we add the evaluation of the expression to the stack
   //
   GlobalInter->AddExpressionMember(aMember);
@@ -1033,7 +1046,7 @@ void edl_eval_local_condition(int ope)
 
 // take the results from previous expressions evaluation
 // from stack and build a final result
-//    rule : conditions: condition        
+//    rule : conditions: condition
 //
 void edl_eval_condition()
 {
@@ -1049,7 +1062,7 @@ void edl_eval_condition()
   }
 }
 
-void edl_isvardefined(const edlstring varname) 
+void edl_isvardefined(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1064,7 +1077,7 @@ void edl_isvardefined(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_isvardefinedm(const edlstring varname) 
+void edl_isvardefinedm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1080,7 +1093,7 @@ void edl_isvardefinedm(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_fileexist(const edlstring varname) 
+void edl_fileexist(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1095,7 +1108,7 @@ void edl_fileexist(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_fileexistm(const edlstring varname) 
+void edl_fileexistm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1111,7 +1124,7 @@ void edl_fileexistm(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_fileexist_var(const edlstring varname) 
+void edl_fileexist_var(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1127,7 +1140,7 @@ void edl_fileexist_var(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_fileexist_varm(const edlstring varname) 
+void edl_fileexist_varm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1144,7 +1157,7 @@ void edl_fileexist_varm(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_filenotexist(const edlstring varname) 
+void edl_filenotexist(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1159,7 +1172,7 @@ void edl_filenotexist(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_filenotexistm(const edlstring varname) 
+void edl_filenotexistm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1175,7 +1188,7 @@ void edl_filenotexistm(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_filenotexist_var(const edlstring varname) 
+void edl_filenotexist_var(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1191,7 +1204,7 @@ void edl_filenotexist_var(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_filenotexist_varm(const edlstring varname) 
+void edl_filenotexist_varm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1208,7 +1221,7 @@ void edl_filenotexist_varm(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_isvarnotdefined(const edlstring varname) 
+void edl_isvarnotdefined(const edlstring varname)
 {
   if (!edl_must_execute()) {
     GlobalInter->AddExecutionStatus(Standard_False);
@@ -1223,7 +1236,7 @@ void edl_isvarnotdefined(const edlstring varname)
   if (varname.str) Standard::Free((void*&)varname.str);
 }
 
-void edl_isvarnotdefinedm(const edlstring varname) 
+void edl_isvarnotdefinedm(const edlstring varname)
 {
   if (!edl_must_execute()) {
     if (varname.str) Standard::Free((void*&)varname.str);
@@ -1291,7 +1304,7 @@ void edl_printlist_add_var(const edlstring varname)
   // we need to erase the quote
   //
   char* aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
-    
+
   GlobalInter->GetPrintList().AssignCat(aString);
   if (varname.str) Standard::Free((void*&)varname.str);
 }
@@ -1307,7 +1320,7 @@ void edl_printlist_addps_var(const edlstring varname)
   // we need to erase the quote
   //
   char *aString = (char *)GlobalInter->GetVariable(varname.str).GetValue();
-    
+
   GlobalInter->GetPrintList().AssignCat(aString);
 }
 
@@ -1379,7 +1392,7 @@ void edl_add_to_template(const edlstring line)
 void edl_end_template()
 {
   if (!edl_must_execute()) return;
-  
+
   GlobalInter->SetCurrentTemplate(NULL);
 }
 
@@ -1393,10 +1406,10 @@ void edl_apply_template(const edlstring tempname)
   }
 
   GlobalInter->SetCurrentTemplate(tempname.str);
-  
+
   GlobalInter->ClearVariableList();
- 
- 
+
+
   // to check if the template is defined
   //
   EDL_Template& atemp = GlobalInter->GetTemplate(tempname.str);
@@ -1405,7 +1418,7 @@ void edl_apply_template(const edlstring tempname)
   for (Standard_Integer i = 1; i <= listvar->Length(); i++) {
     GlobalInter->AddToVariableList(listvar->Value(i)->ToCString());
   }
-       
+
   if (tempname.str) Standard::Free((void*&)tempname.str);
 }
 
@@ -1586,7 +1599,7 @@ void edl_close_file(const edlstring varname)
   }
 
   EDL_File& aFile = GlobalInter->GetFile(varname.str);
-  
+
   aFile.Close();
   GlobalInter->RemoveFile(varname.str);
   if (varname.str) Standard::Free((void*&)varname.str);
@@ -1607,7 +1620,7 @@ void edl_close_file(const edlstring varname)
   extern "C" FILE *EDLin;
 #endif  // WNT
 
-void edl_uses_var(const edlstring var) 
+void edl_uses_var(const edlstring var)
 {
   if (edl_must_execute()) {
     EDL_Variable&           aVar  = GlobalInter->GetVariable(var.str);
@@ -1623,7 +1636,7 @@ void edl_uses_var(const edlstring var)
   if (var.str) Standard::Free((void*&)var.str);
 }
 
-void edl_uses(const edlstring filename) 
+void edl_uses(const edlstring filename)
 {
   Standard_Boolean IsFound  = Standard_False;
   Standard_Integer DirCount = 1;
@@ -1632,10 +1645,10 @@ void edl_uses(const edlstring filename)
 
   // from lex
   //
- 
+
   if (edl_must_execute()) {
     numFileDesc++;
-    
+
     if (numFileDesc > 9) {
       EDL::PrintError(EDL_TOOMANYINCLUDELEVEL," ");
       Standard_NoSuchObject::Raise();
@@ -1661,12 +1674,12 @@ void edl_uses(const edlstring filename)
       const TCollection_AsciiString& adir = IncludeDirectory->Value(DirCount);
       memcpy(tmpName, adir.ToCString(), adir.Length());
       tmpName[adir.Length()] = '/';
-      strcpy(&(tmpName[adir.Length()+1]),filename.str); 
-      
+      strcpy(&(tmpName[adir.Length()+1]),filename.str);
+
 #ifndef WNT
-      if( !access(tmpName, F_OK) ) 
+      if( !access(tmpName, F_OK) )
 #else
-      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF ) 
+      if ( GetFileAttributes(tmpName) != 0xFFFFFFFF )
 #endif
 	{
 	  EDLin = fopen(tmpName,"r");
@@ -1678,7 +1691,7 @@ void edl_uses(const edlstring filename)
 	}
       DirCount++;
     }
-    
+
     if (EDLin == NULL) {
       EDL::PrintError(EDL_FILENOTOPENED,filename.str);
       if (filename.str) Standard::Free((void*&)filename.str);
