@@ -16,11 +16,8 @@ template <class Key1, class Key2> class DoubleMapNode : public WOKTools_MapNode{
   public :
     Node(const Key1& K1, const Standard_Integer acode1, const Key2& K2, const Standard_Integer acode2, DoubleMapNode* n1, DoubleMapNode* n2) :
       WOKTools_MapNode(n1),key1(K1),hashcode1(acode1), key2(K2), hashcode2(acode2), next2(n2) {}
-  void* operator new(size_t aSize) 
-    {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
-  }
+
+    DEFINE_STANDARD_ALLOC
 
   Key1   key1;
   Standard_Integer hashcode1;
@@ -37,11 +34,8 @@ class Node : public WOKTools_MapNode{
   public :
     Node(const TheKey1& K1, const Standard_Integer acode1, const TheKey2& K2, const Standard_Integer acode2, Node* n1, Node* n2) :
       WOKTools_MapNode(n1),key1(K1),hashcode1(acode1), key2(K2), hashcode2(acode2), next2(n2) {}
-  void* operator new(size_t aSize) 
-    {return Standard::Allocate(aSize);}
-  void  operator delete(void* aNode, size_t aSize) {
-    Standard::Free(aNode,aSize);
-  }
+
+    DEFINE_STANDARD_ALLOC
 
   TheKey1   key1;
   Standard_Integer hashcode1;

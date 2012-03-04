@@ -18,14 +18,8 @@ template <class Key, class Item> class IndexedDataMapNode : public WOKTools_MapN
   IndexedDataMapNode(const Key& K1, const Standard_Integer K2, const Item& I, 
 		 const Standard_Integer ahashcode, IndexedDataMapNode* n1, IndexedDataMapNode* n2) 
     : WOKTools_MapNode(n1),key(K1),index(K2),value(I),next2(n2),hashcode(ahashcode) {}
-  void* operator new(size_t aSize) {
-    return Standard::Allocate(aSize);
-  }
-//  void  operator delete(void* aNode, size_t aSize) {
-  void  operator delete(void* aNode) {
-//    Standard::Free(aNode,aSize);
-    Standard::Free(aNode);
-  }
+
+    DEFINE_STANDARD_ALLOC
 
   Key                 key;
   Standard_Integer    index;
@@ -43,14 +37,8 @@ class Node : public WOKTools_MapNode {
     Node(const TheKey& K1, const Standard_Integer K2, const TheItem& I, 
 	 const Standard_Integer ahashcode, Node* n1, Node* n2) :
       WOKTools_MapNode(n1),key(K1),index(K2),hashcode(ahashcode),next2(n2) { value =I;}
-  void* operator new(size_t aSize) {
-    return Standard::Allocate(aSize);
-  }
-//  void  operator delete(void* aNode, size_t aSize) {
-  void  operator delete(void* aNode) {
-//    Standard::Free(aNode,aSize);
-    Standard::Free(aNode);
-  }
+
+    DEFINE_STANDARD_ALLOC
 
   TheKey                key;
   Standard_Integer      index;

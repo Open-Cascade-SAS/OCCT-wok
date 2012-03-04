@@ -16,14 +16,8 @@ template <class Key> class IndexedMapNode : public WOKTools_MapNode {
   public :
   IndexedMapNode(const Key& K1, const Standard_Integer K2, const Standard_Integer ahashcode, IndexedMapNode* n1, IndexedMapNode* n2) 
     : WOKTools_MapNode(n1),key(K1),index(K2),next2(n2),hashcode(ahashcode) {}
-  void* operator new(size_t aSize) {
-    return Standard::Allocate(aSize);
-  }
-//  void  operator delete(void* aNode, size_t aSize) {
-  void  operator delete(void* aNode) {
-//    Standard::Free(aNode,aSize);
-    Standard::Free(aNode);
-  }
+
+    DEFINE_STANDARD_ALLOC
 
   Key                key;
   Standard_Integer   index;
@@ -40,14 +34,8 @@ class Node : public WOKTools_MapNode {
   public :
   Node(const TheKey& K, const Standard_Integer theIndex, const Standard_Integer ahashcode, Node* n1, Node* n2) 
     : WOKTools_MapNode(n1),key(K),index(theIndex),hashcode(ahashcode),next2(n2) {}
-  void* operator new(size_t aSize) {
-    return Standard::Allocate(aSize);
-  }
-//  void  operator delete(void* aNode, size_t aSize) {
-  void  operator delete(void* aNode) {
-//    Standard::Free(aNode,aSize);
-    Standard::Free(aNode);
-  }
+
+    DEFINE_STANDARD_ALLOC
   
   TheKey             key;
   Standard_Integer   index;
