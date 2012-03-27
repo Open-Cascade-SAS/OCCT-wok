@@ -240,23 +240,26 @@ proc OCCDoc_MakeMainPage {outFile modules} {
 proc OCCDoc_PostProcessor {outDir} {
     puts "Post-process is started..."
     append outDir "/html"
-    set files [glob -nocomplain -type f $outDir/package__*]
+    set files [glob -nocomplain -type f $outDir/package_*]
     if { $files != {} } {
         foreach f [lsort $files] {
 	    set packageFilePnt [open $f r]
             set packageFile [read $packageFilePnt]
-            set navPath [OCCDoc_GetNodeContents "div" " class=\"navpath\"" $packageFile]
-            set packageName [OCCDoc_GetNodeContents "h1" "" $packageFile]
+            set navPath [OCCDoc_GetNodeContents "div" " id=\"nav-path\" class=\"navpath\"" $packageFile]
+            set packageName [OCCDoc_GetNodeContents "div" " class=\"title\"" $packageFile]
 	    regsub -all {<[^<>]*>} $packageName "" packageName 
 	    
 	    # add package link to nav path
 	    set first [expr 1 + [string last "/" $f]]
 	    set last [expr [string length $f] - 1]
 	    set packageFileName [string range $f $first $last]
-	    append navPath "&nbsp;&raquo;&nbsp; <a class=\"el\" href=\"$packageFileName\">$packageName</a>" 
+	    set end [string first "</ul>" $navPath]
+	    set end [expr $end - 1]
+	    set navPath [string range $navPath 0 $end]
+	    append navPath "  <li class=\"navelem\"><a class=\"el\" href=\"$packageFileName\">$packageName</a>      </li>\n    </ul>"
 	    
 	    # get list of files to update
-	    set listContents [OCCDoc_GetNodeContents "div" " class=\"contents\"" $packageFile]
+	    set listContents [OCCDoc_GetNodeContents "div" " class=\"textblock\"" $packageFile]
 	    set listContents [OCCDoc_GetNodeContents "ul" "" $listContents]
 	    set lines [split $listContents "\n"]
 	    foreach line $lines {
@@ -271,14 +274,14 @@ proc OCCDoc_PostProcessor {outDir} {
 		    set classFilePnt [open $outDir/$classFileName r+]
 		    set classFile [read $classFilePnt]
 		    # find position of content block 
-		    set contentPos [string first "<div class=\"contents\">" $classFile]
+		    set contentPos [string first "<div class=\"header\">" $classFile]
 		    set navPart [string range $classFile 0 [expr $contentPos - 1]]
 		    # position where to insert nav path
 		    set posToInsert [string last "</div>" $navPart]
 		    set prePart [string range $classFile 0 [expr $posToInsert - 1]]
 		    set postPart [string range $classFile $posToInsert [string length $classFile]]
 		    set newClassFile ""
-		    append newClassFile $prePart "<div class=\"navpath\">" $navPath "</div>" $postPart
+		    append newClassFile $prePart "  <div id=\"nav-path\" class=\"navpath\">" $navPath \n "  </div>" \n $postPart
 		    # write updated content
 		    seek $classFilePnt 0
 		    puts $classFilePnt $newClassFile
