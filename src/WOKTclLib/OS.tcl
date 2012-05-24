@@ -1,205 +1,205 @@
 proc OSUsage {} {
-    puts stderr \
-	    {
-	Usage : OS [ options ] [ module ]
-	
-	Options :
-	
-	-lsource : Liste les sources de module.
-	
-	-lshare  : Liste les shareables de module
-	
-	-lressource : Liste des ressources de module
-	
-	-lwokadm : Liste des sources d'administration de wok pour module
-	
-	-lfreefiles  : Liste les fichiers isoles d'un module.
-	(i.e. ceux qui n'appartiennent pas a une UD.)
-	peut etre utilisee avec -type pour savoir dans quel type d'archive 
-	ils sont embarques.
-	
-	-v  :  Verbose mode.
-	
-	-alias  :  Donne le nom court de module.
-	
-	-type  :  Specifie le type de l'archive a faire. <source> ou <runtime>
-	
-	-os    :  Specifie le nom de la plateforme a traiter.
-	
-	-make dir: Fabrique les makefile de <module> et les place dans dir.
-	Cette option doit etre utilisee avec -os.
-	
-	-makadm dir : Fabrique les fichiers d'admin de <module> et les place dans dir
-	Cette option doit etre utilisee avec -os, -substr str1,str2
-	Retourne une liste utilisable par mktree.
-	
-	-substr str1,str2   : Substitue str1 par str2 dans les fichiers d'admin ci dessus.
-	-subdone file       : Ecrit dans file la liste des noms de fichiers dans lesquels
-                              la substitution a ete effectivement faite.
-	
-	-outdir dir: Path to directory where Visual Studio projects will be created; 
+  puts stderr \
+    {
+  Usage : OS [ options ] [ module ]
+
+  Options :
+
+  -lsource : Liste les sources de module.
+
+  -lshare  : Liste les shareables de module
+
+  -lressource : Liste des ressources de module
+
+  -lwokadm : Liste des sources d'administration de wok pour module
+
+  -lfreefiles  : Liste les fichiers isoles d'un module.
+                (i.e. ceux qui n'appartiennent pas a une UD.)
+                peut etre utilisee avec -type pour savoir dans quel type d'archive
+                ils sont embarques.
+
+  -v  :  Verbose mode.
+
+  -alias  :  Donne le nom court de module.
+
+  -type  :  Specifie le type de l'archive a faire. <source> ou <runtime>
+
+  -os    :  Specifie le nom de la plateforme a traiter.
+
+  -make dir: Fabrique les makefile de <module> et les place dans dir.
+             Cette option doit etre utilisee avec -os.
+
+  -makadm dir : Fabrique les fichiers d'admin de <module> et les place dans dir
+  Cette option doit etre utilisee avec -os, -substr str1,str2
+  Retourne une liste utilisable par mktree.
+
+  -substr str1,str2   : Substitue str1 par str2 dans les fichiers d'admin ci dessus.
+  -subdone file       : Ecrit dans file la liste des noms de fichiers dans lesquels
+                        la substitution a ete effectivement faite.
+
+  -outdir dir: Path to directory where Visual Studio projects will be created;
                      default is ros/adm/<-os>/<-vc>
 
-        -tksort  : retourne la liste triee des toolkits de(s) module(s)
+  -tksort  : retourne la liste triee des toolkits de(s) module(s)
 
-	-dest <string> file : Specifie que les fichiers listes dans file iront dans le sous
-	repertorie de l'archive <string>.
-	
-	-from f1,f2,.. : Utilise les fichiers fi pour fabrique  l'archive. Chacun de ces fichiers
-	contient sur chaque ligne 2 champs separes par un blanc. <path-origine> <sous-dir>.
-	<path-origine> est le full path du fichier a embarquer.
-	<sous-dir>     est un nom de sous directory ou sera place le fichier dans l'archive donc
-	dans la version une fois downloadee.
-	
-	-o          : Met la sortie ( s'il y en a une ) dans le fichier specifie.
-	
-	-mktree     : fabrique une arborescence a partir d'une liste. (genere par -lsource)
-	
-	-mode       : Specifie que les fichiers de l'arborescence sont copies(cp),lies(ln)
+  -dest <string> file : Specifie que les fichiers listes dans file iront dans le sous
+  repertorie de l'archive <string>.
+
+  -from f1,f2,.. : Utilise les fichiers fi pour fabrique  l'archive. Chacun de ces fichiers
+  contient sur chaque ligne 2 champs separes par un blanc. <path-origine> <sous-dir>.
+  <path-origine> est le full path du fichier a embarquer.
+  <sous-dir>     est un nom de sous directory ou sera place le fichier dans l'archive donc
+  dans la version une fois downloadee.
+
+  -o          : Met la sortie ( s'il y en a une ) dans le fichier specifie.
+
+  -mktree     : fabrique une arborescence a partir d'une liste. (genere par -lsource)
+
+  -mode       : Specifie que les fichiers de l'arborescence sont copies(cp),lies(ln)
                       lors du mktree.
-	
-	-mkar       : fabrique une archive a partir d'une arborescence
-	
-	-fmtar      : specifie le type de l'archive a creer ( defaut :tar.gz ) par traite encore.
-	
-	-tmpdir dir : Cree la racine de l'arborescence pour mktree dans dir. ( Voir -root)
-	
-	-root r     : Designe r comme racine de l'archive  (de fait dir/r) 
-	
-	-l          : Liste sur stdout les modules connus. 
-	
-	-ll         : Liste des toolkits dans l'ordre de fabrication. 
-	
-	-lm         : Liste des modules and products
 
-	-L          : Idem que ci dessus avec un peu plus de details.(utilise WOK)
-	
-	-cvsmod     : Cree une liste de definition de module CVS. Ne
-	              Utiliser ca avec -o modules, puis faire checkin de modules.
-                      Ne sont pris en compte que les modules pour lesquels la methode Export 
-                      retourne (au moins) "source".
-	
-	-u  key     : Liste les UDs d'un module. 
-	              Si key = "ucreate" imprime la liste des ud precedees de leur type. (utilise WOK)
-	              Si key = "list"  retourne une liste des ud
-	              Si key = "udlist" retourne une liste "UDLIST like"
-	
-	-info       : Donne dezinfo sur les modules. 
-	
-        -xml        : Ecrit un fichier contenant la description xml du ou des modules concernes.
-                      OS -xml list-de-Modules -o /tmp/occ.xml
+  -mkar       : fabrique une archive a partir d'une arborescence
 
-	-ask        : Cree un questionnaire utilisable pour l'installation. ( utiliser avec -o )
+  -fmtar      : specifie le type de l'archive a creer ( defaut :tar.gz ) par traite encore.
 
-	-box        : Donne le nom du repertoire ou sont crees les listes de fichiers a archiver
-                      dans CVS. ( repertoire adm ...)
-	
-        -wpack      : Cree une archive au format wpack avec tous les sources de <module>.
-                      L'archive cree s'appellera <module>.bck.Z 
-                      L'argument suivant wpack est le nom du directory ou on cree l'archive.
+  -tmpdir dir : Cree la racine de l'arborescence pour mktree dans dir. ( Voir -root)
 
-	Exemples:
+  -root r     : Designe r comme racine de l'archive  (de fait dir/r)
+
+  -l          : Liste sur stdout les modules connus.
+
+  -ll         : Liste des toolkits dans l'ordre de fabrication.
+
+  -lm         : Liste des modules and products
+
+  -L          : Idem que ci dessus avec un peu plus de details.(utilise WOK)
+
+  -cvsmod     : Cree une liste de definition de module CVS. Ne
+                Utiliser ca avec -o modules, puis faire checkin de modules.
+                Ne sont pris en compte que les modules pour lesquels la methode Export
+                retourne (au moins) "source".
+
+  -u  key     : Liste les UDs d'un module.
+                Si key = "ucreate" imprime la liste des ud precedees de leur type. (utilise WOK)
+                Si key = "list"  retourne une liste des ud
+                Si key = "udlist" retourne une liste "UDLIST like"
+
+  -info       : Donne dezinfo sur les modules.
+
+  -xml        : Ecrit un fichier contenant la description xml du ou des modules concernes.
+                OS -xml list-de-Modules -o /tmp/occ.xml
+
+  -ask        : Cree un questionnaire utilisable pour l'installation. ( utiliser avec -o )
+
+  -box        : Donne le nom du repertoire ou sont crees les listes de fichiers a archiver
+                dans CVS. ( repertoire adm ...)
+
+  -wpack      : Cree une archive au format wpack avec tous les sources de <module>.
+                L'archive cree s'appellera <module>.bck.Z
+                L'argument suivant wpack est le nom du directory ou on cree l'archive.
+
+  Exemples:
         1. Fabriquer toutes les makefiles de FoundationClasses dans le directory /adv_11/...
-	et dire que ces procedures iront dans un sous repertoire adm .
-	> OS -make /adv_11.../transfert -o /tmp/Liste1 FoundationClasses
-	
+  et dire que ces procedures iront dans un sous repertoire adm .
+  > OS -make /adv_11.../transfert -o /tmp/Liste1 FoundationClasses
+
         2. Specifie que les fichiers listes dans /tmp/Liste1 iront dans adm
-	> OS -dest adm /tmp/Liste1
-	(ecrit dans le fichier /tmp/Liste1 <path-origine> adm)
-	
+  > OS -dest adm /tmp/Liste1
+  (ecrit dans le fichier /tmp/Liste1 <path-origine> adm)
+
         3. Fabriquer la liste des sources de FoundationClasses (cette option utilise WOK)
-	> OS -lsource -o /tmp/Liste2 FoundationClasses
-	
+  > OS -lsource -o /tmp/Liste2 FoundationClasses
+
         4. Fabriquer une arborescence avec les 2 listes (fabriquees avec OS -dest)
-	> OS -mktree  -from /tmp/Liste1,/tmp/Liste2 -tmpdir /tmp -root CASXXX
-	
+  > OS -mktree  -from /tmp/Liste1,/tmp/Liste2 -tmpdir /tmp -root CASXXX
+
         Ce qui suit est nettement plus utile:
 
-	5. Utilisation des procedures pour tout fabriquer. (sur une seule plateforme avec Gnu tar)
+  5. Utilisation des procedures pour tout fabriquer. (sur une seule plateforme avec Gnu tar)
            Ceci se fait depuis une plateforme avec Gnu tar
-	OS:MKPRC            : Fabrique et edite les procs compil/link. ([OS-box]/Platform)
-	OS:PKGSRC {}        : Fabrique toutes les archives source
-	OS:PKGRTL {} {}     : Fabrique toutes les archives runtime (tt plat.)
-	Comtper plus de 2 heures pour tout faire.
-	
-	Pour ne refaire que des bouts:
-	
-	OS:PKGRTL {} Draw                   ; runtime ttes ptfm pour Draw
-	OS:PKGRTL Linux {}                  ; runtime Linux tous modules
-	OS:PKGRTL {} {Draw Viewer}          ; runtime ttes ptfm pour Draw et Viewer
-	OS:PKGRTL Linux Draw                ; runtime Linux pour Draw
-	
+  OS:MKPRC            : Fabrique et edite les procs compil/link. ([OS-box]/Platform)
+  OS:PKGSRC {}        : Fabrique toutes les archives source
+  OS:PKGRTL {} {}     : Fabrique toutes les archives runtime (tt plat.)
+  Comtper plus de 2 heures pour tout faire.
+
+  Pour ne refaire que des bouts:
+
+  OS:PKGRTL {} Draw                   ; runtime ttes ptfm pour Draw
+  OS:PKGRTL Linux {}                  ; runtime Linux tous modules
+  OS:PKGRTL {} {Draw Viewer}          ; runtime ttes ptfm pour Draw et Viewer
+  OS:PKGRTL Linux Draw                ; runtime Linux pour Draw
+
         5bis. Creation des archives pour les fichiers d'adm de WOK. Il faut
         se logger ecffectivement sur la machine comme explique ci dessous.
-	
-	 ( sur SunOS : telnet h2ox ; tclsh ; wokcd KAS:C30:ref)
-	 > OS:PKGADM SunOS
-	 ( sur Linux : telnet archimex ; tclsh ; wokcd KAS:C30:ref)
-	 > OS:PKGADM Linux
-	 ( sur IRIX  : telnet <ask-to-pop>; tclsh ; wokcd KAS:C30:ref)
-	 > OS:PKGADM IRIX
-	 ( sur AIX   : telnet bourin ; tclsh ; wokcd KAS:C30:ref)
-	 > OS:PKGADM AIX
 
-	7. Dans 5 si on ne specifie pas de nom de module, la liste 
+   ( sur SunOS : telnet h2ox ; tclsh ; wokcd KAS:C30:ref)
+   > OS:PKGADM SunOS
+   ( sur Linux : telnet archimex ; tclsh ; wokcd KAS:C30:ref)
+   > OS:PKGADM Linux
+   ( sur IRIX  : telnet <ask-to-pop>; tclsh ; wokcd KAS:C30:ref)
+   > OS:PKGADM IRIX
+   ( sur AIX   : telnet bourin ; tclsh ; wokcd KAS:C30:ref)
+   > OS:PKGADM AIX
+
+  7. Dans 5 si on ne specifie pas de nom de module, la liste
            des modules traites est obtenue par la commande "OS -lm".
-	
-        8. Rien ici.
 
-        9. Fabrication d'une image CD OpenSource:
-           Cette image se trouve dans le directory pointe par la commande OS -cdrom.
-           Elle contient un ensemble de fichiers (noms 8.3) destines a aller sur le CD.
-           ( Liens sur le tar.gz de [OS -distrib] )
-           Cette image se creer par la commande :
-           > OS:MKCDOS
-	
-    }
-    return
+  8. Rien ici.
+
+  9. Fabrication d'une image CD OpenSource:
+     Cette image se trouve dans le directory pointe par la commande OS -cdrom.
+     Elle contient un ensemble de fichiers (noms 8.3) destines a aller sur le CD.
+     ( Liens sur le tar.gz de [OS -distrib] )
+     Cette image se creer par la commande :
+     > OS:MKCDOS
+
+  }
+  return
 }
 
 ;#
 ;# Fabrique et remplit l'arborescence d'un module
 ;#
 proc OS { args } {
-    
+
     global OpenSource
 
     set tblreq(-h)         {}
     set tblreq(-v)         {}
     set tblreq(-box)       {}
-    
+
     set tblreq(-o)          value_required:file
-    
+
     set tblreq(-mode)       value_required:string
     set tblreq(-archtype)   value_required:string
-    set tblreq(-type)       value_required:string 
+    set tblreq(-type)       value_required:string
     set tblreq(-keep)       {}
-    
-    set tblreq(-l)          {} 
-    set tblreq(-ll)         {} 
-    set tblreq(-lm)         {} 
-    
-    set tblreq(-L)          {} 
-    set tblreq(-cvsmod)     {} 
-    set tblreq(-u)          value_required:string 
-    
-    set tblreq(-param)      {} 
-    
+
+    set tblreq(-l)          {}
+    set tblreq(-ll)         {}
+    set tblreq(-lm)         {}
+
+    set tblreq(-L)          {}
+    set tblreq(-cvsmod)     {}
+    set tblreq(-u)          value_required:string
+
+    set tblreq(-param)      {}
+
     set tblreq(-make)       value_required:file
     set tblreq(-makadm)     value_required:file
     set tblreq(-substr)     value_required:list
     set tblreq(-subdone)    value_required:file
     set tblreq(-outdir)     value_required:file
     set tblreq(-tksort)     {}
-    set tblreq(-plat)       value_required:string 
+    set tblreq(-plat)       value_required:string
     set tblreq(-wpack)      value_required:file
     set tblreq(-os)         value_required:string
     set tblreq(-xml)        value_required:string
     set tblreq(-dest)       value_required:string
-    
+
     set tblreq(-tmpdir)     value_required:string
     set tblreq(-root)       value_required:string
-    
+
     set tblreq(-lsource)    {}
     set tblreq(-LSOURCE)    {}
     set tblreq(-lshare)     {}
@@ -211,13 +211,13 @@ proc OS { args } {
     set tblreq(-LFREEFILES) {}
 
     set tblreq(-since)      value_required:string
-    
+
     set tblreq(-from)       value_required:list
-    
+
     set tblreq(-mktree)     {}
     set tblreq(-mkar)       value_required:string
     set tblreq(-info)       {}
-    
+
     set tblreq(-alias)      {}
 
     set tblreq(-ask)        {}
@@ -227,20 +227,20 @@ proc OS { args } {
 	puts stderr "Error: incorrect options for command OS: $args"
 	return
     }
-    
+
     if [info exists tabarg(-h)] {
 	OSUsage
 	return
     }
-    
+
     set os "" ;# default
     if [info exists tabarg(-os)] {
 	set os $tabarg(-os)
-    } 
+    }
 
     ;#
     ;# debut: Options ne dependant pas d'un nom de module
-    ;# 
+    ;#
 
     if [info exists tabarg(-param)] {
 	if { [OS:init $os] == {} } { return }
@@ -281,8 +281,8 @@ proc OS { args } {
 
 
     if [info exists tabarg(-ask)] {
-	set l {} 
-	set i 0 
+	set l {}
+	set i 0
 	set w {}
 	foreach module [OS -lm] {
 	    lappend l [format " (%d) : %s" [incr i] $module]
@@ -340,7 +340,7 @@ proc OS { args } {
 	if { [OS:init $os] == {} } { return }
 	OS:lsmodule 0
 	OS:end
-	return  
+	return
     }
 
     if [info exists tabarg(-L)] {
@@ -450,9 +450,9 @@ proc OS { args } {
 			puts stderr "Erreur Option -from requise."
 			return
 		    }
-		} else { 
+		} else {
 		    puts stderr "Impossible de creer $root"
-		    return 
+		    return
 		}
 	    } else {
 		puts stderr "Erreur Option -root requise."
@@ -463,10 +463,10 @@ proc OS { args } {
 	    return
 	}
     }
-	
+
     ;#
     ;# fin: Options ne dependant pas d'un nom de module
-    ;# 
+    ;#
 
     ;#
     ;# deb: Options  qui prennent soit un nom de module soit rien .
@@ -488,7 +488,7 @@ proc OS { args } {
 		puts stderr "Erreur : Impossible de creer $tabarg(-o)"
 	    }
 	} else {
-	    foreach x [OS:lstk $lm] { 
+	    foreach x [OS:lstk $lm] {
 		puts $x
 	    }
 	}
@@ -535,9 +535,9 @@ proc OS { args } {
 	if { $lm == {} } {
 	    set lm [OS -lm]
 	}
-	
+
 	switch -- $tabarg(-u) {
-	    
+
 	    ucreate {
 		set out [pwd]/UCREATE
 		if [info exists tabarg(-o)] { set out $tabarg(-o) }
@@ -549,7 +549,7 @@ proc OS { args } {
 			    lappend l "ucreate -$u"
 			}
 		    }
-		    foreach add [${mod}:ressources] { 
+		    foreach add [${mod}:ressources] {
 			lappend l "ucreate -[lindex $add 1] [lindex $add 2]"
 		    }
 		}
@@ -562,10 +562,10 @@ proc OS { args } {
 		OS:end
 		return
 	    }
-	    
+
 	    udlist {
-		if [info exists tabarg(-o)] { 
-		    set out $tabarg(-o) 
+		if [info exists tabarg(-o)] {
+		    set out $tabarg(-o)
 		}
 		set l {}
 		foreach mod $lm {
@@ -575,7 +575,7 @@ proc OS { args } {
 			    lappend l "$u"
 			}
 		    }
-		    foreach add [${mod}:ressources] { 
+		    foreach add [${mod}:ressources] {
 			lappend l "[lindex $add 1] [lindex $add 2]"
 		    }
 		}
@@ -594,7 +594,7 @@ proc OS { args } {
 		OS:end
 		return
 	    }
-	    
+
 
 	    list {
 		set l {}
@@ -605,7 +605,7 @@ proc OS { args } {
 			    lappend l [lindex $u 1]
 			}
 		    }
-		    foreach add [${mod}:ressources] { 
+		    foreach add [${mod}:ressources] {
 			lappend l [lindex $add 2]
 		    }
 		}
@@ -622,15 +622,15 @@ proc OS { args } {
 	if { $lm == {} } {
 	    set lm [OS -lm]
 	}
-	if [info exists tabarg(-o)] { 
-	    wokUtils:FILES:StringToFile [OS:xml $lm] $tabarg(-o) 
+	if [info exists tabarg(-o)] {
+	    wokUtils:FILES:StringToFile [OS:xml $lm] $tabarg(-o)
 	} else {
 	    puts stderr "Erreur : Specifier -o pour donner un nom de fichier. "
 	}
-	
+
 	return
-    } 
-    
+    }
+
 
 
 
@@ -642,19 +642,19 @@ proc OS { args } {
 	    puts stderr "OS:wpack: Le directory $dir ne peut etre cree."
 	    return
 	}
-	
+
 	set lm $module
 	if { $lm == {} } {
 	    set lm [OS -lm]
 	}
-	
+
 	foreach module $lm {
 	    if { $verbose } { puts "Processing module $module" }
 	    OS:wpack $module $dir $verbose
 	}
 
 	OS:end
-	return 
+	return
     }
 
     ;#
@@ -738,7 +738,7 @@ proc OS { args } {
 			}
 		    }
 		} else {
-		  puts stderr "Erreur : Specifier -substr string1,string2 "  
+		  puts stderr "Erreur : Specifier -substr string1,string2 "
 		}
 		OS:end
 	    } else {
@@ -788,7 +788,7 @@ proc OS { args } {
 	OS:end
 	return
     }
-    
+
     if [info exists tabarg(-LSOURCE)] {
 	if { [OS:init $os] == {} } { return }
 	set lso [OS:SOURCES ${module} $verbose]
@@ -825,8 +825,8 @@ proc OS { args } {
 	}
 	return
     }
-    
-    
+
+
     if [info exists tabarg(-lshare)] {
 	if { [OS:init $os] == {} } { return }
 	if [info exists tabarg(-os)] {
@@ -843,7 +843,7 @@ proc OS { args } {
 		}
 	    }
 	} else {
-	    puts stderr "Erreur : Specifier -os avec -lshare" 
+	    puts stderr "Erreur : Specifier -os avec -lshare"
 	}
 	OS:end
 	return
@@ -863,7 +863,7 @@ proc OS { args } {
 		return [OS:SHARE ${module} $tabarg(-os) $verbose]
 	    }
 	} else {
-	    puts stderr "Erreur : Specifier -os avec -lshare" 
+	    puts stderr "Erreur : Specifier -os avec -lshare"
 	}
 	OS:end
 	return
@@ -917,11 +917,11 @@ proc OS { args } {
 	    }
 	    OS:end
 	} else {
-	    puts stderr "Erreur : Specifier -type avec -lressource"  	    
+	    puts stderr "Erreur : Specifier -type avec -lressource"
 	}
 	return
     }
-    
+
     if [info exists tabarg(-LRESSOURCE)] {
 	if [info exists tabarg(-type)] {
 	    set type $tabarg(-type)
@@ -961,12 +961,12 @@ proc OS { args } {
 		return $lso
 	    }
 	} else {
-	    puts stderr "Erreur : Specifier -type avec -LRESSOURCE"  	    
+	    puts stderr "Erreur : Specifier -type avec -LRESSOURCE"
 	}
 	return
     }
-    
-    
+
+
     if [info exists tabarg(-lwokadm)] {
 	if ![info exists tabarg(-os)] {
 	    puts stderr "Erreur : Specifier -os avec -lwokadm"
@@ -1012,7 +1012,7 @@ proc OS { args } {
 	OS:end
 	return
     }
-    
+
     if [info exists tabarg(-lfreefiles)] {
 	if { [OS:init $os] == {} } { return }
 	set type both
@@ -1079,7 +1079,7 @@ proc OS { args } {
 	OS:end
 	return $a
     }
-    
+
 }
 
 ;# ((((((((((((((((((((((((((((( O S )))))))))))))))))))))))))))))
@@ -1091,11 +1091,11 @@ proc OS:all8 { module plat type } {
     set l {}
     if { "$type" == "rtl" } {
 	switch -- $plat {
-	    
+
 	    SunOS {
 		set litm  [list sun wsn]
 	    }
-	    
+
 	    Linux {
 		set litm  [list lin wln]
 	    }
@@ -1105,21 +1105,21 @@ proc OS:all8 { module plat type } {
 	    }
 
 	    IRIX {
-		set litm  [list sil wsl] 
+		set litm  [list sil wsl]
 	    }
-	    
+
 	    AIX {
-		set litm [list aix wax] 
+		set litm [list aix wax]
 	    }
 
 	    WindowsNT {
-		set litm [list win32 wwt] 
+		set litm [list win32 wwt]
 	    }
 
 	    default {
 		set litm {}
 	    }
-	    
+
 	}
     } else {
 	set litm [list src]
@@ -1127,7 +1127,7 @@ proc OS:all8 { module plat type } {
 
     foreach itm $litm {
 	set l [concat $l ${itm}${a}[OS:simple_version].tgz]
-    } 
+    }
     return $l
 }
 ;#
@@ -1148,28 +1148,28 @@ proc OS:lsdep { m } {
 ;#
 ;#
 ;# retourne la liste des fichiers d'administration wok de module
-;# A lancer sur la plateforme Cible 
+;# A lancer sur la plateforme Cible
 ;# DE FAIT PLAT N'EST PAS UTILISE:
 ;# On rajoute de force Standard.ImplDep
 proc OS:wokadm { module plat {verbose 0} } {
     global OpenSource
-    
+
     set lret {}
     set sourceType [list dbadmfile stadmfile admfile]
 
     foreach tkloc  [${module}:toolkits] {
-	
+
 	set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
 
-	foreach loc $listloc { 
-	    
+	foreach loc $listloc {
+
 	    set utyp [uinfo -t [woklocate -u $loc]]
-	    
+
 	    ;# Le worbench ou est l'ud
 
 	    ;# 1. recup des pathes de tous les fichiers de loc
 	    osutils:tk:loadunit $loc map
-	    
+
 	    ;# 2. Selection des types "wokadm" associes a l'UD
 	    ;# (semblent ne pas dependre du type de l'UD)
 
@@ -1178,8 +1178,8 @@ proc OS:wokadm { module plat {verbose 0} } {
 		    unset map($typ)
 		}
 	    }
-	    
-	    ;# 3. 
+
+	    ;# 3.
 	    set count 0
 	    set destart ""
 	    set wborig [wokinfo -w [woklocate -u $loc]]
@@ -1209,7 +1209,7 @@ proc OS:wokadm { module plat {verbose 0} } {
 	    set dectyp [lindex $XXX 1]
 	    set loc    [woklocate -u [lindex $XXX 2]]
 	    set destin [lindex $XXX 3]
-	    
+
 	    osutils:tk:loadunit $loc map
 
 	    foreach typ [array names map] {
@@ -1218,7 +1218,7 @@ proc OS:wokadm { module plat {verbose 0} } {
 		}
 	    }
 
-	    ;# 3. 
+	    ;# 3.
 	    set count 0
 	    set destart ""
 	    set wborig [wokinfo -w [woklocate -u $loc]]
@@ -1240,7 +1240,7 @@ proc OS:wokadm { module plat {verbose 0} } {
 	    }
 	}
     }
-    return $lret  
+    return $lret
 }
 ;#
 ;# retourne la liste des executables de module.
@@ -1258,7 +1258,7 @@ proc OS:executable { module } {
 ;# retourne la liste des fichiers de ressource de module
 ;# un item XXX ressemble a : [list both x TTOPOLOGY {}]
 ;# Si reqtyp est "source" on retourne les sources des UD de type resource
-;# sinon on retourne tout car dans le cas d'une archive runtime il faut 
+;# sinon on retourne tout car dans le cas d'une archive runtime il faut
 ;# aussi embarquer les shells de lancement qui sont des sources.
 ;#
 proc OS:ressources { module plat reqtyp {verbose 0} } {
@@ -1266,7 +1266,7 @@ proc OS:ressources { module plat reqtyp {verbose 0} } {
     set lret {}
     if { $verbose } { puts "OS:ressources : reqtyp = $reqtyp " }
     if { "[info procs ${module}:ressources]" != "" } {
-	
+
 	foreach XXX  [${module}:ressources] {
 	    set artyp  [lindex $XXX 0]
 	    set dectyp [lindex $XXX 1]
@@ -1282,8 +1282,8 @@ proc OS:ressources { module plat reqtyp {verbose 0} } {
 		    unset map($typ)
 		}
 	    }
-	    
-	    ;# 3. 
+
+	    ;# 3.
 	    set count 0
 	    foreach typ [lsort [array names map]] {
 
@@ -1324,7 +1324,7 @@ proc OS:ressources { module plat reqtyp {verbose 0} } {
 			    lappend lret "$fulp [file join bin [file tail $f]]"
 			    puts "Pour $plat : Ressource exec on embarque : $fulp"
 			} else {
-			    puts "Erreur : executable [file tail $f] introuvable sur $plat"  
+			    puts "Erreur : executable [file tail $f] introuvable sur $plat"
 			}
 		    }
 		}
@@ -1348,7 +1348,7 @@ proc OS:RESSOURCES { module plat reqtyp {verbose 0} } {
     set lret {}
     if { $verbose } { puts "OS:ressources : reqtyp = $reqtyp " }
     if { "[info procs ${module}:ressources]" != "" } {
-	
+
 	foreach XXX  [${module}:ressources] {
 	    set artyp  [lindex $XXX 0]
 	    set dectyp [lindex $XXX 1]
@@ -1365,8 +1365,8 @@ proc OS:RESSOURCES { module plat reqtyp {verbose 0} } {
 		    if { $verbose } { puts " Unit $loc : types conserve : $typ " }
 		}
 	    }
-	    
-	    ;# 3. 
+
+	    ;# 3.
 	    set count 0
 	    foreach typ [lsort [array names map]] {
 
@@ -1382,7 +1382,7 @@ proc OS:RESSOURCES { module plat reqtyp {verbose 0} } {
 		foreach f $map($typ) {
 		    if { "$typ" != "executable" } {
 			if { "$typ" != "library" } {
-			    lappend lret $f 
+			    lappend lret $f
 			    incr count
 			    if { $verbose} {puts "ress($loc): $f"}
 			} else {
@@ -1401,7 +1401,7 @@ proc OS:RESSOURCES { module plat reqtyp {verbose 0} } {
 			    incr count
 			    puts "Pour $plat : Ressource exec on embarque : $fulp"
 			} else {
-			    puts "Erreur : executable [file tail $f] introuvable sur $plat"  
+			    puts "Erreur : executable [file tail $f] introuvable sur $plat"
 			}
 		    }
 		}
@@ -1421,30 +1421,30 @@ proc OS:RESSOURCES { module plat reqtyp {verbose 0} } {
     return $lret
 }
 ;#
-;# utilise WOK pour creer la liste des sources d'un module 
+;# utilise WOK pour creer la liste des sources d'un module
 ;# retourne une liste de string de la forme "f1 f2"
 ;# f1 est le full path du fichier d'origine
 ;# f2 est le nom du sous directory ou on accrochera ca
 ;#
-;# 
+;#
 proc OS:sources { module {verbose 0 } } {
 
     global OpenSource
 
     set lret {}
     foreach tkloc  [${module}:toolkits] {
-	
+
 	set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
 
-	foreach loc $listloc { 
-	    
+	foreach loc $listloc {
+
 	    set utyp [uinfo -t [woklocate -u $loc]]
-	    
+
 	    ;# Le worbench ou est l'ud
 	    set wborig [wokinfo -w [woklocate -u $loc]]
 	    ;# 1. recup des pathes de tous les fichiers de loc
 	    osutils:tk:loadunit $loc map
-	    
+
 	    ;# 2. Selection des types "sources" associes a l'UD
 	    set sourceType $OpenSource(source,${utyp})
 	    foreach typ [array names map] {
@@ -1452,8 +1452,8 @@ proc OS:sources { module {verbose 0 } } {
 		    unset map($typ)
 		}
 	    }
-	    
-	    ;# 3. 
+
+	    ;# 3.
 	    set count 0
 	    foreach typ [lsort [array names map]] {
 		set wbt  $OpenSource(${typ},wbtype)
@@ -1468,7 +1468,7 @@ proc OS:sources { module {verbose 0 } } {
 			incr count
 			if { $verbose } { puts "File $dst ([lindex $rr 1])" }
 		    } else {
-			puts " loc = $loc wbt = $wbt root = $root "			
+			puts " loc = $loc wbt = $wbt root = $root "
 			puts "Erreur : peu pas parser ????? $f"
 		    }
 		}
@@ -1490,25 +1490,25 @@ proc OS:SOURCES { module {verbose 0 } } {
 
     set lret {}
     foreach tkloc  [${module}:toolkits] {
-	
+
 	set listloc [concat [osutils:tk:units [woklocate -u $tkloc]] [woklocate -u $tkloc]]
-	
-	foreach loc $listloc { 
-	    
+
+	foreach loc $listloc {
+
 	    set utyp [uinfo -t [woklocate -u $loc]]
-	    
+
 	    ;# 1. recup des pathes de tous les fichiers de loc
 	    osutils:tk:loadunit $loc map
-	    
+
 	    ;# 2. Selection des types "sources" associes a l'UD
 	    set sourceType $OpenSource(source,${utyp})
-	    
+
 	    foreach typ [array names map] {
 		if { [lsearch $sourceType $typ] == -1 } {
 		    unset map($typ)
 		}
 	    }
-	    
+
 	    ;# 3. Cumul des full pathes
 	    set count 0
 	    foreach typ [lsort [array names map]] {
@@ -1516,14 +1516,14 @@ proc OS:SOURCES { module {verbose 0 } } {
 		    if { $verbose } { puts "OS:SOURCES: File $f" }
 		    lappend lret $f
 		    incr count
-		    
+
 		}
 	    }
 	    if { $verbose } {puts "OS:SOURCES: ( $loc -> Source Copies : $count )" }
 	    if { $count == 0 } { puts "Erreur : Rien a copier pour $loc" }
 	}
     }
-    
+
     return $lret
 }
 ;# recherche a partir de wbfom en remontant les ancetres,
@@ -1531,7 +1531,7 @@ proc OS:SOURCES { module {verbose 0 } } {
 ;# utilisant le type <wbt> (type associe a un wb evidemment.)
 ;# retourne la partie de f qui ne depend pas de ce wb.
 ;# OS:wbparseloc /adv_11/KAS/C30/ref/src/gp/gp.cdl srcdir OpenSource
-;# 
+;#
 proc OS:wbparseloc { f wbt wbfrom } {
     set res {}
     foreach wborig [w_info -A $wbfrom] {
@@ -1558,13 +1558,13 @@ proc OS:strparseloc { f wbfrom included direction} {
 }
 
 ;#
-;# utilise WOK pour creer la liste des shareables d'un module 
+;# utilise WOK pour creer la liste des shareables d'un module
 ;# i. e. les shareables de chaque toolkit du module.
 ;# les autres shareables et executables sont donnees dans les ressources.
 ;# retourne une liste de string de la forme "f1 f2"
 ;# f1 est le full path du fichier d'origine
 ;# f2 est le nom du sous directory ou on accrochera ca
-;# 
+;#
 proc OS:share { module plat {verbose 0} } {
 
     set lret {}
@@ -1601,7 +1601,7 @@ proc OS:SHARE { module plat {verbose 0} } {
     foreach tkloc  [${module}:toolkits] {
 	foreach shr [OS:getshare $tkloc $plat] {
 	    if {[file exists $shr] } {
-		lappend lret $shr 
+		lappend lret $shr
 	    } else {
 		puts stderr "Erreur : Pas de shareable pour ${tkloc}."
 	    }
@@ -1644,7 +1644,7 @@ proc OS:freefiles { module {artyp both} {check 0} {verbose 0} } {
 			puts stderr "Error : File $loc not found"
 		    }
 		} else {
-		    puts stderr "Format error in proc ${module}:freefiles. Return either \"source\" \"runtime\" or \"both\" "		    
+		    puts stderr "Format error in proc ${module}:freefiles. Return either \"source\" \"runtime\" or \"both\" "
 		}
 	    } else {
 		if { "$typ" == "$artyp" || "$typ" == "both" } {
@@ -1681,7 +1681,7 @@ proc OS:FREEFILES { module {artyp both} {check 0} {verbose 0} } {
 			puts stderr "Error : File $loc not found"
 		    }
 		} else {
-		    puts stderr "Format error in proc ${module}:freefiles. Return either \"source\" \"runtime\" or \"both\" "		    
+		    puts stderr "Format error in proc ${module}:freefiles. Return either \"source\" \"runtime\" or \"both\" "
 		}
 	    } else {
 		if { "$typ" == "$artyp" || "$typ" == "both" } {
@@ -1710,7 +1710,7 @@ proc OS:mkfile { wbfile tofile {mode copy} {verbose 0} } {
     OS:mkdir [file dirname $tofile]
 
     switch -- $mode {
-	
+
 	copy {
 	    if { [file exists $tofile] && ![file writable $tofile] } {
 		set chmded 1
@@ -1727,12 +1727,12 @@ proc OS:mkfile { wbfile tofile {mode copy} {verbose 0} } {
 		return -1
 	    }
 	}
-	
+
 	jact {
 	    puts "$wbfile $tofile"
 	    return 1
 	}
-	
+
 	link {
 	    if { ![file exists $wbfile] } {
 		puts stderr "OS:mkfile : File $wbfile existe pas."
@@ -1758,7 +1758,7 @@ proc OS:mkfile { wbfile tofile {mode copy} {verbose 0} } {
 	    if [file exists $tofile] {
 		if { [wokUtils:FILES:AreSame $wbfile $tofile] == 0 } {
 		    OS:mkfile $wbfile $tofile copy $verbose
-		} 
+		}
 	    } else {
 		OS:mkfile $wbfile $tofile copy $verbose
 	    }
@@ -1783,7 +1783,7 @@ proc OS:parray { a {id stdout} {sep "" } } {
 	if { "$array($name)" != "" } {
 	    puts $id [format "%-*s %s %s" $maxl $nameString $sep $array($name)]
 	}
-    } 
+    }
 }
 ;#
 ;# Liste la definition des modules pour CVS, sinon fait un affichage pourri mais suffizant.
@@ -1794,7 +1794,7 @@ proc OS:lsmodule { {long 1} {id stdout} } {
 	if { [lsearch [${mo}:Export] source] != -1 } {
 	    lappend openmod $mo
 	}
-    } 
+    }
     if { $long == 2 } {
 	set ltk {}
 	puts $id "#    "
@@ -1863,13 +1863,13 @@ proc OS:lstk { lm } {
 	foreach tk  [${m}:toolkits] {
 	    lappend lret $tk
 	}
-    } 
+    }
     return $lret
 }
 
 ;#
 ;# Les types du workbench qu'il faut exporter:
-;# sttmpdir workdir HomeDir pubincdir drvdir objdir libdir tmpdir 
+;# sttmpdir workdir HomeDir pubincdir drvdir objdir libdir tmpdir
 ;# bindir AdmDir DefinitionFile srcdir UnitListFile dbtmpdir admfile
 ;#;#;sttmpdir:       /adv_11/KAS/C40/ref/sun/obj/.tmp
 ;#
@@ -1899,7 +1899,7 @@ proc OS:init {{os {}}} {
     ;#
     set OpenSource(box)       [OS:defbox]
 
-    ;# On utilise gtar si possible. => 
+    ;# On utilise gtar si possible. =>
     ;#
     set OpenSource(tar)  tar
     if { $tcl_platform(os) == "SunOS"} { set OpenSource(tar) [file join $env(WOK_LIBRARY) sun gtar] }
@@ -1921,7 +1921,7 @@ proc OS:init {{os {}}} {
 	    }
 	}
     }
-    
+
     ;#
     ;# Load list of products and their definitions
     ;#
@@ -1941,7 +1941,7 @@ proc OS:init {{os {}}} {
     ;# -------------------- FICHIERS "SOURCES" c,cxx,hxx,_0.cxx,ixx,jxx,etc.. -------------
     ;#
     ;# 1. Definitions de l'origine des fichiers
-    ;# 
+    ;#
     set OpenSource(source,package)       {source derivated privinclude pubinclude drvfile}
     set OpenSource(source,nocdlpack)     {source pubinclude drvfile}
     set OpenSource(source,schema)        {source derivated privinclude pubinclude drvfile}
@@ -1962,7 +1962,7 @@ proc OS:init {{os {}}} {
     ;# -------------------- FICHIERS "RUNTIME" .so,executable,etc.. -------------
     ;#
     ;# 1. Definitions de l'origine des fichiers
-    ;# 
+    ;#
     set OpenSource(runtime,package)       {library}
     set OpenSource(runtime,nocdlpack)     {library}
     set OpenSource(runtime,schema)        {}
@@ -1987,20 +1987,20 @@ proc OS:init {{os {}}} {
     ;# Si on sait pas on prend HomeDir et on suppose que c'est Ud independant
 
     set OpenSource(source,wbtype)      srcdir
-    set OpenSource(derivated,wbtype)   drvdir 
+    set OpenSource(derivated,wbtype)   drvdir
     set OpenSource(drvfile,wbtype)     drvdir      ;# ExprIntrp.tab.c (lex,yacc)
     set OpenSource(privinclude,wbtype) drvdir
     set OpenSource(pubinclude,wbtype)  pubincdir
 
     set OpenSource(library,wbtype)     libdir
-    set OpenSource(executable,wbtype)  bindir  
+    set OpenSource(executable,wbtype)  bindir
     ;#
     ;# Defintion de la destination des fichiers d'un module dans l'archive.
     ;# Les memes que au dessus chaque racine des workbenchs , il faut savoir ou la mettre a l'arrivee
     ;#
     set OpenSource(source,artype)      src
-    set OpenSource(derivated,artype)   drv 
-    set OpenSource(drvfile,artype)     drv 
+    set OpenSource(derivated,artype)   drv
+    set OpenSource(drvfile,artype)     drv
     set OpenSource(privinclude,artype) drv
     set OpenSource(pubinclude,artype)  inc
     ;#
@@ -2008,7 +2008,7 @@ proc OS:init {{os {}}} {
     set OpenSource(executable,artype)  bin
 
     ;# -------------------- DEFINITION de l'adresse et de la structure des archives.
-    ;# 
+    ;#
     ;# Nom de la racine ou on accroche l'arborescence en fonction du type de l'archive (source/runtime)
     ;#
     set OpenSource(dest,root)    /dn01/KAS/dev/ros/work
@@ -2024,7 +2024,7 @@ proc OS:init {{os {}}} {
     ;#
     ;# les sources sont directement accroches sous la racine
     ;#
-    set OpenSource(inar,source)   ""      
+    set OpenSource(inar,source)   ""
     ;#
     ;# les runtime sont sont sous le nom de la plateforme cible
     ;#
@@ -2042,7 +2042,7 @@ proc OS:init {{os {}}} {
     return 1
 }
 ;#
-;# 
+;#
 ;#
 ;#
 proc OS:info { lm {id stdout} } {
@@ -2066,7 +2066,7 @@ proc OS:info { lm {id stdout} } {
 ;# PKGS appelle direct PACKAGES car sur archimex pas WOK pour l'instant.
 ;#
 proc OS:procs { module plat} {
-    
+
     set lret {}
     foreach tkloc [${module}:toolkits] {
 	set PKGS [woklocate -p ${tkloc}:PACKAGES]
@@ -2082,7 +2082,7 @@ proc OS:procs { module plat} {
 	    puts stderr "Erreur: Pas de fichier PACKAGES pour $tkloc"
 	}
 	if [file exists [set lnkf [OS:getlinkso $tkloc $plat]]] {
-	    lappend lret [list link $tkloc $tkloc $lnkf] 
+	    lappend lret [list link $tkloc $tkloc $lnkf]
 	} else {
 	    puts stderr "Erreur: Pas de fichier $lnkf"
 	}
@@ -2134,7 +2134,7 @@ proc OS:procs { module plat} {
             }
 	} else {
 	    if [file exists [set lnkf [OS:getlinkso $loc $plat]]] {
-		lappend lret [list link {} $loc $lnkf] 
+		lappend lret [list link {} $loc $lnkf]
 	    } else {
 		puts stderr "Information: Pas de fichier $lnkf"
 	    }
@@ -2151,7 +2151,7 @@ proc OS:casroot {} {
     if { [info exists env(CASROOT)] } {
 	return $env(CASROOT)
     }
-    
+
     return [lindex [wokinfo -R [lindex [w_info -A [wokcd]] end]] 0]
 }
 ;#
@@ -2231,14 +2231,14 @@ proc OS:admadm { module dir plat since ls1s2 {verbose 0} } {
     return [list $lret $ldon]
 }
 ;#
-;# fabrique la proc pour reconstruire un module a partir du format  
-;# retourne par OS:procs { {type tk ud path} } 
+;# fabrique la proc pour reconstruire un module a partir du format
+;# retourne par OS:procs { {type tk ud path} }
 ;# retourne la liste des fulls paths des fichiers fabriques.
 ;# ainsi que celui les invoquant tous a la queue leu leu
 ;# option since genere des .COMP INCOMPLETS !!
 ;#
 proc OS:mkmk { module dir plat since {verbose 0} } {
-    
+
     set lret     {}
     set lnk      {}
     set lothcmp  {}  ;# il ya 2 listes pour lancer les compils d'abord
@@ -2266,7 +2266,7 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 	if { ($since == {}) || ($since != {} && ([file mtime $pfile] > $since)) } {
 
 	    switch -- $type {
-		
+
 		compilation {
 		    set incstr " -I[OS:srcroot $plat]/$loc -I[OS:drvroot $plat]/$loc -I[OS:incroot $plat] -I[OS:srcroot $plat]/WOKTclLib -I\${JAVAHOME}/include -I\${JAVAHOME}/include/${OsName}"
 		    set tcstr [OS:casroot $plat]/
@@ -2280,7 +2280,7 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 			set lwr [OS:edcomp $plat $hdr $pfile $exceptcc $incstr $tcstr $tostr]
 			lappend lwr "popd >& /dev/null"
 		    } else {
-                        if [info exists CLOC($loc)] {  
+                        if [info exists CLOC($loc)] {
 			} else {
 			    set lwr {}
 			    set hdr {}
@@ -2302,11 +2302,11 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 			    set TLOC($tkloc) $mktk
 			} else {
 			    set mktk {}
-			    lappend  mktk "csh -f [OS:admroot $plat]/${loc}.comp"			
+			    lappend  mktk "csh -f [OS:admroot $plat]/${loc}.comp"
 			    set TLOC($tkloc) $mktk
 			}
 		    } else {
-                        if [info exists XLOC($loc)] { 
+                        if [info exists XLOC($loc)] {
                           #set lothcmp $XLOC($loc)
 			  ;# Procedure de compils d'uds non dans le toolkit.
 			  ;#lappend lothcmp "csh -f [OS:admroot $plat]/${loc}.comp"
@@ -2318,7 +2318,7 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 			}
 		    }
 		}
-		
+
 		link {
 		    if { [lsearch $do_nothing_here $plat] == -1 } {
 			set hdrl {}
@@ -2337,7 +2337,7 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 			lappend lothlnk "csh -f [OS:admroot $plat]/${loc}.lnk"
 		    }
 		}
-		
+
 		executable {
 		    if { [lsearch $do_nothing_here $plat] == -1 } {
 			set hdrl {}
@@ -2354,7 +2354,7 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 				[file join $dir ${loc}.lnk]
 			}
 			lappend lnk [file join $dir ${loc}.lnk]
-			;# mettre [file tail $pfile plutot que ${loc}.lnk TOPOLOGY ??	
+			;# mettre [file tail $pfile plutot que ${loc}.lnk TOPOLOGY ??
 		    } else {
 			lappend lnk $pfile
 		    }
@@ -2369,9 +2369,9 @@ proc OS:mkmk { module dir plat since {verbose 0} } {
 	    puts "bof du since"
 	}
     }
-    
+
     ;# Fab d'un TK Compilations + link du Tk apres ces compils.
-    ;# 
+    ;#
     if [info exists TLOC] {
 	foreach tk [array names TLOC] {
 	    set do [lsort $TLOC($tk)]
@@ -2423,7 +2423,7 @@ proc OS:edcomp { plat lhdr comp {except {}} {incstr <incDirectories>} {tcstr ""}
 	    }
 	    if [regexp -- {/cc} $compiler all find] {
 		set compstring "\${CCOMP} "
-	    } 
+	    }
 	}
 	if {$plat == "Linux"} {
 	    if [regexp -- {/gcc} $compiler all find] {
@@ -2448,18 +2448,18 @@ proc OS:edcomp { plat lhdr comp {except {}} {incstr <incDirectories>} {tcstr ""}
 			#puts "X11 was captured"
 			append str "-I\${X11_INCLUDE} "
 		    } elseif {"$new " =="[lindex [wokparam -v %CSF_JavaHome] 0]"} {
-			
+
 		    } else {
 			append str "$tok "
 		    }
-	    
+
 		} else {
 		    if { $done == 0 } {
 			    append str "$incstr"
 			    set done 1
 			}
-	        } 
-		
+	        }
+
 	    } elseif { $tok == "-o" } {
 		set to 1
 	    } elseif { $tok == "-c" } {
@@ -2469,7 +2469,7 @@ proc OS:edcomp { plat lhdr comp {except {}} {incstr <incDirectories>} {tcstr ""}
 		    if { "$plat" == "SunOS" || "$plat" == "Linux" } {
 			set TrueCond [expr {"$tok" != "-H" && "$tok" != "/usr/bin/g++" && "$tok" != "/usr/bin/gcc" && ![regexp -- {/CC} $tok all find] && ![regexp -- {/cc} $tok all find] && "$tok" != "cd" && "$tok" != "&&" && ![regexp -- {/obj/.tmp/} $tok all find]}]
 			if { $TrueCond } {
-				append str $tok " " 
+				append str $tok " "
 			}
 		    } else {
 			append str $tok " "
@@ -2483,7 +2483,7 @@ proc OS:edcomp { plat lhdr comp {except {}} {incstr <incDirectories>} {tcstr ""}
 		    if { $to == 1 } {
 			append str " -o ${tostr}[file tail $tok]"
 			set to 0
-		    } 
+		    }
 
 		}
 
@@ -2568,10 +2568,10 @@ proc OS:edlnkx { plat lhdr lnkf { except {} } {incstr <incDirectories>} {tcstr "
 	    }
 	}
     }
-    return $lret 
+    return $lret
 }
 ;#
-;# idem que edcomp mais modifie un fichier .lnk Linux d'un toolkit 
+;# idem que edcomp mais modifie un fichier .lnk Linux d'un toolkit
 ;# ici incstr est utilise pour la directive -L
 ;# i.e -L/un/path devient -L$incstr si il n'est pas dans except
 ;#
@@ -2604,14 +2604,14 @@ proc OS:edlnkso { plat lhdr lnkf { except {} } {incstr <incDirectories>} {tcstr 
 		    if { $TCLLIB} {
 			lappend str " -L\${TCLHOME}/lib -ltcl \\"
 		    } elseif { $TKLIB } {
-	    		lappend str " -L\${TCLHOME}/lib -ltk \\"	    
+	    		lappend str " -L\${TCLHOME}/lib -ltk \\"
 		    } elseif { $X11LIB} {
                       	lappend str " -L\${X11_LIB} -lX11 -lXext -lXmu \\"
                     } elseif { [expr {$lin == " [lindex [wokparam -v %CSF_dpsLibs] 0] \\"}]} {
                         if { $plat == "SunOS" } {
-                      	   lappend str " -L\${X11_LIB} -ldps \\" 
+                      	   lappend str " -L\${X11_LIB} -ldps \\"
 			}
-                    } else {	
+                    } else {
 		    foreach tok [split $lin] {
 			if { $tok == "-o" } {
 			    set to 1
@@ -2629,9 +2629,9 @@ proc OS:edlnkso { plat lhdr lnkf { except {} } {incstr <incDirectories>} {tcstr 
 				if [regexp {^[ ]*-L(.*)} $tok all dir] {
 				    if { [lsearch $except $dir] == -1 } {
 					lappend str -L${incstr}
-				    } else {				    
+				    } else {
 					lappend str $tok
-				    }				    
+				    }
 				} else {
 				    set Truetok [string compare $tok [string trimright [lindex [wokparam -v %CSF_CXX_COMPILER] 0]]]
  				    if {$Truetok} {
@@ -2655,20 +2655,20 @@ proc OS:edlnkso { plat lhdr lnkf { except {} } {incstr <incDirectories>} {tcstr 
     set res {}
     set inx 0
     foreach x $lret {
-	lappend res $x	
+	lappend res $x
 	incr inx
 	if [regexp -- {[^;]*;} $x] {
 	    break
 	}
     }
-    return $res 
+    return $res
 }
 ;# retourne la composante de path avec la partie a gauchae
 ;# ou a droite de str
 ;#
 ;#
 proc OS:trimpath { path str {included 1} {from left} } {
-    set l [file split $path] 
+    set l [file split $path]
     if { [set i [lsearch $l $str]] != -1 } {
 	if { $from == "left" } {
 	    if { $included } {
@@ -2719,7 +2719,7 @@ proc OS:delete { f } {
     }
 }
 ;#
-;# 
+;#
 ;#
 proc OS:copy { fin fout } {
     global tcl_version
@@ -2727,7 +2727,7 @@ proc OS:copy { fin fout } {
 	if { [catch { set in [ open $fin r ] } errin] == 0 } {
 	    if { [catch { set out [ open $fout w ] } errout] == 0 } {
 		set nb [copyfile $in $out]
-		close $in 
+		close $in
 		close $out
 		return 1
 	    } else {
@@ -2738,7 +2738,7 @@ proc OS:copy { fin fout } {
 	    puts stderr "Error: $errin"
 	    return -1
 	}
-	
+
     } else {
 	if { "[file type $fin]" == "link" } {
 	    file copy -force [file readlink $fin] $fout
@@ -2754,9 +2754,9 @@ proc OS:copy { fin fout } {
 proc OS:wpack { module dir {verbose 0} } {
     set lret {}
     foreach m  $module {
-	set fbck [file join $dir ${m}.bck] 
+	set fbck [file join $dir ${m}.bck]
         if { $verbose } {
-	    wpack -v -c -f $fbck -u [join [OS -u list $m] ,] 
+	    wpack -v -c -f $fbck -u [join [OS -u list $m] ,]
 	} else  {
 	    wpack -c -f $fbck -u [join [OS -u list $m] ,]
 	}
@@ -2764,44 +2764,9 @@ proc OS:wpack { module dir {verbose 0} } {
     }
     return $lret
 }
-proc OS:vc6proj:projectby2 { TK Dep_Name module} {
-    append var \
-	    "Project: \"$Dep_Name\"=.\\$Dep_Name.dsp - Package Owner=<4>" "\n" \
-	    "\n" \
-	    "Package=<5>" "\n" \
-	    "\{\{\{" "\n" \
-	    "\}\}\}" "\n" \
-	    "\n" \
-	    "Package=<4>" "\n" \
-	    "\{\{\{" "\n" 
-            if {[wokinfo -x [woklocate -u $TK]] != "0"} {
-              if {[uinfo -t [woklocate -u $TK]] == "toolkit"} {
-  	         set deplist [LibToLink [woklocate -u $TK]]
-  	      } else {
-                 set deplist [LibToLinkX [woklocate -u $TK] $Dep_Name]
-                 ;#puts "$TK + $Dep_Name = $deplist "
-              }
-	      foreach deplib $deplist {
-                if {[lsearch [wokUtils:LIST:reverse [osutils:tk:sort [${module}:toolkits]]] $deplib] != "-1"} { 
-                 #;puts [wokUtils:LIST:reverse [osutils:tk:sort [${module}:toolkits]]]
-                 if {$deplib != $TK} {
-	             append var "    Begin Project Dependency" "\n" \
-				"    Project_Dep_Name $deplib" "\n" \
-				"    End Project Dependency" "\n" 
-                 }
-                }
-	      }
-            }
-             
-	    append var "\}\}\}" "\n" \
-	    "\n" \
-	    "###############################################################################" "\n" \
-	    "\n" 
-    return $var
-}
 
 ;#
-;#   ((((((( C R E A T I O N  D E S  P R O J E T S  V I S U A L )))))))
+;#   ((((((( GENERATION OF PROJECT FILES FOR VISUAL STUDIO )))))))
 ;#
 ;# fabrique le sln de module et le place dans dir. Retourne le
 ;# full path du fichier cree.
@@ -2809,442 +2774,437 @@ proc OS:vc6proj:projectby2 { TK Dep_Name module} {
 ;# Sinon utilise tklist donnee en argument.
 ;# Dans ce cas module est seulement utilise pour le nom de fichier .sln
 ;# Avec ca je fais un OCC.sln qui concatene plusieurs modules dans le bon ordre.
-;# 
+;#
 proc OS:genGUID {} {
-		 set p1 "[format %07X [random 268435456]][format %X [random 16]]"
-                 set p2 "[format %04X [random 6536]]"
-                 set p3 "[format %04X [random 6536]]"
-                 set p4 "[format %04X [random 6536]]"
-                 set p5 "[format %06X [random 16777216]][format %06X [random 16777216]]"
-                 return "{$p1-$p2-$p3-$p4-$p5}"
-	     }
+  set p1 "[format %07X [expr { int(rand() * 268435456) }]][format %X [expr { int(rand() * 16) }]]"
+  set p2 "[format %04X [expr { int(rand() * 6536) }]]"
+  set p3 "[format %04X [expr { int(rand() * 6536) }]]"
+  set p4 "[format %04X [expr { int(rand() * 6536) }]]"
+  set p5 "[format %06X [expr { int(rand() * 16777216) }]][format %06X [expr { int(rand() * 16777216) }]]"
+  return "{$p1-$p2-$p3-$p4-$p5}"
+}
 
-# generate Visual Studio solution file for VC++ 7.1 - 9.0
+# generate Visual Studio solution file
 # if module is empty, generates one solution for all known modules
-proc OS:vcsolution  { vc plat name modules dir _guids } {
-    upvar $_guids guids
+proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap } {
+  upvar $theGuidsMap aGuidsMap
 
-    # collect list of projects to be created
-    set projects {}
-    set deps {}
-    foreach m $modules {
-	# toolkits
-	foreach tk [osutils:tk:sort [${m}:toolkits]] {
-	    lappend projects $tk
-	    lappend projects_in_module($m) $tk
-	    lappend deps [LibToLink [woklocate -u $tk]]
-	}
-	# executables, assume one project per cxx file...
-	foreach unit [OS:executable ${m}] {
-	    set uloc [woklocate -u $unit]
-	    set sourcefiles [uinfo -f -T source $uloc] 
-	    foreach cxxfile $sourcefiles {
-		set cxxextension [file extension $cxxfile]
-		if { $cxxextension == ".cxx" } {
-		    set prjname [file rootname $cxxfile]
-		    lappend projects $prjname
-		    lappend projects_in_module($m) $prjname
-		    if {[wokinfo -x $uloc] != "0"} {
-			lappend deps [LibToLinkX $uloc [file rootname $cxxfile]]
-		    } else {
-			lappend deps {}
-		    }
-		}  
-	    }
-        } 
+  # collect list of projects to be created
+  set aProjects {}
+  set aDependencies {}
+  foreach aModule $theModules {
+    # toolkits
+    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits]] {
+      lappend aProjects $aToolKit
+      lappend aProjectsInModule($aModule) $aToolKit
+      lappend aDependencies [LibToLink [woklocate -u $aToolKit]]
     }
 
-    # generate GUIDs for projects (unless already known)
-    foreach prj $projects {
-	if { ! [info exists guids($prj)] } {
-	    set guids($prj) [OS:genGUID]
-	}
+    # executables, assume one project per cxx file...
+    foreach aUnit [OS:executable ${aModule}] {
+      set aUnitLoc [woklocate -u $aUnit]
+      set aSrcFiles [uinfo -f -T source $aUnitLoc]
+      foreach aSrcFile $aSrcFiles {
+        set aFileExtension [file extension $aSrcFile]
+        if { $aFileExtension == ".cxx" } {
+          set aPrjName [file rootname $aSrcFile]
+          lappend aProjects $aPrjName
+          lappend aProjectsInModule($aModule) $aPrjName
+          if {[wokinfo -x $aUnitLoc] != "0"} {
+            lappend aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile]]
+          } else {
+            lappend aDependencies {}
+          }
+        }
+      }
     }
+  }
 
-    # generate solution file
-    puts "Generating Visual Studio ($vc $plat) solution file for $name ($projects)"
-    append buffer [osutils:vcsolution:header $vc] 
-
-    # GUID identifying group projects in Visual Studio
-    set VC_GROUP_GUID "{2150E333-8FDC-42A3-9474-1A3956D46DE8}"
-
-    # generate group projects -- one per module
-    if { "$vc" != "vc7" && [llength "$modules"] > 1 } {
-	foreach m $modules {
-	    set guid [OS:genGUID]
-	    set guids(_$m) $guid
-	    append buffer "Project(\"${VC_GROUP_GUID}\") = \"$m\", \"$m\", \"$guid\"\nEndProject\n"
-	}
+  # generate GUIDs for projects (unless already known)
+  foreach aProject $aProjects {
+    if { ! [info exists aGuidsMap($aProject)] } {
+      set aGuidsMap($aProject) [OS:genGUID]
     }
+  }
 
-    # extension of project files
-    set vcprojext [osutils:vcproj:ext $vc]
+  # generate solution file
+  puts "Generating Visual Studio ($theVcVer) solution file for $theSolName ($aProjects)"
+  append aFileBuff [osutils:vcsolution:header $theVcVer]
 
-    # GUID identifying C++ projects in Visual Studio
-    set VC_CPP_GUID "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+  # GUID identifying group projects in Visual Studio
+  set VC_GROUP_GUID "{2150E333-8FDC-42A3-9474-1A3956D46DE8}"
 
-    # generate project "All"
-#    set allGUID \{570118B7-F56D-41C9-A838-29464CD03149\}
-#    append buffer  "Project(\"${VC_CPP_GUID}\") = \"All\", \"All.${vcprojext}\", \"$allGUID\"\n"
-#    if { [llength $guids] > 0 } {
-#	append buffer  "\tProjectSection(ProjectDependencies) = postProject\n"
-#	foreach guid $guids {
-#	    append buffer "\t\t$guid = $guid\n"
-#	}
-#	append buffer "\tEndProjectSection\n"
-#    }
-#    append buffer "EndProject\n" 
-
-    # generate normal projects
-    set len [llength $projects]
-    for {set i 0} {$i < $len} {incr i} {
-	set proj [lindex $projects $i]
-        set guid $guids($proj)
-	append buffer "Project(\"${VC_CPP_GUID}\") = \"$proj\", \"$proj.${vcprojext}\", \"$guid\"\n"
-	# write projects dependencies information (vc7 to vc9)
-	set depguids ""
-	foreach deplib [lindex $deps $i] {
-	    if { $deplib != $proj && [lsearch $projects $deplib] != "-1" } {
-		set depGUID $guids($deplib)
-		append depguids "\t\t$depGUID = $depGUID\n" 
-	    }
-	}
-	if { "$depguids" != "" } {
-	    append buffer "\tProjectSection(ProjectDependencies) = postProject\n" 
-	    append buffer "$depguids" 
-	    append buffer "\tEndProjectSection\n" 
-	}
-	append buffer "EndProject\n"
+  # generate group projects -- one per module
+  if { "$theVcVer" != "vc7" && [llength "$theModules"] > 1 } {
+    foreach aModule $theModules {
+      if { ! [info exists aGuidsMap(_$aModule)] } {
+        set aGuidsMap(_$aModule) [OS:genGUID]
+      }
+      set aGuid $aGuidsMap(_$aModule)
+      append aFileBuff "Project(\"${VC_GROUP_GUID}\") = \"$aModule\", \"$aModule\", \"$aGuid\"\nEndProject\n"
     }
+  }
 
-    # generate configuration section
-    append buffer [osutils:vcsolution:config:begin $vc $plat]
-#    append buffer [osutils:vcsolution:config:project $vc $plat $allGUID]
-    foreach proj $projects {
-	append buffer [osutils:vcsolution:config:project $vc $plat $guids($proj)]
+  # extension of project files
+  set aProjExt [osutils:vcproj:ext $theVcVer]
+
+  # GUID identifying C++ projects in Visual Studio
+  set VC_CPP_GUID "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+
+  # generate project "All"
+  # set allGUID \{570118B7-F56D-41C9-A838-29464CD03149\}
+  # append aFileBuff  "Project(\"${VC_CPP_GUID}\") = \"All\", \"All.${aProjExt}\", \"$allGUID\"\n"
+  # if { [llength $aGuidsMap] > 0 } {
+  #	  append aFileBuff  "\tProjectSection(ProjectDependencies) = postProject\n"
+  #	  foreach aGuid $aGuidsMap {
+  #	    append aFileBuff "\t\t$aGuid = $aGuid\n"
+  #	  }
+  #	  append aFileBuff "\tEndProjectSection\n"
+  # }
+  # append aFileBuff "EndProject\n"
+
+  # generate normal projects
+  set aProjsNb [llength $aProjects]
+  for {set aProjId 0} {$aProjId < $aProjsNb} {incr aProjId} {
+    set aProj [lindex $aProjects $aProjId]
+    set aGuid $aGuidsMap($aProj)
+    append aFileBuff "Project(\"${VC_CPP_GUID}\") = \"$aProj\", \"$aProj.${aProjExt}\", \"$aGuid\"\n"
+    # write projects dependencies information (vc7 to vc9)
+    set aDepGuids ""
+    foreach aDepLib [lindex $aDependencies $aProjId] {
+      if { $aDepLib != $aProj && [lsearch $aProjects $aDepLib] != "-1" } {
+        set depGUID $aGuidsMap($aDepLib)
+        append aDepGuids "\t\t$depGUID = $depGUID\n"
+      }
     }
-    append buffer [osutils:vcsolution:config:end $vc $plat]
-
-    # write information of grouping of projects by module
-    if { "$vc" != "vc7" && [llength "$modules"] > 1 } {
-        append buffer "	GlobalSection(NestedProjects) = preSolution\n"
-	foreach m $modules {
-	    if { ! [info exists projects_in_module($m)] } { continue }
-	    foreach project $projects_in_module($m) {
-		append buffer "		$guids($project) = $guids(_$m)\n"
-	    }
-	}
-        append buffer "	EndGlobalSection\n"
+    if { "$aDepGuids" != "" } {
+      append aFileBuff "\tProjectSection(ProjectDependencies) = postProject\n"
+      append aFileBuff "$aDepGuids"
+      append aFileBuff "\tEndProjectSection\n"
     }
+    append aFileBuff "EndProject\n"
+  }
 
-    # final word (footer)
-    append buffer "EndGlobal"
+  # generate configuration section
+  if { "$theVcVer" == "vc8" } {
+    append aFileBuff [osutils:vcsolution:config:begin $theVcVer]
+    foreach aProj $aProjects {
+      append aFileBuff [osutils:vcsolution:config:project $theVcVer $aGuidsMap($aProj)]
+    }
+    append aFileBuff [osutils:vcsolution:config:end $theVcVer]
+  } else {
+    append aFileBuff [osutils:vcsolution:config:begin $theVcVer]
+    # append aFileBuff [osutils:vcsolution:config:project $theVcVer $allGUID]
+    foreach aProj $aProjects {
+      append aFileBuff [osutils:vcsolution:config:project $theVcVer $aGuidsMap($aProj)]
+    }
+    append aFileBuff [osutils:vcsolution:config:end $theVcVer]
+  }
 
-    # write solution
-    set fp [open [set fdsw [file join $dir ${name}.sln]] w]
-    fconfigure $fp -translation crlf
-    puts $fp $buffer
-    close $fp
-    return [file join $dir ${name}.sln]
+  # write information of grouping of projects by module
+  if { "$theVcVer" != "vc7" && [llength "$theModules"] > 1 } {
+    append aFileBuff "	GlobalSection(NestedProjects) = preSolution\n"
+    foreach aModule $theModules {
+      if { ! [info exists aProjectsInModule($aModule)] } { continue }
+      foreach aProject $aProjectsInModule($aModule) {
+        append aFileBuff "		$aGuidsMap($aProject) = $aGuidsMap(_$aModule)\n"
+      }
+    }
+    append aFileBuff "	EndGlobalSection\n"
+  }
+
+  # final word (footer)
+  append aFileBuff "EndGlobal"
+
+  # write solution
+  set aFile [open [set fdsw [file join $theOutDir ${theSolName}.sln]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile $aFileBuff
+  close $aFile
+  return [file join $theOutDir ${theSolName}.sln]
 }
 
-;# fabrique le dsw de module et le place dans dir. Retourne le
-;# full path du fichier cree.
-;# Si tklist est {} utilise module pour la calculer.
-;# Sinon utilise tklist donnee en argument.
-;# Dans ce cas module est seulement utilise pour le nom de fichier .dsw
-;# Avec ca je fais un OCC.dsw qui concatene plusieurs modules dans le bon ordre.
-;# 
-proc OS:vc6proj  { module dir {inlist {}} } {
-    if { $inlist == {} } {
-	set list [wokUtils:LIST:reverse [osutils:tk:sort [${module}:toolkits]]]
-    } else {
-	set list $inlist
+# Generate Visual Studio projects for specified version
+proc OS:vcproj { theVcVer theModules theOutDir theGuidsMap } {
+  upvar $theGuidsMap aGuidsMap
+
+  set aProjectFiles {}
+
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      lappend aProjectFiles [osutils:vcproj  $theVcVer $theOutDir $aToolKit     aGuidsMap]
     }
-    set list1 $list
-    foreach execunit [OS:executable ${module}] {
-        set sourcefiles [uinfo -f -T source [woklocate -u ${execunit}]]
-        foreach cxxfile $sourcefiles {
-            set cxxextension [file extension $cxxfile]
-    	    if { $cxxextension == ".cxx" } {	
-		set list [concat [file rootname $cxxfile] $list]
+    foreach anExecutable [OS:executable ${aModule}] {
+      lappend aProjectFiles [osutils:vcprojx $theVcVer $theOutDir $anExecutable aGuidsMap]
+    }
+  }
+  return $aProjectFiles
+}
+
+# Generate Code::Blocks projects
+proc OS:cbp { theModules theOutDir } {
+  set aProjectFiles {}
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      lappend aProjectFiles [osutils:cbptk $theOutDir $aToolKit ]
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      lappend aProjectFiles [osutils:cbpx  $theOutDir $anExecutable]
+    }
+  }
+  return $aProjectFiles
+}
+
+proc OS:cworkspace { theSolName theModules theOutDir } {
+  set aWsFilePath "${theOutDir}/${theSolName}.workspace"
+  set aFile [open $aWsFilePath "w"]
+  puts $aFile "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
+  puts $aFile "<CodeBlocks_workspace_file>"
+  puts $aFile "\t<Workspace title=\"${theSolName}\">"
+
+  # collect list of projects to be created
+  foreach aModule $theModules {
+    # toolkits
+    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits]] {
+      set aDependencies [LibToLink [woklocate -u $aToolKit]]
+      if { [llength $aDependencies] == 0 } {
+        puts $aFile "\t\t<Project filename=\"${aToolKit}.cbp\" />"
+      } else {
+        puts $aFile "\t\t<Project filename=\"${aToolKit}.cbp\" >"
+        foreach aDepTk $aDependencies {
+          puts $aFile "\t\t\t<Depends filename=\"${aDepTk}.cbp\" />"
+        }
+        puts $aFile "\t\t</Project>"
+      }
+    }
+
+    # executables, assume one project per cxx file...
+    foreach aUnit [OS:executable ${aModule}] {
+      set aUnitLoc [woklocate -u $aUnit]
+      set aSrcFiles [uinfo -f -T source $aUnitLoc]
+      foreach aSrcFile $aSrcFiles {
+        set aFileExtension [file extension $aSrcFile]
+        if { $aFileExtension == ".cxx" } {
+          set aPrjName [file rootname $aSrcFile]
+          set aDependencies [list]
+          if {[wokinfo -x $aUnitLoc] != "0"} {
+            set aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile]]
+          }
+          if { [llength $aDependencies] == 0 } {
+            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\" />"
+          } else {
+            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\" >"
+            foreach aDepTk $aDependencies {
+              puts $aFile "\t\t\t<Depends filename=\"${aDepTk}.cbp\" />"
             }
+            puts $aFile "\t\t</Project>"
+          }
         }
-        set list1 [concat $execunit $list1]
+      }
     }
-    set len [llength $list1]
-    puts "OS:vc6proj list = $list1"
-    append buffer [osutils:vcsolution:header vc6] 
-    append buffer  "Project: \"All\"=.\\All.dsp - Package Owner=<4>" "\n" \
-	           "\n" \
-     	           "Package=<5>" "\n" \
-     	           "\{\{\{" "\n" \
-     	           "\}\}\}" "\n" \
-     	           "\n" \
-     	           "Package=<4>" "\n" \
-     	           "\{\{\{" "\n" 
-    for {set i 0} {$i < $len} {incr i 1} {
-	set mastr [lindex $list1 $i]
-        if {[uinfo -t [woklocate -u $mastr]] == "executable"} {
-           set sourcefiles [uinfo -f -T source [woklocate -u $mastr]] 
-           foreach cxxfile $sourcefiles {
-              set cxxextension [file extension $cxxfile]
-              if { $cxxextension == ".cxx" } {
-                   append buffer  "    Begin Project Dependency" "\n" \
-		       "    Project_Dep_Name [file rootname ${cxxfile}]" "\n" \
-		       "    End Project Dependency" "\n" 
+  }
 
-              }  
-           }
-        } else {
-               if {[lsearch [wokUtils:LIST:reverse [osutils:tk:sort [${module}:toolkits]]] $mastr] != "-1"} { 
-                   append buffer  "    Begin Project Dependency" "\n" \
-                    	          "    Project_Dep_Name $mastr" "\n" \
-			          "    End Project Dependency" "\n" 
-                }
+  puts $aFile "\t</Workspace>"
+  puts $aFile "</CodeBlocks_workspace_file>"
+  close $aFile
 
-        }
-    }
-    append buffer "\}\}\}" "\n" \
-    "\n" \
-    "###############################################################################" "\n" \
-    "\n" 
-
-    for {set i 0} {$i < $len} {incr i 1} {
-	set mastr [lindex $list1 $i]
-        if {[uinfo -t [woklocate -u $mastr]] == "executable"} {
-           set sourcefiles [uinfo -f -T source [woklocate -u ${mastr}]] 
-           foreach cxxfile $sourcefiles {
-              set cxxextension [file extension $cxxfile]
-              if { $cxxextension == ".cxx" } {
-                 append buffer [OS:vc6proj:projectby2 $mastr [file rootname $cxxfile] $module]
-              }
-           } 
-        } else {
-           append buffer [OS:vc6proj:projectby2 $mastr $mastr $module]
-        }
-    }
-    append buffer [osutils:vc6proj:footer]
-    set fp [open [set fdsw [file join $dir ${module}.dsw]] w]
-    fconfigure $fp -translation crlf
-    puts $fp $buffer
-    close $fp
-    return [file join $dir ${module}.dsw]
-}
-;#
-;# fabrique les dsp de module et les place dans dir. Retourne la liste 
-;# des full pathes des fichiers .dsp crees
-;# que faire des UDs qui se balladent toutes seules. 
-;#
-proc OS:vc6  { module dir } {
-
-    set lret {}
-
-    foreach tkloc [${module}:toolkits] {
-	lappend lret [osutils:vc6 $dir $tkloc]
-    }
-    if { [set lxqt [OS:executable ${module}]] != {} } {
-	foreach x $lxqt {
-	   lappend lret [osutils:vc6x $dir $x]
-	}
-    }
-
-    lappend lret [OS:vc6proj $module $dir]
-    return $lret
+  return $aWsFilePath
 }
 
-# Generate Visual Studio projects for specified version (7 - 9) and platform
-proc OS:vcproj { vc plat modules dir _guids } {
-    upvar $_guids guids
+# Store global GUIDs map to reproduce same values on sequential calls
+set aTKNullKey "TKNull"
+set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
-    set lret {}
+# Entry function to generate VS project files and solutions
+proc OS:MKPRC { {theOutDir {}} {theModules {}} {theVcVersions {vc8 vc9 vc10}} } {
+  set anOutRoot $theOutDir
+  if { $anOutRoot == "" } {
+    set anOutRoot [OS -box]
+  }
 
-    foreach mod $modules {
-	foreach tkloc [${mod}:toolkits] {
-	    lappend lret [osutils:vcproj $vc $plat $dir $tkloc guids]
-	}
-	foreach x [OS:executable ${mod}] {
-	    lappend lret [osutils:vcprojx $vc $plat $dir $x guids]
-	}
+  # versions of VC supported for each platform
+  set aVcVersions {vc7 vc8 vc9 vc10}
+
+  # read map of already generated GUIDs
+  set aGuidsFilePath [file join $::env(WOK_SESSIONID) "wok_vs_guids.txt"]
+  if [file exists "$aGuidsFilePath"] {
+    set aFileIn [open "$aGuidsFilePath" r]
+    set aFileDataRaw [read $aFileIn]
+    close $aFileIn
+    set aFileData [split $aFileDataRaw "\n"]
+    foreach aLine $aFileData {
+      set aLineSplt [split $aLine "="]
+      if { [llength $aLineSplt] == 2 } {
+        set ::THE_GUIDS_LIST([lindex $aLineSplt 0]) [lindex $aLineSplt 1]
+      }
+    }
+  }
+
+  # make list of modules and platforms
+  set aModules [OS:listmodules $theModules {win32}]
+
+  # generate one solution for all projects if complete OS or VAS is processed
+  set anAllSolution ""
+  if { $theModules == "OS" } {
+    set anAllSolution "OCCT"
+  } elseif { $theModules == "VAS" } {
+    set anAllSolution "Products"
+  }
+
+  # generate projects for each of supported versions of VC
+  foreach aVcVer $aVcVersions {
+    if { [llength $theVcVersions] > 0 && [lsearch $theVcVersions $aVcVer] < 0 } {
+      #puts stderr "Error: No supported versions of Visual Studio"
+      continue;
+    }
+    puts stderr "Generating VS project files for $aVcVer"
+
+    # create output directory
+    set anOutDir $anOutRoot/msvc/$aVcVer
+    OS:mkdir $anOutDir
+    if { ! [file exists $anOutDir] } {
+      puts stderr "Error: Could not create output directory \"$anOutDir\""
+      continue
     }
 
-    return $lret
-}
- 
-;#
-;# Pour la fab des procs de reconstruction (ainsi que pour 
-;# les projets Visual, tout peut se faire sur Unix.) d'ou:
-;#
-proc OS:MKPRC { {outdir {}} {modules {}} {platforms {}} {vcver {vc8 vc9 vc10}} } {
-
-    set BOX $outdir
-    if { $BOX == "" } {
-	set BOX [OS -box]
+    # generate projects for toolkits and separate solution for each module
+    foreach aModule $aModules {
+      OS:vcsolution $aVcVer $aModule $aModule $anOutDir ::THE_GUIDS_LIST
+      OS:vcproj     $aVcVer $aModule          $anOutDir ::THE_GUIDS_LIST
     }
 
-    # versions of VC supported for each platform
-    set vcversions(win32) {vc6 vc7 vc8 vc9 vc10}
-    set vcversions(win64) {vc8 vc9 vc10}
-
-    # make list of modules and platforms
-    set lesmodules [OS:listmodules $modules $platforms]
-    set lesplats $platforms 
-    if { "$lesplats" == "" } { set lesplats [concat [OS:plats_disponibles] "win32 win64"] }
-
-    # generate one solution for all projects if complete OS or VAS is processed
-    set one_solution ""
-    if { $modules == "OS" } {
-	set one_solution "OCCT"
-    } elseif { $modules == "VAS" } {
-	set one_solution "Products"
+    # generate single solution "OCCT" containing projects from all modules
+    if { "$anAllSolution" != "" } {
+      OS:vcsolution $aVcVer $anAllSolution $aModules $anOutDir ::THE_GUIDS_LIST
     }
-    
-    foreach plat $lesplats {
-	puts stderr "OS:MKPRC: $plat"
+  }
 
-        # compatibility: WindowsNT is alias to win32
-	if { "$plat" == "WindowsNT" } { set plat "win32" }
-
-	# make sure that we know such platform and can generate VC projects for it
-	if { ! [info exists vcversions($plat)] } {
-	    puts stderr "Error: No supported versions of Visual Studio are known for platform $plat"
-	    continue
-	}
-
-        # generate projects for each of supported versions of VC 
-	foreach vc $vcversions($plat) {
-	    if { [llength $vcver] >0 && [lsearch $vcver $vc] < 0 } {
-		continue;
-	    }
-	    puts stderr "Generating project files for $vc $plat"
-
-	    # create output directory
-	    set outdir $BOX/$plat/$vc
-	    OS:mkdir $outdir
-	    if { ! [file exists $outdir] } {
-		puts stderr "Error: Could not create output directory \"$outdir\""
-		continue
-	    }
-
-	    # generate projects for toolkits and separate solution for each module
-	    foreach module $lesmodules {
-		if { "$vc" == "vc6" } {
-		    OS:vc6 $module $outdir
-		} else {
-		    OS:vcsolution $vc $plat $module $module $outdir guids
-		    OS:vcproj $vc $plat $module $outdir guids
-		}
-	    }
-
-	    # generate single solution "OCCT" containing projects from all modules
-	    if { "$one_solution" != "" && "$vc" != "vc6" } {
-		OS:vcsolution $vc $plat $one_solution $lesmodules $BOX/$plat/$vc guids
-	    }
-	}
+  # create output directory for Code::Blocks project files
+  set aWokStation "$::env(WOKSTATION)"
+  set anOutDir "${anOutRoot}/${aWokStation}/cbp"
+  OS:mkdir $anOutDir
+  if { ! [file exists $anOutDir] } {
+    puts stderr "Error: Could not create output directory \"$anOutDir\""
+  } else {
+    foreach aModule $aModules {
+      OS:cworkspace $aModule $aModule $anOutDir
+      OS:cbp        $aModule          $anOutDir
     }
+    if { "$anAllSolution" != "" } {
+      OS:cworkspace $anAllSolution $aModules $anOutDir
+    }
+  }
+
+  # Store generated GUIDs map
+  set anOutFile [open "$aGuidsFilePath" "w"]
+  fconfigure $anOutFile -translation lf
+  foreach aKey [array names ::THE_GUIDS_LIST] {
+    set aValue $::THE_GUIDS_LIST($aKey)
+    puts $anOutFile "${aKey}=${aValue}"
+  }
+  close $anOutFile
 }
 
 # This function was created for *.mak files generation (compilation with nmake utilite of MS Visual Studio).
 # The function creates *.mak files for toolkits of all the modules of OCC with osutils:mkmak procedure,
-# for executables of all the modules of OCC with osutils:mkmakx procedure, then it generates All.mak files, 
+# for executables of all the modules of OCC with osutils:mkmakx procedure, then it generates All.mak files,
 # which will call compilation with generated *.mak files for toolkits and executables in appropriate order.
-#
-proc  OS:MKMAK { {plase {}} {ll {} } } {
-    if {$plase == ""} {
-       set BOX "[OS -box]/WindowsNT"
-    } else {
-       set BOX $plase
-    }
+proc OS:MKMAK { {plase {}} {ll {} } } {
+  if {$plase == ""} {
+    set BOX "[OS -box]/WindowsNT"
+  } else {
+    set BOX $plase
+  }
 
-    set lesmodules [OS -lm]
-    if { $ll != {} } {  set lesmodules $ll }
-    
-    OS:mkdir $BOX
- 
-    set unitlist ""
-    set filelist ""	
-    foreach module $lesmodules {
-	append unitlist "[${module}:toolkits] "
-        append filelist "[${module}:toolkits] "
-        foreach execunit [OS:executable $module] {
-          append unitlist "$execunit "
-          foreach execfile [osutils:tk:files $execunit osutils:am:compilable 0] {
-	      append filelist "[file rootname [file tail $execfile]] "
-	  }
-        }
-    }
-    puts "unitlist is $unitlist"
-    foreach unit $unitlist {
-       if {[uinfo -t [woklocate -u $unit]] == "toolkit"} {
-           osutils:mkmak $BOX $unit
-        }
-       if {[uinfo -t [woklocate -u $unit]] == "executable"} {
-           osutils:mkmakx $BOX $unit
-        }
-    }
-    
-    set fp [open [set fmak [file join $BOX All.mak]] w]
-    fconfigure $fp -translation crlf
+  set lesmodules [OS -lm]
+  if { $ll != {} } {  set lesmodules $ll }
 
-    set buffer ""
-    append buffer "\!IF \"\$(CFG)\" == \"\"\n"
-    append buffer "CFG=All - Win32 Debug\n"
-    append buffer "\!MESSAGE No configuration specified. Defaulting to All - Win32 Debug.\n"
-    append buffer "\!ENDIF \n"
-    append buffer "\!IF \"\$(OS)\" == \"Windows_NT\"\n"
-    append buffer "NULL=\n"
-    append buffer "\!ELSE \n"
-    append buffer "NULL=nul\n"
-    append buffer "\!ENDIF \n"
-    append buffer "\n"
+  OS:mkdir $BOX
+
+  set unitlist ""
+  set filelist ""
+  foreach module $lesmodules {
+    append unitlist "[${module}:toolkits] "
+    append filelist "[${module}:toolkits] "
+    foreach execunit [OS:executable $module] {
+      append unitlist "$execunit "
+      foreach execfile [osutils:tk:files $execunit osutils:am:compilable 0] {
+        append filelist "[file rootname [file tail $execfile]] "
+      }
+    }
+  }
+  puts "unitlist is $unitlist"
+  foreach unit $unitlist {
+    if {[uinfo -t [woklocate -u $unit]] == "toolkit"} {
+      osutils:mkmak $BOX $unit
+    }
+    if {[uinfo -t [woklocate -u $unit]] == "executable"} {
+      osutils:mkmakx $BOX $unit
+    }
+  }
+
+  set fp [open [set fmak [file join $BOX All.mak]] w]
+  fconfigure $fp -translation crlf
+
+  set buffer ""
+  append buffer "\!IF \"\$(CFG)\" == \"\"\n"
+  append buffer "CFG=All - Win32 Debug\n"
+  append buffer "\!MESSAGE No configuration specified. Defaulting to All - Win32 Debug.\n"
+  append buffer "\!ENDIF \n"
+  append buffer "\!IF \"\$(OS)\" == \"Windows_NT\"\n"
+  append buffer "NULL=\n"
+  append buffer "\!ELSE \n"
+  append buffer "NULL=nul\n"
+  append buffer "\!ENDIF \n"
+  append buffer "\n"
+  append buffer "\!IF  \"\$(CFG)\" == \"All - Win32 Release\"\n"
+  append buffer "ALL : "
+  foreach unit $filelist {
+    append buffer "\"$unit - Win32 Release\" "
+  }
+  append buffer "\n"
+  append buffer "\n"
+  append buffer "CLEAN : "
+  foreach unit $filelist {
+    append buffer "\"$unit - Win32 ReleaseCLEAN\" "
+  }
+  append buffer "\n"
+  append buffer "\n"
+  append buffer "\!ELSEIF  \"\$(CFG)\" == \"All - Win32 Debug\"\n"
+  append buffer "ALL : "
+  foreach unit $filelist {
+    append buffer "\"$unit - Win32 Debug\" "
+  }
+  append buffer "\n"
+  append buffer "\n"
+  append buffer "CLEAN : "
+  foreach unit $filelist {
+    append buffer "\"$unit - Win32 DebugCLEAN\" "
+  }
+  append buffer "\n"
+  append buffer "\n"
+  append buffer "\!ENDIF \n"
+  append buffer "\n"
+  append buffer "\!IF \"\$(CFG)\" == \"All - Win32 Release\" \|\| \"\$(CFG)\" == \"All - Win32 Debug\"\n"
+  append buffer "\n"
+  append buffer "\n"
+
+  foreach unit $filelist {
     append buffer "\!IF  \"\$(CFG)\" == \"All - Win32 Release\"\n"
-    append buffer "ALL : "
-    foreach unit $filelist {
-      append buffer "\"$unit - Win32 Release\" "
-    }
-    append buffer "\n"
-    append buffer "\n"
-    append buffer "CLEAN : "
-    foreach unit $filelist {
-      append buffer "\"$unit - Win32 ReleaseCLEAN\" "
-    }
-    append buffer "\n"
-    append buffer "\n"
+    append buffer "\"$unit - Win32 Release\" : \n"
+    append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Release\" RECURSE=0 \n"
+    append buffer "\"$unit - Win32 ReleaseCLEAN\" : \n"
+    append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Release\" CLEAN \n"
     append buffer "\!ELSEIF  \"\$(CFG)\" == \"All - Win32 Debug\"\n"
-    append buffer "ALL : "
-    foreach unit $filelist {
-      append buffer "\"$unit - Win32 Debug\" "
-    }
-    append buffer "\n"
-    append buffer "\n"
-    append buffer "CLEAN : "
-    foreach unit $filelist {
-      append buffer "\"$unit - Win32 DebugCLEAN\" "
-    }
-    append buffer "\n"
-    append buffer "\n"
+    append buffer "\"$unit - Win32 Debug\" : \n"
+    append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Debug\" RECURSE=0 \n"
+    append buffer "\"$unit - Win32 DebugCLEAN\" : \n"
+    append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Debug\" CLEAN \n"
     append buffer "\!ENDIF \n"
-    append buffer "\n"
-    append buffer "\!IF \"\$(CFG)\" == \"All - Win32 Release\" \|\| \"\$(CFG)\" == \"All - Win32 Debug\"\n"
-    append buffer "\n"
-    append buffer "\n"
-
-    foreach unit $filelist {
-      append buffer "\!IF  \"\$(CFG)\" == \"All - Win32 Release\"\n"
-      append buffer "\"$unit - Win32 Release\" : \n"
-      append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Release\" RECURSE=0 \n"
-      append buffer "\"$unit - Win32 ReleaseCLEAN\" : \n"
-      append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Release\" CLEAN \n"
-      append buffer "\!ELSEIF  \"\$(CFG)\" == \"All - Win32 Debug\"\n"
-      append buffer "\"$unit - Win32 Debug\" : \n"
-      append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Debug\" RECURSE=0 \n"
-      append buffer "\"$unit - Win32 DebugCLEAN\" : \n"
-      append buffer "\t\$(MAKE) \/NOLOGO \/\$(MAKEFLAGS) \/F .\\${unit}.mak CFG=\"${unit} - Win32 Debug\" CLEAN \n"
-      append buffer "\!ENDIF \n"
-    }
-    append buffer "\!ENDIF \n"
-    puts $fp $buffer
-    close $fp
+  }
+  append buffer "\!ENDIF \n"
+  puts $fp $buffer
+  close $fp
 }
 ;#
 ;# Fabrication des archives "source" :
@@ -3265,7 +3225,7 @@ proc  OS:PKGSRC { {ll {} } {mode link} } {
     ;# La ou on cree l'arborescence pour l'archive.
     ;# et le nom de la racine contenue dans l'archive
     ;#
-    set TMPDIR /dn01/KAS/dev/ros/work 
+    set TMPDIR /dn01/KAS/dev/ros/work
     set ROOT   [OS:archive_root]
     ;# La ou on met le tar.gz avec le nom desire.
     ;#
@@ -3282,8 +3242,8 @@ proc  OS:PKGSRC { {ll {} } {mode link} } {
 	puts stderr "OS:PKGSRC($module)"
 	set LISTE {}
 
-	;#OS -lsource $module -v -o $BOX/$module.sources 
-	OS -lsource $module -o $BOX/$module.sources 
+	;#OS -lsource $module -v -o $BOX/$module.sources
+	OS -lsource $module -o $BOX/$module.sources
 	OS -u udlist $module -o $BOX/$module.UDLIST
 	set lx [wokUtils:FILES:FileToList $BOX/$module.sources]
 	lappend lx "$BOX/$module.UDLIST [file join adm $module.UDLIST]"
@@ -3308,7 +3268,7 @@ proc  OS:PKGSRC { {ll {} } {mode link} } {
 	if [file exists $BOX/${module}.ressources] {
 	    lappend LISTE $BOX/${module}.ressources
 	}
-	
+
 	OS -lfreefiles ${module} -type source -o $BOX/${module}.freefiles
 	if [file exists $BOX/${module}.freefiles] {
 	    lappend LISTE $BOX/${module}.freefiles
@@ -3319,7 +3279,7 @@ proc  OS:PKGSRC { {ll {} } {mode link} } {
 	set tmpdir [file join $TMPDIR $module src]
 
 	set r [OS -mktree -mode $mode -from [join $LISTE ,] -tmpdir $tmpdir -root $ROOT]
-	
+
 	set znam [format $fmtnam [${module}:name]]
 	set z [OS -mkar $znam $module -tmpdir $tmpdir -root $ROOT]
 
@@ -3362,7 +3322,7 @@ proc  OS:PKGRTL { {llplat {}} {ll {} } { mode link } } {
     if { $llplat != {} } { set lesplats $llplat }
     set lmodules [OS -lm]
     if { $ll != {} } {  set lmodules $ll }
-    
+
     set lesmodules {}
     foreach mo $lmodules {
 	if { [lsearch [${mo}:Export] runtime] != -1 } {
@@ -3390,7 +3350,7 @@ proc  OS:PKGRTL { {llplat {}} {ll {} } { mode link } } {
 	    OS -lfreefiles ${module} -type runtime -o $BOX/$plat/${module}.freefiles
 	    lappend LISTE $BOX/$plat/${module}.freefiles
 	    set tmpdir [file join $TMPDIR $module $plat]
-	    
+
 	    puts "mktree: "
 	    set r [OS -v -mktree -mode $mode -from [join $LISTE ,] -tmpdir $tmpdir -root [file join $ROOT $plat]]
 	    if [file exists $r/src ] {
@@ -3400,7 +3360,7 @@ proc  OS:PKGRTL { {llplat {}} {ll {} } { mode link } } {
 		exec mv $plat/src .
 		cd $savpwd
 	    }
-	    
+
 	    puts "mkar: "
 	    set znam [format $fmtnam $plat [${module}:name]]
 	    set z [OS -mkar $znam -tmpdir $tmpdir -root $ROOT]
@@ -3408,435 +3368,417 @@ proc  OS:PKGRTL { {llplat {}} {ll {} } { mode link } } {
 	}
     }
 }
-;#
-;# Administration de wok
-;#
+
+# Administration de wok
 proc OS:PKGADM { plat { ll {} } } {
-;#
-;# ce qui suit veut dire que:
-;# on substitue /adv_11/KAS/C30/ref par TOSUBSTITUTE ET /adv_11/KAS/C30/UpdateC31 par TOSUBSTITUTE etc..
-;# sur la plateforme correspondante.
-;#
-    set TOTRIM(wokadm,WindowsNT) nothing,nothing
-    set TOTRIM(wokadm,SunOS)     \
-	    /dn01/KAS/dev/roc,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
-    set TOTRIM(wokadm,IRIX)      \
-	    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
-    set TOTRIM(wokadm,Linux)     \
-	    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
-    set TOTRIM(wokadm,AIX)       \
-	    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
-    
-    set BOX [OS -box]
-    set lmodules [OS -lm]
-    if { $ll != {} } {  set lmodules $ll }
-    set lesmodules {}
-    foreach mo $lmodules {
-	if { [lsearch [${mo}:Export] wokadm] != -1 } {
-	    lappend lesmodules $mo
-	}
+  ;#
+  ;# ce qui suit veut dire que:
+  ;# on substitue /adv_11/KAS/C30/ref par TOSUBSTITUTE ET /adv_11/KAS/C30/UpdateC31 par TOSUBSTITUTE etc..
+  ;# sur la plateforme correspondante.
+  ;#
+  set TOTRIM(wokadm,WindowsNT) nothing,nothing
+  set TOTRIM(wokadm,SunOS)     \
+    /dn01/KAS/dev/roc,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
+  set TOTRIM(wokadm,IRIX)      \
+    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
+  set TOTRIM(wokadm,Linux)     \
+    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
+  set TOTRIM(wokadm,AIX)       \
+    /dn01/KAS/dev/ros,TOSUBSTITUTE,/adv_11/KAS/C30/UpdateC31,TOSUBSTITUTE,/adv_10/KAS/C30/UpdateC31,TOSUBSTITUTE
+
+  set BOX [OS -box]
+  set lmodules [OS -lm]
+  if { $ll != {} } {  set lmodules $ll }
+  set lesmodules {}
+  foreach mo $lmodules {
+    if { [lsearch [${mo}:Export] wokadm] != -1 } {
+      lappend lesmodules $mo
     }
+  }
 
-    set TMPDIR /dn01/KAS/dev/ros/work/ADM
-    set ROOT   [OS:archive_root]
+  set TMPDIR /dn01/KAS/dev/ros/work/ADM
+  set ROOT   [OS:archive_root]
 
-    set DISTRIB [OS -distrib]
-    set fmtnam "$DISTRIB/%swokadm%s-[OS:dotted_version].tar"
+  set DISTRIB [OS -distrib]
+  set fmtnam "$DISTRIB/%swokadm%s-[OS:dotted_version].tar"
 
-    puts stderr "OS:PKGADM: $plat . On retire $TOTRIM(wokadm,$plat) des fichiers wokadm"
+  puts stderr "OS:PKGADM: $plat . On retire $TOTRIM(wokadm,$plat) des fichiers wokadm"
 
-    foreach module $lesmodules {
-	set tmpdir [file join $TMPDIR $module $plat]
-	catch { exec rm -rf $tmpdir }
-	OS -os $plat -makadm $tmpdir $module -substr $TOTRIM(wokadm,$plat) \
-		-subdone [file join $tmpdir $module.TOSUBSTITUTE] -o $BOX/$plat/$module.wokadm
-	OS -u udlist $module -o [file join $tmpdir $module.UDLIST]
-	set lx [wokUtils:FILES:FileToList $BOX/$plat/$module.wokadm]
-	lappend lx "[file join $tmpdir $module.UDLIST] [file join adm $module.UDLIST]"
-	lappend lx "[file join $tmpdir $module.TOSUBSTITUTE] [file join adm $plat $module.TOSUBSTITUTE]"
-	wokUtils:FILES:ListToFile $lx $BOX/$plat/$module.wokadm
-	set r [OS -mktree -from $BOX/$plat/$module.wokadm -tmpdir $tmpdir -root $ROOT]
-	set znam [format $fmtnam $plat [${module}:name]]
-	set z [OS -mkar $znam -tmpdir $tmpdir -root $ROOT]
-    }
+  foreach module $lesmodules {
+    set tmpdir [file join $TMPDIR $module $plat]
+    catch { exec rm -rf $tmpdir }
+    OS -os $plat -makadm $tmpdir $module -substr $TOTRIM(wokadm,$plat) \
+    -subdone [file join $tmpdir $module.TOSUBSTITUTE] -o $BOX/$plat/$module.wokadm
+    OS -u udlist $module -o [file join $tmpdir $module.UDLIST]
+    set lx [wokUtils:FILES:FileToList $BOX/$plat/$module.wokadm]
+    lappend lx "[file join $tmpdir $module.UDLIST] [file join adm $module.UDLIST]"
+    lappend lx "[file join $tmpdir $module.TOSUBSTITUTE] [file join adm $plat $module.TOSUBSTITUTE]"
+    wokUtils:FILES:ListToFile $lx $BOX/$plat/$module.wokadm
+    set r [OS -mktree -from $BOX/$plat/$module.wokadm -tmpdir $tmpdir -root $ROOT]
+    set znam [format $fmtnam $plat [${module}:name]]
+    set z [OS -mkar $znam -tmpdir $tmpdir -root $ROOT]
+  }
 }
-;#
-;# Sources des modules compactes a la wok
-;#
+
+# Sources des modules compactes a la wok
 proc OS:SRCBCK { {ll {}} }  {
-    
-    set BOX  [OS -box]
-    set lmodules [OS -lm]
-    if { $ll != {} } { set lmodules $ll }
-    set lesmodules {}
-    foreach mo $lmodules {
-	if { [lsearch [${mo}:Export] source] != -1 } {
-	    lappend lesmodules $mo
-	}
+
+  set BOX  [OS -box]
+  set lmodules [OS -lm]
+  if { $ll != {} } { set lmodules $ll }
+  set lesmodules {}
+  foreach mo $lmodules {
+    if { [lsearch [${mo}:Export] source] != -1 } {
+      lappend lesmodules $mo
     }
-    ;# La ou on cree l'arborescence pour l'archive.
-    ;# et le nom de la racine contenue dans l'archive
-    ;#
-    ;# La ou on met le tar.gz avec le nom desire.
-    ;#
-    set DISTRIB [OS -distrib]
-    set fmtnam "$DISTRIB/%s-[OS:dotted_version].bck"
-    
-    foreach module $lesmodules {
-	wokcd KAS:dev:ros
-	puts stderr "OS:SRCBCK($module)"
-	OS:wpack $module $DISTRIB 1
-    }
+  }
+  ;# La ou on cree l'arborescence pour l'archive.
+  ;# et le nom de la racine contenue dans l'archive
+  ;#
+  ;# La ou on met le tar.gz avec le nom desire.
+  ;#
+  set DISTRIB [OS -distrib]
+  set fmtnam "$DISTRIB/%s-[OS:dotted_version].bck"
+
+  foreach module $lesmodules {
+    wokcd KAS:dev:ros
+    puts stderr "OS:SRCBCK($module)"
+    OS:wpack $module $DISTRIB 1
+  }
 }
 
-;#
-;# Fabrication des tar.gz avec option --files de tar. + rapide , + sur, + simple, + elegant.
-;#
-;#
-proc  OSPKGS { {ll {} } } {
+# Fabrication des tar.gz avec option --files de tar. + rapide , + sur, + simple, + elegant.
+proc OSPKGS { {ll {} } } {
 
-    set BOX  [OS -box]
-    set lmodules [OS -lm]
-    if { $ll != {} } { set lmodules $ll }
-    set lesmodules {}
-    foreach mo $lmodules {
-	if { [lsearch [${mo}:Export] source] != -1 } {
-	    lappend lesmodules $mo
-	}
+  set BOX  [OS -box]
+  set lmodules [OS -lm]
+  if { $ll != {} } { set lmodules $ll }
+  set lesmodules {}
+  foreach mo $lmodules {
+    if { [lsearch [${mo}:Export] source] != -1 } {
+      lappend lesmodules $mo
+    }
+  }
+
+  ;# La ou on cree l'arborescence pour l'archive.
+  ;# et le nom de la racine contenue dans l'archive
+  ;#
+  set ROOT   [OS:archive_root]
+  ;# La ou on met le tar.gz avec le nom desire.
+  ;#
+  set DISTRIB [OS -distrib]
+  ;#set fmtnam "$DISTRIB/source%s-[OS:dotted_version].tar"
+  set fmtnam "$DISTRIB/SOURCE%s-[OS:dotted_version].tar"
+
+  set LISTOFROOTS [list /dn01/KAS/dev/ros/ /adv_11/KAS/C30/UpdateC31/ /dn01/KAS/dev/ros/drv/ /adv_11/KAS/C30/ros/ ]
+
+  foreach module $lesmodules {
+    puts stderr "OS:PKGS($module)"
+    ;# Init de lsource par module.
+    set lsource {}
+    set lsource [concat $lsource [OS -LSOURCE $module]]
+    OS -u udlist $module -o $BOX/$module.UDLIST
+    set lsource [concat $lsource $BOX/$module.UDLIST]
+    ;#
+    ;# Pour embarquer les projets Visual.
+    ;#
+    foreach plats [concat [OS:plats_disponibles] WindowsNT] {
+      if [file exists $BOX/$plats/${module}.admfiles] {
+        puts " ADM = $BOX/$plats/${module}.admfiles "
+        foreach proc [wokUtils:FILES:FileToList $BOX/$plats/${module}.admfiles] {
+          ;#puts " proc = [lindex $proc 0]"
+          set lsource [concat $lsource [lindex $proc 0]]
+        }
+        ;#lappend LISTE $BOX/$plats/${module}.admfiles
+      } else {
+        puts stderr "Note : pas de fichier $BOX/$plats/${module}.admfiles"
+      }
     }
 
-    ;# La ou on cree l'arborescence pour l'archive.
-    ;# et le nom de la racine contenue dans l'archive
-    ;#
-    set ROOT   [OS:archive_root]
-    ;# La ou on met le tar.gz avec le nom desire.
-    ;#
-    set DISTRIB [OS -distrib]
-    ;#set fmtnam "$DISTRIB/source%s-[OS:dotted_version].tar"
-    set fmtnam "$DISTRIB/SOURCE%s-[OS:dotted_version].tar"
+    set lsource [concat $lsource [OS -LRESSOURCE $module  -type source]]
+    set lsource [concat $lsource [OS -LFREEFILES $module  -type source]]
 
-    set LISTOFROOTS [list /dn01/KAS/dev/ros/ /adv_11/KAS/C30/UpdateC31/ /dn01/KAS/dev/ros/drv/ /adv_11/KAS/C30/ros/ ] 
-
-    foreach module $lesmodules {
-	puts stderr "OS:PKGS($module)"
-	;# Init de lsource par module.
-	set lsource {}
-	set lsource [concat $lsource [OS -LSOURCE $module]]
-	OS -u udlist $module -o $BOX/$module.UDLIST
-	set lsource [concat $lsource $BOX/$module.UDLIST]
-	;#
-	;# Pour embarquer les projets Visual.
-	;#
-	foreach plats [concat [OS:plats_disponibles] WindowsNT] {
-	    if [file exists $BOX/$plats/${module}.admfiles] {
-		puts " ADM = $BOX/$plats/${module}.admfiles "
-		foreach proc [wokUtils:FILES:FileToList $BOX/$plats/${module}.admfiles] {
-		    ;#puts " proc = [lindex $proc 0]"
-		    set lsource [concat $lsource [lindex $proc 0]]
-		}
-		;#lappend LISTE $BOX/$plats/${module}.admfiles
-	    } else {
-		puts stderr "Note : pas de fichier $BOX/$plats/${module}.admfiles"
-	    }
-	}
-
-	set lsource [concat $lsource [OS -LRESSOURCE $module  -type source]]
-	set lsource [concat $lsource [OS -LFREEFILES $module  -type source]]
-	
-	set znam [format $fmtnam [${module}:name]]
-	set r3 [wokUtils:EASY:gnutar $LISTOFROOTS $lsource $znam]
-	if { [set ignored    [lindex $r3 0]] == {} } {
-	    set script     [lindex $r3 1]
-	    wokUtils:FILES:ListToFile $script [set command [wokUtils:FILES:tmpname ${module}]]
-	    if ![catch { eval exec csh -f $command } status ] {
-		puts stderr $status
-		unlink $command
-	    } else {
-		puts "Ex ERROR: $status"
-	    }
-	    foreach f [lindex $r3 2] { 
-		OS:delete $f 
-	    }
-	} else {
-	    puts "OSPKGS : Fatal ( $module ): Impossible de traiter :"
-	    foreach f $ignored {
-		puts $f
-	    }
-	}
+    set znam [format $fmtnam [${module}:name]]
+    set r3 [wokUtils:EASY:gnutar $LISTOFROOTS $lsource $znam]
+    if { [set ignored    [lindex $r3 0]] == {} } {
+      set script     [lindex $r3 1]
+      wokUtils:FILES:ListToFile $script [set command [wokUtils:FILES:tmpname ${module}]]
+      if ![catch { eval exec csh -f $command } status ] {
+        puts stderr $status
+        unlink $command
+      } else {
+        puts "Ex ERROR: $status"
+      }
+      foreach f [lindex $r3 2] {
+        OS:delete $f
+      }
+    } else {
+      puts "OSPKGS : Fatal ( $module ): Impossible de traiter :"
+      foreach f $ignored {
+        puts $f
+      }
     }
+  }
 
-    return 
-
+  return
 }
-;#
-;# Fabrique les archives RunTime
-;# OS:PKGRTL Linux Draw 1 1
-;#
+
+# Fabrique les archives RunTime
+# OS:PKGRTL Linux Draw 1 1
 proc  OSPKGR { {llplat {}} {ll {} } } {
 
-    set BOX  [OS -box]
+  set BOX [OS -box]
 
-    set lesplats [OS:plats_disponibles]
-    if { $llplat != {} } { set lesplats $llplat }
-    set lmodules [OS -lm]
-    if { $ll != {} } {  set lmodules $ll }
-    
-    set lesmodules {}
-    foreach mo $lmodules {
-	if { [lsearch [${mo}:Export] runtime] != -1 } {
-	    lappend lesmodules $mo
-	}
-    }
+  set lesplats [OS:plats_disponibles]
+  if { $llplat != {} } { set lesplats $llplat }
+  set lmodules [OS -lm]
+  if { $ll != {} } { set lmodules $ll }
 
-    set ROOT   [OS:archive_root]
-    set DISTRIB [OS -distrib]
-    set fmtnam "$DISTRIB/NEW%s%s-[OS:dotted_version].tar"
-    
-    set LISTOFROOTS [list /dn01/KAS/dev/ros/ /adv_11/KAS/C30/UpdateC31/ /adv_10/KAS/C30/UpdateC31/ /adv_11/KAS/C30/ros/ ]
-    
-    foreach plat $lesplats {
-	puts stderr "OS:PKGR: $plat"
-	foreach module $lesmodules {
-	    set lruntime {}
-	    set lruntime [concat $lruntime [OS -os $plat -LSHARE $module]]
-	    set lruntime [concat $lruntime [OS -os $plat -LRESSOURCE $module  -type runtime]]
-	    set lruntime [concat $lruntime [OS -LFREEFILES ${module} -type runtime ]]
-	    puts "$module : "
-	    foreach rtl [lsort $lruntime] {
-		puts $rtl
-	    }
-	    set znam [format $fmtnam $plat [${module}:name]]
-	    set r3 [wokUtils:EASY:gnutar $LISTOFROOTS $lruntime $znam]
-	    if { [set ignored    [lindex $r3 0]] == {} } {
-		set script     [lindex $r3 1]
-		wokUtils:FILES:ListToFile $script [set command [wokUtils:FILES:tmpname ${plat}${module}]]
-		if ![catch { eval exec csh -f $command } status ] {
-		    puts stderr $status
-		    unlink $command
-		} else {
-		    puts "Ex ERROR: $status"
-		}
-		foreach f [lindex $r3 2] { 
-		    OS:delete $f 
-		}
-	    } else {
-		puts "OSPKGR : Fatal ( $module ): Impossible de traiter :"
-		foreach f $ignored {
-		    puts $f
-		}
-	    }
-	}
+  set lesmodules {}
+  foreach mo $lmodules {
+    if { [lsearch [${mo}:Export] runtime] != -1 } {
+      lappend lesmodules $mo
     }
+  }
+
+  set ROOT    [OS:archive_root]
+  set DISTRIB [OS -distrib]
+  set fmtnam "$DISTRIB/NEW%s%s-[OS:dotted_version].tar"
+
+  set LISTOFROOTS [list /dn01/KAS/dev/ros/ /adv_11/KAS/C30/UpdateC31/ /adv_10/KAS/C30/UpdateC31/ /adv_11/KAS/C30/ros/ ]
+
+  foreach plat $lesplats {
+    puts stderr "OS:PKGR: $plat"
+    foreach module $lesmodules {
+      set lruntime {}
+      set lruntime [concat $lruntime [OS -os $plat -LSHARE $module]]
+      set lruntime [concat $lruntime [OS -os $plat -LRESSOURCE $module  -type runtime]]
+      set lruntime [concat $lruntime [OS -LFREEFILES ${module} -type runtime ]]
+      puts "$module : "
+      foreach rtl [lsort $lruntime] {
+        puts $rtl
+      }
+      set znam [format $fmtnam $plat [${module}:name]]
+      set r3 [wokUtils:EASY:gnutar $LISTOFROOTS $lruntime $znam]
+      if { [set ignored    [lindex $r3 0]] == {} } {
+        set script [lindex $r3 1]
+        wokUtils:FILES:ListToFile $script [set command [wokUtils:FILES:tmpname ${plat}${module}]]
+        if ![catch { eval exec csh -f $command } status ] {
+          puts stderr $status
+          unlink $command
+        } else {
+          puts "Ex ERROR: $status"
+        }
+        foreach f [lindex $r3 2] {
+          OS:delete $f
+        }
+      } else {
+        puts "OSPKGR : Fatal ( $module ): Impossible de traiter :"
+        foreach f $ignored {
+          puts $f
+        }
+      }
+    }
+  }
 }
-##############
-;# just for test
-proc OS:xml { lm } {
-    
-    set doc [::dom::DOMImplementation create]
-    set top [::dom::document createElement $doc OpenCascade]
-    foreach m $lm {
-	puts stderr " module $m ... "
-	set mnode [::dom::document createElement $top module]
-	dom::element setAttribute $mnode name $m
-	foreach tkloc [${m}:toolkits] {
-	    set tknod [::dom::document createElement $mnode toolkit]
 
-	    set lcsf   [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
-	    if { $lcsf != {} } {
-		dom::element setAttribute $tknod externlibs [join $lcsf ,]
-	    }
-	    ;#set lclose  [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
-	    ;#if { $lclose != {} } {
-		;#dom::element setAttribute $tknod usedtk [join $lclose ,]
-	    ;#}
-	    set ids [woklocate -p [wokinfo -n [wokinfo -u $tkloc]]:source:EXTERNLIB [wokinfo -w [woklocate -u $tkloc]]]
-	    set eated [osutils:tk:eatpk $ids]
-	    if { $eated != {} } {
-		dom::element setAttribute $tknod usedtk [join $eated ,]
-	    }
-	    dom::element setAttribute $tknod name $tkloc
-	    set lun [osutils:tk:units [woklocate -u $tkloc] 3] 
-	    foreach namu $lun {
-		set unode [::dom::document createElement $tknod devunit]
-		dom::element setAttribute $unode name [lindex $namu 1]
-		dom::element setAttribute $unode type [lindex $namu 0]
-		foreach fil [osutils:tk:files [lindex $namu 1] {} 1] {
-		    set fnode [::dom::document createElement $unode source]
-		    dom::element setAttribute $fnode name $fil
-		}
-	    }
-	}
+##############
+# just for test
+proc OS:xml { lm } {
+  set doc [::dom::DOMImplementation create]
+  set top [::dom::document createElement $doc OpenCascade]
+  foreach m $lm {
+    puts stderr " module $m ... "
+    set mnode [::dom::document createElement $top module]
+    dom::element setAttribute $mnode name $m
+    foreach tkloc [${m}:toolkits] {
+      set tknod [::dom::document createElement $mnode toolkit]
+
+      set lcsf  [osutils:tk:hascsf [woklocate -p ${tkloc}:source:EXTERNLIB [wokcd]]]
+      if { $lcsf != {} } {
+        dom::element setAttribute $tknod externlibs [join $lcsf ,]
+      }
+      ;#set lclose  [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $tkloc]]]
+      ;#if { $lclose != {} } {
+      ;#dom::element setAttribute $tknod usedtk [join $lclose ,]
+      ;#}
+      set ids [woklocate -p [wokinfo -n [wokinfo -u $tkloc]]:source:EXTERNLIB [wokinfo -w [woklocate -u $tkloc]]]
+      set eated [osutils:tk:eatpk $ids]
+      if { $eated != {} } {
+        dom::element setAttribute $tknod usedtk [join $eated ,]
+      }
+      dom::element setAttribute $tknod name $tkloc
+      set lun [osutils:tk:units [woklocate -u $tkloc] 3]
+      foreach namu $lun {
+        set unode [::dom::document createElement $tknod devunit]
+        dom::element setAttribute $unode name [lindex $namu 1]
+        dom::element setAttribute $unode type [lindex $namu 0]
+        foreach fil [osutils:tk:files [lindex $namu 1] {} 1] {
+          set fnode [::dom::document createElement $unode source]
+          dom::element setAttribute $fnode name $fil
+        }
+      }
     }
-    return [::dom::DOMImplementation serialize $doc -newline toolkit]
+  }
+  return [::dom::DOMImplementation serialize $doc -newline toolkit]
 }
 
 # ABV 30.07.2010: remains of eliminated OSDEF.tcl put below
 
-;#
-;# retourne l'adresse du fichier .comp pour l'ud <loc>
-;# le fichier .comp contient les phrases de compils
-;# pour tous les sources de l'UD.
-;# Les procs Linux sont maintenant sur le serveur.
-;#
+# retourne l'adresse du fichier .comp pour l'ud <loc>
+# le fichier .comp contient les phrases de compils
+# pour tous les sources de l'UD.
+# Les procs Linux sont maintenant sur le serveur.
 proc OS:getcomp { loc askplat } {
-    set f [woklocate -p ${loc}:stadmfile:${loc}.comp]
-    if { [file exists $f] } {
-        return $f
-    } 
-    puts stderr "Error (OS:getcomp): Could not locate file ${loc}.comp"
-    return ""
+  set f [woklocate -p ${loc}:stadmfile:${loc}.comp]
+  if { [file exists $f] } {
+    return $f
+  }
+  puts stderr "Error (OS:getcomp): Could not locate file ${loc}.comp"
+  return ""
 }
 
-;#
-;# debug temporaire je n'ai pas le temps.
-;# ce machin n'est pas coherent avec la nomination WOK des UD exec
-;# Ud U => U_a.comp et a.lnk pour l'executable a de U
-;# je verrais ca plus tard.
-
+# debug temporaire je n'ai pas le temps.
+# ce machin n'est pas coherent avec la nomination WOK des UD exec
+# Ud U => U_a.comp et a.lnk pour l'executable a de U
+# je verrais ca plus tard.
 proc OS:getcompx { loc askplat name } {
-    set f [woklocate -p ${loc}:stadmfile:${loc}_${name}.comp]
-    if { [file exists $f] } {
-        return $f
-    } 
-    puts stderr "Error (OS:getcompx): Could not locate file ${loc}_${name}.comp"
-    return ""
+  set f [woklocate -p ${loc}:stadmfile:${loc}_${name}.comp]
+  if { [file exists $f] } {
+    return $f
+  }
+  puts stderr "Error (OS:getcompx): Could not locate file ${loc}_${name}.comp"
+  return ""
 }
 
-;# toolkits mis dans une shareable.
-;# retourne l'adresse du fichier .lnk pour l'ud <tkloc>
-;# le fichier .lnk contient la phrase de link
-;# 
+# toolkits mis dans une shareable.
+# retourne l'adresse du fichier .lnk pour l'ud <tkloc>
+# le fichier .lnk contient la phrase de link
 proc OS:getlinkso { tkloc askplat } {
-    set f [woklocate -p ${tkloc}:stadmfile:${tkloc}.lnk]
-    if { [file exists $f] } {
-        return $f
-    } 
-    puts stderr "Error (OS:getlinkso): Could not locate file ${tkloc}.lnk"
-    return ""
+  set f [woklocate -p ${tkloc}:stadmfile:${tkloc}.lnk]
+  if { [file exists $f] } {
+    return $f
+  }
+  puts stderr "Error (OS:getlinkso): Could not locate file ${tkloc}.lnk"
+  return ""
 }
 
-;# toolkits mis dans une shareable.
-;# retourne l'adresse du fichier .lnk pour l'ud <tkloc>
-;# le fichier .lnk contient la phrase de link
-;# 
+# toolkits mis dans une shareable.
+# retourne l'adresse du fichier .lnk pour l'ud <tkloc>
+# le fichier .lnk contient la phrase de link
 proc OS:getlinkx { loc askplat name} {
-    set f [woklocate -p ${loc}:stadmfile:${name}.lnk]
-    if { [file exists $f] } {
-        return $f
-    } 
-    puts stderr "Error (OS:getlinkx): Could not locate file ${name}.lnk"
-    return ""
+  set f [woklocate -p ${loc}:stadmfile:${name}.lnk]
+  if { [file exists $f] } {
+    return $f
+  }
+  puts stderr "Error (OS:getlinkx): Could not locate file ${name}.lnk"
+  return ""
 }
-;#
-;# Peut maintenant retourner une liste d'items.
-;# Pour les .exp de pop sur IBM
-;#
+
+# Peut maintenant retourner une liste d'items.
+# Pour les .exp de pop sur IBM
 proc OS:getshare { tkloc askplat } {
-    switch -- $askplat {
+  switch -- $askplat {
 
-	IRIX {
-	    return [woklocate -p ${tkloc}:library:lib${tkloc}.so]
-	}
-
-	Linux {
-	    return [woklocate -p ${tkloc}:library:lib${tkloc}.so]
-	}
-
-	#HP-UX {
-	#  return [woklocate -p ${tkloc}:library:lib${tkloc}.sl]
-	#}
-
-	SunOS {
-	    return [woklocate -p ${tkloc}:librarylib${tkloc}.so]
-	}
-
-	#AIX {
-	#    return [list [woklocate -p ${tkloc}:library:lib${tkloc}.so] \
-	#           [woklocate -p ${tkloc}:library:lib${tkloc}.exp]
-	#}
-
-	WindowsNT {
-	    return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
-	}
-
-	win32 {
-	    return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
-	}
-
-	win64 {
-	    return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
-	}
-
-	default {
-	    puts "Completer getshare sur $askplat."  
-	    return {}
-	}
+    IRIX {
+      return [woklocate -p ${tkloc}:library:lib${tkloc}.so]
     }
-}
-;#
-;# 
-;#
-proc OS:getx { tkloc askplat } {
-    set f [woklocate -p ${tkloc}:executable:${tkloc}]
-    if { [file exists $f] } {
-        return $f
-    } 
-    puts stderr "Error (OS:getx): Could not locate file ${tkloc}"
-    return ""
-}
-;# 
-;# Retourne la liste des plateformes 
-;# Note: WindowsNT n'est pas mentionne car:
-;# 
-;# 1. Les archives de sources sont plateforme independantes
-;# 2. Les procs de refab (placees dans les archives de source) sont
-;# fabriques specifiquement mais TOUT est fait sur Unix.(voir OS:MKPRC)
-;# 3. Les run-time sont traites directement depuis une machine NT.
-;# On specifie alors la plateforme desirees.
-;#
-proc OS:plats_disponibles { } {
-#    return [list Linux SunOS IRIX AIX HP-UX]
-    return [list SunOS Linux ]
-}
-;#
-;# Nom de la racine dans l'archive.
-;#
-proc OS:archive_root {} {
-    return CAS[OS:dotted_version]
-}
-;#
-;#
-proc OS:dotted_version {} {
-    return 6.4.0
-}
-;#
-;#
-proc OS:simple_version {} {
-    return 640
+
+    Linux {
+      return [woklocate -p ${tkloc}:library:lib${tkloc}.so]
+    }
+
+    #HP-UX {
+    #  return [woklocate -p ${tkloc}:library:lib${tkloc}.sl]
+    #}
+
+    SunOS {
+      return [woklocate -p ${tkloc}:librarylib${tkloc}.so]
+    }
+
+    #AIX {
+    #    return [list [woklocate -p ${tkloc}:library:lib${tkloc}.so] \
+    #           [woklocate -p ${tkloc}:library:lib${tkloc}.exp]
+    #}
+
+    WindowsNT {
+      return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
+    }
+
+    win32 {
+      return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
+    }
+
+    win64 {
+      return [list [woklocate -p ${tkloc}:library:${tkloc}.dll] [woklocate -p ${tkloc}:library:${tkloc}.lib]]
+    }
+
+    default {
+      puts "Completer getshare sur $askplat."
+      return {}
+    }
+  }
 }
 
-;#
-;#
+#
+proc OS:getx { tkloc askplat } {
+  set f [woklocate -p ${tkloc}:executable:${tkloc}]
+  if { [file exists $f] } {
+    return $f
+  }
+  puts stderr "Error (OS:getx): Could not locate file ${tkloc}"
+  return ""
+}
+
+# Retourne la liste des plateformes
+# Note: WindowsNT n'est pas mentionne car:
+#
+# 1. Les archives de sources sont plateforme independantes
+# 2. Les procs de refab (placees dans les archives de source) sont
+# fabriques specifiquement mais TOUT est fait sur Unix.(voir OS:MKPRC)
+# 3. Les run-time sont traites directement depuis une machine NT.
+# On specifie alors la plateforme desirees.
+proc OS:plats_disponibles { } {
+# return [list Linux SunOS IRIX AIX HP-UX]
+  return [list SunOS Linux ]
+}
+
+# Nom de la racine dans l'archive.
+proc OS:archive_root {} {
+  return CAS[OS:dotted_version]
+}
+
+#
+proc OS:dotted_version {} {
+  return 6.5.3
+}
+
+#
+proc OS:simple_version {} {
+  return 653
+}
+
+#
 proc OS:defbox {} {
-    return [OS:casroot]/adm
+  return [OS:casroot]/adm
 }
 
 # If "what" is OS or VAS, returns list of modules or projects, respectively;
 # if it is empty, returns list of both modules and products,
 # otherwise returns input value (assumed to be already a list of modules)
 proc OS:listmodules {what {platforms {}}} {
-    OS:init
-    if { "$what" == "" } {
-	if { "$platforms" != "" } { 
-	    return [OS -lm -plat $platforms]
-	} else {
-	    return [OS -lm]
-	}
-	return [OS -lm]
-    } elseif { "$what" == "OS" } {
-	return [OS:Modules $platforms]
-    } elseif { "$what" == "VAS" } {
-	return [VAS:Products]
+  OS:init
+  if { "$what" == "" } {
+    if { "$platforms" != "" } {
+      return [OS -lm -plat $platforms]
+    } else {
+      return [OS -lm]
     }
-    return "$what"
+    return [OS -lm]
+  } elseif { "$what" == "OS" } {
+    return [OS:Modules $platforms]
+  } elseif { "$what" == "VAS" } {
+    return [VAS:Products]
+  }
+  return "$what"
 }

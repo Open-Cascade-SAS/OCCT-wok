@@ -1,0 +1,92 @@
+--
+-- This is configuration file for SunOS platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_SUN_EDL) then
+  @set %CSF_SUN_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/sunpro/lib/ -los -losthr -loscol -losmop";
+  @endif;
+
+  --<< TODO : If applicable , modify the location of the C++ compiler.
+  @set %CSF_CXX_COMPILER = "/opt/DEV5_1/SUNWspro/bin/CC";
+  -->> END TODO
+
+  @set %STLPortHome = "";
+  @if (%STLPortHome != "") then
+    @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+    @string %STLPortLib = "-L" %STLPortHome "/lib -lstlport_sunpro42";
+  @else
+    @set %STLPortInclude = "";
+    @set %STLPortLib = "";
+  @endif;
+
+  @set %CSF_CXX_SysOptions  = "-PIC -xchip=ultra -xarch=v8 -vdelx -Usun -instances=static ";
+  @string %CSF_CXX_Options  = "-DSOLARIS -DOCC_CONVERT_SIGNALS "%STLPortInclude;
+  @set %CSF_CXX_ModeOpt = " -O2 -DNo_Exception +w ";
+  @set %CSF_CXX_ModeOptDeb = " -g0 -DDEB +w ";
+  @string %CSF_CXX_INCLUDE +=  " -I" %CSF_CXX_COMPILER "/../../SC4.2/include/CC ";
+
+  --<< TODO : If applicable , modify the location of the c compiler.
+  @set %CSF_C_COMPILER   = "/opt/DEV5_1/SUNWspro/bin/cc ";
+  @string %CSF_C_INCLUDE +=  "";
+  -->> END TODO
+
+  @set %CSF_C_SysOptions = "-K PIC -Usun ";
+  @set %CSF_C_Options    = "-DSOLARIS ";
+  @set %CSF_C_ModeOpt    = " -O2 -DNo_Exception +w ";
+  @set %CSF_C_ModeOptDeb = " -g0 -DDEB +w ";
+
+  @set %CSF_F77_COMPILER   = "f77 ";
+  @set %CSF_F77_SysOptions = "-PIC";
+  @set %CSF_F77_ModeOpt    = " -O2 ";
+  @set %CSF_F77_ModeOptDeb = " -g ";
+
+  @set %CSF_LINKER = "/usr/ccs/bin/ld ";
+  @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER;
+  @if (%DBMS == "OBJS") then
+    @set %CSF_LINKER_DBMSOpt = "-mt ";
+  @endif;
+  @set %CSF_LINKER_SysShared = "-G ";
+  @set %CSF_LINKER_SysExe    = "";
+  @set %CSF_LINKER_SysOpt    = "-xchip=ultra -xarch=v8 ";
+  @set %CSF_LINKER_SysLib    = " -lC -lc ";
+  @set %CSF_LINKER_CheckOpt  = "";
+  @set %CSF_LINKER_CheckOut  = "-o /dev/null ";
+
+  --<< TODO : If applicable , modify the root location where Java is installed.
+  @set %CSF_JavaHome        = "/PRODUCTS/java/jdk1.2";
+  -->> END TODO
+
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I"  %CSF_JavaHome "/include/solaris ";
+  @string %CSF_JavaLibs     = " -L" %CSF_JavaHome "/jre/lib/sparc/ -ljava ";
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+
+  @set %CSF_DOXIGEN         = "/dn02/users_Sun/cascade/doxigen/bin/doxigen";
+  @set %CSF_GRAPHVIZ_HOME   = "/dn02/users_Sun/cascade/graphviz";
+
+  @set %CSF_SOCKETLibs = "-lsocket -lnsl -lsunmath -lm -ldl  -lc ";
+  ---@set %CSF_RISCRETURNObject = "/missing/missing/risc_return.o";
+  @set %CSF_RISCRETURNObject = "/dn01/KAS/dev/Gallery/src/EngineStarter/risc_return.o";
+  --<< TODO : If applicable , modify the root location where TCL is installed.
+  @set %CSF_TCL_HOME = "/PRODUCTS/tcltk-84";
+  -->> END TODO
+
+  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include -DUSE_NON_CONST ";
+  @string %CSF_TclLibs     = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl8.4 ";
+  @string %CSF_TclTkLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk8.4 ";
+
+  @set %X11_LIB            = "/usr/openwin/lib";
+  @set %CSF_X11_INCLUDE    = "-I/usr/openwin/include/X11 ";
+  @set %CSF_OPENGL_INCLUDE = "-I/usr/openwin/include ";
+
+  @set %CSF_ThreadLibs = "-lpthread";
+
+  @string %CSF_dpsLibs = "-L" %X11_LIB " -ldps";
+  @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+  @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL ";
+  @string %CSF_MotifLibs  = "-L/usr/dt/lib -lXm -L" %X11_LIB " -lXt -lX11";
+
+@endif;

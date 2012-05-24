@@ -9,18 +9,25 @@ proc __restore_env__ {} {
   }
   array set env $__initenv__
 }
-proc UNC { path } {
 
- if { [cindex $path 0] == "{" && [cindex $path [clength $path]-1] == "}" } {
-  set path [crange $path 1 [clength $path]-2]
- }
+proc UNC { thePath } {
+  set aPathLen  [string length "$thePath"]
+  if { $aPathLen <= 2 } {
+    return "$thePath"
+  }
 
- if { [cindex $path 0] == "\\" && [cindex $path 1] == "\\"} {
-  set path "//[crange $path 2 [clength $path]]"
- }
+  set aPathLast [expr $aPathLen - 1]
+  if { [string range "$thePath" 0 0] == "{"
+    && [string range "$thePath" $aPathLast $aPathLast] == "}" } {
+    set thePath [string range $thePath 1 [expr $aPathLen - 2]]
+  }
 
- return $path
+  if { [string range "$thePath" 0 0] == "\\"
+    && [string range "$thePath" 1 1] == "\\"} {
+    set thePath "//[string range $thePath 2 $aPathLen]"
+  }
 
+  return $thePath
 }
 
 
@@ -53,5 +60,3 @@ set WOK_GLOBALS(source_proc,tcl)   1
 update
 set WOK_GLOBALS(wokinterp,tclcommands) "Winfo|finfo|pinfo|screate|sinfo|srm|ucreate|uinfo|umake|urm|w_info|wcreate|wokcd|wokclose|wokinfo|wokparam|wokprofile|wokenv|wrm|wmove|msclear|wprepare|wstore|wintegre|upack|iwok|wsrc|wdrv|wls|wcd|cd"
 update
-
-

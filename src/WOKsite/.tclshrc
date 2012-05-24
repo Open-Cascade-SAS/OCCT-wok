@@ -1,2 +1,5 @@
-global env
-source $env(HOME)/tclshrc_Wok
+# TCL RC File that automatically sourced when the shell is started interactively.
+# This is version for Linux (.tclshrc)
+# Imports WOK procedures.
+
+source $::env(WOKHOME)/site/wok_tclshrc.tcl

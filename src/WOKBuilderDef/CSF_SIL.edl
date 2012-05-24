@@ -1,0 +1,71 @@
+--
+-- This is configuration file for IRIX platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_SIL_EDL) then
+  @set %CSF_SIL_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.3/lib/ -los -losths -loscol -losmop";
+  @endif;
+
+  @set %CSF_C_COMPILER   = "cc ";
+  @string %CSF_C_INCLUDE +=  "";
+  @set %CSF_C_SysOptions = " -signed -n32 -mips4 ";
+  @set %CSF_C_Options    = "-DIRIX ";
+  @set %CSF_C_ModeOpt = " -O3 -DNo_Exception -TARG:processor=R10000 ";
+  @set %CSF_C_ModeOptDeb = " -g -gslim -DDEB ";
+
+  @set %CSF_CXX_COMPILER = "/usr/bin/CC ";
+  @set %STLPortHome = "";
+  @if (%STLPortHome != "") then
+    @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+    @string %STLPortLib     = "-L" %STLPortHome "/lib -lstlport_mipspro";
+  @else
+    @set %STLPortInclude = "";
+    @set %STLPortLib     = "";
+  @endif;
+
+  @set %CSF_CXX_SysOptions = " -signed -n32 -mips4 -woff 3115 -woff 3273 -woff 1021 -woff 1188 -woff 1460 -woff 3303 -ptused";
+  @string %CSF_CXX_Options = "-DIRIX -DOCC_CONVERT_SIGNALS " %STLPortInclude;
+  @set %CSF_CXX_ModeOpt    = " -O3 -DNo_Exception -D__INLINE_INTRINSICS -TARG:processor=R10000 ";
+  @set %CSF_CXX_ModeOptDeb = " -g -gslim -DDEB ";
+
+  @set %CSF_F77_COMPILER   = "f77 ";
+  @set %CSF_F77_ModeOpt    = " -O3 ";
+  @set %CSF_F77_ModeOptDeb = " -g ";
+
+  @set %CSF_LINKER = "/usr/bin/ld";
+  @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER;
+  @set %CSF_LINKER_SysShared = " -shared ";
+  @set %CSF_LINKER_SysExe = "";
+  @set %CSF_LINKER_SysOpt = " -n32 -mips3 -Wl,-mmap -multigot -no_prelink ";
+  @set %CSF_LINKER_SysLib = "";
+  @set %CSF_LINKER_CheckOpt = " -n32 -mips3 -mmap -multigot -no_unresolved ";
+  @set %CSF_LINKER_CheckOut = " -o /dev/null";
+
+  @set %CSF_FPELibs = "-L/usr/lib32 -lfpe";
+  @set %CSF_pthread = "-lpthread";
+
+  @set %CSF_TCL_HOME = "/usr/tcltk.64";
+  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
+
+  @set %CSF_X11_INCLUDE_EXTENSION = " -I/usr/include/X11/extensions ";
+
+  @string %CSF_JavaHome     = "/PRODUCTS/java/sil_1.2";
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/irix ";
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+
+  @set %CSF_ThreadLibs = "-lpthread";
+
+  @set %X11_LIB = "/usr/lib32";
+
+  @set %CSF_dpsLibs       = "-L/usr/lib32 -ldps";
+  @string %CSF_XwLibs     = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+  @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL ";
+
+  @string %CSF_TclLibs    = "-L" %CSF_TCL_HOME "/lib/itcl -rpath " %CSF_TCL_HOME "/lib/itcl -ltcl7.5i";
+  @string %CSF_TclTkLibs  = "-L" %CSF_TCL_HOME "/lib/itcl -rpath " %CSF_TCL_HOME "/lib/itcl -ltk4.1i";
+
+@endif;

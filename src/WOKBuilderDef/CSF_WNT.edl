@@ -1,0 +1,83 @@
+--
+-- This is configuration file for Windows platform only.
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_WNT_EDL) then
+  @set %CSF_WNT_EDL = "";
+
+  -- Target configuration
+  @set %ENV_ARCH = "${ARCH}";
+  @if (%ENV_ARCH == "64") then
+    @set %CSF_VC_MACHINE = " -machine:X64";
+    @set %CSF_ARCH = "64";
+  @else
+    @set %CSF_VC_MACHINE = " -machine:IX86";
+    @set %CSF_ARCH = "32";
+  @endif;
+
+  -- Visual Studio compilers and tools should be set in PATH
+  @set %CSF_CXX_COMPILER   = "cl.exe ";
+  @set %CSF_CXX_SysOptions = " -nologo -W3 ";
+  @string %CSF_CXX_Options = " -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE " %CSF_PRODUCTS_DEFINES " ";
+  @set %CSF_CXX_ModeOpt    = " -MD  -EHa -O2 -Gy -DNDEBUG -DNo_Exception ";
+  @set %CSF_CXX_ModeOptDeb = " -MDd -EHa -Od -Gm -Zi -DDEB -D_DEBUG ";
+
+  -- C compiler
+  @set %CSF_C_COMPILER   = "cl.exe ";
+  @set %CSF_C_SysOptions = " -nologo -W3 ";
+  @string %CSF_C_Options = " -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE " %CSF_PRODUCTS_DEFINES " ";
+  @set %CSF_C_ModeOpt    = " -MD  -EHa -O2 -Gy -DNDEBUG -DNo_Exception ";
+  @set %CSF_C_ModeOptDeb = " -MDd -EHa -Od -Gm -Zi -DDEB -D_DEBUG ";
+
+  -- Fortran compiler
+  @set %CSF_F77_COMPILER   = "fl32.exe ";
+  @set %CSF_F77_SysOptions = " -nologo -libs:dll -Zi ";
+  @set %CSF_F77_ModeOpt    = " -DNDEBUG -DNo_Exception ";
+  @set %CSF_F77_ModeOptDeb = " -DDEB -D_DEBUG ";
+
+  -- Java compiler
+  @set %CSF_JAVA_COMPILER  = "javac";
+  @set %CSF_JAVA_JNI       = "javah";
+
+  -- Linker settings
+  @set %CSF_LINKER = "link.exe ";
+  @set %CSF_CXX_COMPILERLINKER = %CSF_LINKER;
+  @set %CSF_LINKER_DBMSOpt = "";
+  @set %CSF_LINKER_SysShared = "-subsystem:windows -dll ";
+  @set %CSF_LINKER_SysExe  = "CSF_LINKER_SysExeC";
+  @set %CSF_LINKER_SysExeC = "-subsystem:CONSOLE";
+  @set %CSF_LINKER_SysExeW = "-subsystem:WINDOWS";
+  @string %CSF_LINKER_SysOpt = "-nologo -incremental:no" %CSF_VC_MACHINE " -debug ";
+  @set %CSF_LINKER_SysLib  = "";
+
+  @set %CSF_LibraryHeaderLib = "lib.exe ";
+  @set %CSF_LibraryHeaderOpt = "-nologo ";
+
+  -- WinAPI libraries
+  @set %CSF_kernel32   = "kernel32.lib";
+  @set %CSF_advapi32   = "advapi32.lib";
+  @set %CSF_gdi32      = "gdi32.lib";
+  @set %CSF_user32     = "user32.lib";
+  @set %CSF_glu32      = "glu32.lib";
+  @set %CSF_opengl32   = "opengl32.lib";
+  @set %CSF_wsock32    = "wsock32.lib";
+  @set %CSF_netapi32   = "netapi32.lib";
+  @set %CSF_AviLibs    = "ws2_32.lib vfw32.lib";
+  @set %CSF_OpenGlLibs = "opengl32.lib glu32.lib";
+
+  --
+  -- 3rd-parties precompiled libraries
+  --
+
+  -- Tcl/Tk configuration
+  @string %CSF_TclLibs   = "tcl85.lib";
+  @string %CSF_TclTkLibs = "tk85.lib";
+
+  -- FTGL (font renderer for OpenGL)
+  @string %CSF_FTGL = "ftgl_dynamic_MTD.lib";
+
+  -- Qt4 framework, doesn't required for OCCT itself
+  @string %CSF_QT_INCLUDES = " ";
+  @string %CSF_QT = "QtCore4.lib QtGui4.lib";
+
+@endif;

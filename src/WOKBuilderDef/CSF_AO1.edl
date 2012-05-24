@@ -1,0 +1,51 @@
+--
+-- This is configuration file for Dec Ultrix platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_AO1_EDL) then
+  @set %CSF_AO1_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+  @endif;
+
+  @set %CSF_C_COMPILER   = "cc ";
+  @string %CSF_C_INCLUDE +=  "";
+  @set %CSF_CXX_COMPILER = "/usr/bin/cxx ";
+  @set %CSF_F77_COMPILER = "";
+
+  @set %STLPortHome = "/dn01/KAS/STLport-4.5.3";
+  @if (%STLPortHome != "") then
+    @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+    @string %STLPortLib     = "-L" %STLPortHome "/lib -lstlport_dec";
+  @else
+    @set %STLPortInclude = "";
+    @set %STLPortLib     = "";
+  @endif;
+
+  @set %CSF_CXX_SysOptions = "-shared ";
+  @set %CSF_CXX_Options = "-DDECOSF1 -DOCC_CONVERT_SIGNALS -D__USE_STD_IOSTREAM ";
+  @set %CSF_CXX_INCLUDE = "-I/usr/include/cxx -I/dn01/KAS/dev/Dec ";
+
+  @set %CSF_C_SysOptions = "";
+  @set %CSF_C_Options    = "-DDECOSF1 -O3 -DOCC_CONVERT_SIGNALS";
+
+  @set %CSF_TCL_HOME = "/usr/tcltk";
+  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
+
+  @string %CSF_JavaHome     = "/PRODUCTS/java/j2sdk1_3_1";
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/solaris ";
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+
+  @set %CSF_ThreadLibs = "-lpthread";
+
+  @set %X11_LIB = "/usr/shlib";
+  @string %CSF_XwLibs  = "-L" %X11_LIB " -lX11 -lXext -lXmu";
+  @set %CSF_dpsLibs    = "-ldps";
+  @string %CSF_OpenGlLibs = "-L" %X11_LIB " -lGLU -lGL " %CSF_XwLibs;
+
+  @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib/itcl -ltcl7.5i";
+  @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib/itcl -ltk4.1i " %CSF_XwLibs;
+
+@endif;

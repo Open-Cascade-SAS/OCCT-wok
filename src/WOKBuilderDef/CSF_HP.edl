@@ -1,0 +1,54 @@
+--
+-- This is configuration file for HP-UX platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_HP_EDL) then
+  @set %CSF_HP_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = " -L/PRODUCTS/OS4.0.2/lib/ -los -losthr -loscol -losmop";
+  @endif;
+
+  @set %CSF_C_COMPILER   = "cc ";
+  @string %CSF_C_INCLUDE += "";
+  @set %CSF_CXX_COMPILER = "/opt/aCC/bin/aCC ";
+  @set %CSF_F77_COMPILER = "f77 ";
+  @set %STLPortHome = "";
+  @if (%STLPortHome != "") then
+    @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+    @string %STLPortLib     = "-L" %STLPortHome "/lib -lstlport_aCC";
+  @else
+    @set %STLPortInclude = "";
+    @set %STLPortLib     = "";
+  @endif;
+
+  @string %CSF_CXX_Options = " -w -DHPUX -D_IOSTREAM_INIT_NOT_NEEDED " %STLPortInclude;
+  @set %CSF_C_Options = " -DHPUX ";
+
+  @set %CSF_TCL_HOME = "/missing/missing ";
+  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+
+  @set %CSF_X11_INCLUDE    = "-I/usr/include/X11R6 ";
+  @set %CSF_XMU_INCLUDE    = "-I/usr/contrib/X11R6/include ";
+  @set %CSF_MOTIF_INCLUDE  = "-I/usr/include/Motif1.2 ";
+  @set %CSF_OPENGL_INCLUDE = "-I/opt/graphics/OpenGL/include ";
+
+  @set %CSF_SOCKETLibs = "";
+  @set %CSF_ThreadLibs = "-lpthread";
+
+  @set %X11_LIB    = "/usr/lib/X11R6";
+  @set %XMU_LIB    = "/PRODUCTS/Xmu-R6";
+  @set %OPENGL_LIB = "/opt/graphics/OpenGL/lib";
+
+  @string %CSF_XwLibs     = "-L" %X11_LIB " -lX11 -lXext -L" %XMU_LIB " -lXmu";
+  @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
+
+  @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl";
+  @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -ltk";
+
+  @string %CSF_JavaHome     = "/missing/JavaHome";
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/hp-ux ";
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+
+@endif;

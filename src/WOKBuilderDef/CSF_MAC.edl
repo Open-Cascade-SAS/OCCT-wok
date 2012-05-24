@@ -1,0 +1,76 @@
+--
+-- This is configuration file for MacOS platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_MAC_EDL) then
+  @set %CSF_MAC_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = "";
+  @endif;
+
+  @set %CSF_CXX_COMPILER = "g++ ";
+
+  @set %CSF_CXX_SysOptions = " -fPIC -funsigned-char -Wall -fmessage-length=0";
+  @string %CSF_CXX_Options = " -DOCC_CONVERT_SIGNALS " %CSF_PRODUCTS_DEFINES " ";
+  @set %CSF_CXX_ModeOpt    = " -O3 -DNDEBUG -DNo_Exception ";
+  @set %CSF_CXX_ModeOptDeb = " -gdwarf-2 -O0 -DDEB -D_DEBUG ";
+
+  @set %CSF_C_COMPILER = "gcc ";
+  @string %CSF_C_INCLUDE +=  "";
+
+  @set %CSF_C_SysOptions = " -fPIC -funsigned-char -Wall -fexceptions";
+  @set %CSF_C_Options    = "";
+  @set %CSF_C_ModeOpt    = " -O3 -DNDEBUG -DNo_Exception ";
+  @set %CSF_C_ModeOptDeb = " -gdwarf-2 -O0 -DDEB -D_DEBUG ";
+
+  -- Fortran compiler
+  @set %CSF_F77_COMPILER = "/sw/bin/gfortran ";
+  @set %CSF_F77_SysOptions = " -fPIC ";
+  @set %CSF_F77_ModeOpt    = " -O3 -DNDEBUG -DNo_Exception ";
+  @set %CSF_F77_ModeOptDeb = " -gdwarf-2 -DDEB -D_DEBUG ";
+
+  -- Linker settings
+  @set %CSF_LINKER = "ld ";
+  @set %CSF_CXX_COMPILERLINKER = %CSF_CXX_COMPILER ;
+  @set %CSF_LINKER_DBMSOpt = "";
+  @set %CSF_LINKER_SysShared = "-dynamiclib -Wl,-single_module ";
+  @set %CSF_LINKER_SysExe = "";
+  @set %CSF_LINKER_SysOpt = "";
+  @set %CSF_LINKER_SysLib = "-ldl -lc ";
+  @set %CSF_LINKER_CheckOpt = " -nostartfiles ";
+  @set %CSF_LINKER_CheckOut = " -o /dev/null ";
+  @set %CSF_SOCKETLibs = " -ldl";
+
+  -- Java compiler
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+  @set %CSF_JavaHome        = "/System/Library/Frameworks/JavaVM.framework/Home";
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include ";
+
+  @set %CSF_DOXIGEN         = "/PRODUCTS/maintenance/Linux/doxygen-1.4.1/bin/doxygen";
+  @set %CSF_GRAPHVIZ_HOME   = "/PRODUCTS/maintenance/Linux/graphviz/bin";
+
+  @set %CSF_X11_INCLUDE    = "-I/usr/X11R6/include ";
+  @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
+
+  @set %X11_LIB = "/usr/X11R6/lib";
+
+  @string %CSF_XwLibs     = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
+  @string %CSF_OpenGlLibs = %CSF_XwLibs " -lGLU -lGL ";
+  @string %CSF_MotifLibs  = "-L" %X11_LIB " -lX11 ";
+
+  -- Tcl/Tk configuration
+  @if (%CSF_TCL_HOME != "") then
+    @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+    @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl8.5 ";
+    @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -ltk8.5 -L" %X11_LIB " -lX11 ";
+  @else
+    @string %CSF_TclLibs   = " -ltcl8.5 ";
+    @string %CSF_TclTkLibs = " -ltk8.5 -L" %X11_LIB " -lX11 ";
+  @endif;
+
+  -- FTGL (font renderer for OpenGL)
+  @set %CSF_FTGL = "-lftgl ";
+
+@endif;

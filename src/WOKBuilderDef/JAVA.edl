@@ -15,18 +15,18 @@
 	    %CSF_JavaHome,
             %JAVA_Command, %JAVA_Options, %IncludeDir, %Source, %OutDir
            ) is
- $%CSF_JavaHome/bin/%JAVA_Command %JAVA_Options -classpath %IncludeDir -d %OutDir %Source\^
+ $%JAVA_Command %JAVA_Options -classpath %IncludeDir -d %OutDir %Source\^
  @end;
 
  @template JAVA_Header (
             %CSF_JavaHome,
             %JAVA_HeaderCommand, %JAVA_HeaderOptions, %IncludeDir, %Class, %OutFile
            ) is
- $%CSF_JavaHome/bin/%JAVA_HeaderCommand %JAVA_HeaderOptions -classpath %IncludeDir -o %OutFile %Class\^
+ $%JAVA_HeaderCommand %JAVA_HeaderOptions -classpath %IncludeDir -o %OutFile %Class\^
  @end;
 @endif;
 
-@string %CXX_JAVA = " -I" %CSF_JavaHome "/include ";
+--@string %CXX_JAVA = " -I" %CSF_JavaHome "/include ";
 
 @if ( %Station == "sun" ) then
     @string %CXX_JAVA += " -I" %CSF_JavaHome "/include/solaris ";

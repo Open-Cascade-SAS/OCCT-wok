@@ -6,13 +6,16 @@
 (require 'shell)
 (require 'wok-comm)
 
-(defvar woksh-program "wish84"
+(defvar woksh-program "tclsh"
   "*Name of program to invoke woksh")
+(if (equal (getenv "WOKSTATION") "wnt")
+  (progn 
+    (setq woksh-program "tclsh85.exe")))
 
-(defvar woksh-explicit-args "P:/cmd-input.tcl"
+(defvar woksh-explicit-args nil
   "*List of arguments to pass to woksh on the command line.")
 
-(defvar woksh-mode-hook nil 
+(defvar woksh-mode-hook nil
   "*Hooks to run after setting current buffer to woksh-mode.")
 
 (defvar woksh-process-connection-type t
@@ -61,21 +64,6 @@ re-synching of directories.")
 
 (defvar woksh-history nil)
 
-(defvar woksh-set-emacs-env nil
-"Defines whether modifications in WOK environment variables made,
-for instance, by 'wokenv -s' command, should be reflected in Emacs
-process environment. 
-
-Default value is nil, i.e. WOK environment changes will not affect 
-Emacs variables"
-)
-
-(defun woksh-setenv (variable &optional value unset)
-"If variable woksh-set-emacs-env is t, calls (setenv) with the 
-same arguments, otherwise does nothing."
-  (if woksh-set-emacs-env (setenv variable value unset))
-)
-
 ;;;###autoload
 (defun woksh (input-args &optional buffer)
   "Open a woksh"
@@ -119,13 +107,6 @@ same arguments, otherwise does nothing."
       (add-hook 'comint-output-filter-functions 'woksh-carriage-filter)
 
       (cd-absolute (concat comint-file-name-prefix "~/"))))
-
-    ;; workaround concerning unproper work of tclsh under Emacs on Windows
-    (if (equal (getenv "WOKSTATION") "wnt")
-      (progn 
-        (insert 
-           (concat "source " (getenv "WOKHOME") "/site/interp.tcl")) 
-        (comint-send-input)))
 
     (if (not (eq iport 0))
 	(if (not  (wok-connectedp))

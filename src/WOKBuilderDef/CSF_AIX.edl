@@ -1,0 +1,47 @@
+--
+-- This is configuration file for AIX platform (not supported).
+-- Included into "CSF.edl".
+--
+@ifnotdefined (%CSF_AIX_EDL) then
+  @set %CSF_AIX_EDL = "";
+
+  @if (%DBMS == "OBJS") then
+    @set %CSF_OODBLibs = "";
+  @endif;
+
+  @set %CSF_C_COMPILER   = "xlC_r ";
+  @string %CSF_C_INCLUDE +=  "";
+  @set %CSF_CXX_COMPILER = "xlC_r ";
+  @set %CSF_F77_COMPILER = "/usr/bin/f77 ";
+
+  @set %STLPortHome = "";
+  @if (%STLPortHome != "") then
+    @string %STLPortInclude = "-I" %STLPortHome "/stlport";
+    @string %STLPortLib     = "-L" %STLPortHome "/lib -lstlport_xlC50";
+  @else
+    @set %STLPortInclude = "";
+    @set %STLPortLib     = "";
+  @endif;
+
+  @set %CSF_SOCKETLibs = " ";
+
+  @set %CSF_TCL_HOME = "/missing/missing ";
+  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+
+  @set %CSF_ThreadLibs = "-lpthread";
+
+  @set %X11_LIB    = "/usr/lpp/X11/lib/R6";
+  @set %CSF_XwLibs = "-L/usr/lpp/X11/lib/R6 -lX11 -lXext -lXmu ";
+
+  @set %OPENGL_LIB = "/usr/lpp/OpenGL/lib";
+  @string %CSF_OpenGlLibs = "-L" %OPENGL_LIB " -lGLU -lGL ";
+
+  @string %CSF_TclLibs   = "-I" %CSF_TCL_HOME "/lib/libtcl.exp ";
+  @string %CSF_TclTkLibs = "-I" %CSF_TCL_HOME "/lib/libtk.exp ";
+
+  @string %CSF_JavaHome     = "/missing/JavaHome";
+  @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/aix ";
+  @set %CSF_JAVA_COMPILER   = "javac";
+  @set %CSF_JAVA_JNI        = "javah";
+
+@endif;

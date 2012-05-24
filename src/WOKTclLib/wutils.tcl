@@ -68,7 +68,7 @@ proc wokUtils:FILES:Since { dirlist gblist lim } {
             }
         }
     }
-    if ![lempty $recurse] {
+    if { [llength $recurse] != 0 } {
         set result [concat $result [wokUtils:FILES:Since $recurse $gblist $lim]]
     }
     return $result
@@ -229,7 +229,7 @@ proc wokUtils:FILES:find { dirlist gblist } {
             }
         }
     }
-    if ![lempty $recurse] {
+    if { [llength $recurse] != 0 } {
         set result [concat $result [wokUtils:FILES:find $recurse $gblist]]
     }
     return $result

@@ -16,6 +16,8 @@
 *.edl       eol=lf
 *.mm        eol=lf
 *.el        eol=lf
+*.xpm       eol=lf
+*.xbm       eol=lf
 *.sh        eol=lf
 *.csh       eol=lf
 *.tcl       eol=lf
@@ -25,6 +27,10 @@
 *.xib       eol=lf
 *.plist     eol=lf
 *.java      eol=lf
+*.mam       eol=lf
+*.mamx      eol=lf
+*.min       eol=lf
+*.minx      eol=lf
 FILES       eol=lf
 PACKAGES    eol=lf
 EXTERNLIB   eol=lf
@@ -43,6 +49,8 @@ UDLIST      eol=lf
 *.sln       eol=crlf
 *.res       eol=crlf
 *.resx      eol=crlf
+*.mak       eol=crlf
+*.makx      eol=crlf
 *.dll       binary
 *.so        binary
 *.dylib     binary
