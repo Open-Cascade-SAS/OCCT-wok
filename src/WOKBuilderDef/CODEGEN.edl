@@ -18,21 +18,6 @@
   @set %CODEGEN_LEX_CmdPath  = "flex";
   @set %CODEGEN_YACC_CmdPath = "bison";
 
-  --@if (%Station == "wnt") then
-  --  @set %CODEGEN_FlexBisHome = "%WOKHOME%/lib/wnt";
-  --@endif;
-  --@if (%Station == "lin") then
-  --  @set %CODEGEN_FlexBisHome = "/usr/bin";
-  --@endif;
-  --@if (%Station == "mac") then
-  --  @set %CODEGEN_FlexBisHome = "/sw/bin";
-  --@endif;
-  --@ifnotdefined (%CODEGEN_FlexBisHome) then
-  --  @set %CODEGEN_FlexBisHome = "/PRODUCTS/flexbis-253-125/bin";
-  --@endif;
-  --@string %CODEGEN_LEX_CmdPath  = %CODEGEN_FlexBisHome "/bin/flex";
-  --@string %CODEGEN_YACC_CmdPath = %CODEGEN_FlexBisHome "/bin/bison";
-
   @template CODEGEN_LEX_Production (%BaseName) is
     $lex.%BaseName.c
   @end;
