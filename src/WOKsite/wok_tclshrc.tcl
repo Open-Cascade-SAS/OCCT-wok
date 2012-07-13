@@ -288,11 +288,11 @@ proc wgenprojbat {thePath} {
   close $anEnvFile
 
   if { "$::tcl_platform(platform)" == "windows" } {
-    file copy -force -- "$::env(WOKHOME)/site/custom.bat"        "$aBox/custom.bat"
+    catch {file copy -- "$::env(WOKHOME)/site/custom.bat"        "$aBox/custom.bat"}
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.bat" "$aBox/draw.bat"
     file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat"
   } else {
-    file copy -force -- "$::env(WOKHOME)/site/custom.sh"         "$aBox/custom.sh"
+    catch {file copy -- "$::env(WOKHOME)/site/custom.sh"         "$aBox/custom.sh"}
   }
 }
 
