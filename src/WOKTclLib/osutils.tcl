@@ -1794,6 +1794,7 @@ proc osutils:cbptk { theOutDir theToolKit } {
     lappend aUsedToolKits "${tkx}"
   }
   wokparam -l CSF
+
   foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] $theToolKit] {
     foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
       if {[wokparam -t %$element] == 0} {
@@ -2013,6 +2014,9 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
 
   puts $aFile "\t\t\t\t<Linker>"
   puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aWokStation}/cbp/lib\" />"
+  if { "$aWokStation" == "mac" && [ lsearch $theLibsList X11 ] >= 0} {
+    puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+  }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch})\" />"
   puts $aFile "\t\t\t\t</Linker>"
 
@@ -2057,6 +2061,9 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
 
   puts $aFile "\t\t\t\t<Linker>"
   puts $aFile "\t\t\t\t\t<Add directory=\"../../../${aWokStation}/cbp/libd\" />"
+  if { "$aWokStation" == "mac" && [ lsearch $theLibsList X11 ] >= 0} {
+    puts $aFile "\t\t\t\t\t<Add directory=\"/usr/X11/lib\" />"
+  }
   puts $aFile "\t\t\t\t\t<Add option=\"\$(CSF_OPT_LNK${aWokArch}D)\" />"
   puts $aFile "\t\t\t\t</Linker>"
 
@@ -2073,6 +2080,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
   foreach anIncPath $theIncPaths {
     puts $aFile "\t\t\t<Add directory=\"$anIncPath\" />"
   }
+  puts $aFile "\t\t\t<Add directory=\"$::env(WOK_LIBRARY)\" />"
   puts $aFile "\t\t</Compiler>"
 
   # COMMON linker options
@@ -2091,6 +2099,25 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
     } else {
       puts $aFile "\t\t<Unit filename=\"$aSrcFile\" />"
     }
+  }
+
+  if { "$theIsExe" == "true" } {
+    puts $aFile "\t\t<Extensions>"
+    puts $aFile "\t\t\t<code_completion />"
+    puts $aFile "\t\t\t<envvars />"
+    puts $aFile "\t\t\t<debugger>"
+    puts $aFile "\t\t\t\t<remote_debugging>"
+    puts $aFile "\t\t\t\t\t<options conn_type=\"2\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
+    puts $aFile "\t\t\t\t</remote_debugging>"
+    puts $aFile "\t\t\t\t<remote_debugging target=\"Release\">"
+    puts $aFile "\t\t\t\t\t<options conn_type=\"0\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
+    puts $aFile "\t\t\t\t</remote_debugging>"
+    puts $aFile "\t\t\t\t<remote_debugging target=\"Debug\">"
+    puts $aFile "\t\t\t\t\t<options conn_type=\"0\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
+    puts $aFile "\t\t\t\t</remote_debugging>"
+    puts $aFile "\t\t\t</debugger>"
+    puts $aFile "\t\t\t<lib_finder disable_auto=\"1\" />"
+    puts $aFile "\t\t</Extensions>"
   }
 
   puts $aFile "\t</Project>"

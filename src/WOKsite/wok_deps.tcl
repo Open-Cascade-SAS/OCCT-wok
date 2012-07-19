@@ -694,7 +694,9 @@ proc wokdep:SearchX11 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   if { "$aXmuLibPath" == "" } {
     set aXmuLibPath [wokdep:SearchLib "Xmu" "$::ARCH" "/usr/X11/lib"]
     if { "$aXmuLibPath" != "" } {
-      lappend ::CSF_OPT_LIB$::ARCH "/usr/X11/lib"
+      if { "$::tcl_platform(os)" != "Darwin" } {
+        lappend ::CSF_OPT_LIB$::ARCH "/usr/X11/lib"
+      }
     } else {
       lappend anErrLib$::ARCH "Error: '${::SYS_LIB_PREFIX}Xmu.${::SYS_LIB_SUFFIX}' not found (X11)"
       set isFound "false"

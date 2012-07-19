@@ -292,7 +292,9 @@ proc wgenprojbat {thePath} {
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.bat" "$aBox/draw.bat"
     file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat"
   } else {
-    catch {file copy -- "$::env(WOKHOME)/site/custom.sh"         "$aBox/custom.sh"}
+    catch {file copy -- "$::env(WOKHOME)/site/custom.sh"              "$aBox/custom.sh"}
+    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.sh"       "$aBox/draw.sh"
+    file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh"
   }
 }
 

@@ -6,6 +6,7 @@ aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath
 export CASROOT="$aScriptPath"
 
 # Reset values
+export CASDEB=""
 export HAVE_TBB="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
@@ -17,6 +18,12 @@ export CSF_OPT_BIN64=""
 
 # ----- Set local settings -----
 if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
+
+# Read script arguments
+shopt -s nocasematch
+if [[ "$1" == "debug" ]]; then export CASDEB="d"; fi
+if [[ "$1" == "d" ]]; then export CASDEB="d"; fi
+shopt -u nocasematch
 
 export CSF_OPT_INC="${CSF_OPT_INC}:__CSF_OPT_INC__"
 export CSF_OPT_LIB32="${CSF_OPT_LIB32}:__CSF_OPT_LIB32__"
@@ -40,7 +47,6 @@ else
   export WOKSTATION="lin";
 fi
 
-if [ "${CASDEB}" == "" ]; then export CASDEB=""; fi
 export CASBIN="${WOKSTATION}/cbp"
 
 export CSF_OPT_CMPL=""
@@ -101,6 +107,9 @@ fi
 
 export PATH="${CASROOT}/${CASBIN}/bin${CASDEB}:${PATH}"
 export LD_LIBRARY_PATH="${CASROOT}/${CASBIN}/lib${CASDEB}:${LD_LIBRARY_PATH}"
+if [ "$WOKSTATION" == "mac" ]; then
+  export DYLD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}"
+fi
 
 # Set envoronment variables used by OCCT
 export CSF_MDTVFontDirectory="${CASROOT}/src/FontMFT"
