@@ -2775,13 +2775,25 @@ proc OS:wpack { module dir {verbose 0} } {
 ;# Dans ce cas module est seulement utilise pour le nom de fichier .sln
 ;# Avec ca je fais un OCC.sln qui concatene plusieurs modules dans le bon ordre.
 ;#
-proc OS:genGUID {} {
-  set p1 "[format %07X [expr { int(rand() * 268435456) }]][format %X [expr { int(rand() * 16) }]]"
-  set p2 "[format %04X [expr { int(rand() * 6536) }]]"
-  set p3 "[format %04X [expr { int(rand() * 6536) }]]"
-  set p4 "[format %04X [expr { int(rand() * 6536) }]]"
-  set p5 "[format %06X [expr { int(rand() * 16777216) }]][format %06X [expr { int(rand() * 16777216) }]]"
-  return "{$p1-$p2-$p3-$p4-$p5}"
+proc OS:genGUID { {theIDE "vc"} } {
+  if { "$theIDE" == "vc" } {
+    set p1 "[format %07X [expr { int(rand() * 268435456) }]][format %X [expr { int(rand() * 16) }]]"
+    set p2 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p3 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p4 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p5 "[format %06X [expr { int(rand() * 16777216) }]][format %06X [expr { int(rand() * 16777216) }]]"
+    return "{$p1-$p2-$p3-$p4-$p5}"
+  } else {
+    set p1 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p2 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p3 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p4 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p5 "[format %04X [expr { int(rand() * 6536) }]]"
+    set p6 "[format %04X [expr { int(rand() * 6536) }]]"
+    #set p1 "[format %06X [expr { int(rand() * 16777216) }]][format %06X [expr { int(rand() * 16777216) }]]"
+    #set p2 "[format %06X [expr { int(rand() * 16777216) }]][format %06X [expr { int(rand() * 16777216) }]]"
+    return "$p1$p2$p3$p4$p5$p6"
+  }
 }
 
 # generate Visual Studio solution file
@@ -2941,20 +2953,24 @@ proc OS:vcproj { theVcVer theModules theOutDir theGuidsMap } {
   return $aProjectFiles
 }
 
-# Generate Code::Blocks projects
-proc OS:cbp { theModules theOutDir } {
-  set aProjectFiles {}
+# Function to generate Visual Studio solution and project files
+proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } {
+
+  puts stderr "Generating VS project files for $theVcVer"
+
+  # generate projects for toolkits and separate solution for each module
   foreach aModule $theModules {
-    foreach aToolKit [${aModule}:toolkits] {
-      lappend aProjectFiles [osutils:cbptk $theOutDir $aToolKit ]
-    }
-    foreach anExecutable [OS:executable ${aModule}] {
-      lappend aProjectFiles [osutils:cbpx  $theOutDir $anExecutable]
-    }
+    OS:vcsolution $theVcVer $aModule $aModule $theOutDir ::THE_GUIDS_LIST
+    OS:vcproj     $theVcVer $aModule          $theOutDir ::THE_GUIDS_LIST
   }
-  return $aProjectFiles
+
+  # generate single solution "OCCT" containing projects from all modules
+  if { "$theAllSolution" != "" } {
+    OS:vcsolution $theVcVer $theAllSolution $theModules $theOutDir ::THE_GUIDS_LIST
+  }
 }
 
+# Generates Code Blocks workspace.
 proc OS:cworkspace { theSolName theModules theOutDir } {
   set aWsFilePath "${theOutDir}/${theSolName}.workspace"
   set aFile [open $aWsFilePath "w"]
@@ -3011,22 +3027,57 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
   return $aWsFilePath
 }
 
+# Generate Code Blocks projects
+proc OS:cbp { theModules theOutDir } {
+  set aProjectFiles {}
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      lappend aProjectFiles [osutils:cbptk $theOutDir $aToolKit ]
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      lappend aProjectFiles [osutils:cbpx  $theOutDir $anExecutable]
+    }
+  }
+  return $aProjectFiles
+}
+
+# Function to generate Code Blocks workspace and project files
+proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
+
+  puts stderr "Generating project files for Code Blocks"
+
+  # Generate projects for toolkits and separate workspace for each module
+  foreach aModule $theModules {
+    OS:cworkspace $aModule $aModule $theOutDir
+    OS:cbp        $aModule          $theOutDir
+  }
+
+  # Generate single workspace "OCCT" containing projects from all modules
+  if { "$theAllSolution" != "" } {
+    OS:cworkspace $theAllSolution $theModules $theOutDir
+  }
+}
+
 # Store global GUIDs map to reproduce same values on sequential calls
 set aTKNullKey "TKNull"
 set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
-# Entry function to generate VS project files and solutions
-proc OS:MKPRC { {theOutDir {}} {theModules {}} {theVcVersions {vc8 vc9 vc10}} } {
+# Entry function to generate project files and solutions for IDE
+proc OS:MKPRC { {theOutDir {}} {theModules {}} {theIDE ""} } {
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp"}
+
+  if { [lsearch $aSupportedIDE $theIDE] < 0 } {
+    puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE"
+    return
+  }
+
   set anOutRoot $theOutDir
   if { $anOutRoot == "" } {
     set anOutRoot [OS -box]
   }
 
-  # versions of VC supported for each platform
-  set aVcVersions {vc7 vc8 vc9 vc10}
-
   # read map of already generated GUIDs
-  set aGuidsFilePath [file join $::env(WOK_SESSIONID) "wok_vs_guids.txt"]
+  set aGuidsFilePath [file join $::env(WOK_SESSIONID) "wok_${theIDE}_guids.txt"]
   if [file exists "$aGuidsFilePath"] {
     set aFileIn [open "$aGuidsFilePath" r]
     set aFileDataRaw [read $aFileIn]
@@ -3051,48 +3102,22 @@ proc OS:MKPRC { {theOutDir {}} {theModules {}} {theVcVersions {vc8 vc9 vc10}} } 
     set anAllSolution "Products"
   }
 
-  # generate projects for each of supported versions of VC
-  foreach aVcVer $aVcVersions {
-    if { [llength $theVcVersions] > 0 && [lsearch $theVcVersions $aVcVer] < 0 } {
-      #puts stderr "Error: No supported versions of Visual Studio"
-      continue;
-    }
-    puts stderr "Generating VS project files for $aVcVer"
-
-    # create output directory
-    set anOutDir $anOutRoot/msvc/$aVcVer
-    OS:mkdir $anOutDir
-    if { ! [file exists $anOutDir] } {
-      puts stderr "Error: Could not create output directory \"$anOutDir\""
-      continue
-    }
-
-    # generate projects for toolkits and separate solution for each module
-    foreach aModule $aModules {
-      OS:vcsolution $aVcVer $aModule $aModule $anOutDir ::THE_GUIDS_LIST
-      OS:vcproj     $aVcVer $aModule          $anOutDir ::THE_GUIDS_LIST
-    }
-
-    # generate single solution "OCCT" containing projects from all modules
-    if { "$anAllSolution" != "" } {
-      OS:vcsolution $aVcVer $anAllSolution $aModules $anOutDir ::THE_GUIDS_LIST
-    }
-  }
-
-  # create output directory for Code::Blocks project files
+  # Create output directory
   set aWokStation "$::env(WOKSTATION)"
-  set anOutDir "${anOutRoot}/${aWokStation}/cbp"
+  set anOutDir "${anOutRoot}/${aWokStation}/${theIDE}"
   OS:mkdir $anOutDir
   if { ! [file exists $anOutDir] } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
-  } else {
-    foreach aModule $aModules {
-      OS:cworkspace $aModule $aModule $anOutDir
-      OS:cbp        $aModule          $anOutDir
-    }
-    if { "$anAllSolution" != "" } {
-      OS:cworkspace $anAllSolution $aModules $anOutDir
-    }
+    return
+  }
+
+  # Generating project files for the selected IDE
+  switch -exact -- "$theIDE" {
+    "vc7"   -
+    "vc8"   -
+    "vc9"   -
+    "vc10"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
+    "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
   }
 
   # Store generated GUIDs map

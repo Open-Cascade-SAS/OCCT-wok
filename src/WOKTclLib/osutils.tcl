@@ -2101,25 +2101,6 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
     }
   }
 
-  if { "$theIsExe" == "true" } {
-    puts $aFile "\t\t<Extensions>"
-    puts $aFile "\t\t\t<code_completion />"
-    puts $aFile "\t\t\t<envvars />"
-    puts $aFile "\t\t\t<debugger>"
-    puts $aFile "\t\t\t\t<remote_debugging>"
-    puts $aFile "\t\t\t\t\t<options conn_type=\"2\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
-    puts $aFile "\t\t\t\t</remote_debugging>"
-    puts $aFile "\t\t\t\t<remote_debugging target=\"Release\">"
-    puts $aFile "\t\t\t\t\t<options conn_type=\"0\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
-    puts $aFile "\t\t\t\t</remote_debugging>"
-    puts $aFile "\t\t\t\t<remote_debugging target=\"Debug\">"
-    puts $aFile "\t\t\t\t\t<options conn_type=\"0\" serial_baud=\"115200\" skip_ld_path=\"1\" />"
-    puts $aFile "\t\t\t\t</remote_debugging>"
-    puts $aFile "\t\t\t</debugger>"
-    puts $aFile "\t\t\t<lib_finder disable_auto=\"1\" />"
-    puts $aFile "\t\t</Extensions>"
-  }
-
   puts $aFile "\t</Project>"
   puts $aFile "</CodeBlocks_project_file>"
   close $aFile

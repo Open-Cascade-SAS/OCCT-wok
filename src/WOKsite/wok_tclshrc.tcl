@@ -234,7 +234,7 @@ set env(PATH) "${aBinPaths}${::SYS_PATH_SPLITTER}$env(PATH)"
 if { [file exists "$::env(WOKHOME)/lib/OS.tcl"] } {
   source "$::env(WOKHOME)/lib/OS.tcl"
 }
-proc wgenprojbat {thePath} {
+proc wgenprojbat {thePath theIDE} {
   source "$::env(WOKHOME)/lib/osutils.tcl"
   source "$::env(WOKHOME)/lib/OS.tcl"
 
@@ -245,7 +245,6 @@ proc wgenprojbat {thePath} {
   wokcd -P Home
   set anOsRootPath [pwd]
   wokcd $aWokCD
-  set aVcVer "$::VCVER"
 
   set aBox [file normalize "$thePath/.."]
 
@@ -290,18 +289,43 @@ proc wgenprojbat {thePath} {
   if { "$::tcl_platform(platform)" == "windows" } {
     catch {file copy -- "$::env(WOKHOME)/site/custom.bat"        "$aBox/custom.bat"}
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.bat" "$aBox/draw.bat"
-    file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat"
   } else {
     catch {file copy -- "$::env(WOKHOME)/site/custom.sh"              "$aBox/custom.sh"}
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.sh"       "$aBox/draw.sh"
-    file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh"
+  }
+
+  switch -exact -- "$theIDE" {
+    "vc7"   -
+    "vc8"   -
+    "vc9"   -
+    "vc10"  { file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat" }
+    "cbp"   { file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
   }
 }
 
 # Wrapper-function to generate VS project files
-proc wgenproj {{theProcArgs ""}} {
-  if { "$theProcArgs" != "" } {
-    wprocess $theProcArgs -DGroups=Src,Xcpp
+proc wgenproj { args } {
+
+  set aProcArgs $args
+
+  # Setting default IDE.
+  # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode ().
+  set anIDE ""
+  switch -exact -- "$::env(WOKSTATION)" {
+    "wnt"   {set anIDE "$::VCVER"}
+    "lin"   {set anIDE "cbp"}
+  }
+
+  # Getting from arguments the name of IDE, for which we should generate project files.
+  set anIndex [lsearch $aProcArgs -IDE=*]
+  if {$anIndex >= 0} {
+    set anIDE     [lindex $aProcArgs $anIndex]
+    set anIDE     [string map {-IDE= ""} $anIDE]
+    set aProcArgs [lreplace $aProcArgs $anIndex $anIndex]
+  }
+
+  if { "$aProcArgs" != "" } {
+    wprocess $aProcArgs -DGroups=Src,Xcpp
   } else {
     wprocess -DGroups=Src,Xcpp
   }
@@ -313,12 +337,12 @@ proc wgenproj {{theProcArgs ""}} {
   wokcd $aWokCD
 
   if { [wokinfo -x OS] } {
-    OS:MKPRC "$anAdmPath" "OS"  "$::VCVER"
+    OS:MKPRC "$anAdmPath" "OS"  "$anIDE"
   }
   if { [wokinfo -x VAS] } {
-    OS:MKPRC "$anAdmPath" "VAS" "$::VCVER"
+    OS:MKPRC "$anAdmPath" "VAS" "$anIDE"
   }
-  wgenprojbat "$anAdmPath"
+  wgenprojbat "$anAdmPath" "$anIDE"
 }
 
 # Function to prepare environment
