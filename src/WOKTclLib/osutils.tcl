@@ -1594,6 +1594,218 @@ proc osutils:tk:mkamx { dir tkloc } {
   }
 }
 
+
+;#
+;# Create in dir the Makefile.am in $dir directory.
+;# Returns the full path of the created file.
+;#
+proc osutils:am:adm { dir {lesmodules {}} } {
+
+  set amstring "srcdir = @srcdir@\n\n"
+  set subdirs "SUBDIRS ="
+  set vpath "VPATH = @srcdir@ ${dir}: "
+  set make ""
+  set phony ".PHONY:"
+  foreach theModule $lesmodules {
+    set units [osutils:tk:sort [$theModule:toolkits]]
+    set units [concat $units [OS:executable $theModule]]
+    append amstring "${theModule}_PKGS ="
+    append vpath "\\\n"
+    foreach unit $units {
+      append amstring " ${unit}"
+      append vpath "${dir}/${unit}: "
+    }
+    set up ${theModule}
+    if { [info procs ${theModule}:alias] != "" } {
+      set up [${theModule}:alias]
+    }
+    set up [string toupper ${up}]
+    append amstring "\n\nif ENABLE_${up}\n"
+    append amstring "  ${theModule}_DIRS = \$(${theModule}_PKGS)\n"
+    append amstring "else\n"
+    append amstring "  ${theModule}_DIRS = \n"
+    append amstring "endif\n\n"
+    append subdirs " \$(${theModule}_DIRS)"
+    append make "${theModule}:\n"
+    append make "\tfor d in \$(${theModule}_PKGS); do \\\n"
+    append make "\t\tcd \$\$d; \$(MAKE) \$(AM_MAKEFLAGS) lib\$\$d.la; cd ..; \\\n"
+    append make "\tdone\n\n"
+    append phony " ${theModule}"
+  }
+  append amstring "$subdirs\n\n"
+  append amstring "$vpath\n\n"
+  append amstring $make
+  append amstring $phony
+  wokUtils:FILES:StringToFile $amstring [set fmam [file join $dir Makefile.am]]
+  return [list $fmam]
+}
+
+;#
+;# Create in dir the Makefile.am and configure.ac in CASROOT directory.
+;# Returns the full path of the created file.
+;#
+proc osutils:am:root { dir theSubPath {lesmodules {}} } {
+  set amstring "srcdir = @srcdir@\n\n"
+  append amstring "SUBDIRS = ${theSubPath}\n\n"
+  append amstring "VPATH = @srcdir@ @top_srcdir@/${theSubPath}: @top_srcdir@/${theSubPath}:\n\n"
+
+  set phony ".PHONY:"
+
+  set acstring [osutils:readtemplate ac "Makefile.am"]
+  set enablestr ""
+  set confstr ""
+  set condstr ""
+  set repstr ""
+  set acconfstr ""
+
+  set exelocal "install-exec-local:\n"
+  append exelocal "\t"
+  append exelocal {$(INSTALL) -d $(prefix)/$(platform)}
+  append exelocal "\n"
+  foreach d {bin lib} {
+    append exelocal "\t"
+    append exelocal "if \[ -e \$(prefix)/${d} -a ! -e \$(prefix)/\$(platform)/${d} \]; then \\\n"
+    append exelocal "\t\tcd \$(prefix)/\$(platform) && ln -s ../${d} ${d}; \\\n"
+    append exelocal "\tfi\n"
+  }
+  append exelocal "\t"
+  append exelocal {buildd=`pwd`; cd $(top_srcdir); sourced=`pwd`; cd $(prefix); installd=`pwd`; cd $$buildd;}
+  append exelocal " \\\n"
+  append exelocal "\t"
+  append exelocal {if [ "$$installd" != "$$sourced" ]; then}
+  append exelocal " \\\n"
+  append exelocal "\t\t"
+  append exelocal {$(INSTALL) -d $(prefix)/inc;}
+  append exelocal " \\\n"
+  append exelocal "\t\t"
+  append exelocal {cp -frL $(top_srcdir)/inc $(prefix);}
+  append exelocal " \\\n"
+  append exelocal "\t\t"
+  append exelocal {cp -frL $$buildd/config.h $(prefix);}
+  append exelocal " \\\n"
+  append exelocal "\t\tfor d in "
+
+  foreach theModule $lesmodules {
+    append amstring "${theModule}_PKGS ="
+    foreach r [${theModule}:ressources] {
+      if { "[lindex $r 1]" == "r" } {
+	append amstring " [lindex $r 2]"
+      }
+    }
+    set up ${theModule}
+    if { [info procs ${theModule}:alias] != "" } {
+      set up [${theModule}:alias]
+    }
+    set up [string toupper ${up}]
+    set lower ${theModule}
+    if { [info procs ${theModule}:alias] != "" } {
+      set lower [${theModule}:alias]
+    }
+    set lower [string tolower ${lower}]
+
+    append amstring "\n\nif ENABLE_${up}\n"
+    append amstring "  ${theModule}_DIRS = \$(${theModule}_PKGS)\n"
+    append amstring "else\n"
+    append amstring "  ${theModule}_DIRS = \n"
+    append amstring "endif\n\n"
+    append amstring "${theModule}:\n"
+    append amstring "\tcd \$(top_builddir)/${theSubPath} && \$(MAKE) \$(AM_MAKEFLAGS) ${theModule}\n\n"
+    append phony " ${theModule}"
+
+    append exelocal " \$(${theModule}_DIRS)"
+
+    append enablestr "AC_ARG_ENABLE(\[${lower}\],\n"
+    append enablestr "  \[AS_HELP_STRING(\[--disable-${lower}\],\[Disable ${theModule} components\])\],\n"
+    append enablestr "  \[ENABLE_${up}=\${enableval}\],\[ENABLE_${up}=yes\])\n"
+
+    set deplist [OS:lsdep ${theModule}]
+    set acdeplist {}
+    if { [info procs ${theModule}:acdepends] != "" } {
+      set acdeplist [${theModule}:acdepends]
+    }
+
+    if { [llength $deplist] > 0 || [llength $acdeplist] > 0} {
+      append confstr "if test \"xyes\" = \"x\$ENABLE_${up}\"; then\n"
+    } else {
+      append confstr "if test \"xyes\" != \"x\$ENABLE_${up}\"; then\n"
+    }
+    foreach dep $deplist {
+      set dup ${dep}
+      if { [info procs ${dep}:alias] != "" } {
+	set dup [${dep}:alias]
+      }
+      set dup [string toupper ${dup}]
+      append confstr "  if test \"xyes\" = \"x\$ENABLE_${up}\" -a \"xyes\" != \"x\$ENABLE_${dup}\"; then\n"
+      append confstr "    AC_MSG_NOTICE(\[Disabling ${theModule}: not building ${dep} component\])\n"
+      append confstr "    DISABLE_${up}_REASON=\"(${dep} component disabled)\"\n"
+      append confstr "    ENABLE_${up}=no\n"
+      append confstr "  fi\n"
+    }
+    foreach dep $acdeplist {
+      append confstr "  if test \"xyes\" = \"x\$ENABLE_${up}\" -a \"xyes\" != \"x\$HAVE_${dep}\"; then\n"
+      append confstr "    AC_MSG_NOTICE(\[Disabling ${theModule}: ${dep} not found\])\n"
+      append confstr "    DISABLE_${up}_REASON=\"(${dep} not found)\"\n"
+      append confstr "    ENABLE_${up}=no\n"
+      append confstr "  fi\n"
+    }
+    if { [llength $deplist] > 0 || [llength $acdeplist] > 0 } {
+      append confstr "else\n"
+    }
+    append confstr "  DISABLE_${up}_REASON=\"(Disabled)\"\n"
+    append confstr "fi\n"
+
+    append condstr "AM_CONDITIONAL(\[ENABLE_${up}\], \[test \"xyes\" = \"x\$ENABLE_${up}\"\])\n"
+    append repstr [format "echo \"%-*s  \$ENABLE_${up} \$DISABLE_${up}_REASON\"" 26 ${theModule}]
+    append repstr "\n"
+
+    set units [$theModule:toolkits]
+    set units [concat $units [OS:executable $theModule]]
+    foreach unit $units {
+      append acconfstr "${theSubPath}/${unit}/Makefile \\\n"
+    }
+  }
+
+  append exelocal "; do \\\n"
+  append exelocal "\t\t\t"
+  append exelocal {$(INSTALL) -d $(prefix)/src/$$d;}
+  append exelocal " \\\n"
+  append exelocal "\t\t\t"
+  append exelocal {cp -frL $(top_srcdir)/src/$$d $(prefix)/src;}
+  append exelocal " \\\n"
+  append exelocal "\t\tdone; \\\n"
+  append exelocal "\tfi\n"
+  append exelocal "\t"
+  append exelocal {if [ -e $(prefix)/inc/config.h ]; then}
+  append exelocal " \\\n"
+  append exelocal "\t\t"
+  append exelocal {unlink $(prefix)/inc/config.h;}
+  append exelocal " \\\n"
+  append exelocal "\tfi\n"
+  append exelocal "\t"
+  append exelocal {cd $(prefix)/inc && ln -s ../config.h config.h}
+  append exelocal "\n"
+  append exelocal "\t"
+  append exelocal {cd $(top_srcdir) && cp *.sh $(prefix)}
+  append exelocal "\n"
+  append exelocal "\n"
+
+  append amstring $exelocal
+  append amstring $phony
+
+  regsub -all -- {__ENABLEMODULES__} $acstring $enablestr acstring
+  regsub -all -- {__CONFMODULES__} $acstring $confstr acstring
+  regsub -all -- {__CONDMODULES__} $acstring $condstr acstring
+  regsub -all -- {__REPMODULES__} $acstring $repstr acstring
+  regsub -all -- {__ACCONFMODULES__} $acstring $acconfstr acstring
+
+  wokUtils:FILES:StringToFile $amstring [set fmam [file join $dir Makefile.am]]
+  wokUtils:FILES:StringToFile $acstring [set fmam [file join $dir configure.ac]]
+  file copy -force -- [file join $::env(WOK_LIBRARY)/templates build_configure] [file join $dir build_configure]
+  file copy -force -- [file join $::env(WOK_LIBRARY)/templates acinclude.m4] [file join $dir acinclude.m4]
+  file copy -force -- [file join $::env(WOK_LIBRARY)/templates custom.sh.in] [file join $dir custom.sh.in]
+  return [list $fmam]
+}
+
 ;#
 ;#  ((((((((((((( Formats in Makefile.am )))))))))))))
 ;#
@@ -1754,42 +1966,6 @@ proc osutils:in:__AMPDEP__ { l } {
 proc osutils:in:__AMDEPTRUE__ { l } {
   set fmt "@AMDEP_TRUE@@_am_include@ @_am_quote@\$(DEPDIR)/%s.Plo@_am_quote@"
   return [wokUtils:EASY:FmtSimple1 $fmt $l]
-}
-
-;#############################################################
-;#
-proc TESTAM { {root} {modules {}} {ll {}} } {
-#    source [woklocate -p OS:source:OS.tcl]
-#    source [woklocate -p WOKTclLib:source:osutils.tcl]
-
-  set lesmodules [OS:listmodules $modules]
-
-  if { $ll != {} } {  set lesmodules $ll }
-  foreach theModule $lesmodules {
-    foreach unit [$theModule:toolkits] {
-      puts " toolkit: $unit ==> [woklocate -p ${unit}:source:EXTERNLIB]"
-      wokUtils:FILES:rmdir $root/$unit
-      wokUtils:FILES:mkdir $root/$unit
-      osutils:tk:mkam $root/$unit $unit
-    }
-    foreach unit [OS:executable $theModule] {
-      wokUtils:FILES:rmdir $root/$unit
-      wokUtils:FILES:mkdir $root/$unit
-      osutils:tk:mkamx $root/$unit $unit
-    }
-  }
-}
-
-# Generate Code::Blocks project file for ToolKit
-proc osutils:cbptk { theOutDir theToolKit } {
-  set aUsedToolKits [list]
-  set anIncPaths    [list]
-  set aTKDefines    [list]
-  set aTKSrcFiles   [list]
-  
-  osutils:tkinfo $theOutDir $theToolKit aUsedToolKits anIncPaths aTKDefines aTKSrcFiles
-
-  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines]
 }
 
 proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefines theTKSrcFiles } { 
@@ -1970,7 +2146,17 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
   close $aFile
 }
 
+# Generate Code::Blocks project file for ToolKit
+proc osutils:cbptk { theOutDir theToolKit } {
+  set aUsedToolKits [list]
+  set anIncPaths    [list]
+  set aTKDefines    [list]
+  set aTKSrcFiles   [list]
+  
+  osutils:tkinfo $theOutDir $theToolKit aUsedToolKits anIncPaths aTKDefines aTKSrcFiles
 
+  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines]
+}
 
 # Generate Code::Blocks project file for Executable
 proc osutils:cbpx { theOutDir theToolKit } {

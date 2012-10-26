@@ -3177,6 +3177,27 @@ proc OS:cbp { theModules theOutDir } {
   return $aProjectFiles
 }
 
+proc OS:MKAMK { theOutDir {theModules {}} theSubPath} {
+  wokUtils:FILES:mkdir $theOutDir
+
+  foreach aModule $theModules {
+    foreach aToolKit [$aModule:toolkits] {
+      puts " toolkit: $aToolKit ==> [woklocate -p ${aToolKit}:source:EXTERNLIB]"
+      wokUtils:FILES:rmdir $theOutDir/$aToolKit
+      wokUtils:FILES:mkdir $theOutDir/$aToolKit
+      osutils:tk:mkam $theOutDir/$aToolKit $aToolKit
+    }
+    foreach anExecutable [OS:executable $aModule] {
+      wokUtils:FILES:rmdir $theOutDir/$anExecutable
+      wokUtils:FILES:mkdir $theOutDir/$anExecutable
+      osutils:tk:mkamx $theOutDir/$anExecutable $anExecutable
+    }
+  }
+
+  osutils:am:adm $theOutDir $theModules
+  osutils:am:root [wokinfo -p HomeDir] $theSubPath $theModules 
+}
+
 # Function to generate Code Blocks workspace and project files
 proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
 
@@ -3200,10 +3221,10 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp" "cmk"}
-
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp" "cmk" "amk" }
+  
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
-    puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE"
+    puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
     return
   }
 
@@ -3241,7 +3262,6 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   # Create output directory
   set aWokStation "$::env(WOKSTATION)"
     
-  # compatibility patch. 
   if { [lsearch -exact {vc7 vc8 vc9 vc10} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
@@ -3261,6 +3281,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc10"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
     "cmk"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
+    "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
   }
 
   # Store generated GUIDs map
