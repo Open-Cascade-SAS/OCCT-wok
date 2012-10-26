@@ -210,11 +210,20 @@ if { "$::ARCH" == "32"} {
 } else {
   set aCLibPaths [join $::CSF_OPT_LIB64 $::SYS_PATH_SPLITTER]
 }
-set env($aEnvVarCLib) "${aCLibPaths}${::SYS_PATH_SPLITTER}$env($aEnvVarCLib)"
+
+if { [array names env $aEnvVarCLib] == "" } {
+  set env($aEnvVarCLib) "${aCLibPaths}${::SYS_PATH_SPLITTER}"
+} else {
+  set env($aEnvVarCLib) "${aCLibPaths}${::SYS_PATH_SPLITTER}$env($aEnvVarCLib)"
+}
 
 # Compiler search path to the headers
 set aCIncPaths [join $::CSF_OPT_INC $::SYS_PATH_SPLITTER]
-set env($aEnvVarCInc) "${aCIncPaths}${::SYS_PATH_SPLITTER}$env($aEnvVarCInc)"
+if { [array names env $aEnvVarCInc] == "" } {
+  set env($aEnvVarCInc) "${aCIncPaths}${::SYS_PATH_SPLITTER}"
+} else {
+  set env($aEnvVarCInc) "${aCIncPaths}${::SYS_PATH_SPLITTER}$env($aEnvVarCInc)"
+}
 
 # Search path to the libraries
 if { "$::tcl_platform(platform)" != "windows" } {
