@@ -1,9 +1,5 @@
 #!/usr/bin/tclsh
 
-# Created on: 2012-01-26
-# Created by: Kirill GAVRILOV
-# Copyright (c) 2012 OPEN CASCADE SAS
-
 set ARCH "32"
 
 if { "$tcl_platform(platform)" == "unix" } {
@@ -293,6 +289,54 @@ proc wokdep:SearchFreeType {theErrInc theErrLib32 theErrLib64 theErrBin32 theErr
       }
     }
   }
+
+  # parse 'freetype-config --libs'
+  set aConfLibPath ""
+  if { [catch { set aConfLibs [exec freetype-config --libs] } ] == 0 } {
+    foreach aPath [split $aConfLibs " "] {
+      if { [string first "-L" "$aPath"] == 0 } {
+        set aConfLibPath [string range "$aPath" 2 [string length "$aPath"]]
+      }
+    }
+  }
+
+  foreach anArchIter {64 32} {
+    set aFtLibPath [wokdep:SearchLib "freetype" "$anArchIter"]
+    if { "$aFtLibPath" == "" } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{freetype}*] "$::VCVER" "$anArchIter" ]
+      set aFtLibPath [wokdep:SearchLib "freetype" "$anArchIter" "$aPath/lib"]
+      if { "$aFtLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+      } else {
+        set aFtLibPath [wokdep:SearchLib "freetype" "$anArchIter" "$aConfLibPath"]
+        if { "$aFtLibPath" != "" } {
+          lappend ::CSF_OPT_LIB$anArchIter "$aConfLibPath"
+        } else {
+          lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}freetype.${::SYS_LIB_SUFFIX}' not found (FreeType2)"
+          if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+        }
+      }
+    }
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aFtDllPath [wokdep:SearchBin "freetype.dll" "$anArchIter"]
+      if { "$aFtDllPath" == "" } {
+        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{freetype}*] "$::VCVER" "$anArchIter" ]
+        set aFtDllPath [wokdep:SearchBin "freetype.dll" "$anArchIter" "$aPath/bin"]
+        if { "$aFtDllPath" != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+        } else {
+          set aFtDllPath [wokdep:SearchBin "freetype.dll" "$anArchIter" "$aPath/lib"]
+          if { "$aFtDllPath" != "" } {
+            lappend ::CSF_OPT_BIN$anArchIter "$aPath/lib"
+          } else {
+            lappend anErrBin$anArchIter "Error: 'freetype.dll' not found (FreeType2)"
+            if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+          }
+        }
+      }
+    }
+  }
+
   return "$isFound"
 }
 
@@ -305,36 +349,31 @@ proc wokdep:SearchFTGL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin6
   upvar $theErrBin64 anErrBin64
 
   # The path in the case of building VS project on windows
-  set aWinBuildPath "win32_vcpp/build"
+  set aWinBuildPath "msvc/Build"
 
   set isFound "true"
-  set aFtglFontPath  [wokdep:SearchHeader "FTGLTextureFont.h"]
-  set aFtglFtLibPath [wokdep:SearchHeader "FTLibrary.h"]
+  set aFtglFontPath  [wokdep:SearchHeader "FTGL/FTGLTextureFont.h"]
+  set aFtglFtLibPath [wokdep:SearchHeader "FTGL/ftgl.h"]
   if { "$aFtglFontPath"  == "" || "$aFtglFtLibPath"  == "" } {
     set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl,FTGL}*] "$::VCVER" "$::ARCH" ]
-    if { "$aPath" != "" && [expr {[file exists "$aPath/include/FTGL/FTLibrary.h"] || [file exists "$aPath/include/FTLibrary.h"]}] } {
+    if { "$aPath" != "" && [file exists "$aPath/include/FTGL/ftgl.h"] } {
       lappend ::CSF_OPT_INC "$aPath/include"
-      if { [file exists "$aPath/include/FTGL"] } {
-        lappend ::CSF_OPT_INC "$aPath/include/FTGL"
-      }
     } else {
-      lappend anErrInc "Error: 'FTLibrary.h' or 'FTGLTextureFont.h' not found (FTGL)"
+      lappend anErrInc "Error: 'FTGL/ftgl.h' not found (FTGL)"
       set isFound "false"
     }
   }
 
   foreach anArchIter {64 32} {
-    set aFtglLibPath    [wokdep:SearchLib "ftgl"             "$anArchIter"]
-    set aFtglWinLibPath [wokdep:SearchLib "ftgl_dynamic_MTD" "$anArchIter"]
-    if { "$aFtglLibPath" == "" && "$aFtglWinLibPath" == ""} {
+    set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter"]
+    if { "$aFtglLibPath" == "" } {
       set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl,FTGL}*] "$::VCVER" "$anArchIter" ]
-      set aFtglLibPath    [wokdep:SearchLib "ftgl"             "$anArchIter" "$aPath/lib"]
-      set aFtglWinLibPath [wokdep:SearchLib "ftgl_dynamic_MTD" "$anArchIter" "$aPath/lib"]
-      if { "$aFtglLibPath" != "" || "$aFtglWinLibPath" != "" } {
+      set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter" "$aPath/lib"]
+      if { "$aFtglLibPath" != "" } {
         lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
       } else {
-        set aFtglWinLibPath [wokdep:SearchLib "ftgl_dynamic_MTD" "$anArchIter" "$aPath/$aWinBuildPath"]
-        if { "$::tcl_platform(platform)" == "windows" && "$aFtglWinLibPath" != "" } {
+        set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter" "$aPath/$aWinBuildPath"]
+        if { "$::tcl_platform(platform)" == "windows" && "$aFtglLibPath" != "" } {
           lappend ::CSF_OPT_LIB$anArchIter "$aPath/$aWinBuildPath"
         } else {
           lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}ftgl.${::SYS_LIB_SUFFIX}' not found (FTGL)"
@@ -344,18 +383,16 @@ proc wokdep:SearchFTGL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin6
     }
     if { "$::tcl_platform(platform)" == "windows" } {
       set aFtglDllPath    [wokdep:SearchBin "ftgl.dll"             "$anArchIter"]
-      set aFtglWinDllPath [wokdep:SearchBin "ftgl_dynamic_MTD.dll" "$anArchIter"]
-      if { "$aFtglDllPath" == "" && "$aFtglWinDllPath" == "" } {
+      if { "$aFtglDllPath" == "" } {
         set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl}*] "$::VCVER" "$anArchIter" ]
-        set aFtglDllPath     [wokdep:SearchBin "ftgl.dll"             "$anArchIter" "$aPath/bin"]
-        set aFtglWinDllPath  [wokdep:SearchBin "ftgl_dynamic_MTD.dll" "$anArchIter" "$aPath/bin"]
-        set aFtglWinDllPath2 [wokdep:SearchBin "ftgl_dynamic_MTD.dll" "$anArchIter" "$aPath/$aWinBuildPath"]
-        if { "$aFtglDllPath" != "" || "$aFtglWinDllPath" != "" } {
+        set aFtglDllPath     [wokdep:SearchBin "ftgl.dll" "$anArchIter" "$aPath/bin"]
+        set aFtglWinDllPath  [wokdep:SearchBin "ftgl.dll" "$anArchIter" "$aPath/$aWinBuildPath"]
+        if { "$aFtglDllPath" != "" } {
           lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
-        } elseif { "$aFtglWinDllPath2" != "" } {
+        } elseif { "$aFtglWinDllPath" != "" } {
           lappend ::CSF_OPT_BIN$anArchIter "$aPath/$aWinBuildPath"
         } else {
-          lappend anErrBin$anArchIter "Error: 'ftgl_dynamic_MTD.dll' not found (FTGL)"
+          lappend anErrBin$anArchIter "Error: 'ftgl.dll' not found (FTGL)"
           if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
         }
       }
@@ -694,9 +731,7 @@ proc wokdep:SearchX11 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   if { "$aXmuLibPath" == "" } {
     set aXmuLibPath [wokdep:SearchLib "Xmu" "$::ARCH" "/usr/X11/lib"]
     if { "$aXmuLibPath" != "" } {
-      if { "$::tcl_platform(os)" != "Darwin" } {
-        lappend ::CSF_OPT_LIB$::ARCH "/usr/X11/lib"
-      }
+      #lappend ::CSF_OPT_LIB$::ARCH "/usr/X11/lib"
     } else {
       lappend anErrLib$::ARCH "Error: '${::SYS_LIB_PREFIX}Xmu.${::SYS_LIB_SUFFIX}' not found (X11)"
       set isFound "false"

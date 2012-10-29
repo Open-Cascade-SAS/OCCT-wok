@@ -74,7 +74,7 @@
   @string %CSF_TclTkLibs = "tk85.lib";
 
   -- FTGL (font renderer for OpenGL)
-  @string %CSF_FTGL = "ftgl_dynamic_MTD.lib";
+  @string %CSF_FTGL = "";
 
   -- Qt4 framework, doesn't required for OCCT itself
   @string %CSF_QT_INCLUDES = " ";

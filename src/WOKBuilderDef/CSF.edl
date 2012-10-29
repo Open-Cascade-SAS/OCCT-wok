@@ -91,6 +91,11 @@
 
   @set %CSF_FreeImagePlus = "";
   @set %CSF_FREETYPE_INCLUDES = "";
+  
+  @if (%Station != "wnt") then
+    @set %CSF_FREETYPE = "-lfreetype ";
+  @endif;
+  
   @set %CSF_FTGL_INCLUDES = "";
   @set %CSF_FTGL = "";
   @set %CSF_GL2PS_INCLUDES = "";
@@ -134,7 +139,7 @@
   @if (%ENV_HAVE_FREEIMAGE == "true") then
     @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_FREEIMAGE";
     @if (%Station != "wnt") then
-      @set %CSF_FreeImagePlus = "-lfreeimageplus ";
+      @set %CSF_FreeImagePlus = "-lfreeimage "; 
     @endif;
   @endif;
   @if (%ENV_HAVE_GL2PS == "true") then
