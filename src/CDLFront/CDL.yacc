@@ -9,6 +9,14 @@
 %{
 /* all parser must define this variable */
 
+#define yyparse CDLparse
+#define yylex CDLlex
+#define yyerror CDLerror
+#define yylval CDLlval
+#define yychar CDLchar
+#define yydebug CDLdebug
+#define yynerrs CDLnerrs
+
 #define yyv CDLv
 
 #define MAX_CHAR     256              /* The limit of a identifier.  */
@@ -97,6 +105,7 @@ extern int  CDLlex   ( void  );
 %token		REAL
 %token		STRING
 %token		INVALID
+%token 		DOCU
 %union {
  char str[MAX_STRING];
 }
@@ -579,7 +588,11 @@ Enumeration_Declaration	: enumeration dollardset_inc_state Type_Name dollardrest
 			     Enum_Item_List
 			  __Enumeration_End 
 			  ';' 
+			  Enumeration_Documentation
 			  dollardEnum_End
+			;
+Enumeration_Documentation : Empty
+			| DOCU
 			;
 __Enumeration_End	: Empty
 			| Enumeration_End

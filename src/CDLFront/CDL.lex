@@ -35,6 +35,7 @@ extern void CDLerror ( char* );
 COMMENTER	[-][-]
 DOCUMENTATION   [-][-][-][ \t]*[P][u][r][p][o][s][e].*[\n]
 DOCUMENTATION1  [-]{2,}[ \t]{1,}.*[\n]
+DOCUMENTATION0  [-]{2,}[\n]
 FCPLUSPLUS      [-][-][-][C][+][+][ \t]*
 CPLUSPLUS       [-][-][-][C][+][+][ \t]*[:][ \t]*
 FCPLUSPLUSD     [-][-][-][C][+][+][ \t]*[2][.][0][ \t]*
@@ -81,6 +82,7 @@ STRING		\"(\\\"|[^"])*\"
 
 {DOCUMENTATION}     { add_documentation(CDLtext); BEGIN(DOC_BLOCK);  CDLlineno++; }
 <DOC_BLOCK>{DOCUMENTATION1}    { add_documentation1(CDLtext);  CDLlineno++; }
+<DOC_BLOCK>{DOCUMENTATION0}    { add_documentation1(CDLtext);  CDLlineno++; }
 {REF}\n             { add_cpp_comment(CDL_REF,CDLtext); CDLlineno++; BEGIN(0);}
 {CONSTREF}\n        { add_cpp_comment(CDL_CONSTREF,CDLtext); CDLlineno++; BEGIN(0); }
 {PTR}\n             { add_cpp_comment(CDL_PTR,CDLtext); CDLlineno++; BEGIN(0); }

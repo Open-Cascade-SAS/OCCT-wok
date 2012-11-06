@@ -58,6 +58,7 @@ typedef union {
 #define	REAL	312
 #define	STRING	313
 #define	INVALID	314
+#define DOCU 315
 
 
 extern YYSTYPE CDLlval;
