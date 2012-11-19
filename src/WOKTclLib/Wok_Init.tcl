@@ -42,6 +42,11 @@ if { [info commands tcl_exit_proc] == "" } {
     rename wok_exit_proc exit
 }
 
+#load procedures for occt documentation
+source $env(WOKHOME)/lib/OS.tcl
+source $env(WOKHOME)/lib/OCCTDocumentation.tcl
+source $env(WOKHOME)/lib/OCCTGetVersion.tcl
+
 set tcl_prompt1 {if {[info commands wokcd] != ""}  then {puts -nonewline stdout "[wokcd]> "} else {puts -nonewline stdout "tclsh> "}}
 
 global WOK_GLOBALS;
@@ -58,5 +63,5 @@ set WOK_GLOBALS(source_proc,term)  1
 set WOK_GLOBALS(source_proc,emacs) 1
 set WOK_GLOBALS(source_proc,tcl)   1
 update
-set WOK_GLOBALS(wokinterp,tclcommands) "Winfo|finfo|pinfo|screate|sinfo|srm|ucreate|uinfo|umake|urm|w_info|wcreate|wokcd|wokclose|wokinfo|wokparam|wokprofile|wokenv|wrm|wmove|msclear|wprepare|wstore|wintegre|upack|iwok|wsrc|wdrv|wls|wcd|cd"
+set WOK_GLOBALS(wokinterp,tclcommands) "Winfo|finfo|pinfo|screate|sinfo|srm|ucreate|uinfo|umake|urm|w_info|wcreate|wokcd|wokclose|wokinfo|wokparam|wokprofile|wokenv|wrm|wmove|msclear|wprepare|wstore|wintegre|upack|iwok|wsrc|wdrv|wls|wcd|cd|wgendoc"
 update

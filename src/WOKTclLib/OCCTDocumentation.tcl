@@ -1,12 +1,38 @@
+proc wgendoc {workBench {outDir {}} {modules {}} {createChmHelp NO} {hhcLocation ""} {doxygenPath ""} {graphvizPath ""}} {
+    global env
+
+    if {$workBench == "-help" || $workBench == "-he"} {
+	puts "Command wgendoc allow you to generate Doxygen documentation"
+	puts ""
+	puts "wgendoc {workBench} {outDir} {modules} {createChmHelp} {hhcLocation} {doxygenPath} {graphvizPath}"
+	puts "Parameters:"
+	puts "	workBench - name of your OCCT workbench"
+	puts "	outDir - documentation output directory"
+	puts "	modules - list of OCCT modules, which documentation will be generated" 
+	puts "	createChmHelp - if \"YES\", with HTML files will be generated a CHM documentation file. Default value is \"NO\"."
+	puts "	hhcLocation - if createChmHelp is \"YES\", then you must say, where is HTML Help Workshop directory (which contain file hhc.exe)"
+	puts "	doxygenPath - you can say doxygen.exe directory (if you have latest version of Doxygen). It is optional parameter."
+	puts "	graphvizPath - you can say dot.exe directory (if you have latest version of GraphViz). It is optional parameter."
+	return
+    }
+    
+    if { "$doxygenPath" == "" } { set doxygenPath "$env(WOKHOME)/3rdparty/win32/utils" }
+    if { "$graphvizPath" == "" } { set graphvizPath "$env(WOKHOME)/3rdparty/win32/utils" }
+	
+    wokcd $workBench
+    OS -box
+    OCCDoc_GenerateDoc $outDir $modules $createChmHelp $hhcLocation $doxygenPath $graphvizPath {} {}
+}
+
 # general procedure for generation Doxygen documentation
 # it launches both generation process and post process
-proc OCCDoc_GenerateDoc {outDir {modules {}} {doxygenPath {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
-    catch {exec $doxygenPath/doxygen [OCCDoc_MakeDoxyfile $outDir $modules $graphvizPath]}
+proc OCCDoc_GenerateDoc {outDir {modules {}} {createChmHelp NO} {hhcLocation {}} {doxygenPath {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
+    catch {exec $doxygenPath/doxygen [OCCDoc_MakeDoxyfile $outDir $modules $createChmHelp $hhcLocation $graphvizPath]}
     OCCDoc_PostProcessor $outDir
 }
 
 # generate Doxygen configuration file for specified OCCT module of toolkit
-proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
+proc OCCDoc_MakeDoxyfile {outDir {modules {}} {createChmHelp NO} {hhcLocation {}} {graphvizPath {}} {useSearch YES} {tagFiles {}}} {
 
     # by default take all modules
     if { [llength $modules] <= 0 } {
@@ -15,9 +41,13 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
 
     # create target directory
     if { ! [file exists $outDir] } {
-	mkdir $outDir
+	file mkdir $outDir
     }
- 
+    
+    if { ! [file exists $outDir/html] } {
+	file mkdir $outDir/html
+    }
+
     # set context
     set one_module [expr [llength $modules] == 1]
     if { $one_module } {
@@ -85,7 +115,6 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
     puts $fileid "HIDE_FRIEND_COMPOUNDS = YES"
     puts $fileid "HIDE_UNDOC_MEMBERS = NO"
     puts $fileid "INLINE_INFO = YES"
-    puts $fileid "SHOW_DIRECTORIES	= NO"
     puts $fileid "VERBATIM_HEADERS = NO"
     puts $fileid "QUIET		= YES"
     puts $fileid "WARNINGS		= NO"
@@ -99,6 +128,18 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
     puts $fileid "GENERATE_TAGFILE = ${path_prefix}${name}.tag"
     puts $fileid "ALLEXTERNALS = NO"
     puts $fileid "EXTERNAL_GROUPS = NO"
+	
+	#chm help file
+	if { $createChmHelp } {
+		append hhcLocation "/hhc.exe"
+		if { [file exists $hhcLocation] } {
+			puts $fileid "GENERATE_HTMLHELP = YES"
+			puts $fileid "CHM_FILE = ../${name}HTMLHelp.CHM"
+			puts $fileid "HHC_LOCATION = \"$hhcLocation\""
+		} else {
+			puts "Can't find $hhcLocation/hhc.exe"
+		}
+	}
     
     # add tag files for OCCT modules (except current one and depending);
     # this is based on file Modules.tcl in unit "OS" which defines list of modules
@@ -121,8 +162,21 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
 	set graphvizPath $env(GRAPHVIZ_HOME)
     }
     if { "$graphvizPath" != "" } {
-	puts $fileid "HAVE_DOT		= YES"
-	puts $fileid "DOT_PATH		= $graphvizPath"
+	puts $fileid "HAVE_DOT = YES"
+	puts $fileid "DOT_PATH = $graphvizPath"
+	#puts $fileid "CLASS_DIAGRAMS = YES"
+	#puts $fileid "HIDE_UNDOC_RELATIONS = YES"
+	#puts $fileid "TEMPLATE_RELATIONS = NO"
+	#puts $fileid "GRAPHICAL_HIERARCHY = YES"
+	#puts $fileid "DIRECTORY_GRAPH = YES"
+	puts $fileid "DOT_GRAPH_MAX_NODES = 100"
+	puts $fileid "INCLUDE_GRAPH = NO"
+        puts $fileid "INCLUDED_BY_GRAPH = NO"
+        puts $fileid "DOT_MULTI_TARGETS = YES"
+        puts $fileid "DOT_IMAGE_FORMAT = png"
+	puts $fileid "GENERATE_LEGEND = YES"
+	puts $fileid "DOTFILE_DIRS = $outDir/html"
+	puts $fileid "DOT_CLEANUP = YES"
     } else {
 	puts "Warning: DOT is not found; use environment variable GRAPHVIZ_HOME or command argument to specify its location"
 	puts $fileid "HAVE_DOT		= NO"
@@ -134,10 +188,6 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
     puts $fileid "INCLUDE_FILE_PATTERNS = *.hxx *.pxx"
     puts $fileid "EXCLUDE_PATTERNS = */Handle_*.hxx"
     puts $fileid "SKIP_FUNCTION_MACROS = YES"
-    puts $fileid "INCLUDE_GRAPH = NO"
-    puts $fileid "INCLUDED_BY_GRAPH = NO"
-    puts $fileid "DOT_MULTI_TARGETS = YES"
-    puts $fileid "DOT_IMAGE_FORMAT = png"
     puts $fileid "INLINE_SOURCES   = NO"
 
     # include dirs
@@ -148,31 +198,42 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {graphvizPath {}} {useSearch YES} 
     puts $fileid "INCLUDE_PATH = $incdirs"
 
     # list of files to generate
-    set mainpage [OCCDoc_MakeMainPage $outDir/$name.dox $modules]
+    set mainpage [OCCDoc_MakeMainPage $outDir $outDir/$name.dox $modules]
     puts $fileid "INPUT		= $mainpage \\"
     foreach header $filelist {
 	puts $fileid "               $header \\"
-    } 
+    }
     puts $fileid ""
-
+    
     close $fileid
 
     return $filename
 }
 
 # generate main page file describing module structure
-proc OCCDoc_MakeMainPage {outFile modules} {
+proc OCCDoc_MakeMainPage {outDir outFile modules} {
+
+    global env
+    source $env(WOKHOME)/lib/OCCTDocumentationProcedures.tcl
+
     set one_module [expr [llength $modules] == 1]
-
     set fd [open $outFile "w"]
+  
+    set module_prefix "module_"
+    set toolkit_prefix "toolkit_"
+    set package_prefix "package_"
 
+    OCCDoc_LoadData
+    
     # main page: list of modules
     if { ! $one_module } {
 	puts $fd "/**"
 	puts $fd "\\mainpage Open CASCADE Technology"
 	foreach mod $modules {
-	    puts $fd "\\li \\subpage [string tolower module_$mod]"
+	    puts $fd "\\li \\subpage [string tolower $module_prefix$mod]"
 	}
+	# insert modules relationship diagramm
+	puts $fd "\\dotfile [OCCDoc_CreateModulesDependencyGraph $outDir/html schema_all_modules $modules $module_prefix]"
 	puts $fd "**/\n"
     }
 
@@ -189,13 +250,15 @@ proc OCCDoc_MakeMainPage {outFile modules} {
 	    lappend toolkits $tk
 	    puts $fd "\\li \\subpage [string tolower toolkit_$tk]"
 	}
+	puts $fd "\\dotfile [OCCDoc_CreateModuleToolkitsDependencyGraph $outDir/html schema_$mod $mod $toolkit_prefix]"
         puts $fd "**/\n"
     }
-
+	
     # one page per toolkit: list of packages
     set packages {}
     foreach tk $toolkits {
         puts $fd "/**"
+	puts $fd "\\dotfile [OCCDoc_CreateToolkitDependencyGraph $outDir/html schema_$tk $tk $toolkit_prefix]"
 	puts $fd "\\page [string tolower toolkit_$tk] Toolkit $tk"
 	foreach pk [lsort [osutils:tk:units [woklocate -u $tk]]] {
 	    lappend packages $pk
@@ -226,13 +289,14 @@ proc OCCDoc_MakeMainPage {outFile modules} {
 #		puts $fd "/**"
 #		puts $fd "\\class $obj"
 #		puts $fd "Contained in \\ref [string tolower package_$u]"
-##		puts $fd "\\addtogroup package_$u"
+#		puts $fd "\\addtogroup package_$u"
 #		puts $fd "**/\n"
 #	    }
 #	}
 #    }
 
     close $fd
+
     return $outFile
 }
 
@@ -293,6 +357,7 @@ proc OCCDoc_PostProcessor {outDir} {
 	    
 	   close $packageFilePnt
         }
+	   puts "Done"
     } else {
         puts "no files found"
     }
