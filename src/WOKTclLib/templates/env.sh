@@ -3,7 +3,7 @@
 # go to the script directory
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
 
-export CASROOT="$aScriptPath"
+export CASROOT="__CASROOT__"
 
 # Reset values
 export CASDEB=""

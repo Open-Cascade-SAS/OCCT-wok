@@ -3272,7 +3272,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
     return
   }
-
+  
   # Generating project files for the selected IDE
   switch -exact -- "$theIDE" {
     "vc7"   -
@@ -3283,7 +3283,12 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "cmk"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
   }
-
+  
+  # generate config.txt file
+  if { ${anAllSolution} == "Products" && "$::env(WOKSTATION)" == "wnt" } {
+    osutils:mkCollectScript "collect_binary.cfg" "$anOutRoot/../" ${theIDE} $::env(ARCH) "release"
+  }
+  
   # Store generated GUIDs map
   set anOutFile [open "$aGuidsFilePath" "w"]
   fconfigure $anOutFile -translation lf

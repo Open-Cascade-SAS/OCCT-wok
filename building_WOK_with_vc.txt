@@ -1,0 +1,39 @@
+Building WOK with Visual Studio
+
+1. Clone the WOK git repository from the server.
+
+2. Create the occt-wok WOK workbench setting its Home to the directory containing WOK git repository.
+For example, assuming that WOK repository has been created into d:/occt-wok and OCCT workbench is occt
+  LOC:dev> wcreate occt-wok –DHome=D:/occt-wok -f occt
+
+3. Use command wokcd, Go to the created workbench:
+	LOC:dev> wokcd occt-wok
+
+4. For the success wgenproj completion, before the execution, make sure that inc folder exists in the WOK root  directory
+
+5. Using the wgenproj command with –IDE=<vcVersion> (for example, vc8|vc9|vc10) in the WOK workbench generate visual studio project files:
+  LOC:dev:occt-wok> wgenproj –IDE=vc9
+
+
+6. When the generation process finished, start the msvc.bat placed into the WOK root directory, and build the solution.
+
+7. To create binary WOK directory, start the collect_binary.bat batch file with arguments:
+	
+  collect_binary.bat <vc version> <win bitness> <build type> <install path>
+
+  where arguments are:
+    <vc version> - vc8, vc9 or vc10
+    <win bitness> - win32 or win64
+    <build type> - Release or Debug
+    <install path> - by default the one is package are located into WOK root directory.
+
+  For example, 
+    collect_binary.bat vc9 win32 release wokPackage
+    
+  or start collect_binary.bat without arguments, to use by default arguments, that are:
+    vc version is defined by user into wok_depsgui
+    win bitness is defined by user into wok_depsgui
+    build type is release
+    install dir name is package
+
+8. Finally, copy from used WOK root directory the 3rdparty directory to the wokPackage directory.

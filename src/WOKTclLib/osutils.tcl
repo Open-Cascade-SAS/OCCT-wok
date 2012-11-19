@@ -1968,6 +1968,19 @@ proc osutils:in:__AMDEPTRUE__ { l } {
   return [wokUtils:EASY:FmtSimple1 $fmt $l]
 }
 
+proc osutils:mkCollectScript { theOutCfgFileName theProjectRootPath theIDE theBitness theBuildType } {
+  set aCfgFileBuff [list]
+    
+  lappend aCfgFileBuff "cmdArg1=${theIDE}"
+  lappend aCfgFileBuff "cmdArg2=${theBitness}"
+  lappend aCfgFileBuff "cmdArg3=${theBuildType}"
+    
+  set aCfgFile [open [set fdsw [file join ${theProjectRootPath} $theOutCfgFileName]] w]
+  fconfigure $aCfgFile -translation crlf
+  puts $aCfgFile [join $aCfgFileBuff "\n"]
+  close $aCfgFile
+}
+
 proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefines theTKSrcFiles } { 
   set aWokStation "$::env(WOKSTATION)"
   
