@@ -94,42 +94,29 @@ proc relativePath {thePathFrom thePathTo} {
 
   set aPathFrom [file normalize "$thePathFrom"]
   set aPathTo   [file normalize "$thePathTo"]
-
-  if { [string equal "$aPathFrom" "$aPathTo"] == 1} {
-    return "."
-  }
-
-  set aPathFromLen [string length "$aPathFrom"]
-  set aPathToLen   [string length "$aPathTo"]
-  set aCommon ""
-  set aTail   ""
-  set aTailTo ""
-  for {set anInter 1} {$anInter <= $aPathToLen} {incr anInter} {
-    if { [string equal -length $anInter "$aPathFrom" "$aPathTo"] == 0} {
-      break
+  
+  set aCutedPathFrom "${aPathFrom}/dummy"
+  set aRelatedDeepPath ""
+  
+  while { "$aCutedPathFrom" != [file normalize "$aCutedPathFrom/.."] } {
+    set aCutedPathFrom [file normalize "$aCutedPathFrom/.."]
+    # does aPathTo contain aCutedPathFrom?
+    regsub -all $aCutedPathFrom $aPathTo "" aPathFromAfterCut
+    if { "$aPathFromAfterCut" != "$aPathTo" } { # if so
+      if { "$aCutedPathFrom" == "$aPathFrom" } { # just go higher, for example, ./somefolder/someotherfolder
+        set aPathTo ".${aPathTo}"
+      } elseif { "$aCutedPathFrom" == "$aPathTo" } { # remove the last "/"
+        set aRelatedDeepPath [string replace $aRelatedDeepPath end end ""]
+      }
+      regsub -all $aCutedPathFrom $aPathTo $aRelatedDeepPath aPathToAfterCut
+      regsub -all "//" $aPathToAfterCut "/" aPathToAfterCut
+      return $aPathToAfterCut
     }
-    set aCommon [string range "$aPathFrom" 0 [expr $anInter - 1]]
-    set aTail   [string range "$aPathFrom" $anInter $aPathFromLen]
-    set aTailTo [string range "$aPathTo"   $anInter $aPathToLen]
+    set aRelatedDeepPath "$aRelatedDeepPath../" 
+    
   }
 
-  if { [string length "$aCommon"] <= 4 } {
-    return ""
-  }
-
-  set aRelative ".."
-  set aSplitIter [string first [file separator] "$aTail"]
-  while { $aSplitIter != -1 } {
-    set aRelative "${aRelative}/.."
-    set aTail      [string range "$aTail" [expr $aSplitIter + 1] $aPathFromLen]
-    set aSplitIter [string first [file separator] "$aTail"]
-  }
-
-  if { [string first [file separator] "$aTailTo"] == 0 } {
-    return "${aRelative}${aTailTo}"
-  } else {
-    return "${aRelative}/${aTailTo}"
-  }
+  return $thePathTo
 }
 
 # Load 3rd-party dependencies info
@@ -264,7 +251,7 @@ proc wgenprojbat {thePath theIDE} {
   }
   set anEnvTmpl [read $anEnvTmplFile]
   close $anEnvTmplFile
-
+  
   set aCasRoot ""
   if { [file normalize "$anOsRootPath"] != "$aBox" } {
     set aCasRoot [relativePath "$aBox" "$anOsRootPath"]
