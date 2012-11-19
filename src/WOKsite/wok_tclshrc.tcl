@@ -309,11 +309,12 @@ proc wgenproj { args } {
   set aProcArgs $args
 
   # Setting default IDE.
-  # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode ().
+  # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode (cmk).
   set anIDE ""
   switch -exact -- "$::env(WOKSTATION)" {
     "wnt"   {set anIDE "$::VCVER"}
     "lin"   {set anIDE "cbp"}
+    "mac"   {set anIDE "cmk"}
   }
 
   # Getting from arguments the name of IDE, for which we should generate project files.

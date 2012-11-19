@@ -1782,20 +1782,40 @@ proc TESTAM { {root} {modules {}} {ll {}} } {
 
 # Generate Code::Blocks project file for ToolKit
 proc osutils:cbptk { theOutDir theToolKit } {
-  set aWokStation "$::env(WOKSTATION)"
-  set aWokArch    "$::env(ARCH)"
-
-  # collect list of referred libraries to link with
   set aUsedToolKits [list]
   set anIncPaths    [list]
   set aTKDefines    [list]
   set aTKSrcFiles   [list]
-  foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] {
-    lappend aUsedToolKits "${tkx}"
-  }
-  wokparam -l CSF
+  
+  osutils:tkinfo $theOutDir $theToolKit aUsedToolKits anIncPaths aTKDefines aTKSrcFiles
 
-  foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] $theToolKit] {
+  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines]
+}
+
+proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefines theTKSrcFiles } { 
+  set aWokStation "$::env(WOKSTATION)"
+  
+  set aRelatedPathPart "../../../.."
+
+  # collect list of referred libraries to link with
+  upvar $theUsedToolKits  anUsedToolKits 
+  upvar $theIncPaths      anIncPaths
+  upvar $theTKDefines     aTKDefines
+  upvar $theTKSrcFiles    aTKSrcFiles
+    
+  set aDepToolkits [LibToLink [woklocate -u $theToolKit]]
+  foreach tkx $aDepToolkits {
+    if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
+      lappend anUsedToolKits "${tkx}"
+    }
+    if {[lsearch [w_info -l] $tkx] == "-1"} {
+      lappend anUsedToolKits "${tkx}"
+    }
+  }
+  
+  wokparam -l CSF
+  
+  foreach tk [lappend aDepToolkits $theToolKit] {
     foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
       if {[wokparam -t %$element] == 0} {
         continue
@@ -1806,19 +1826,24 @@ proc osutils:cbptk { theOutDir theToolKit } {
           continue
         }
         set felem [file tail $fl]
-        if {[lsearch $aUsedToolKits $felem] == "-1"} {
+        if {[lsearch $anUsedToolKits $felem] == "-1"} {
           if {$felem != "\{\}" & $felem != "lib"} {
             if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
-              lappend aUsedToolKits [string trimleft "${felem}" "-l"]
+              lappend anUsedToolKits [string trimleft "${felem}" "-l"]
             }
           }
         }
       }
     }
   }
-
-  lappend anIncPaths "../../../inc"
+ 
+  lappend anIncPaths "$aRelatedPathPart/inc"
   set listloc [osutils:tk:units [woklocate -u $theToolKit]]
+  
+  if { [llength $listloc] == 0 } {
+    set listloc [woklocate -u $theToolKit]
+  }
+  
   if { "$aWokStation" == "wnt" } {
     set resultloc [osutils:justwnt  $listloc]
   } else {
@@ -1831,7 +1856,7 @@ proc osutils:cbptk { theOutDir theToolKit } {
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
-        lappend aTKSrcFiles "../../../[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $aSrcFile 3]]"
+        lappend aTKSrcFiles "${aRelatedPathPart}/[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $aSrcFile 3]]"
       } else {
         puts "Warning : more than one occurences for [file tail $aSrcFile]"
       }
@@ -1843,8 +1868,8 @@ proc osutils:cbptk { theOutDir theToolKit } {
     }
 
     # common include paths
-    lappend anIncPaths "../../../drv/${xlo}"
-    lappend anIncPaths "../../../src/${xlo}"
+    lappend anIncPaths "${aRelatedPathPart}/drv/${xlo}"
+    lappend anIncPaths "${aRelatedPathPart}/src/${xlo}"
   }
 
   # macros for UNIX to use config.h file
@@ -1861,9 +1886,91 @@ proc osutils:cbptk { theOutDir theToolKit } {
     lappend aTKDefines "OCC_CONVERT_SIGNALS"
     #lappend aTKDefines "_GNU_SOURCE=1"
   }
-
-  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines]
 }
+
+proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } { 
+  set anOutFileName "CMakeLists.txt"
+  
+  set aFileBuff [list]
+  
+  set anUsedToolKits [list]
+  set anIncPaths     [list]
+  set aTKDefines     [list]
+  set aTKSrcFiles    [list]
+  
+  osutils:tkinfo $theOutDir $theToolKit anUsedToolKits anIncPaths aTKDefines aTKSrcFiles
+  
+  lappend aFileBuff "project(${theToolKit})\n"
+  
+  foreach aMacro $aTKDefines {
+    lappend aFileBuff "list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
+  } 
+  
+  lappend aFileBuff "\nstring( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
+  
+  # common compiler options
+  #lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_OPTION \"-Wall\" \"-fexceptions\" \"-fPIC\" )\n"
+  
+  # compiler directories
+  lappend aFileBuff "\nlist( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$::env(WOK_LIBRARY)\" )"
+  foreach anIncPath $anIncPaths {
+    lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anIncPath\" )"
+  }
+  
+  # common linker options.
+  lappend aFileBuff ""
+  foreach aLibName $anUsedToolKits {
+    if { $aLibName != "" } {
+      lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS ${aLibName} )"
+    }
+  }
+  
+  if { "$::env(WOKSTATION)" == "wnt" && $theToolKit == "TKOpenGl" } {
+    lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS vfw32 )"
+  }
+    
+  lappend aFileBuff ""
+  foreach aTKSrcFile $aTKSrcFiles {
+    regsub -all "\\\\" ${aTKSrcFile} "/" aTKSrcFile
+    lappend aFileBuff "list( APPEND ${theToolKit}_USED_SRCFILES ${aTKSrcFile} )"
+    if {[string equal -nocase [file extension $aTKSrcFile] ".c"]} {
+      #lappend aFileBuff "set_source_files_properties(${aTKSrcFile} PROPERTIES COMPILE_FLAGS \"CC\")"
+    } 
+  }
+  
+  lappend aFileBuff ""
+  lappend aFileBuff "if (\"\$\{USED_TOOLKITS\}\" STREQUAL \"\" OR DEFINED TurnONthe${theToolKit})"
+  if { $theIsExec == true } {
+    lappend aFileBuff " add_executable( ${theToolKit} \$\{${theToolKit}_USED_SRCFILES\} )"
+    lappend aFileBuff ""
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
+  } else {
+    lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
+    lappend aFileBuff ""
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug 
+                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind 
+                                 ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd
+                                 LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd)"
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release 
+                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin 
+                                 ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib
+                                 LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib)"
+  }
+  lappend aFileBuff ""
+  lappend aFileBuff " set_target_properties( ${theToolKit} PROPERTIES COMPILE_FLAGS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\" )"
+  lappend aFileBuff " include_directories( \$\{${theToolKit}_COMPILER_DIRECTORIES\} )"
+  lappend aFileBuff " target_link_libraries( ${theToolKit} \$\{${theToolKit}_USED_LIBS\} )"
+  lappend aFileBuff "endif()"
+  
+  #generate cmake meta file
+  set aFile [open "$theOutDir/$theToolKit/$anOutFileName" w]
+  fconfigure $aFile -translation crlf
+  puts $aFile [join $aFileBuff "\n"]
+  close $aFile
+}
+
+
 
 # Generate Code::Blocks project file for Executable
 proc osutils:cbpx { theOutDir theToolKit } {
@@ -1890,6 +1997,7 @@ proc osutils:cbpx { theOutDir theToolKit } {
     }
 
     wokparam -l CSF
+
     foreach tk $aDepToolkits {
       foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
         if {[wokparam -t %$element] == 0} {

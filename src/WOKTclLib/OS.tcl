@@ -2970,6 +2970,142 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
   }
 }
 
+# Function to generate CMake meta file
+proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
+  puts stderr "Generating CMake meta project"
+  
+  set anOutFileName "CMakeLists.txt"
+  set aProjectName $theAllSolution
+  
+  set aFileBuff [list]
+  
+  #add to cmake meta file "cap" information
+  lappend aFileBuff "cmake_minimum_required ( VERSION 2.6)"
+  lappend aFileBuff "project(${aProjectName})"
+  lappend aFileBuff ""
+  lappend aFileBuff "set(BUILD_SHARED_LIBS ON)"
+  lappend aFileBuff "if (NOT DEFINED CMAKE_INSTALL_PREFIX)"
+  lappend aFileBuff " set(CMAKE_INSTALL_PREFIX \"[OS:casroot]\")"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  lappend aFileBuff "set(BITNESS $::env(ARCH))"
+  lappend aFileBuff ""
+  lappend aFileBuff "if (NOT DEFINED CMAKE_BUILD_TYPE)"
+  lappend aFileBuff " set(CMAKE_BUILD_TYPE \"Release\")"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  lappend aFileBuff "set (USED_TOOLKITS \"\")"
+  lappend aFileBuff ""
+  lappend aFileBuff "if (\$\{BITNESS\} STREQUAL 64)"
+  lappend aFileBuff " add_definitions(-D_OCC64)"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  lappend aFileBuff "add_definitions(-DHAVE_CONFIG_H)"
+  lappend aFileBuff ""
+  lappend aFileBuff "if (WIN32)"
+  lappend aFileBuff " set(SYSTEM win)"
+  lappend aFileBuff "else()"
+  lappend aFileBuff " set(SYSTEM lin)"
+  lappend aFileBuff " add_definitions(-DOCC_CONVERT_SIGNALS)"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  lappend aFileBuff "if (MINGW)"
+  lappend aFileBuff " SET(CMAKE_CXX_FLAGS \$\{CMAKE_CXX_FLAGS\} -mthreads)"
+  lappend aFileBuff " SET(CMAKE_C_FLAGS \$\{CMAKE_C_FLAGS\} -mthreads)"
+  lappend aFileBuff " SET(CMAKE_EXE_LINKER_FLAGS \$\{CMAKE_EXE_LINKER_FLAGS\} -mthreads -Wl,--export-all-symbols)"
+  lappend aFileBuff " SET(CMAKE_SHARED_LINKER_FLAGS \$\{CMAKE_SHARED_LINKER_FLAGS\} -mthreads -Wl,--export-all-symbols)"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  if {"$::env(WOKSTATION)" == "wnt"} {
+    lappend aFileBuff "set(CMAKE_CXX_FLAGS_RELEASE \$\{CMAKE_CXX_FLAGS_RELEASE\} No_Exception)"
+  }
+  #lappend aFileBuff "SET ( CMAKE_CXX_FLAGS \$\{CMAKE_CXX_FLAGS_RELEASE\} -Wall -fexceptions -fPIC)"
+  lappend aFileBuff ""
+  lappend aFileBuff "include_directories([join $::CSF_OPT_INC ";"])"
+  
+  if {$::ARCH == 32} {
+    lappend aFileBuff "link_directories([join $::CSF_OPT_LIB32 ";"])"
+  } else {
+    lappend aFileBuff "link_directories([join $::CSF_OPT_LIB64 ";"])"
+  }
+  lappend aFileBuff ""
+  lappend aFileBuff "if (DEFINED MSVC70)"
+  lappend aFileBuff " SET(COMPILER vc7)"
+  lappend aFileBuff "elseif (DEFINED MSVC80)"
+  lappend aFileBuff " SET(COMPILER vc8)"
+  lappend aFileBuff "elseif (DEFINED MSVC90)"
+  lappend aFileBuff " SET(COMPILER vc9)"
+  lappend aFileBuff "elseif (DEFINED MSVC10)"
+  lappend aFileBuff " SET(COMPILER vc10)"
+  lappend aFileBuff "else()"
+  lappend aFileBuff " SET(COMPILER \$\{CMAKE_GENERATOR\})"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
+  
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      set aDepToolkits [join [LibToLink [woklocate -u $aToolKit]] ";"]
+      lappend aFileBuff "set(${aToolKit}_DEPS \"${aDepToolkits}\")"
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      set aDepToolkits [join [LibToLink [woklocate -u $anExecutable]] ";"]
+      lappend aFileBuff "set(${anExecutable}_DEPS \"${aDepToolkits}\")"
+    }
+  }
+  lappend aFileBuff ""
+  lappend aFileBuff "separate_arguments(USED_TOOLKITS)"
+  lappend aFileBuff "foreach( TOOLKIT \$\{USED_TOOLKITS\} )"
+  lappend aFileBuff " set(TurnONthe\$\{TOOLKIT\} ON)"
+  lappend aFileBuff " foreach( TK \$\{\$\{TOOLKIT\}_DEPS\})"
+  lappend aFileBuff "   set(TurnONthe\$\{TK\} ON)" 
+  lappend aFileBuff " endforeach()"
+  lappend aFileBuff "endforeach()"
+  lappend aFileBuff ""
+  #lappend aFileBuff "set(EXECUTABLE_OUTPUT_PATH \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/out)"
+  #lappend aFileBuff "set(LIBRARY_OUTPUT_PATH \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/out)"
+  lappend aFileBuff ""
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      #create directory
+      if {![file exists "$theOutDir/$aToolKit"]} {
+        file mkdir "$theOutDir/$aToolKit"
+      }
+      
+      #add directory to main cmake metafile
+      lappend aFileBuff "subdirs(${aToolKit})"
+      
+      # create cmake metafile into target subdir
+      osutils:cmktk $theOutDir $aToolKit false
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      #create directory
+      if {![file exists "$theOutDir/$anExecutable"]} {
+        file mkdir "$theOutDir/$anExecutable"
+      }
+      
+      #add directory to main cmake metafile
+      lappend aFileBuff "subdirs(${anExecutable})"
+      
+      # create cmake metafile into target subdir
+      osutils:cmktk $theOutDir $anExecutable true
+    }
+  }  
+  
+  # install toolkits and execs and other files
+  lappend aFileBuff ""
+  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_TOOLKITS\} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
+  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_TOOLKITS\} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
+  lappend aFileBuff ""
+  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_EXECUTABLES\} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
+  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_EXECUTABLES\} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
+
+  #generate cmake meta file
+  set aFile [open [set fdsw [file join $theOutDir $anOutFileName]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile [join $aFileBuff "\n"]
+  close $aFile
+}
+
 # Generates Code Blocks workspace.
 proc OS:cworkspace { theSolName theModules theOutDir } {
   set aWsFilePath "${theOutDir}/${theSolName}.workspace"
@@ -3063,8 +3199,8 @@ set aTKNullKey "TKNull"
 set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
-proc OS:MKPRC { {theOutDir {}} {theModules {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp"}
+proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp" "cmk"}
 
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE"
@@ -3092,18 +3228,24 @@ proc OS:MKPRC { {theOutDir {}} {theModules {}} {theIDE ""} } {
   }
 
   # make list of modules and platforms
-  set aModules [OS:listmodules $theModules {win32}]
+  set aModules [OS:listmodules $theProjectType {win32}] 
 
   # generate one solution for all projects if complete OS or VAS is processed
   set anAllSolution ""
-  if { $theModules == "OS" } {
+  if { $theProjectType == "OS" } {
     set anAllSolution "OCCT"
-  } elseif { $theModules == "VAS" } {
+  } elseif { $theProjectType == "VAS" } {
     set anAllSolution "Products"
   }
 
   # Create output directory
   set aWokStation "$::env(WOKSTATION)"
+    
+  # compatibility patch. 
+  if { [lsearch -exact {vc7 vc8 vc9 vc10} $theIDE] != -1 } {
+    set aWokStation "msvc"
+  }
+  
   set anOutDir "${anOutRoot}/${aWokStation}/${theIDE}"
   OS:mkdir $anOutDir
   if { ! [file exists $anOutDir] } {
@@ -3118,6 +3260,7 @@ proc OS:MKPRC { {theOutDir {}} {theModules {}} {theIDE ""} } {
     "vc9"   -
     "vc10"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
+    "cmk"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
   }
 
   # Store generated GUIDs map
