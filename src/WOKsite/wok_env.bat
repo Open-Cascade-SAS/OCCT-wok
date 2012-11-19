@@ -20,8 +20,8 @@ set "HAVE_GL2PS=false"
 set "VCVARS="
 
 rem ----- Set local settings (M$ Visual Studio compilers etc.) -----
-if exist %~dp0custom.bat (
-  call %~dp0custom.bat %1 %2 %3 %4 %5
+if exist "%~dp0custom.bat" (
+  call "%~dp0custom.bat" %1 %2 %3 %4 %5
 )
 
 set "PRODUCTS_DEFINES="

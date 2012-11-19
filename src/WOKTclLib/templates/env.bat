@@ -28,8 +28,8 @@ set "CSF_OPT_BIN32="
 set "CSF_OPT_BIN64="
 
 rem ----- Load local settings -----
-if exist %~dp0custom.bat (
-  call %~dp0custom.bat %1 %2 %3 %4 %5
+if exist "%~dp0custom.bat" (
+  call "%~dp0custom.bat" %1 %2 %3 %4 %5
 )
 
 rem ----- Read script arguments (override local settings) -----
@@ -126,8 +126,11 @@ set "CSF_IGESDefaults=%CASROOT%\src\XSTEPResource"
 set "CSF_STEPDefaults=%CASROOT%\src\XSTEPResource"
 set "CSF_XmlOcafResource=%CASROOT%\src\XmlOcafResource"
 set "CSF_MIGRATION_TYPES=%CASROOT%\src\StdResource\MigrationSheet.txt"
-if exist "%CASROOT%\src\QAResources" (
-  set "CSF_DrawPluginQADefaults=%CASROOT%\src\QAResources"
+
+rem Draw Harness special stuff
+if exist "%CASROOT%\src\DrawResources" (
+  set "DRAWHOME=%CASROOT%\src\DrawResources"
+  set "CSF_DrawPluginDefaults=%DRAWHOME%"
 )
 if exist "%SCRIPTROOT%\src\DrawResourcesProducts" (
   set "CSF_DrawPluginProductsDefaults=%SCRIPTROOT%\src\DrawResourcesProducts"

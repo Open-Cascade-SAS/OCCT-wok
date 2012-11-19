@@ -78,13 +78,24 @@ export WOKSITE="$WOKHOME/site";
 export WOK_SESSIONID="$HOME";
 
 # ----- Setup Environment Variables PATH and LD_LIBRARY_PATH -----
-export BISON_SIMPLE="$WOKHOME/3rdparty/${WOKSTATION}${ARCH}/codegen/bison.simple"
-export PATH="$WOK_LIBPATH:$PATH"
-export PATH="${WOKHOME}/3rdparty/${WOKSTATION}${ARCH}/codegen:${PATH}"
+# Linux and so on
 aTail=":${LD_LIBRARY_PATH}"
 if [ "$LD_LIBRARY_PATH" == "" ]; then aTail=""; fi
 export LD_LIBRARY_PATH="${WOK_LIBPATH}${aTail}"
-aTail=":$DYLD_LIBRARY_PATH"
+
+# Mac OS X
+aTail=":${DYLD_LIBRARY_PATH}"
 if [ "$DYLD_LIBRARY_PATH" == "" ]; then aTail=""; fi
 export DYLD_LIBRARY_PATH="${WOK_LIBPATH}${aTail}"
 export WOK_LIBPATH="${WOK_LIBRARY}:${WOK_LIBPATH}"
+
+export PATH="$WOK_LIBPATH:$PATH"
+if [ "$WOKSTATION" == "lin" ]; then
+  # always use 32-bit binaries
+  export BISON_SIMPLE="$WOKHOME/3rdparty/lin32/codegen/bison.simple"
+  export PATH="${WOKHOME}/3rdparty/lin32/tcltk/bin:${WOKHOME}/3rdparty/lin32/codegen:${PATH}"
+  export LD_LIBRARY_PATH="${WOKHOME}/3rdparty/lin32/tcltk/lib:${LD_LIBRARY_PATH}"
+else
+  export BISON_SIMPLE="$WOKHOME/3rdparty/${WOKSTATION}${ARCH}/codegen/bison.simple"
+  export PATH="${WOKHOME}/3rdparty/${WOKSTATION}${ARCH}/codegen:${PATH}"
+fi

@@ -117,9 +117,9 @@ export CSF_XCAFDefaults="${CASROOT}/src/StdResource"
 export CSF_TObjDefaults="${CASROOT}/src/StdResource"
 export CSF_StandardLiteDefaults="${CASROOT}/src/StdResource"
 if [ "$WOKSTATION" == "mac" ]; then
-  export CSF_GraphicShr="libTKOpenGl.so"
-else
   export CSF_GraphicShr="libTKOpenGl.dylib"
+else
+  export CSF_GraphicShr="libTKOpenGl.so"
 fi
 export CSF_UnitsLexicon="${CASROOT}/src/UnitsAPI/Lexi_Expr.dat"
 export CSF_UnitsDefinition="${CASROOT}/src/UnitsAPI/Units.dat"
@@ -127,3 +127,12 @@ export CSF_IGESDefaults="${CASROOT}/src/XSTEPResource"
 export CSF_STEPDefaults="${CASROOT}/src/XSTEPResource"
 export CSF_XmlOcafResource="${CASROOT}/src/XmlOcafResource"
 export CSF_MIGRATION_TYPES="${CASROOT}/src/StdResource/MigrationSheet.txt"
+
+# Draw Harness special stuff
+if [ -e "${CASROOT}/src/DrawResources" ]; then
+  export DRAWHOME="${CASROOT}/src/DrawResources"
+  export CSF_DrawPluginDefaults="${DRAWHOME}"
+fi
+if [ -e "${aScriptPath}/src/DrawResourcesProducts" ]; then
+  export CSF_DrawPluginProductsDefaults="${aScriptPath}/src/DrawResourcesProducts"
+fi
