@@ -321,6 +321,11 @@ proc wgenproj { args } {
     set aProcArgs [lreplace $aProcArgs $anIndex $anIndex]
   }
 
+  # create the inc directory. The directory should be created by wprocess function.
+  wokcd -P Home
+  file mkdir [file join [pwd] inc]
+  #
+  
   if { "$aProcArgs" != "" } {
     wprocess $aProcArgs -DGroups=Src,Xcpp
   } else {
