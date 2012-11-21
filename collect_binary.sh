@@ -278,6 +278,7 @@ cp -f src/WOKTclLib/nocdlpack.xpm $installRelatePath/lib/
 cp -f src/WOKTclLib/nocdlpack_open.xpm $installRelatePath/lib/
 cp -f src/WOKTclLib/notes.xpm $installRelatePath/lib/
 cp -f src/WOKTclLib/OCCTDocumentation.tcl $installRelatePath/lib/
+cp -f src/WOKTclLib/OCCTDocumentationProcedures.tcl $installRelatePath/lib/
 cp -f src/WOKTclLib/OCCTGetVersion.tcl $installRelatePath/lib/
 cp -f src/WOKTclLib/opencascade.gif $installRelatePath/lib/
 cp -f src/WOKTclLib/OS.tcl $installRelatePath/lib/
