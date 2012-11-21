@@ -8,17 +8,17 @@ rem %2 - arch
 rem %3 - debug&release
 rem %4 - related package name
 
-set "cmdArg1=%1"
-set "cmdArg2=%2"
-set "cmdArg3=%3"
-set "cmdArg4=%4"
-
 set "installPath=package"
 
 set configFile=collect_binary.cfg
 if exist %configFile% (
   for /f "delims=" %%x in (%configFile%) do (set "%%x")
 )
+
+if not "%1" == "" set "cmdArg1=%1"
+if not "%2" == "" set "cmdArg2=%2"
+if not "%3" == "" set "cmdArg3=%3"
+if not "%4" == "" set "installPath=%4"
 
 rem if command line is empty and config file is not exist
 if "%cmdArg1%" == "" goto :eofWithEcho 
@@ -35,12 +35,8 @@ goto :eof
 :GoOn
 
 echo.
-echo "args are: %cmdArg1% %cmdArg2% %cmdArg3% %cmdArg4%
+echo "args are: %cmdArg1% %cmdArg2% %cmdArg3% %installPath%
 echo.
-
-if not "%cmdArg4%" == "" (
-  set "installPath=%cmdArg4%"
-)
 
 rem Setup environment
 call "%~dp0env.bat" %cmdArg1% %cmdArg2% %cmdArg3%
@@ -48,11 +44,13 @@ call "%~dp0env.bat" %cmdArg1% %cmdArg2% %cmdArg3%
 if "%ARCH%" == "32" (
   set "xBit=x86"
 ) else (
-  if "%VCVER%" == "vc10" (
-    set "xBit=x64"
-  ) else if "%VCVER%" == "vc9" (
+  if "%VCVER%" == "vc9" (
     set "xBit=amd64"
-  )
+  ) else if "%VCVER%" == "vc10" (
+    set "xBit=x64"
+  ) else if "%VCVER%" == "vc11" (
+    set "xBit=x64"
+  ) 
 )
 
 set "TCL_LIB_PATH="
@@ -88,6 +86,10 @@ if "%VCVER%" == "vc8" (
 ) else if "%VCVER%" == "vc10" (
   set "VSDir=%VS100COMNTOOLS%"
   set "msvcXNum=100"
+  
+) else if "%VCVER%" == "vc11" (
+  set "VSDir=%VS110COMNTOOLS%"
+  set "msvcXNum=110"
   
 ) else (
   echo Error: wrong VS identifier
@@ -405,26 +407,7 @@ xcopy "src\WOKTclLib\server_open.xpm" "%installPath%\lib\"
 xcopy "src\WOKTclLib\source.xpm" "%installPath%\lib\"
 xcopy "src\WOKTclLib\storable.xpm" "%installPath%\lib\"
 xcopy "src\WOKTclLib\tclx.nt" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.mam" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.mamx" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.min" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.minx" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc10" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc10_64" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc10x" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc10x_64" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc6" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc6x" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc7" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc7x" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc8" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc8_64" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc8x" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc8x_64" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc9" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc9_64" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc9x" "%installPath%\lib\"
-xcopy "src\WOKTclLib\template.vc9x_64" "%installPath%\lib\"
+xcopy "src\WOKTclLib\tclIndex" "%installPath%\lib\"
 xcopy "src\WOKTclLib\textfile_adm.xpm" "%installPath%\lib\"
 xcopy "src\WOKTclLib\textfile_rdonly.xpm" "%installPath%\lib\"
 xcopy "src\WOKTclLib\toolkit.xpm" "%installPath%\lib\"
