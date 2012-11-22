@@ -3109,6 +3109,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
 proc OS:cworkspace { theSolName theModules theOutDir } {
   set aWsFilePath "${theOutDir}/${theSolName}.workspace"
   set aFile [open $aWsFilePath "w"]
+  set isActiveSet 0
   puts $aFile "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>"
   puts $aFile "<CodeBlocks_workspace_file>"
   puts $aFile "\t<Workspace title=\"${theSolName}\">"
@@ -3141,10 +3142,15 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
           if {[wokinfo -x $aUnitLoc] != "0"} {
             set aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile]]
           }
+          set anActiveState ""
+          if { $isActiveSet == 0 } {
+            set anActiveState " active=\"1\""
+            set isActiveSet 1
+          }
           if { [llength $aDependencies] == 0 } {
-            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\" />"
+            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\"${anActiveState}/>"
           } else {
-            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\" >"
+            puts $aFile "\t\t<Project filename=\"${aPrjName}.cbp\"${anActiveState}>"
             foreach aDepTk $aDependencies {
               puts $aFile "\t\t\t<Depends filename=\"${aDepTk}.cbp\" />"
             }
