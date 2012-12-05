@@ -16,6 +16,8 @@ if "%VCVER%" == "vc8" (
   set "DevEnvDir=%VS90COMNTOOLS%..\IDE"
 ) else if "%VCVER%" == "vc10" (
   set "DevEnvDir=%VS100COMNTOOLS%..\IDE"
+) else if "%VCVER%" == "vc11" (
+  set "DevEnvDir=%VS110COMNTOOLS%..\IDE"
 ) else (
   echo Error: wrong VS identifier
   exit /B

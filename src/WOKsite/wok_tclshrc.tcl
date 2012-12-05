@@ -135,6 +135,8 @@ if { "$tcl_platform(platform)" == "windows" } {
     puts "  Visual Studio 2008 (vc9), win${env(ARCH)}"
   } elseif { $env(VCVER) == "vc10" } {
     puts "  Visual Studio 2010 (vc10), win${env(ARCH)}"
+  } elseif { $env(VCVER) == "vc11" } {
+    puts "  Visual Studio 2012 (vc11), win${env(ARCH)}"
   } else {
     puts "  Visual Studio ???? ($env(VCVER)), win${env(ARCH)}"
   }
@@ -294,7 +296,8 @@ proc wgenprojbat {thePath theIDE} {
     "vc7"   -
     "vc8"   -
     "vc9"   -
-    "vc10"  { file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat" }
+    "vc10"   -
+    "vc11"  { file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat" }
     "cbp"   { file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
   }
 }

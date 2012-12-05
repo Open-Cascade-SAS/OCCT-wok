@@ -3037,6 +3037,8 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   lappend aFileBuff " SET(COMPILER vc9)"
   lappend aFileBuff "elseif (DEFINED MSVC10)"
   lappend aFileBuff " SET(COMPILER vc10)"
+  lappend aFileBuff "elseif (DEFINED MSVC11)"
+  lappend aFileBuff " SET(COMPILER vc11)"
   lappend aFileBuff "else()"
   lappend aFileBuff " SET(COMPILER \$\{CMAKE_GENERATOR\})"
   lappend aFileBuff "endif()"
@@ -3060,9 +3062,6 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   lappend aFileBuff "   set(TurnONthe\$\{TK\} ON)" 
   lappend aFileBuff " endforeach()"
   lappend aFileBuff "endforeach()"
-  lappend aFileBuff ""
-  #lappend aFileBuff "set(EXECUTABLE_OUTPUT_PATH \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/out)"
-  #lappend aFileBuff "set(LIBRARY_OUTPUT_PATH \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/out)"
   lappend aFileBuff ""
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
@@ -3221,7 +3220,7 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "cbp" "cmk" "amk" }
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmk" "amk" }
   
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
@@ -3262,7 +3261,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   # Create output directory
   set aWokStation "$::env(WOKSTATION)"
     
-  if { [lsearch -exact {vc7 vc8 vc9 vc10} $theIDE] != -1 } {
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
   
@@ -3278,7 +3277,8 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc7"   -
     "vc8"   -
     "vc9"   -
-    "vc10"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
+    "vc10"   -
+    "vc11"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
     "cmk"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
