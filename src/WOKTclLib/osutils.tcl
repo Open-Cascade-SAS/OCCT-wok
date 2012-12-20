@@ -204,6 +204,10 @@ proc osutils:mak:fmtcpp { } {
 ;# List extensions of compilable files in OCCT
 ;#
 proc osutils:compilable { } {
+  set aWokStation "$::env(WOKSTATION)"
+  if { "$aWokStation" == "mac" } {
+    return [list .c .cxx .cpp .mm]
+  }
   return [list .c .cxx .cpp]
 }
 
@@ -833,7 +837,7 @@ proc osutils:vcx1proj:filters { dir proj theFilesMap } {
   append text "  <ItemGroup>\n"
   append text "    <ResourceCompile Include=\"${proj}.rc\" />"
   append text "  </ItemGroup>\n"
-  
+
   # end
   append text "</Project>"
 
@@ -1681,69 +1685,83 @@ proc osutils:in:__AMDEPTRUE__ { l } {
 
 proc osutils:mkCollectScript { theOutCfgFileName theProjectRootPath theIDE theBitness theBuildType } {
   set aCfgFileBuff [list]
-    
+
   lappend aCfgFileBuff "cmdArg1=${theIDE}"
   lappend aCfgFileBuff "cmdArg2=${theBitness}"
   lappend aCfgFileBuff "cmdArg3=${theBuildType}"
-    
+
   set aCfgFile [open [set fdsw [file join ${theProjectRootPath} $theOutCfgFileName]] w]
   fconfigure $aCfgFile -translation crlf
   puts $aCfgFile [join $aCfgFileBuff "\n"]
   close $aCfgFile
 }
 
-proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefines theTKSrcFiles } { 
+# Auxiliary function to achieve complete information to build Toolkit
+# @param theRelativePath - relative path to CASROOT
+# @param theToolKit      - Toolkit name
+# @param theUsedLib      - dependencies (libraries  list)
+# @param theFrameworks   - dependencies (frameworks list, Mac OS X specific)
+# @param theIncPaths     - header search paths
+# @param theTKDefines    - compiler macro definitions
+# @param theTKSrcFiles   - list of source files
+proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theIncPaths theTKDefines theTKSrcFiles } {
   set aWokStation "$::env(WOKSTATION)"
-  
-  set aRelatedPathPart "../../../.."
+
+  set aRelatedPathPart "$theRelativePath"
 
   # collect list of referred libraries to link with
-  upvar $theUsedToolKits  anUsedToolKits 
-  upvar $theIncPaths      anIncPaths
-  upvar $theTKDefines     aTKDefines
-  upvar $theTKSrcFiles    aTKSrcFiles
-    
-  set aDepToolkits [LibToLink [woklocate -u $theToolKit]]
+  upvar $theUsedLib    aUsedLibs
+  upvar $theFrameworks aFrameworks
+  upvar $theIncPaths   anIncPaths
+  upvar $theTKDefines  aTKDefines
+  upvar $theTKSrcFiles aTKSrcFiles
+  
+  set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]]
   foreach tkx $aDepToolkits {
-    if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
-      lappend anUsedToolKits "${tkx}"
-    }
-    if {[lsearch [w_info -l] $tkx] == "-1"} {
-      lappend anUsedToolKits "${tkx}"
-    }
+    lappend aUsedLibs "${tkx}"
   }
-  
+
   wokparam -l CSF
-  
+
   foreach tk [lappend aDepToolkits $theToolKit] {
     foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
       if {[wokparam -t %$element] == 0} {
         continue
       }
+      set isFrameworkNext 0
       foreach fl [split [wokparam -v %$element] \{\ \}] {
         if {[string first "-libpath" $fl] != "-1"} {
           # this is library search path, not the library name
           continue
+        } elseif {[string first "-framework" $fl] != "-1"} {
+          set isFrameworkNext 1
+          continue
         }
+
         set felem [file tail $fl]
-        if {[lsearch $anUsedToolKits $felem] == "-1"} {
+        if {$isFrameworkNext == 1} {
+          if {[lsearch $aFrameworks $felem] == "-1"} {
+            lappend aFrameworks "${felem}"
+          }
+          set isFrameworkNext 0
+        } elseif {[lsearch $aUsedLibs $felem] == "-1"} {
           if {$felem != "\{\}" & $felem != "lib"} {
             if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
-              lappend anUsedToolKits [string trimleft "${felem}" "-l"]
+              lappend aUsedLibs [string trimleft "${felem}" "-l"]
             }
           }
         }
       }
     }
   }
- 
+
   lappend anIncPaths "$aRelatedPathPart/inc"
   set listloc [osutils:tk:units [woklocate -u $theToolKit]]
-  
+
   if { [llength $listloc] == 0 } {
     set listloc [woklocate -u $theToolKit]
   }
-  
+
   if { "$aWokStation" == "wnt" } {
     set resultloc [osutils:justwnt  $listloc]
   } else {
@@ -1756,7 +1774,7 @@ proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefi
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
-        lappend aTKSrcFiles "${aRelatedPathPart}/[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $aSrcFile 3]]"
+        lappend aTKSrcFiles "${aRelatedPathPart}/[wokUtils:FILES:wtail $aSrcFile 3]"
       } else {
         puts "Warning : more than one occurences for [file tail $aSrcFile]"
       }
@@ -1788,35 +1806,36 @@ proc osutils:tkinfo { theOutDir theToolKit theUsedToolKits theIncPaths theTKDefi
   }
 }
 
-proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } { 
+proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
   set anOutFileName "CMakeLists.txt"
-  
+
   set aFileBuff [list]
-  
+
   set anUsedToolKits [list]
+  set aFrameworks    [list]
   set anIncPaths     [list]
   set aTKDefines     [list]
   set aTKSrcFiles    [list]
-  
-  osutils:tkinfo $theOutDir $theToolKit anUsedToolKits anIncPaths aTKDefines aTKSrcFiles
-  
+
+  osutils:tkinfo "../../../.." $theToolKit anUsedToolKits aFrameworks anIncPaths aTKDefines aTKSrcFiles
+
   lappend aFileBuff "project(${theToolKit})\n"
-  
+
   foreach aMacro $aTKDefines {
     lappend aFileBuff "list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
-  } 
-  
+  }
+
   lappend aFileBuff "\nstring( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
-  
+
   # common compiler options
   #lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_OPTION \"-Wall\" \"-fexceptions\" \"-fPIC\" )\n"
-  
+
   # compiler directories
   lappend aFileBuff "\nlist( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$::env(WOK_LIBRARY)\" )"
   foreach anIncPath $anIncPaths {
     lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anIncPath\" )"
   }
-  
+
   # common linker options.
   lappend aFileBuff ""
   foreach aLibName $anUsedToolKits {
@@ -1824,20 +1843,20 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
       lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS ${aLibName} )"
     }
   }
-  
+
   if { "$::env(WOKSTATION)" == "wnt" && $theToolKit == "TKOpenGl" } {
     lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS vfw32 )"
   }
-    
+
   lappend aFileBuff ""
   foreach aTKSrcFile $aTKSrcFiles {
     regsub -all "\\\\" ${aTKSrcFile} "/" aTKSrcFile
     lappend aFileBuff "list( APPEND ${theToolKit}_USED_SRCFILES ${aTKSrcFile} )"
     if {[string equal -nocase [file extension $aTKSrcFile] ".c"]} {
       #lappend aFileBuff "set_source_files_properties(${aTKSrcFile} PROPERTIES COMPILE_FLAGS \"CC\")"
-    } 
+    }
   }
-  
+
   lappend aFileBuff ""
   lappend aFileBuff "if (\"\$\{USED_TOOLKITS\}\" STREQUAL \"\" OR DEFINED TurnONthe${theToolKit})"
   if { $theIsExec == true } {
@@ -1848,12 +1867,12 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
   } else {
     lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug 
-                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind 
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug
+                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind
                                  ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd
                                  LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd)"
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release 
-                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin 
+    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release
+                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin
                                  ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib
                                  LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib)"
   }
@@ -1862,7 +1881,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
   lappend aFileBuff " include_directories( \$\{${theToolKit}_COMPILER_DIRECTORIES\} )"
   lappend aFileBuff " target_link_libraries( ${theToolKit} \$\{${theToolKit}_USED_LIBS\} )"
   lappend aFileBuff "endif()"
-  
+
   #generate cmake meta file
   set aFile [open "$theOutDir/$theToolKit/$anOutFileName" w]
   fconfigure $aFile -translation crlf
@@ -1873,13 +1892,14 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
 # Generate Code::Blocks project file for ToolKit
 proc osutils:cbptk { theOutDir theToolKit } {
   set aUsedToolKits [list]
+  set aFrameworks   [list]
   set anIncPaths    [list]
   set aTKDefines    [list]
   set aTKSrcFiles   [list]
-  
-  osutils:tkinfo $theOutDir $theToolKit aUsedToolKits anIncPaths aTKDefines aTKSrcFiles
 
-  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines]
+  osutils:tkinfo "../../.." $theToolKit aUsedToolKits aFrameworks anIncPaths aTKDefines aTKSrcFiles
+
+  return [osutils:cbp $theOutDir $theToolKit $aTKSrcFiles $aUsedToolKits $aFrameworks $anIncPaths $aTKDefines]
 }
 
 # Generate Code::Blocks project file for Executable
@@ -1891,6 +1911,7 @@ proc osutils:cbpx { theOutDir theToolKit } {
   foreach aSrcFile [osutils:tk:files $theToolKit osutils:compilable 0] {
     # collect list of referred libraries to link with
     set aUsedToolKits [list]
+    set aFrameworks   [list]
     set anIncPaths    [list]
     set aTKDefines    [list]
     set aTKSrcFiles   [list]
@@ -1969,13 +1990,22 @@ proc osutils:cbpx { theOutDir theToolKit } {
       #lappend aTKDefines "_GNU_SOURCE=1"
     }
 
-    lappend aCbpFiles [osutils:cbp $theOutDir $aProjName $aTKSrcFiles $aUsedToolKits $anIncPaths $aTKDefines $isExecutable]
+    lappend aCbpFiles [osutils:cbp $theOutDir $aProjName $aTKSrcFiles $aUsedToolKits $aFrameworks $anIncPaths $aTKDefines $isExecutable]
   }
 
   return $aCbpFiles
 }
 
-proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths theDefines {theIsExe "false"} } {
+# This function intended to generate Code::Blocks project file
+# @param theOutDir     - output directory to place project file
+# @param theProjName   - project name
+# @param theSrcFiles   - list of source files
+# @param theLibsList   - dependencies (libraries  list)
+# @param theFrameworks - dependencies (frameworks list, Mac OS X specific)
+# @param theIncPaths   - header search paths
+# @param theDefines    - compiler macro definitions
+# @param theIsExe      - flag to indicate executable / library target
+proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks theIncPaths theDefines {theIsExe "false"} } {
   set aWokStation "$::env(WOKSTATION)"
   set aWokArch    "$::env(ARCH)"
 
@@ -2000,7 +2030,11 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
     puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/bin/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
-    puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/lib/lib${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    if { "$aWokStation" == "wnt" } {
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/lib/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    } else {
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/lib/lib${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
   puts $aFile "\t\t\t\t<Option object_output=\"../../../${aWokStation}/cbp/obj\" />"
@@ -2046,7 +2080,11 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
     puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/bind/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
     puts $aFile "\t\t\t\t<Option type=\"1\" />"
   } else {
-    puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/libd/lib${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    if { "$aWokStation" == "wnt" } {
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/libd/${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    } else {
+      puts $aFile "\t\t\t\t<Option output=\"../../../${aWokStation}/cbp/libd/lib${theProjName}\" prefix_auto=\"1\" extension_auto=\"1\" />"
+    }
     puts $aFile "\t\t\t\t<Option type=\"3\" />"
   }
   puts $aFile "\t\t\t\t<Option object_output=\"../../../${aWokStation}/cbp/objd\" />"
@@ -2103,14 +2141,26 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theIncPaths the
 
   # COMMON linker options
   puts $aFile "\t\t<Linker>"
+  foreach aFrameworkName $theFrameworks {
+    if { "$aFrameworkName" != "" } {
+      puts $aFile "\t\t\t<Add option=\"-framework $aFrameworkName\" />"
+    }
+  }
   foreach aLibName $theLibsList {
-    puts $aFile "\t\t\t<Add library=\"$aLibName\" />"
+    if { "$aLibName" != "" } {
+      puts $aFile "\t\t\t<Add library=\"$aLibName\" />"
+    }
   }
   puts $aFile "\t\t</Linker>"
 
   # list of sources
   foreach aSrcFile $theSrcFiles {
-    if {[string equal -nocase [file extension $aSrcFile] ".c"]} {
+    if {[string equal -nocase [file extension $aSrcFile] ".mm"]} {
+      puts $aFile "\t\t<Unit filename=\"$aSrcFile\">"
+      puts $aFile "\t\t\t<Option compile=\"1\" />"
+      puts $aFile "\t\t\t<Option link=\"1\" />"
+      puts $aFile "\t\t</Unit>"
+    } elseif {[string equal -nocase [file extension $aSrcFile] ".c"]} {
       puts $aFile "\t\t<Unit filename=\"$aSrcFile\">"
       puts $aFile "\t\t\t<Option compilerVar=\"CC\" />"
       puts $aFile "\t\t</Unit>"

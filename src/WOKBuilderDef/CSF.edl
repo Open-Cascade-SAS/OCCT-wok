@@ -86,16 +86,20 @@
   @set %CSF_OpenGlLibs = "";
   @set %CSF_MotifLibs = "";
 
+  @set %CSF_objc   = "";
+  @set %CSF_Appkit = "";
+  @set %CSF_IOKit  = "";
+
   @set %CSF_TclLibs = "";
   @set %CSF_TclTkLibs = "";
 
   @set %CSF_FreeImagePlus = "";
   @set %CSF_FREETYPE_INCLUDES = "";
-  
+
   @if (%Station != "wnt") then
     @set %CSF_FREETYPE = "-lfreetype ";
   @endif;
-  
+
   @set %CSF_FTGL_INCLUDES = "";
   @set %CSF_FTGL = "";
   @set %CSF_GL2PS_INCLUDES = "";

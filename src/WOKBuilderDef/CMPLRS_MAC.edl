@@ -5,6 +5,8 @@
 @ifnotdefined (%CMPLRS_MAC_EDL) then
   @set %CMPLRS_MAC_EDL = "";
 
+  @string %CMPLRS_CXX_Extensions += " toto.mm";
+
   @template CMPLRS_C_DTmpFile (%TmpFile) is
     $>& %TmpFile \
   @end;
