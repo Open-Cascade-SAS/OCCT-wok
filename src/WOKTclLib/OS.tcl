@@ -2968,6 +2968,8 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
   if { "$theAllSolution" != "" } {
     OS:vcsolution $theVcVer $theAllSolution $theModules $theOutDir ::THE_GUIDS_LIST
   }
+  
+  puts "The Visual Studio solution and project files are stored in the $theOutDir directory"
 }
 
 # Function to generate CMake meta file
@@ -3103,6 +3105,8 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   fconfigure $aFile -translation crlf
   puts $aFile [join $aFileBuff "\n"]
   close $aFile
+  
+  puts "The Cmake meta-files are stored in the $theOutDir directory"
 }
 
 # Generates Code Blocks workspace.
@@ -3201,6 +3205,8 @@ proc OS:MKAMK { theOutDir {theModules {}} theSubPath} {
 
   osutils:am:adm $theOutDir $theModules
   osutils:am:root [wokinfo -p HomeDir] $theSubPath $theModules 
+  
+  puts "The automake files are stored in the $theOutDir directory"
 }
 
 # Function to generate Code Blocks workspace and project files
@@ -3218,6 +3224,8 @@ proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
   if { "$theAllSolution" != "" } {
     OS:cworkspace $theAllSolution $theModules $theOutDir
   }
+  
+  puts "The Code Blocks workspace and project files are stored in the $theOutDir directory"
 }
 
 # Store global GUIDs map to reproduce same values on sequential calls
@@ -3226,7 +3234,7 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmk" "amk" }
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }
   
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
@@ -3286,7 +3294,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc10"   -
     "vc11"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
-    "cmk"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
+    "cmake"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
   }
   

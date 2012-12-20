@@ -302,37 +302,96 @@ proc wgenprojbat {thePath theIDE} {
   }
 }
 
+proc removeAllOccurrencesOf { theObject theList } { 
+  set aSortIndices [lsort -decreasing [lsearch -all -nocase $theList $theObject]]
+  foreach anIndex $aSortIndices {
+    set theList [lreplace $theList $anIndex $anIndex]
+  }
+  return $theList
+}
+
 # Wrapper-function to generate VS project files
 proc wgenproj { args } {
-
-  set aProcArgs $args
-
+  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }  
+  set anArgs $args
+  
   # Setting default IDE.
-  # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode (cmk).
-  set anIDE ""
+  # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode (cmake).
+  set anTarget ""
   switch -exact -- "$::env(WOKSTATION)" {
-    "wnt"   {set anIDE "$::VCVER"}
-    "lin"   {set anIDE "cbp"}
-    "mac"   {set anIDE "cmk"}
+    "wnt"   {set anTarget "$::VCVER"}
+    "lin"   {set anTarget "cbp"}
+    "mac"   {set anTarget "cmake"}
   }
 
-  # Getting from arguments the name of IDE, for which we should generate project files.
-  set anIndex [lsearch $aProcArgs -IDE=*]
-  if {$anIndex >= 0} {
-    set anIDE     [lindex $aProcArgs $anIndex]
-    set anIDE     [string map {-IDE= ""} $anIDE]
-    set aProcArgs [lreplace $aProcArgs $anIndex $anIndex]
+  set isTargetDefault true
+  set willWProcessStart true
+  if { [lsearch -nocase $anArgs -no_wprocess] != -1 } {
+    set anArgs [removeAllOccurrencesOf -no_wprocess $anArgs]
+    set willWProcessStart false
+  }  
+  
+  if { [set anIndex [lsearch -nocase $anArgs -ide=*]] != -1 } {
+    regsub -nocase "\\-ide=" [lindex $anArgs $anIndex] "" anTarget
+    set anArgs [removeAllOccurrencesOf -ide=* $anArgs]
+    set isTargetDefault false
+  }
+  
+  if { [set anIndex [lsearch -nocase $anArgs -target=*]] != -1 } {
+    regsub -nocase "\\-target=" [lindex $anArgs $anIndex] "" anTarget
+    set anArgs [removeAllOccurrencesOf -target=* $anArgs]
+    set isTargetDefault false
+  }
+  
+  if { [llength $anArgs] == 0 && $isTargetDefault == true } {
+    puts "the default \'$anTarget\' target has been applied"
+  }
+  
+  set isHelpRequire false  
+  if { [lsearch -nocase $anArgs -h] != -1} {
+    set anArgs [removeAllOccurrencesOf -h $anArgs]
+    set isHelpRequire true
+  }
+    
+  if { [lsearch -nocase $aSupportedTargets $anTarget] == -1} {
+    puts "the \'$anTarget\' is wrong TARGET"
+    set isHelpRequire true
+  }
+  
+  if {[llength $anArgs] > 0} {
+    set isHelpRequire true
+
+    foreach anArg $anArgs {
+      puts "wgenproj: unrecognized option \'$anArg\'"
+    }
   }
 
+  if {  $isHelpRequire == true } {
+    puts "usage: wgenproj \[ -target=<TARGET> \] \[ -no_wprocess \]
+    -no_wprocess - skip wprocess
+    TARGET: 
+      vc8   -  Visual Studio 2005
+      vc9   -  Visual Studio 2008
+      vc10  -  Visual Studio 2010
+      vc11  -  Visual Studio 2012
+      cbp   -  CodeBlocks
+      cmake -  CMake 
+      amk   -  AutoMake"
+      return
+  }
+
+  puts "the \'$anTarget\' target has been applied"
+  
   # create the inc directory. The directory should be created by wprocess function.
   wokcd -P Home
   file mkdir [file join [pwd] inc]
   #
-  
-  if { "$aProcArgs" != "" } {
-    wprocess $aProcArgs -DGroups=Src,Xcpp
-  } else {
+
+  if { $willWProcessStart == true } {
+    puts "run wprocess -DGroups=Src,Xcpp"
     wprocess -DGroups=Src,Xcpp
+  } else {
+    puts "skip wprocess"
   }
   source "$::env(WOKHOME)/lib/osutils.tcl"
   source "$::env(WOKHOME)/lib/OS.tcl"
@@ -342,12 +401,12 @@ proc wgenproj { args } {
   wokcd $aWokCD
 
   if { [wokinfo -x OS] } {
-    OS:MKPRC "$anAdmPath" "OS"  "$anIDE"
+    OS:MKPRC "$anAdmPath" "OS"  "$anTarget"
   }
   if { [wokinfo -x VAS] } {
-    OS:MKPRC "$anAdmPath" "VAS" "$anIDE"
+    OS:MKPRC "$anAdmPath" "VAS" "$anTarget"
   }
-  wgenprojbat "$anAdmPath" "$anIDE"
+  wgenprojbat "$anAdmPath" "$anTarget"
 }
 
 # Function to prepare environment
