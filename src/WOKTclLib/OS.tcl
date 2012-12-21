@@ -2442,7 +2442,7 @@ proc OS:edcomp { plat lhdr comp {except {}} {incstr <incDirectories>} {tcstr ""}
 		    set TCLINC "[lindex [wokparam -v %CSF_TCL_INCLUDE] 0]"
 		    if { "$new " == $CXXINC} {
 			append str "-I\${COMPINCLUDE} "
-		    } elseif  {"$new " == $TCLINC} {
+		    } elseif  {"-I$new " == $TCLINC} {
 			append str "-I\${TCLHOME}/include "
 		    } elseif  {"$tok " == "[lindex [wokparam -v %CSF_X11_INCLUDE] 0]"} {
 			#puts "X11 was captured"

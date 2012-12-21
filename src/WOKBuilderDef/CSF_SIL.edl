@@ -48,7 +48,7 @@
   @set %CSF_pthread = "-lpthread";
 
   @set %CSF_TCL_HOME = "/usr/tcltk.64";
-  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
+  @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include/itcl ";
 
   @set %CSF_X11_INCLUDE_EXTENSION = " -I/usr/include/X11/extensions ";
 

@@ -74,7 +74,7 @@
   @set %CSF_TCL_HOME = "/PRODUCTS/tcltk-84";
   -->> END TODO
 
-  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include -DUSE_NON_CONST ";
+  @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include -DUSE_NON_CONST ";
   @string %CSF_TclLibs     = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltcl8.4 ";
   @string %CSF_TclTkLibs   = "-L" %CSF_TCL_HOME "/lib -R" %CSF_TCL_HOME "/lib -ltk8.4 ";
 

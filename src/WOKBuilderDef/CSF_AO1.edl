@@ -31,7 +31,7 @@
   @set %CSF_C_Options    = "-DDECOSF1 -O3 -DOCC_CONVERT_SIGNALS";
 
   @set %CSF_TCL_HOME = "/usr/tcltk";
-  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include/itcl ";
+  @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include/itcl ";
 
   @string %CSF_JavaHome     = "/PRODUCTS/java/j2sdk1_3_1";
   @string %CSF_JAVA_INCLUDE = "-I" %CSF_JavaHome "/include -I" %CSF_JavaHome "/include/solaris ";

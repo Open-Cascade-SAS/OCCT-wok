@@ -65,7 +65,7 @@
 
   -- Tcl/Tk configuration
   @if (%CSF_TCL_HOME != "") then
-    @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+    @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include ";
     @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl8.5 ";
     @string %CSF_TclTkLibs = "-L" %CSF_TCL_HOME "/lib -ltk8.5 -L" %X11_LIB " -lX11 ";
   @else

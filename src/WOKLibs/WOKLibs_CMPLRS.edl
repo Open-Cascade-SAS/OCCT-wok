@@ -8,7 +8,7 @@
 
  @uses "CSF.edl";
 
- @string %CMPLRS_CXX_Options = " -I"%CSF_TCL_INCLUDE %CMPLRS_CXX_Options ;
+ @string %CMPLRS_CXX_Options += " " %CSF_TCL_INCLUDE;
 @if ( %Station == "wnt" ) then
 	@string %CMPLRS_ExportBehaviour = " -D__" %Entity "_DLL";
 @endif;

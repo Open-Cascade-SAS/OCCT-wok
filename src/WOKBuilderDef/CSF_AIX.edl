@@ -26,7 +26,7 @@
   @set %CSF_SOCKETLibs = " ";
 
   @set %CSF_TCL_HOME = "/missing/missing ";
-  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+  @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include ";
 
   @set %CSF_ThreadLibs = "-lpthread";
 

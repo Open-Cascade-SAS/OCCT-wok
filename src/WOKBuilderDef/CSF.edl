@@ -56,8 +56,7 @@
   @string %CSF_CXX_INCLUDE = "";
 
   @set %CSF_TCL_HOME = "";
-  -- workaround against dummy code in WOKSH_CMPLRS.edl that append -I%CSF_TCL_INCLUDE
-  @set %CSF_TCL_INCLUDE = ": ";
+  @set %CSF_TCL_INCLUDE = "";
   @set %CSF_JAVA_INCLUDE = "";
 
   @set %CSF_X11_INCLUDE = "";

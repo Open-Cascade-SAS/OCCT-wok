@@ -26,7 +26,7 @@
   @set %CSF_C_Options = " -DHPUX ";
 
   @set %CSF_TCL_HOME = "/missing/missing ";
-  @string %CSF_TCL_INCLUDE = %CSF_TCL_HOME "/include ";
+  @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include ";
 
   @set %CSF_X11_INCLUDE    = "-I/usr/include/X11R6 ";
   @set %CSF_XMU_INCLUDE    = "-I/usr/contrib/X11R6/include ";

@@ -53,7 +53,7 @@
   @set %CSF_TCL_HOME = "/usr/local";
   -->> END TODO
 
-  @string %CSF_TCL_INCLUDE = "/usr/local/include/tcl8.4 ";
+  @string %CSF_TCL_INCLUDE = "-I/usr/local/include/tcl8.4 ";
 
   --<< TODO : If applicable , modify the root location where Java is installed.
   @set %CSF_JavaHome        = "/usr/local/diablo-jdk1.5.0";
