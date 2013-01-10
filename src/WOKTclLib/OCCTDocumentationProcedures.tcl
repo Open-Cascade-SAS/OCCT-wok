@@ -7,7 +7,7 @@ proc OCCDoc_CreateModulesDependencyGraph {dir filename modules mpageprefix} {
     puts $file "\{"
     
     foreach mod $modules {
-      puts $file "\t$mod \[ URL = \"$mpageprefix$mod.html\" \]"
+      puts $file "\t$mod \[ URL = \"[string tolower $mpageprefix$mod.html]\" \]"
       foreach mod_depend $module_dependency($mod) {
 	puts $file "\t$mod_depend -> $mod \[ dir = \"back\", color = \"midnightblue\", style = \"solid\" \]"
       }
@@ -32,7 +32,7 @@ proc OCCDoc_CreateModuleToolkitsDependencyGraph {dir filename modulename tpagepr
     
     #vertex
     foreach tk $toolkits_in_module($modulename) {
-      puts $file "\t$tk \[ URL = \"$tpageprefix$tk.html\"\ ]"
+      puts $file "\t$tk \[ URL = \"[string tolower $tpageprefix$tk.html]\"\ ]"
       foreach tkd $toolkit_dependency($tk) {
         if {$toolkit_parent_module($tkd) == $modulename} {
           puts $file "\t$tkd -> $tk \[ dir = \"back\", color = \"midnightblue\", style = \"solid\" \]"    
@@ -55,10 +55,14 @@ proc OCCDoc_CreateToolkitDependencyGraph {dir filename toolkitname tpageprefix} 
     puts $file "digraph $filename"
     puts $file "\{"
     
-    puts $file "\t$toolkitname \[ URL = \"$tpageprefix$toolkitname.html\"\, shape = box ]"
+    puts $file "\t$toolkitname \[ URL = \"[string tolower $tpageprefix$toolkitname.html]\"\, shape = box ]"
     foreach tkd $toolkit_dependency($toolkitname) {
-      puts $file "\t$tkd \[ URL = \"$tpageprefix$tkd.html\"\ , shape = box ]"
+      puts $file "\t$tkd \[ URL = \"[string tolower $tpageprefix$tkd.html]\"\ , shape = box ]"
       puts $file "\t$toolkitname -> $tkd \[ color = \"midnightblue\", style = \"solid\" \]"    
+    }
+    
+    if {[llength $toolkit_dependency($toolkitname)] > 1} {
+	puts $file "\taspect = 1"
     }
     
     puts $file "\}"
@@ -114,6 +118,34 @@ proc OCCDoc_LoadData {} {
       }
     }
   }
+}
+
+#parse line like "-arg1=val1 -arg2=val2 ..." to array args_names and map args_values
+proc OCCDoc_ParseArguments {arguments} {
+    global args_names
+    global args_values
+    set args_names {}
+    array set args_values {}
+
+    #puts "$arguments"
+    foreach arg $arguments {
+	#puts "$arg"
+	if {[regexp {^(-)[a-z]+$} $arg] == 1} {
+	    set name [string range $arg 1 [string length $arg]-1]
+	    lappend args_names $name
+	    set args_values($name) "NULL"
+	    continue
+	} elseif {[regexp {^(-)[a-z]+=.+$} $arg] == 1} {
+	    set equal_symbol_position [string first "=" $arg]
+	    set name [string range $arg 1 $equal_symbol_position-1]
+	    lappend args_names $name
+	    set args_values($name) [string range $arg $equal_symbol_position+1 [string length $arguments]-1]
+	} else {
+	    puts "Error in argument $arg"
+	    return 1
+	}
+    }
+    return 0
 }
 
 
