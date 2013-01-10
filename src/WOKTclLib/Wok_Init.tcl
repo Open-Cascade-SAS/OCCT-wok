@@ -45,6 +45,7 @@ if { [info commands tcl_exit_proc] == "" } {
 #load procedures for occt documentation
 source $env(WOKHOME)/lib/OS.tcl
 source $env(WOKHOME)/lib/OCCTDocumentation.tcl
+source $env(WOKHOME)/lib/OCCTProductsDocumentation.tcl
 source $env(WOKHOME)/lib/OCCTGetVersion.tcl
 
 set tcl_prompt1 {if {[info commands wokcd] != ""}  then {puts -nonewline stdout "[wokcd]> "} else {puts -nonewline stdout "tclsh> "}}
