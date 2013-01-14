@@ -331,6 +331,8 @@ checkbutton   .myFrame.myGl2psCheck    -offvalue "false" -onvalue "true" -variab
 ttk::label    .myFrame.myGl2psLbl      -text "Use GL2PS"
 checkbutton   .myFrame.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myTbbLbl        -text "Use Intel TBB"
+checkbutton   .myFrame.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
+ttk::label    .myFrame.myMacGLXLbl     -text "Use X11 for windows drawing"
 checkbutton   .myFrame.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myQt4Lbl        -text "Search Qt4"
 checkbutton   .myFrame.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
@@ -423,6 +425,11 @@ incr aRowIter
 grid .myFrame.myTbbCheck      -row $aRowIter -column 0 -sticky e
 grid .myFrame.myTbbLbl        -row $aRowIter -column 1 -sticky w
 incr aRowIter
+if { "$::tcl_platform(os)" == "Darwin" } {
+  grid .myFrame.myMacGLXCheck -row $aRowIter -column 0 -sticky e
+  grid .myFrame.myMacGLXLbl   -row $aRowIter -column 1 -sticky w
+  incr aRowIter
+}
 
 # Additional headers search paths
 grid .myFrame.myIncLbl    -row $aRowIter -column 0 -columnspan 10 -sticky w

@@ -10,6 +10,7 @@ export CASDEB=""
 export HAVE_TBB="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
+export MACOSX_USE_GLX="false";
 export CSF_OPT_INC=""
 export CSF_OPT_LIB32=""
 export CSF_OPT_LIB64=""
@@ -60,6 +61,11 @@ if [ "$HAVE_FREEIMAGE" == "true" ]; then
 fi
 if [ "$HAVE_GL2PS" == "true" ]; then
   export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_GL2PS"
+fi
+
+# Option to compile OCCT with X11 libs on Mac OS X
+if [ "$MACOSX_USE_GLX" == "true" ]; then
+  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DMACOSX_USE_GLX"
 fi
 
 # To split string into array

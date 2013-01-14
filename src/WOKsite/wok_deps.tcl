@@ -26,6 +26,7 @@ if { "$tcl_platform(platform)" == "unix" } {
 set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
 set HAVE_TBB       "false"
+set MACOSX_USE_GLX "false"
 set CHECK_QT4      "true"
 set CHECK_JDK      "true"
 set PRODUCTS_PATH ""
@@ -52,6 +53,9 @@ if { [info exists ::env(HAVE_GL2PS)] } {
 }
 if { [info exists ::env(HAVE_TBB)] } {
   set HAVE_TBB "$::env(HAVE_TBB)"
+}
+if { [info exists ::env(MACOSX_USE_GLX)] } {
+  set MACOSX_USE_GLX "$::env(MACOSX_USE_GLX)"
 }
 if { [info exists ::env(CHECK_QT4)] } {
   set CHECK_QT4 "$::env(CHECK_QT4)"
@@ -808,6 +812,9 @@ proc wokdep:SaveCustom {} {
     puts $aFile "export HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "export HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "export HAVE_TBB=$::HAVE_TBB"
+    if { "$::tcl_platform(os)" == "Darwin" } {
+      puts $aFile "export MACOSX_USE_GLX=$::MACOSX_USE_GLX"
+    }
     puts $aFile "export CHECK_QT4=$::CHECK_QT4"
     puts $aFile "export CHECK_JDK=$::CHECK_JDK"
 
