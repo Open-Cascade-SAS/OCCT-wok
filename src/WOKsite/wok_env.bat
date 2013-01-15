@@ -35,6 +35,9 @@ if ["%ARCH%"] == ["64"] set VCARCH=amd64
 
 if not ["%VCVARS%"] == [""] (
   call "%VCVARS%" %VCARCH%
+) else if ["%DevEnvDir%"] == [""] if not ["%VS110COMNTOOLS%"] == [""] (
+  call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" %VCARCH%
+  set VCVER=vc11
 ) else if ["%DevEnvDir%"] == [""] if not ["%VS100COMNTOOLS%"] == [""] (
   call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" %VCARCH%
   set VCVER=vc10

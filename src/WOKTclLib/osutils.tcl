@@ -1705,6 +1705,7 @@ proc osutils:mkCollectScript { theOutCfgFileName theProjectRootPath theIDE theBi
 # @param theTKDefines    - compiler macro definitions
 # @param theTKSrcFiles   - list of source files
 proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theIncPaths theTKDefines theTKSrcFiles } {
+  set aRelatedPathPart [relativePath "$theOutDir" [pwd]] 
   set aWokStation "$::env(WOKSTATION)"
 
   set aRelatedPathPart "$theRelativePath"
@@ -1806,75 +1807,262 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
   }
 }
 
-proc osutils:cmktk { theOutDir theToolKit {theIsExec false} } {
-  set anOutFileName "CMakeLists.txt"
-
-  set aFileBuff [list]
-
+proc osutils:commonUsedTK { theToolKit } {
   set anUsedToolKits [list]
-  set aFrameworks    [list]
-  set anIncPaths     [list]
-  set aTKDefines     [list]
-  set aTKSrcFiles    [list]
+  set aDepToolkits [LibToLink [woklocate -u $theToolKit]]
+  foreach tkx $aDepToolkits {
+    if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
+      lappend anUsedToolKits "${tkx}"
+    }
+  }
+  
+  return $anUsedToolKits
+}
 
-  osutils:tkinfo "../../../.." $theToolKit anUsedToolKits aFrameworks anIncPaths aTKDefines aTKSrcFiles
+proc osutils:usedwntlibs { theToolKit } {
+  set anUsedLibs [list]
+  
+  lappend anUsedLibs "advapi32.lib"
+  lappend anUsedLibs "gdi32.lib"
+  lappend anUsedLibs "user32.lib"
+  lappend anUsedLibs "kernel32.lib"
+  
+  lappend anUsedLibs "opengl32.lib"
+  lappend anUsedLibs "glu32.lib"
+  lappend anUsedLibs "ws2_32.lib"
+  lappend anUsedLibs "vfw32.lib"
+  
+  lappend anUsedLibs "tcl85.lib"
+  lappend anUsedLibs "tk85.lib"
 
-  lappend aFileBuff "project(${theToolKit})\n"
+  return $anUsedLibs
+}
 
-  foreach aMacro $aTKDefines {
-    lappend aFileBuff "list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
+proc osutils:usedunixlibs { theToolKit } {
+  set anUsedLibs [list]
+  
+  lappend anUsedLibs "dl"
+  lappend anUsedLibs "pthread"
+  lappend anUsedLibs "rt"
+  
+  lappend anUsedLibs "X11"
+  lappend anUsedLibs "Xext"
+  lappend anUsedLibs "Xmu"
+  lappend anUsedLibs "Xi"
+  
+  lappend anUsedLibs "tcl8.5"
+  lappend anUsedLibs "tk8.5"
+  
+  #if tbb
+  lappend anUsedLibs "tbb"
+  lappend anUsedLibs "tbbmalloc"
+  
+  #if freeimage
+  lappend anUsedLibs "freeimage"
+  
+  #if gl2ps
+  lappend anUsedLibs "gl2ps"
+
+  return $anUsedLibs
+}
+
+proc osutils:incpaths { theUnits theRelatedPath } {
+  set anIncPaths [list]
+  
+  foreach anUnit $theUnits {
+    lappend anIncPaths "${theRelatedPath}/drv/${anUnit}"
+    lappend anIncPaths "${theRelatedPath}/src/${anUnit}"
+  }
+  
+  return $anIncPaths
+}
+
+proc osutils:tksrcfiles { theUnits  theRelatedPath } {
+  set aTKSrcFiles [list]
+  
+  if [array exists written] { unset written }
+  foreach anUnit $theUnits {
+    set xlo       [wokinfo -n $anUnit]
+    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    foreach aSrcFile [lsort $aSrcFiles] {
+      if { ![info exists written([file tail $aSrcFile])] } {
+        set written([file tail $aSrcFile]) 1
+        lappend aTKSrcFiles "${theRelatedPath}/[wokUtils:FILES:wtail $aSrcFile 3]"
+      } else {
+        puts "Warning : more than one occurences for [file tail $aSrcFile]"
+      }
+    }
+  }
+  
+  return $aTKSrcFiles
+}
+
+proc osutils:tkdefs { theUnits } {
+  set aTKDefines [list]
+  
+  foreach anUnit $theUnits {
+    lappend aTKDefines "__${anUnit}_DLL"
+  }
+  
+  return $aTKDefines
+}
+
+proc osutils:fileGroupName { theSrcFile } {
+  set path [file dirname [file normalize ${theSrcFile}]]
+  regsub -all [file normalize "${path}/.."] ${path} "" aGroupName
+  
+  return $aGroupName
+}
+
+proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} { 
+  set anOutFileName "CMakeLists.txt"  
+
+  set anCommonUsedToolKits [osutils:commonUsedTK $theToolKit]
+  set anUsedWntLibs        [osutils:usedwntlibs $theToolKit]
+  set anUsedUnixLibs       [osutils:usedunixlibs $theToolKit]
+
+  set anUnits [list]
+  foreach anUnitWithPath [osutils:tk:units [woklocate -u $theToolKit]] {
+    lappend anUnits [wokinfo -n $anUnitWithPath]
+  }
+  
+  if { [llength $anUnits] == 0 } {
+    set anUnits [wokinfo -n [woklocate -u $theToolKit]]
+  }
+  
+  set anCommonUnits [list]
+  set aWntUnits     [osutils:justwnt  $anUnits]
+  set anUnixUnits   [osutils:justunix  $anUnits]
+
+  
+  #remove duplicates from wntUnits and unixUnits and collect these duplicates in commonUnits variable
+  foreach aWntUnit $aWntUnits {
+    if { [set anIndex [lsearch -exact $anUnixUnits $aWntUnit]] != -1 } {
+      #add to common list
+      lappend anCommonUnits $aWntUnit
+      
+      #remove from wnt list
+      set anUnixUnits [lreplace $anUnixUnits $anIndex $anIndex]
+      
+      #remove from unix list
+      set anIndex [lsearch -exact $aWntUnits $aWntUnit]
+      set aWntUnits [lreplace $aWntUnits $anIndex $anIndex]
+    }
   }
 
-  lappend aFileBuff "\nstring( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
+  set aRelatedPath [relativePath "$theOutDir/$theToolKit" [pwd]] 
 
-  # common compiler options
-  #lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_OPTION \"-Wall\" \"-fexceptions\" \"-fPIC\" )\n"
+  set anCommonIncPaths  [osutils:incpaths $anCommonUnits $aRelatedPath]
+  set anWntIncPaths     [osutils:incpaths $aWntUnits $aRelatedPath]
+  set anUnixIncPaths    [osutils:incpaths $anUnixUnits $aRelatedPath]
+  
+  set aCommonTKSrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath]
+  set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits  $aRelatedPath]
+  set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits $aRelatedPath]
+  
+  set aFileBuff [list "project(${theToolKit})\n"]
+  
+  # macros for wnt
+  lappend aFileBuff "if (WIN32)"
+  foreach aMacro [osutils:tkdefs [concat $anCommonUnits $aWntUnits]] {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
+  } 
+  lappend aFileBuff "  string( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
+  lappend aFileBuff "endif()"
+  lappend aFileBuff ""
 
   # compiler directories
-  lappend aFileBuff "\nlist( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$::env(WOK_LIBRARY)\" )"
-  foreach anIncPath $anIncPaths {
-    lappend aFileBuff "list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anIncPath\" )"
+  lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\$\{WOK_LIB_PATH\}\" )"
+  lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$aRelatedPath/inc\" )"
+  foreach anCommonIncPath $anCommonIncPaths {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anCommonIncPath\" )"
   }
-
-  # common linker options.
+    lappend aFileBuff ""
+  lappend aFileBuff "if (WIN32)"
+  foreach anWntIncPath $anWntIncPaths {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anWntIncPath\" )"
+  }
+  lappend aFileBuff "else()"
+  foreach anUnixIncPath $anUnixIncPaths {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anUnixIncPath\" )"
+  }
+  lappend aFileBuff "endif()"
   lappend aFileBuff ""
-  foreach aLibName $anUsedToolKits {
-    if { $aLibName != "" } {
-      lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS ${aLibName} )"
+  
+  # used libs
+  foreach anCommonUsedToolKit $anCommonUsedToolKits {
+    if { $anCommonUsedToolKit != "" } {
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anCommonUsedToolKit} )"
     }
   }
 
-  if { "$::env(WOKSTATION)" == "wnt" && $theToolKit == "TKOpenGl" } {
-    lappend aFileBuff "list( APPEND ${theToolKit}_USED_LIBS vfw32 )"
-  }
-
-  lappend aFileBuff ""
-  foreach aTKSrcFile $aTKSrcFiles {
-    regsub -all "\\\\" ${aTKSrcFile} "/" aTKSrcFile
-    lappend aFileBuff "list( APPEND ${theToolKit}_USED_SRCFILES ${aTKSrcFile} )"
-    if {[string equal -nocase [file extension $aTKSrcFile] ".c"]} {
-      #lappend aFileBuff "set_source_files_properties(${aTKSrcFile} PROPERTIES COMPILE_FLAGS \"CC\")"
+  lappend aFileBuff "\nif (WIN32)"
+  foreach anUsedWntLib $anUsedWntLibs {
+    if { $anUsedWntLib != "" } {
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedWntLib} )"
     }
   }
-
-  lappend aFileBuff ""
+  lappend aFileBuff "else()"
+  foreach anUsedUnixLib $anUsedUnixLibs {
+    if { $anUsedUnixLib == "tbb" || $anUsedUnixLib == "tbbmalloc" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_TBB)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedUnixLib == "freeimage" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_FREEIMAGE)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedUnixLib == "gl2ps" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_GL2PS)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedUnixLib != "" } {
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+    }
+  }
+  lappend aFileBuff "endif()\n"
+  
+  #used source files
+  foreach aCommonTKSrcFile $aCommonTKSrcFiles {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aCommonTKSrcFile}\" )"
+    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTKSrcFile] 1 end] FILES \"${aCommonTKSrcFile}\")\n"
+  }
+  
+  lappend aFileBuff "if (WIN32)"
+  foreach aWntTKSrcFile $aWntTKSrcFiles {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aWntTKSrcFile}\" )"
+    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aWntTKSrcFile] 1 end] FILES \"${aWntTKSrcFile}\")\n"
+  }
+  lappend aFileBuff "else()\n"
+  foreach aUnixTKSrcFile $aUnixTKSrcFiles {
+    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aUnixTKSrcFile}\" )"
+    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"${aUnixTKSrcFile}\")\n"
+  }
+  lappend aFileBuff "endif()\n"
+  
+  #install instrutions
   lappend aFileBuff "if (\"\$\{USED_TOOLKITS\}\" STREQUAL \"\" OR DEFINED TurnONthe${theToolKit})"
   if { $theIsExec == true } {
     lappend aFileBuff " add_executable( ${theToolKit} \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
+    lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
+    lappend aFileBuff ""
+    lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/bin\" )"
   } else {
     lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Debug
-                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind
-                                 ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd
-                                 LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/libd)"
-    lappend aFileBuff " install( TARGETS ${theToolKit} CONFIGURATIONS Release
-                                 RUNTIME DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin
-                                 ARCHIVE DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib
-                                 LIBRARY DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/lib)"
+    lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
+    lappend aFileBuff ""
+    lappend aFileBuff " install( TARGETS ${theToolKit}
+                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/bin\" 
+                                 ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/lib\"
+                                 LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/lib\")"
+    lappend aFileBuff ""
+    lappend aFileBuff " if (MSVC)"
+    lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bin/Debug/${theToolKit}.pdb CONFIGURATIONS Debug
+                                  DESTINATION \"\$\{INSTALL_DIR\}/bin\")"
+    lappend aFileBuff " endif()"
+    lappend aFileBuff ""
   }
   lappend aFileBuff ""
   lappend aFileBuff " set_target_properties( ${theToolKit} PROPERTIES COMPILE_FLAGS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\" )"
@@ -2174,4 +2362,37 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   close $aFile
 
   return $aCbpFilePath
+}
+
+# Prepare relative path
+proc relativePath {thePathFrom thePathTo} {
+  if { [file isdirectory "$thePathFrom"] == 0 } {
+    return ""
+  }
+
+  set aPathFrom [file normalize "$thePathFrom"]
+  set aPathTo   [file normalize "$thePathTo"]
+  
+  set aCutedPathFrom "${aPathFrom}/dummy"
+  set aRelatedDeepPath ""
+  
+  while { "$aCutedPathFrom" != [file normalize "$aCutedPathFrom/.."] } {
+    set aCutedPathFrom [file normalize "$aCutedPathFrom/.."]
+    # does aPathTo contain aCutedPathFrom?
+    regsub -all $aCutedPathFrom $aPathTo "" aPathFromAfterCut
+    if { "$aPathFromAfterCut" != "$aPathTo" } { # if so
+      if { "$aCutedPathFrom" == "$aPathFrom" } { # just go higher, for example, ./somefolder/someotherfolder
+        set aPathTo ".${aPathTo}"
+      } elseif { "$aCutedPathFrom" == "$aPathTo" } { # remove the last "/"
+        set aRelatedDeepPath [string replace $aRelatedDeepPath end end ""]
+      }
+      regsub -all $aCutedPathFrom $aPathTo $aRelatedDeepPath aPathToAfterCut
+      regsub -all "//" $aPathToAfterCut "/" aPathToAfterCut
+      return $aPathToAfterCut
+    }
+    set aRelatedDeepPath "$aRelatedDeepPath../" 
+    
+  }
+
+  return $thePathTo
 }

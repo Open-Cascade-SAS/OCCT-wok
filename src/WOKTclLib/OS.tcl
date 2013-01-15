@@ -2979,92 +2979,54 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   set anOutFileName "CMakeLists.txt"
   set aProjectName $theAllSolution
   
-  set aFileBuff [list]
+  set theProjTmpl [osutils:readtemplate cmake "CMake main meta-project"]
   
-  #add to cmake meta file "cap" information
-  lappend aFileBuff "cmake_minimum_required ( VERSION 2.6)"
-  lappend aFileBuff "project(${aProjectName})"
-  lappend aFileBuff ""
-  lappend aFileBuff "set(BUILD_SHARED_LIBS ON)"
-  lappend aFileBuff "if (NOT DEFINED CMAKE_INSTALL_PREFIX)"
-  lappend aFileBuff " set(CMAKE_INSTALL_PREFIX \"[OS:casroot]\")"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  lappend aFileBuff "set(BITNESS $::env(ARCH))"
-  lappend aFileBuff ""
-  lappend aFileBuff "if (NOT DEFINED CMAKE_BUILD_TYPE)"
-  lappend aFileBuff " set(CMAKE_BUILD_TYPE \"Release\")"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  lappend aFileBuff "set (USED_TOOLKITS \"\")"
-  lappend aFileBuff ""
-  lappend aFileBuff "if (\$\{BITNESS\} STREQUAL 64)"
-  lappend aFileBuff " add_definitions(-D_OCC64)"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  lappend aFileBuff "add_definitions(-DHAVE_CONFIG_H)"
-  lappend aFileBuff ""
-  lappend aFileBuff "if (WIN32)"
-  lappend aFileBuff " set(SYSTEM win)"
-  lappend aFileBuff "else()"
-  lappend aFileBuff " set(SYSTEM lin)"
-  lappend aFileBuff " add_definitions(-DOCC_CONVERT_SIGNALS)"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  lappend aFileBuff "if (MINGW)"
-  lappend aFileBuff " SET(CMAKE_CXX_FLAGS \$\{CMAKE_CXX_FLAGS\} -mthreads)"
-  lappend aFileBuff " SET(CMAKE_C_FLAGS \$\{CMAKE_C_FLAGS\} -mthreads)"
-  lappend aFileBuff " SET(CMAKE_EXE_LINKER_FLAGS \$\{CMAKE_EXE_LINKER_FLAGS\} -mthreads -Wl,--export-all-symbols)"
-  lappend aFileBuff " SET(CMAKE_SHARED_LINKER_FLAGS \$\{CMAKE_SHARED_LINKER_FLAGS\} -mthreads -Wl,--export-all-symbols)"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  if {"$::env(WOKSTATION)" == "wnt"} {
-    lappend aFileBuff "set(CMAKE_CXX_FLAGS_RELEASE \$\{CMAKE_CXX_FLAGS_RELEASE\} No_Exception)"
+  regsub -all -- {__PROJECT_NAME__} $theProjTmpl $aProjectName theProjTmpl
+  regsub -all -- {__BITNESS__}      $theProjTmpl $::env(ARCH) theProjTmpl
+  regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl  
+  regsub -all -- {__CASROOT_DIR__} $theProjTmpl "[OS:casroot]" theProjTmpl
+  
+  
+  set aBuff [list]
+  foreach aModule $theModules {
+    lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
   }
-  #lappend aFileBuff "SET ( CMAKE_CXX_FLAGS \$\{CMAKE_CXX_FLAGS_RELEASE\} -Wall -fexceptions -fPIC)"
-  lappend aFileBuff ""
-  lappend aFileBuff "include_directories([join $::CSF_OPT_INC ";"])"
+  regsub -all -- {__MODULE_LIST__}  $theProjTmpl  [join $aBuff "\n"] theProjTmpl
   
-  if {$::ARCH == 32} {
-    lappend aFileBuff "link_directories([join $::CSF_OPT_LIB32 ";"])"
-  } else {
-    lappend aFileBuff "link_directories([join $::CSF_OPT_LIB64 ";"])"
-  }
-  lappend aFileBuff ""
-  lappend aFileBuff "if (DEFINED MSVC70)"
-  lappend aFileBuff " SET(COMPILER vc7)"
-  lappend aFileBuff "elseif (DEFINED MSVC80)"
-  lappend aFileBuff " SET(COMPILER vc8)"
-  lappend aFileBuff "elseif (DEFINED MSVC90)"
-  lappend aFileBuff " SET(COMPILER vc9)"
-  lappend aFileBuff "elseif (DEFINED MSVC10)"
-  lappend aFileBuff " SET(COMPILER vc10)"
-  lappend aFileBuff "elseif (DEFINED MSVC11)"
-  lappend aFileBuff " SET(COMPILER vc11)"
-  lappend aFileBuff "else()"
-  lappend aFileBuff " SET(COMPILER \$\{CMAKE_GENERATOR\})"
-  lappend aFileBuff "endif()"
-  lappend aFileBuff ""
-  
+  set aBuff [list]
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
       set aDepToolkits [join [LibToLink [woklocate -u $aToolKit]] ";"]
-      lappend aFileBuff "set(${aToolKit}_DEPS \"${aDepToolkits}\")"
+      lappend aBuff "set(${aToolKit}_DEPS \"${aDepToolkits}\")"
     }
     foreach anExecutable [OS:executable ${aModule}] {
       set aDepToolkits [join [LibToLink [woklocate -u $anExecutable]] ";"]
-      lappend aFileBuff "set(${anExecutable}_DEPS \"${aDepToolkits}\")"
+      lappend aBuff "set(${anExecutable}_DEPS \"${aDepToolkits}\")"
     }
   }
-  lappend aFileBuff ""
-  lappend aFileBuff "separate_arguments(USED_TOOLKITS)"
-  lappend aFileBuff "foreach( TOOLKIT \$\{USED_TOOLKITS\} )"
-  lappend aFileBuff " set(TurnONthe\$\{TOOLKIT\} ON)"
-  lappend aFileBuff " foreach( TK \$\{\$\{TOOLKIT\}_DEPS\})"
-  lappend aFileBuff "   set(TurnONthe\$\{TK\} ON)" 
-  lappend aFileBuff " endforeach()"
-  lappend aFileBuff "endforeach()"
-  lappend aFileBuff ""
+  regsub -all -- {__TOOLKIT_DEPS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+  
+  set aBuff [list]
+  foreach aModule $theModules {
+    lappend aBuff ""
+    lappend aBuff "if (BUILD_${aModule})"
+    foreach aToolKit [${aModule}:toolkits] {
+      lappend aBuff " LIST(APPEND USED_TOOLKITS ${aToolKit} )"
+      lappend aBuff " foreach( TK \$\{${aToolKit}_DEPS\})"
+      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )" 
+      lappend aBuff " endforeach()"
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      lappend aBuff " LIST(APPEND USED_TOOLKITS ${anExecutable} )"
+      lappend aBuff " foreach( TK \$\{${anExecutable}_DEPS\})"
+      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )" 
+      lappend aBuff " endforeach()"
+    }
+    lappend aBuff "endif()"
+  }
+  regsub -all -- {__MODULE_DEPS__}  $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+
+  set aBuff [list]
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
       #create directory
@@ -3073,10 +3035,10 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       }
       
       #add directory to main cmake metafile
-      lappend aFileBuff "subdirs(${aToolKit})"
+      lappend aBuff "subdirs(${aToolKit})"
       
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir $aToolKit false
+      osutils:cmktk $theOutDir $aToolKit false ${aModule}
     }
     foreach anExecutable [OS:executable ${aModule}] {
       #create directory
@@ -3085,25 +3047,18 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       }
       
       #add directory to main cmake metafile
-      lappend aFileBuff "subdirs(${anExecutable})"
+      lappend aBuff "subdirs(${anExecutable})"
       
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir $anExecutable true
+      osutils:cmktk $theOutDir $anExecutable true ${aModule}
     }
   }  
-  
-  # install toolkits and execs and other files
-  lappend aFileBuff ""
-  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_TOOLKITS\} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
-  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_TOOLKITS\} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
-  lappend aFileBuff ""
-  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_EXECUTABLES\} CONFIGURATIONS Debug DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bind )"
-  lappend aFileBuff "install( TARGETS \$\{${aProjectName}_EXECUTABLES\} CONFIGURATIONS Release DESTINATION \$\{CMAKE_INSTALL_PREFIX\}/\$\{SYSTEM\}\$\{BITNESS\}/\$\{COMPILER\}/bin )"
+  regsub -all -- {__INCLUDE_TOOLKITS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
 
   #generate cmake meta file
   set aFile [open [set fdsw [file join $theOutDir $anOutFileName]] w]
   fconfigure $aFile -translation crlf
-  puts $aFile [join $aFileBuff "\n"]
+  puts $aFile $theProjTmpl
   close $aFile
   
   puts "The Cmake meta-files are stored in the $theOutDir directory"
@@ -3280,6 +3235,11 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   }
   
   set anOutDir "${anOutRoot}/${aWokStation}/${theIDE}"
+  
+  if { "$theIDE" == "cmake" } {
+    set anOutDir "${anOutRoot}/${theIDE}"
+  }
+
   OS:mkdir $anOutDir
   if { ! [file exists $anOutDir] } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
@@ -3294,7 +3254,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc10"   -
     "vc11"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
-    "cmake"   { OS:MKCMK $anOutDir $aModules $anAllSolution }
+    "cmake" { OS:MKCMK "${anOutRoot}/${theIDE}" $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
   }
   

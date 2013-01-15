@@ -243,53 +243,51 @@ proc wgenprojbat {thePath theIDE} {
   wokcd -P Home
   set anOsRootPath [pwd]
   wokcd $aWokCD
+  
+  set aPlatformExt sh
+  if { "$::tcl_platform(platform)" == "windows" } {
+    set aPlatformExt bat    
+  }
 
   set aBox [file normalize "$thePath/.."]
 
-  if { "$::tcl_platform(platform)" == "windows" } {
-    set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.bat" "r"]
+  if {"$theIDE" == "cmake"} {
+    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aPlatformExt}" "$aBox/adm/cmake/draw.${aPlatformExt}"
+    file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}.in" "$aBox/adm/cmake/env.${aPlatformExt}.in"
+    file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
   } else {
-    set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.sh"  "r"]
-  }
-  set anEnvTmpl [read $anEnvTmplFile]
-  close $anEnvTmplFile
-  
-  set aCasRoot ""
-  if { [file normalize "$anOsRootPath"] != "$aBox" } {
-    set aCasRoot [relativePath "$aBox" "$anOsRootPath"]
-  }
-  set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
-
-  regsub -all -- {__CASROOT__}     $anEnvTmpl "$aCasRoot"    anEnvTmpl
-  regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
-  if { "$::tcl_platform(platform)" != "windows" } {
-    if { "$::ARCH" == "32"} {
-      regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "" anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "" anEnvTmpl
-    } else {
-      regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "" anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "" anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
-      regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
+    
+    set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}" "r"]
+    set anEnvTmpl [read $anEnvTmplFile]
+    close $anEnvTmplFile
+    
+    set aCasRoot ""
+    if { [file normalize "$anOsRootPath"] != "$aBox" } {
+      set aCasRoot [relativePath "$aBox" "$anOsRootPath"]
     }
-  }
-
-  if { "$::tcl_platform(platform)" == "windows" } {
-    set anEnvFile [open "$aBox/env.bat" "w"]
-  } else {
-    set anEnvFile [open "$aBox/env.sh"  "w"]
-  }
-  puts $anEnvFile $anEnvTmpl
-  close $anEnvFile
-
-  if { "$::tcl_platform(platform)" == "windows" } {
-    catch {file copy -- "$::env(WOKHOME)/site/custom.bat"        "$aBox/custom.bat"}
-    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.bat" "$aBox/draw.bat"
-  } else {
-    catch {file copy -- "$::env(WOKHOME)/site/custom.sh"              "$aBox/custom.sh"}
-    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.sh"       "$aBox/draw.sh"
+    set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
+    
+    regsub -all -- {__CASROOT__}     $anEnvTmpl "$aCasRoot"    anEnvTmpl
+    regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
+    if { "$::tcl_platform(platform)" != "windows" } {
+      if { "$::ARCH" == "32"} {
+        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "" anEnvTmpl
+      } else {
+        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
+      }
+    } 
+    set anEnvFile [open "$aBox/env.${aPlatformExt}" "w"]
+    puts $anEnvFile $anEnvTmpl
+    close $anEnvFile  
+  
+    catch {file copy -- "$::env(WOKHOME)/site/custom.${aPlatformExt}"        "$aBox/custom.${aPlatformExt}"}
+    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aPlatformExt}" "$aBox/draw.${aPlatformExt}"
   }
 
   switch -exact -- "$theIDE" {
