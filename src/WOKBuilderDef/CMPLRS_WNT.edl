@@ -66,6 +66,47 @@
     $set status=%cmplrs_status%;
   @end;
 
+  @template CMPLRS_C_OptLine (%CMPLRS_C_COMPILER,
+                              %CMPLRS_C_SysOptions,
+                              %CMPLRS_C_Options,
+                              %CMPLRS_C_ModeOpt,
+                              %IncDirectives,
+                              %CMPLRS_Unit_C_Options,
+                              %CMPLRS_C_WOKDirectives,
+                              %CMPLRS_ExportBehaviour,
+                              %Entity) is
+    $Following parameters make up C compilation command in this order:
+    $CMPLRS_C_COMPILER      = %CMPLRS_C_COMPILER
+    $CMPLRS_C_SysOptions    = %CMPLRS_C_SysOptions
+    $CMPLRS_C_Options       = %CMPLRS_C_Options
+    $CMPLRS_C_ModeOpt       = %CMPLRS_C_ModeOpt
+    $CMPLRS_Unit_C_Options  = %CMPLRS_Unit_C_Options
+    $CMPLRS_C_WOKDirectives = %CMPLRS_C_WOKDirectives
+    $CMPLRS_ExportBehaviour = %CMPLRS_ExportBehaviour
+    $Dynamic include directives are :
+    $%IncDirectives
+  @end;
+
+  @template CMPLRS_C_CmdLine (%CMPLRS_C_COMPILER,
+                              %CMPLRS_C_SysOptions,
+                              %CMPLRS_C_Options,
+                              %CMPLRS_C_ModeOpt,
+                              %CMPLRS_CXX_DBMSOpt,
+                              %IncDirectives,
+                              %PDBName,
+                              %Source,
+                              %BaseName,
+                              %OutputDir,
+                              %CMPLRS_ExportBehaviour) is
+    $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_ExportBehaviour\^
+    $  %IncDirectives %CMPLRS_CXX_DBMSOpt %CMPLRS_C_ModeOpt \^
+    $ -Fd%PDBName -c -Tc %Source -Fo%OutputDir%BaseName.obj;
+    $set cmplrs_status=%status%;
+    $@acpp.exe -M -m -+ %CMPLRS_C_Options -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
+    $ %Source -o %OutputDir%BaseName.m;
+    $set status=%cmplrs_status%;
+  @end;
+
   @template CMPLRS_CXX_OptLine (%CMPLRS_CXX_COMPILER,
                                 %CMPLRS_CXX_SysOptions,
                                 %CMPLRS_CXX_Options,
@@ -90,48 +131,24 @@
     $%IncDirectives
   @end;
 
-  @template CMPLRS_CXX_CmdLine (%CMPLRS_CXX_COMPILER, %CMPLRS_CXX_SysOptions, %CMPLRS_CXX_Options, %CMPLRS_CXX_ModeOpt,
-                                %CMPLRS_CXX_DBMSOpt, %IncDirectives, %CMPLRS_CXX_INCLUDE, %PDBName, %Source,
-                                %BaseName, %OutputDir, %CMPLRS_ExportBehaviour) is
-    $%CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
+  @template CMPLRS_CXX_CmdLine (%CMPLRS_CXX_COMPILER,
+                                %CMPLRS_CXX_SysOptions,
+                                %CMPLRS_CXX_Options,
+                                %CMPLRS_CXX_ModeOpt,
+                                %CMPLRS_CXX_DBMSOpt,
+                                %IncDirectives,
+                                %CMPLRS_CXX_INCLUDE,
+                                %PDBName,
+                                %Source,
+                                %BaseName,
+                                %OutputDir,
+                                %CMPLRS_ExportBehaviour) is
+    $call %CMPLRS_CXX_COMPILER %CMPLRS_CXX_SysOptions %CMPLRS_CXX_Options %CMPLRS_ExportBehaviour\^
     $  %IncDirectives %CMPLRS_CXX_INCLUDE %CMPLRS_CXX_DBMSOpt %CMPLRS_CXX_ModeOpt \^
-    $ -Fd%PDBName -c -Tp %Source -Fo%OutputDir%BaseName.obj;
+    $ -Fd%PDBName -showIncludes -c -Tp %Source -Fo%OutputDir%BaseName.obj > %OutputDir%BaseName.d 2>&1;
     $set cmplrs_status=%status%;
-    $@acpp.exe -M -m -+ %CMPLRS_CXX_Options -D__cplusplus -D_DLL -D_MT %CMPLRS_ExportBehaviour  %IncDirectives %CMPLRS_CXX_INCLUDE\^
-    $ %Source -o %OutputDir%BaseName.m;
-    $set status=%cmplrs_status%;
-  @end;
-
-  @template CMPLRS_C_OptLine (%CMPLRS_C_COMPILER,
-                              %CMPLRS_C_SysOptions,
-                              %CMPLRS_C_Options,
-                              %CMPLRS_C_ModeOpt,
-                              %IncDirectives,
-                              %CMPLRS_Unit_C_Options,
-                              %CMPLRS_C_WOKDirectives,
-                              %CMPLRS_ExportBehaviour,
-                              %Entity) is
-    $Following parameters make up C compilation command in this order:
-    $CMPLRS_C_COMPILER      = %CMPLRS_C_COMPILER
-    $CMPLRS_C_SysOptions    = %CMPLRS_C_SysOptions
-    $CMPLRS_C_Options       = %CMPLRS_C_Options
-    $CMPLRS_C_ModeOpt       = %CMPLRS_C_ModeOpt
-    $CMPLRS_Unit_C_Options  = %CMPLRS_Unit_C_Options
-    $CMPLRS_C_WOKDirectives = %CMPLRS_C_WOKDirectives
-    $CMPLRS_ExportBehaviour = %CMPLRS_ExportBehaviour
-    $Dynamic include directives are :
-    $%IncDirectives
-  @end;
-
-  @template CMPLRS_C_CmdLine (%CMPLRS_C_COMPILER, %CMPLRS_C_SysOptions, %CMPLRS_C_Options, %CMPLRS_C_ModeOpt, %CMPLRS_CXX_DBMSOpt,
-                              %IncDirectives, %PDBName, %Source,
-                              %BaseName, %OutputDir, %CMPLRS_ExportBehaviour) is
-    $%CMPLRS_C_COMPILER %CMPLRS_C_SysOptions %CMPLRS_C_Options %CMPLRS_ExportBehaviour\^
-    $  %IncDirectives %CMPLRS_CXX_DBMSOpt %CMPLRS_C_ModeOpt \^
-    $ -Fd%PDBName -c -Tc %Source -Fo%OutputDir%BaseName.obj;
-    $set cmplrs_status=%status%;
-    $@acpp.exe -M -m -+ %CMPLRS_C_Options -D_DLL -D_MT %CMPLRS_ExportBehaviour %IncDirectives\^
-    $ %Source -o %OutputDir%BaseName.m;
+    $call grep -v '^Note: including file: ' "%OutputDir%BaseName.d";
+    $call sed -n '/^Note: including file:  *\(.*\)/ { s//\1/; s/\\/\//g; p; }' < %OutputDir%BaseName.d > %OutputDir%BaseName.m;
     $set status=%cmplrs_status%;
   @end;
 
