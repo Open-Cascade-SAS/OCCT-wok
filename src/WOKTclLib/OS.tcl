@@ -2968,31 +2968,31 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
   if { "$theAllSolution" != "" } {
     OS:vcsolution $theVcVer $theAllSolution $theModules $theOutDir ::THE_GUIDS_LIST
   }
-  
+
   puts "The Visual Studio solution and project files are stored in the $theOutDir directory"
 }
 
 # Function to generate CMake meta file
 proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   puts stderr "Generating CMake meta project"
-  
+
   set anOutFileName "CMakeLists.txt"
   set aProjectName $theAllSolution
-  
+
   set theProjTmpl [osutils:readtemplate cmake "CMake main meta-project"]
-  
+
   regsub -all -- {__PROJECT_NAME__} $theProjTmpl $aProjectName theProjTmpl
   regsub -all -- {__BITNESS__}      $theProjTmpl $::env(ARCH) theProjTmpl
-  regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl  
+  regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl
   regsub -all -- {__CASROOT_DIR__} $theProjTmpl "[OS:casroot]" theProjTmpl
-  
-  
+
+
   set aBuff [list]
   foreach aModule $theModules {
     lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
   }
   regsub -all -- {__MODULE_LIST__}  $theProjTmpl  [join $aBuff "\n"] theProjTmpl
-  
+
   set aBuff [list]
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
@@ -3005,7 +3005,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
     }
   }
   regsub -all -- {__TOOLKIT_DEPS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
-  
+
   set aBuff [list]
   foreach aModule $theModules {
     lappend aBuff ""
@@ -3013,13 +3013,13 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
     foreach aToolKit [${aModule}:toolkits] {
       lappend aBuff " LIST(APPEND USED_TOOLKITS ${aToolKit} )"
       lappend aBuff " foreach( TK \$\{${aToolKit}_DEPS\})"
-      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )" 
+      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
       lappend aBuff " endforeach()"
     }
     foreach anExecutable [OS:executable ${aModule}] {
       lappend aBuff " LIST(APPEND USED_TOOLKITS ${anExecutable} )"
       lappend aBuff " foreach( TK \$\{${anExecutable}_DEPS\})"
-      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )" 
+      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
       lappend aBuff " endforeach()"
     }
     lappend aBuff "endif()"
@@ -3033,10 +3033,10 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       if {![file exists "$theOutDir/$aToolKit"]} {
         file mkdir "$theOutDir/$aToolKit"
       }
-      
+
       #add directory to main cmake metafile
       lappend aBuff "subdirs(${aToolKit})"
-      
+
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir $aToolKit false ${aModule}
     }
@@ -3045,14 +3045,14 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       if {![file exists "$theOutDir/$anExecutable"]} {
         file mkdir "$theOutDir/$anExecutable"
       }
-      
+
       #add directory to main cmake metafile
       lappend aBuff "subdirs(${anExecutable})"
-      
+
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir $anExecutable true ${aModule}
     }
-  }  
+  }
   regsub -all -- {__INCLUDE_TOOLKITS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
 
   #generate cmake meta file
@@ -3060,7 +3060,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   fconfigure $aFile -translation crlf
   puts $aFile $theProjTmpl
   close $aFile
-  
+
   puts "The Cmake meta-files are stored in the $theOutDir directory"
 }
 
@@ -3159,8 +3159,8 @@ proc OS:MKAMK { theOutDir {theModules {}} theSubPath} {
   }
 
   osutils:am:adm $theOutDir $theModules
-  osutils:am:root [wokinfo -p HomeDir] $theSubPath $theModules 
-  
+  osutils:am:root [wokinfo -p HomeDir] $theSubPath $theModules
+
   puts "The automake files are stored in the $theOutDir directory"
 }
 
@@ -3179,7 +3179,7 @@ proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
   if { "$theAllSolution" != "" } {
     OS:cworkspace $theAllSolution $theModules $theOutDir
   }
-  
+
   puts "The Code Blocks workspace and project files are stored in the $theOutDir directory"
 }
 
@@ -3190,7 +3190,7 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }
-  
+
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
     return
@@ -3217,7 +3217,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   }
 
   # make list of modules and platforms
-  set aModules [OS:listmodules $theProjectType {win32}] 
+  set aModules [OS:listmodules $theProjectType {win32}]
 
   # generate one solution for all projects if complete OS or VAS is processed
   set anAllSolution ""
@@ -3229,13 +3229,13 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
 
   # Create output directory
   set aWokStation "$::env(WOKSTATION)"
-    
+
   if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
-  
+
   set anOutDir "${anOutRoot}/${aWokStation}/${theIDE}"
-  
+
   if { "$theIDE" == "cmake" } {
     set anOutDir "${anOutRoot}/${theIDE}"
   }
@@ -3245,7 +3245,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
     return
   }
-  
+
   # Generating project files for the selected IDE
   switch -exact -- "$theIDE" {
     "vc7"   -
@@ -3257,12 +3257,12 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "cmake" { OS:MKCMK "${anOutRoot}/${theIDE}" $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
   }
-  
+
   # generate config.txt file
   if { ${anAllSolution} == "Products" && "$::env(WOKSTATION)" == "wnt" } {
     osutils:mkCollectScript "collect_binary.cfg" "$anOutRoot/../" ${theIDE} $::env(ARCH) "release"
   }
-  
+
   # Store generated GUIDs map
   set anOutFile [open "$aGuidsFilePath" "w"]
   fconfigure $anOutFile -translation lf

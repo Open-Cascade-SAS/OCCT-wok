@@ -94,10 +94,10 @@ proc relativePath {thePathFrom thePathTo} {
 
   set aPathFrom [file normalize "$thePathFrom"]
   set aPathTo   [file normalize "$thePathTo"]
-  
+
   set aCutedPathFrom "${aPathFrom}/dummy"
   set aRelatedDeepPath ""
-  
+
   while { "$aCutedPathFrom" != [file normalize "$aCutedPathFrom/.."] } {
     set aCutedPathFrom [file normalize "$aCutedPathFrom/.."]
     # does aPathTo contain aCutedPathFrom?
@@ -112,8 +112,8 @@ proc relativePath {thePathFrom thePathTo} {
       regsub -all "//" $aPathToAfterCut "/" aPathToAfterCut
       return $aPathToAfterCut
     }
-    set aRelatedDeepPath "$aRelatedDeepPath../" 
-    
+    set aRelatedDeepPath "$aRelatedDeepPath../"
+
   }
 
   return $thePathTo
@@ -243,10 +243,10 @@ proc wgenprojbat {thePath theIDE} {
   wokcd -P Home
   set anOsRootPath [pwd]
   wokcd $aWokCD
-  
+
   set aPlatformExt sh
   if { "$::tcl_platform(platform)" == "windows" } {
-    set aPlatformExt bat    
+    set aPlatformExt bat
   }
 
   set aBox [file normalize "$thePath/.."]
@@ -256,17 +256,17 @@ proc wgenprojbat {thePath theIDE} {
     file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}.in" "$aBox/adm/cmake/env.${aPlatformExt}.in"
     file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
   } else {
-    
+
     set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}" "r"]
     set anEnvTmpl [read $anEnvTmplFile]
     close $anEnvTmplFile
-    
+
     set aCasRoot ""
     if { [file normalize "$anOsRootPath"] != "$aBox" } {
       set aCasRoot [relativePath "$aBox" "$anOsRootPath"]
     }
     set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
-    
+
     regsub -all -- {__CASROOT__}     $anEnvTmpl "$aCasRoot"    anEnvTmpl
     regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
     if { "$::tcl_platform(platform)" != "windows" } {
@@ -281,11 +281,11 @@ proc wgenprojbat {thePath theIDE} {
         regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
         regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
       }
-    } 
+    }
     set anEnvFile [open "$aBox/env.${aPlatformExt}" "w"]
     puts $anEnvFile $anEnvTmpl
-    close $anEnvFile  
-  
+    close $anEnvFile
+
     catch {file copy -- "$::env(WOKHOME)/site/custom.${aPlatformExt}"        "$aBox/custom.${aPlatformExt}"}
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aPlatformExt}" "$aBox/draw.${aPlatformExt}"
   }
@@ -300,7 +300,7 @@ proc wgenprojbat {thePath theIDE} {
   }
 }
 
-proc removeAllOccurrencesOf { theObject theList } { 
+proc removeAllOccurrencesOf { theObject theList } {
   set aSortIndices [lsort -decreasing [lsearch -all -nocase $theList $theObject]]
   foreach anIndex $aSortIndices {
     set theList [lreplace $theList $anIndex $anIndex]
@@ -310,9 +310,9 @@ proc removeAllOccurrencesOf { theObject theList } {
 
 # Wrapper-function to generate VS project files
 proc wgenproj { args } {
-  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }  
+  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }
   set anArgs $args
-  
+
   # Setting default IDE.
   # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode (cmake).
   set anTarget ""
@@ -327,35 +327,35 @@ proc wgenproj { args } {
   if { [lsearch -nocase $anArgs -no_wprocess] != -1 } {
     set anArgs [removeAllOccurrencesOf -no_wprocess $anArgs]
     set willWProcessStart false
-  }  
-  
+  }
+
   if { [set anIndex [lsearch -nocase $anArgs -ide=*]] != -1 } {
     regsub -nocase "\\-ide=" [lindex $anArgs $anIndex] "" anTarget
     set anArgs [removeAllOccurrencesOf -ide=* $anArgs]
     set isTargetDefault false
   }
-  
+
   if { [set anIndex [lsearch -nocase $anArgs -target=*]] != -1 } {
     regsub -nocase "\\-target=" [lindex $anArgs $anIndex] "" anTarget
     set anArgs [removeAllOccurrencesOf -target=* $anArgs]
     set isTargetDefault false
   }
-  
+
   if { [llength $anArgs] == 0 && $isTargetDefault == true } {
     puts "the default \'$anTarget\' target has been applied"
   }
-  
-  set isHelpRequire false  
+
+  set isHelpRequire false
   if { [lsearch -nocase $anArgs -h] != -1} {
     set anArgs [removeAllOccurrencesOf -h $anArgs]
     set isHelpRequire true
   }
-    
+
   if { [lsearch -nocase $aSupportedTargets $anTarget] == -1} {
     puts "the \'$anTarget\' is wrong TARGET"
     set isHelpRequire true
   }
-  
+
   if {[llength $anArgs] > 0} {
     set isHelpRequire true
 
@@ -367,19 +367,19 @@ proc wgenproj { args } {
   if {  $isHelpRequire == true } {
     puts "usage: wgenproj \[ -target=<TARGET> \] \[ -no_wprocess \]
     -no_wprocess - skip wprocess
-    TARGET: 
+    TARGET:
       vc8   -  Visual Studio 2005
       vc9   -  Visual Studio 2008
       vc10  -  Visual Studio 2010
       vc11  -  Visual Studio 2012
       cbp   -  CodeBlocks
-      cmake -  CMake 
+      cmake -  CMake
       amk   -  AutoMake"
       return
   }
 
   puts "the \'$anTarget\' target has been applied"
-  
+
   # create the inc directory. The directory should be created by wprocess function.
   wokcd -P Home
   file mkdir [file join [pwd] inc]

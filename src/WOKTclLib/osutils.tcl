@@ -1713,7 +1713,7 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
   upvar $theIncPaths   anIncPaths
   upvar $theTKDefines  aTKDefines
   upvar $theTKSrcFiles aTKSrcFiles
-  
+
   set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]]
   foreach tkx $aDepToolkits {
     lappend aUsedLibs "${tkx}"
@@ -1812,111 +1812,108 @@ proc osutils:commonUsedTK { theToolKit } {
       lappend anUsedToolKits "${tkx}"
     }
   }
-  
+
   return $anUsedToolKits
 }
 
-proc osutils:usedwntlibs { theToolKit } {
-  set anUsedLibs [list]
-  
-  lappend anUsedLibs "advapi32.lib"
-  lappend anUsedLibs "gdi32.lib"
-  lappend anUsedLibs "user32.lib"
-  lappend anUsedLibs "kernel32.lib"
-  
-  lappend anUsedLibs "opengl32.lib"
-  lappend anUsedLibs "glu32.lib"
-  lappend anUsedLibs "ws2_32.lib"
-  lappend anUsedLibs "vfw32.lib"
-  
-  lappend anUsedLibs "tcl85.lib"
-  lappend anUsedLibs "tk85.lib"
+proc osutils:csfList { theOS  theCsfMap } {
+  upvar $theCsfMap aCsfMap
 
-  return $anUsedLibs
+  unset theCsfMap
+
+  if { "$theOS" == "wnt" } {
+    # -- WinAPI libraries
+    set aCsfMap(CSF_kernel32)   "kernel32.lib"
+    set aCsfMap(CSF_advapi32)   "advapi32.lib"
+    set aCsfMap(CSF_gdi32)      "gdi32.lib"
+    set aCsfMap(CSF_user32)     "user32.lib"
+    set aCsfMap(CSF_glu32)      "glu32.lib"
+    set aCsfMap(CSF_opengl32)   "opengl32.lib"
+    set aCsfMap(CSF_wsock32)    "wsock32.lib"
+    set aCsfMap(CSF_netapi32)   "netapi32.lib"
+    set aCsfMap(CSF_AviLibs)    "ws2_32.lib vfw32.lib"
+    set aCsfMap(CSF_OpenGlLibs) "opengl32.lib glu32.lib"
+
+    # -- 3rd-parties precompiled libraries
+    set aCsfMap(CSF_TclLibs)    "tcl85.lib"
+    set aCsfMap(CSF_TclTkLibs)  "tk85.lib"
+    set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
+
+  } else {
+
+    if { "$theOS" == "lin" } {
+      set aCsfMap(CSF_ThreadLibs) "pthread rt"
+      set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
+      set aCsfMap(CSF_OpenGlLibs) "GLU GL"
+
+    } elseif { "$theOS" == "mac" } {
+      set aCsfMap(CSF_objc)     "objc"
+
+      # frameworks
+      set aCsfMap(CSF_Appkit)     "Appkit"
+      set aCsfMap(CSF_IOKit)      "IOKit"
+      set aCsfMap(CSF_OpenGlLibs) "OpenGL"
+    }
+
+    set aCsfMap(CSF_MotifLibs)  "X11"
+
+    # -- Tcl/Tk configuration
+    set aCsfMap(CSF_TclLibs)    "tcl8.5"
+    set aCsfMap(CSF_TclTkLibs)  "tk8.5 X11"
+
+    #-- FTGL (font renderer for OpenGL)
+    set aCsfMap(CSF_FTGL)       "ftgl"
+
+    #-- FreeType
+    set aCsfMap(CSF_FREETYPE)   "freetype"
+
+    #-- optional 3rd-parties
+    #-- TBB
+    set aCsfMap(CSF_TBB)            "tbb tbbmalloc"
+
+    #-- FreeImage
+    set aCsfMap(CSF_FreeImagePlus)  "freeimage"
+
+    #-- GL2PS
+    set aCsfMap(CSF_GL2PS)          "gl2ps"
+  }
 }
 
-proc osutils:usedunixlibs { theToolKit } {
-  set anUsedLibs [list]
-  
-  lappend anUsedLibs "dl"
-  lappend anUsedLibs "pthread"
-  lappend anUsedLibs "rt"
+proc osutils:usedOsLibs { theToolKit theOS } {
+  set aUsedLibs [list]
 
-  # Xlib
-  lappend anUsedLibs "X11"
-  lappend anUsedLibs "Xext"
-  lappend anUsedLibs "Xmu"
-  lappend anUsedLibs "Xi"
-  
-  # TCL/TK 8.5
-  lappend anUsedLibs "tcl8.5"
-  lappend anUsedLibs "tk8.5"
+  osutils:csfList $theOS anOsCsfList
 
-  # FTGL
-  lappend anUsedLibs "freetype"
-  lappend anUsedLibs "ftgl"
+  foreach element [osutils:tk:hascsf [woklocate -p ${theToolKit}:source:EXTERNLIB [wokcd]]] {
+    # test if variable is not setted - continue
+    if ![info exists anOsCsfList($element)] {
+      continue
+    }
 
-  #if tbb
-  lappend anUsedLibs "tbb"
-  lappend anUsedLibs "tbbmalloc"
-  
-  #if freeimage
-  lappend anUsedLibs "freeimage"
-  
-  #if gl2ps
-  lappend anUsedLibs "gl2ps"
+    foreach aLib [split "$anOsCsfList($element)"] {
+      if { [lsearch $aUsedLibs $aLib] == "-1"} {
+        lappend aUsedLibs $aLib
+      }
+    }
+  }
 
-  return $anUsedLibs
-}
-
-proc osutils:usedmacoslibs { theToolKit } {
-  set anUsedLibs [list]
-
-  lappend anUsedLibs "objc"
-
-  # frameworks
-  lappend anUsedLibs "Appkit"
-  lappend anUsedLibs "IOKit"
-  lappend anUsedLibs "OpenGL"
-
-  # FTGL
-  lappend anUsedLibs "freetype"
-  lappend anUsedLibs "ftgl"
-
-  # to be removed
-  lappend anUsedLibs "X11"
-
-  # TCL/TK 8.5
-  lappend anUsedLibs "tcl8.5"
-  lappend anUsedLibs "tk8.5"
-
-  #if tbb
-  lappend anUsedLibs "tbb"
-  lappend anUsedLibs "tbbmalloc"
-
-  #if freeimage
-  lappend anUsedLibs "freeimage"
-
-  #if gl2ps
-  lappend anUsedLibs "gl2ps"
-
-  return $anUsedLibs
+  return $aUsedLibs
 }
 
 proc osutils:incpaths { theUnits theRelatedPath } {
   set anIncPaths [list]
-  
+
   foreach anUnit $theUnits {
     lappend anIncPaths "${theRelatedPath}/drv/${anUnit}"
     lappend anIncPaths "${theRelatedPath}/src/${anUnit}"
   }
-  
+
   return $anIncPaths
 }
 
 proc osutils:tksrcfiles { theUnits  theRelatedPath } {
   set aTKSrcFiles [list]
-  
+
   if [array exists written] { unset written }
   foreach anUnit $theUnits {
     set xlo       [wokinfo -n $anUnit]
@@ -1930,81 +1927,81 @@ proc osutils:tksrcfiles { theUnits  theRelatedPath } {
       }
     }
   }
-  
+
   return $aTKSrcFiles
 }
 
 proc osutils:tkdefs { theUnits } {
   set aTKDefines [list]
-  
+
   foreach anUnit $theUnits {
     lappend aTKDefines "__${anUnit}_DLL"
   }
-  
+
   return $aTKDefines
 }
 
 proc osutils:fileGroupName { theSrcFile } {
   set path [file dirname [file normalize ${theSrcFile}]]
   regsub -all [file normalize "${path}/.."] ${path} "" aGroupName
-  
+
   return $aGroupName
 }
 
-proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} { 
-  set anOutFileName "CMakeLists.txt"  
+proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
+  set anOutFileName "CMakeLists.txt"
 
   set anCommonUsedToolKits [osutils:commonUsedTK  $theToolKit]
-  set anUsedWntLibs        [osutils:usedwntlibs   $theToolKit]
-  set anUsedUnixLibs       [osutils:usedunixlibs  $theToolKit]
-  set anUsedMacLibs        [osutils:usedmacoslibs $theToolKit]
+  set anUsedWntLibs        [osutils:usedOsLibs $theToolKit "wnt"]
+  set anUsedUnixLibs       [osutils:usedOsLibs $theToolKit "lin"]
+  set anUsedMacLibs        [osutils:usedOsLibs $theToolKit "mac"]
 
   set anUnits [list]
   foreach anUnitWithPath [osutils:tk:units [woklocate -u $theToolKit]] {
     lappend anUnits [wokinfo -n $anUnitWithPath]
   }
-  
+
   if { [llength $anUnits] == 0 } {
     set anUnits [wokinfo -n [woklocate -u $theToolKit]]
   }
-  
+
   set anCommonUnits [list]
   set aWntUnits     [osutils:justwnt  $anUnits]
   set anUnixUnits   [osutils:justunix  $anUnits]
 
-  
+
   #remove duplicates from wntUnits and unixUnits and collect these duplicates in commonUnits variable
   foreach aWntUnit $aWntUnits {
     if { [set anIndex [lsearch -exact $anUnixUnits $aWntUnit]] != -1 } {
       #add to common list
       lappend anCommonUnits $aWntUnit
-      
+
       #remove from wnt list
       set anUnixUnits [lreplace $anUnixUnits $anIndex $anIndex]
-      
+
       #remove from unix list
       set anIndex [lsearch -exact $aWntUnits $aWntUnit]
       set aWntUnits [lreplace $aWntUnits $anIndex $anIndex]
     }
   }
 
-  set aRelatedPath [relativePath "$theOutDir/$theToolKit" [pwd]] 
+  set aRelatedPath [relativePath "$theOutDir/$theToolKit" [pwd]]
 
   set anCommonIncPaths  [osutils:incpaths $anCommonUnits $aRelatedPath]
   set anWntIncPaths     [osutils:incpaths $aWntUnits $aRelatedPath]
   set anUnixIncPaths    [osutils:incpaths $anUnixUnits $aRelatedPath]
-  
+
   set aCommonTKSrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath]
   set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits  $aRelatedPath]
   set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits $aRelatedPath]
-  
+
   set aFileBuff [list "project(${theToolKit})\n"]
-  
+
   # macros for wnt
   lappend aFileBuff "if (WIN32)"
   foreach aMacro [osutils:tkdefs [concat $anCommonUnits $aWntUnits]] {
     lappend aFileBuff "  list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
-  } 
+  }
   lappend aFileBuff "  string( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
   lappend aFileBuff "endif()"
   lappend aFileBuff ""
@@ -2026,7 +2023,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   }
   lappend aFileBuff "endif()"
   lappend aFileBuff ""
-  
+
   # used libs
   foreach anCommonUsedToolKit $anCommonUsedToolKits {
     if { $anCommonUsedToolKit != "" } {
@@ -2091,13 +2088,13 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     }
   }
   lappend aFileBuff "endif()\n"
-  
+
   #used source files
   foreach aCommonTKSrcFile $aCommonTKSrcFiles {
     lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aCommonTKSrcFile}\" )"
     lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTKSrcFile] 1 end] FILES \"${aCommonTKSrcFile}\")\n"
   }
-  
+
   lappend aFileBuff "if (WIN32)"
   foreach aWntTKSrcFile $aWntTKSrcFiles {
     lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aWntTKSrcFile}\" )"
@@ -2109,7 +2106,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"${aUnixTKSrcFile}\")\n"
   }
   lappend aFileBuff "endif()\n"
-  
+
   #install instrutions
   lappend aFileBuff "if (\"\$\{USED_TOOLKITS\}\" STREQUAL \"\" OR DEFINED TurnONthe${theToolKit})"
   if { $theIsExec == true } {
@@ -2124,7 +2121,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
     lappend aFileBuff " install( TARGETS ${theToolKit}
-                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/bin\" 
+                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/bin\"
                                  ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/lib\"
                                  LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/lib\")"
     lappend aFileBuff ""
@@ -2444,10 +2441,10 @@ proc relativePath {thePathFrom thePathTo} {
 
   set aPathFrom [file normalize "$thePathFrom"]
   set aPathTo   [file normalize "$thePathTo"]
-  
+
   set aCutedPathFrom "${aPathFrom}/dummy"
   set aRelatedDeepPath ""
-  
+
   while { "$aCutedPathFrom" != [file normalize "$aCutedPathFrom/.."] } {
     set aCutedPathFrom [file normalize "$aCutedPathFrom/.."]
     # does aPathTo contain aCutedPathFrom?
@@ -2462,8 +2459,8 @@ proc relativePath {thePathFrom thePathTo} {
       regsub -all "//" $aPathToAfterCut "/" aPathToAfterCut
       return $aPathToAfterCut
     }
-    set aRelatedDeepPath "$aRelatedDeepPath../" 
-    
+    set aRelatedDeepPath "$aRelatedDeepPath../"
+
   }
 
   return $thePathTo
