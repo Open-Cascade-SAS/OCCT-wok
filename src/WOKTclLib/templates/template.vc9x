@@ -48,6 +48,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-MP"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
@@ -138,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-MP"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				PreprocessorDefinitions="DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
@@ -228,7 +230,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/favor:blend"
+				AdditionalOptions="-MP -favor:blend"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="2"
 				InlineFunctionExpansion="1"
@@ -320,7 +322,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/favor:blend"
+				AdditionalOptions="-MP -favor:blend"
 				AdditionalIncludeDirectories="__TKINC__;$(CSF_OPT_INC)"
 				Optimization="0"
 				PreprocessorDefinitions="WIN64;DEB;_DEBUG;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__;_OCC64"

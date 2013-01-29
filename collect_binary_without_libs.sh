@@ -1,6 +1,9 @@
 #!/bin/bash
 
 installRelatePath="package"
+if [ "$1" != "" ]; then
+  installRelatePath=$1
+fi
 
 mkdir -p $installRelatePath/doc
 mkdir -p $installRelatePath/lib/lin
@@ -324,10 +327,3 @@ cp -f src/WOKTclLib/wprepare.tcl $installRelatePath/lib/
 cp -f src/WOKTclLib/wstore.tcl $installRelatePath/lib/
 cp -f src/WOKTclLib/wstore_trigger.example $installRelatePath/lib/
 cp -f src/WOKTclLib/wutils.tcl $installRelatePath/lib/
-
-# echo.
-# echo =========end operation===========
-# if not "%doNotCopyForeignFileList%" == "" (
-  # echo "%doNotCopyForeignFileList% files has not been copied"
-# )
-# echo.

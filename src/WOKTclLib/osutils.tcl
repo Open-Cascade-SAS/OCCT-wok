@@ -1705,10 +1705,7 @@ proc osutils:mkCollectScript { theOutCfgFileName theProjectRootPath theIDE theBi
 # @param theTKDefines    - compiler macro definitions
 # @param theTKSrcFiles   - list of source files
 proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theIncPaths theTKDefines theTKSrcFiles } {
-  set aRelatedPathPart [relativePath "$theOutDir" [pwd]] 
   set aWokStation "$::env(WOKSTATION)"
-
-  set aRelatedPathPart "$theRelativePath"
 
   # collect list of referred libraries to link with
   upvar $theUsedLib    aUsedLibs
@@ -1756,7 +1753,7 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
     }
   }
 
-  lappend anIncPaths "$aRelatedPathPart/inc"
+  lappend anIncPaths "$theRelativePath/inc"
   set listloc [osutils:tk:units [woklocate -u $theToolKit]]
 
   if { [llength $listloc] == 0 } {
@@ -1775,7 +1772,7 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
-        lappend aTKSrcFiles "${aRelatedPathPart}/[wokUtils:FILES:wtail $aSrcFile 3]"
+        lappend aTKSrcFiles "${theRelativePath}/[wokUtils:FILES:wtail $aSrcFile 3]"
       } else {
         puts "Warning : more than one occurences for [file tail $aSrcFile]"
       }
@@ -1787,8 +1784,8 @@ proc osutils:tkinfo { theRelativePath theToolKit theUsedLib theFrameworks theInc
     }
 
     # common include paths
-    lappend anIncPaths "${aRelatedPathPart}/drv/${xlo}"
-    lappend anIncPaths "${aRelatedPathPart}/src/${xlo}"
+    lappend anIncPaths "${theRelativePath}/drv/${xlo}"
+    lappend anIncPaths "${theRelativePath}/src/${xlo}"
   }
 
   # macros for UNIX to use config.h file
@@ -1844,15 +1841,21 @@ proc osutils:usedunixlibs { theToolKit } {
   lappend anUsedLibs "dl"
   lappend anUsedLibs "pthread"
   lappend anUsedLibs "rt"
-  
+
+  # Xlib
   lappend anUsedLibs "X11"
   lappend anUsedLibs "Xext"
   lappend anUsedLibs "Xmu"
   lappend anUsedLibs "Xi"
   
+  # TCL/TK 8.5
   lappend anUsedLibs "tcl8.5"
   lappend anUsedLibs "tk8.5"
-  
+
+  # FTGL
+  lappend anUsedLibs "freetype"
+  lappend anUsedLibs "ftgl"
+
   #if tbb
   lappend anUsedLibs "tbb"
   lappend anUsedLibs "tbbmalloc"
@@ -1860,6 +1863,40 @@ proc osutils:usedunixlibs { theToolKit } {
   #if freeimage
   lappend anUsedLibs "freeimage"
   
+  #if gl2ps
+  lappend anUsedLibs "gl2ps"
+
+  return $anUsedLibs
+}
+
+proc osutils:usedmacoslibs { theToolKit } {
+  set anUsedLibs [list]
+
+  lappend anUsedLibs "objc"
+
+  # frameworks
+  lappend anUsedLibs "Appkit"
+  lappend anUsedLibs "IOKit"
+  lappend anUsedLibs "OpenGL"
+
+  # FTGL
+  lappend anUsedLibs "freetype"
+  lappend anUsedLibs "ftgl"
+
+  # to be removed
+  lappend anUsedLibs "X11"
+
+  # TCL/TK 8.5
+  lappend anUsedLibs "tcl8.5"
+  lappend anUsedLibs "tk8.5"
+
+  #if tbb
+  lappend anUsedLibs "tbb"
+  lappend anUsedLibs "tbbmalloc"
+
+  #if freeimage
+  lappend anUsedLibs "freeimage"
+
   #if gl2ps
   lappend anUsedLibs "gl2ps"
 
@@ -1917,9 +1954,10 @@ proc osutils:fileGroupName { theSrcFile } {
 proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} { 
   set anOutFileName "CMakeLists.txt"  
 
-  set anCommonUsedToolKits [osutils:commonUsedTK $theToolKit]
-  set anUsedWntLibs        [osutils:usedwntlibs $theToolKit]
-  set anUsedUnixLibs       [osutils:usedunixlibs $theToolKit]
+  set anCommonUsedToolKits [osutils:commonUsedTK  $theToolKit]
+  set anUsedWntLibs        [osutils:usedwntlibs   $theToolKit]
+  set anUsedUnixLibs       [osutils:usedunixlibs  $theToolKit]
+  set anUsedMacLibs        [osutils:usedmacoslibs $theToolKit]
 
   set anUnits [list]
   foreach anUnitWithPath [osutils:tk:units [woklocate -u $theToolKit]] {
@@ -2000,6 +2038,38 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   foreach anUsedWntLib $anUsedWntLibs {
     if { $anUsedWntLib != "" } {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedWntLib} )"
+    }
+  }
+  lappend aFileBuff "elseif(APPLE)"
+  foreach anUsedMacLib $anUsedMacLibs {
+    if { $anUsedMacLib == "tbb" || $anUsedMacLib == "tbbmalloc" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_TBB)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "freeimage" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_FREEIMAGE)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "gl2ps" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_GL2PS)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "X11" } {
+      lappend aFileBuff "  find_package(X11 COMPONENTS X11 Xext Xmu Xi)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_LIBRARIES\} )"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xi_LIB\} )"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xmu_LIB\} )"
+    } elseif { $anUsedMacLib == "Appkit" } {
+      lappend aFileBuff "  find_library(FRAMEWORKS_APPKIT NAMES Appkit)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_APPKIT\} )"
+    } elseif { $anUsedMacLib == "IOKit" } {
+      lappend aFileBuff "  find_library(FRAMEWORKS_IOKIT NAMES IOKit)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_IOKIT\} )"
+    } elseif { $anUsedMacLib == "OpenGL" } {
+      lappend aFileBuff "  find_library(FRAMEWORKS_OPENGL NAMES OpenGL)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_OPENGL\} )"
+    } elseif { $anUsedMacLib != "" } {
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
     }
   }
   lappend aFileBuff "else()"
@@ -2241,6 +2311,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t\t<Add option=\"-EHsc\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-W3\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
   }
@@ -2292,6 +2363,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
     puts $aFile "\t\t\t\t\t<Add option=\"-Od\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-Zi\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-W3\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O0\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-g\" />"

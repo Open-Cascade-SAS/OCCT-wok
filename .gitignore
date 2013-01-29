@@ -15,3 +15,6 @@
 # /adm/
 /adm/win32
 /adm/win64
+/adm/cmake
+
+/package

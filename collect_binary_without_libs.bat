@@ -4,6 +4,8 @@ set COPYCMD=/Y
 
 set "installPath=package"
 
+if not "%1" == "" set "installPath=%1"
+
 mkdir "%installPath%\wok_entities\"
 
 mkdir "%installPath%\3rdparty\"
@@ -17,7 +19,6 @@ xcopy "src\WOKsite\tclshrc.tcl"    "%installPath%\home\"
 xcopy "src\WOKsite\.emacs"    "%installPath%\home\"
 
 xcopy "src\WOKsite\public_el" "%installPath%\site\public_el\" /S
-xcopy "custom.bat" "%installPath%\site\"
 
 xcopy "src\CPPJini\CPPJini_General.edl" "%installPath%\lib\"
 xcopy "src\CPPJini\CPPJini_Template.edl" "%installPath%\lib\"
