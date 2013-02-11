@@ -21,7 +21,7 @@
   @set %CSF_C_COMPILER = "gcc ";
   @string %CSF_C_INCLUDE +=  "";
   @set %CSF_C_SysOptions = " -fPIC -DPIC";
-  @set %CSF_C_Options    = " -DLIN -DLININTEL -D_GNU_SOURCE=1 ";
+  @set %CSF_C_Options    = " -DLIN -DLININTEL -D_GNU_SOURCE=1 -fexceptions";
   @set %CSF_C_ModeOpt    = " -O3 -DNDEBUG -DNo_Exception ";
   @set %CSF_C_ModeOptDeb = " -O0 -g -DDEB -D_DEBUG ";
 

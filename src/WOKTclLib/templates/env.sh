@@ -48,7 +48,7 @@ else
   export WOKSTATION="lin";
 fi
 
-export CASBIN="${WOKSTATION}/cbp"
+export CASBIN="__CASBIN__"
 
 export CSF_OPT_CMPL=""
 
@@ -111,8 +111,8 @@ else
   export CSF_OPT_LNK32D="$OPT_LINKER_OPTIONS"
 fi
 
-export PATH="${CASROOT}/${CASBIN}/bin${CASDEB}:${PATH}"
-export LD_LIBRARY_PATH="${CASROOT}/${CASBIN}/lib${CASDEB}:${LD_LIBRARY_PATH}"
+export PATH="${CASROOT}/${CASBIN}bin${CASDEB}:${PATH}"
+export LD_LIBRARY_PATH="${CASROOT}/${CASBIN}lib${CASDEB}:${LD_LIBRARY_PATH}"
 if [ "$WOKSTATION" == "mac" ]; then
   export DYLD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${DYLD_LIBRARY_PATH}"
 fi

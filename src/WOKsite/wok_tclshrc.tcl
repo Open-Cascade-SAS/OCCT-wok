@@ -267,8 +267,17 @@ proc wgenprojbat {thePath theIDE} {
     }
     set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
 
-    regsub -all -- {__CASROOT__}     $anEnvTmpl "$aCasRoot"    anEnvTmpl
+    if { "$theIDE" == "amk" } {
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "\$PWD" anEnvTmpl
+      regsub -all -- {__CASBIN__}    $anEnvTmpl ""      anEnvTmpl
+      
+    } else {
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"    anEnvTmpl
+      regsub -all -- {__CASBIN__}    $anEnvTmpl "\${WOKSTATION}/cbp/" anEnvTmpl
+    }
+    
     regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
+    
     if { "$::tcl_platform(platform)" != "windows" } {
       if { "$::ARCH" == "32"} {
         regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl

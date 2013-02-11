@@ -25,8 +25,8 @@
   @set %CSF_C_COMPILER = "gcc ";
   @string %CSF_C_INCLUDE +=  "";
 
-  @set %CSF_C_SysOptions = " -fPIC -funsigned-char -Wall -fexceptions";
-  @set %CSF_C_Options    = "";
+  @set %CSF_C_SysOptions = " -fPIC -funsigned-char -Wall";
+  @set %CSF_C_Options    = " -fexceptions";
   @set %CSF_C_ModeOpt    = " -O3 -DNDEBUG -DNo_Exception ";
   @set %CSF_C_ModeOptDeb = " -gdwarf-2 -O0 -DDEB -D_DEBUG ";
 

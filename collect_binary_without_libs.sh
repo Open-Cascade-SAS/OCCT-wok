@@ -173,7 +173,7 @@ cp -f src/WOKBuilderDef/USECONFIG.edl $installRelatePath/lib/
 cp -f src/WOKTclLib/templates/template.mam $installRelatePath/lib/
 cp -f src/WOKTclLib/templates/template.mamx $installRelatePath/lib/
 
-cp -r src/WOKTclLib/templates/*.* $installRelatePath/lib/templates/
+cp -r src/WOKTclLib/templates/* $installRelatePath/lib/templates/
 
 cp -f src/WOKTclLib/tclIndex $installRelatePath/lib/
 cp -f src/WOKTclLib/abstract.xpm $installRelatePath/lib/
