@@ -82,7 +82,6 @@ proc wokdep:gui:UpdateList {} {
   set anBin64Errs {}
   wokdep:SearchTclTk     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   wokdep:SearchFreeType  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
-  wokdep:SearchFTGL      anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   wokdep:SearchX11       anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   if { "$::HAVE_FREEIMAGE" == "true" } {
     wokdep:SearchFreeImage anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs

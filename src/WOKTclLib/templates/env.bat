@@ -105,7 +105,6 @@ if not ["%CASDEB%"] == [""] if ["%ARCH%"] == ["32"] set "PATH=%CSF_OPT_BIN32D%;%
 if not ["%CASDEB%"] == [""] if ["%ARCH%"] == ["64"] set "PATH=%CSF_OPT_BIN64D%;%PATH%"
 
 rem ----- Set envoronment variables used by OCCT -----
-set "CSF_MDTVFontDirectory=%CASROOT%\src\FontMFT"
 set CSF_LANGUAGE=us
 set MMGT_CLEAR=1
 set CSF_EXCEPTION_PROMPT=1

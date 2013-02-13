@@ -344,68 +344,6 @@ proc wokdep:SearchFreeType {theErrInc theErrLib32 theErrLib64 theErrBin32 theErr
   return "$isFound"
 }
 
-# Search FTGL library placement
-proc wokdep:SearchFTGL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
-  upvar $theErrInc   anErrInc
-  upvar $theErrLib32 anErrLib32
-  upvar $theErrLib64 anErrLib64
-  upvar $theErrBin32 anErrBin32
-  upvar $theErrBin64 anErrBin64
-
-  # The path in the case of building VS project on windows
-  set aWinBuildPath "msvc/Build"
-
-  set isFound "true"
-  set aFtglFontPath  [wokdep:SearchHeader "FTGL/FTGLTextureFont.h"]
-  set aFtglFtLibPath [wokdep:SearchHeader "FTGL/ftgl.h"]
-  if { "$aFtglFontPath"  == "" || "$aFtglFtLibPath"  == "" } {
-    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl,FTGL}*] "$::VCVER" "$::ARCH" ]
-    if { "$aPath" != "" && [file exists "$aPath/include/FTGL/ftgl.h"] } {
-      lappend ::CSF_OPT_INC "$aPath/include"
-    } else {
-      lappend anErrInc "Error: 'FTGL/ftgl.h' not found (FTGL)"
-      set isFound "false"
-    }
-  }
-
-  foreach anArchIter {64 32} {
-    set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter"]
-    if { "$aFtglLibPath" == "" } {
-      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl,FTGL}*] "$::VCVER" "$anArchIter" ]
-      set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter" "$aPath/lib"]
-      if { "$aFtglLibPath" != "" } {
-        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
-      } else {
-        set aFtglLibPath [wokdep:SearchLib "ftgl" "$anArchIter" "$aPath/$aWinBuildPath"]
-        if { "$::tcl_platform(platform)" == "windows" && "$aFtglLibPath" != "" } {
-          lappend ::CSF_OPT_LIB$anArchIter "$aPath/$aWinBuildPath"
-        } else {
-          lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}ftgl.${::SYS_LIB_SUFFIX}' not found (FTGL)"
-          if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
-        }
-      }
-    }
-    if { "$::tcl_platform(platform)" == "windows" } {
-      set aFtglDllPath    [wokdep:SearchBin "ftgl.dll"             "$anArchIter"]
-      if { "$aFtglDllPath" == "" } {
-        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{ftgl}*] "$::VCVER" "$anArchIter" ]
-        set aFtglDllPath     [wokdep:SearchBin "ftgl.dll" "$anArchIter" "$aPath/bin"]
-        set aFtglWinDllPath  [wokdep:SearchBin "ftgl.dll" "$anArchIter" "$aPath/$aWinBuildPath"]
-        if { "$aFtglDllPath" != "" } {
-          lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
-        } elseif { "$aFtglWinDllPath" != "" } {
-          lappend ::CSF_OPT_BIN$anArchIter "$aPath/$aWinBuildPath"
-        } else {
-          lappend anErrBin$anArchIter "Error: 'ftgl.dll' not found (FTGL)"
-          if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
-        }
-      }
-    }
-  }
-
-  return "$isFound"
-}
-
 # Search FreeImage library placement
 proc wokdep:SearchFreeImage {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
   upvar $theErrInc   anErrInc

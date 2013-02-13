@@ -154,9 +154,6 @@ if { [wokdep:SearchTclTk anErrs anErrs anErrs anErrs anErrs] == "false" } {
 if { [wokdep:SearchFreeType anErrs anErrs anErrs anErrs anErrs] == "false" } {
   puts "  not found: FreeType2 (Major!)"
 }
-if { [wokdep:SearchFTGL anErrs anErrs anErrs anErrs anErrs] == "false" } {
-  puts "  not found: FTGL (Major!)"
-}
 if { "$::HAVE_FREEIMAGE" == "true" } {
   if { [wokdep:SearchFreeImage anErrs anErrs anErrs anErrs anErrs] == "false" } {
     puts "  not found: FreeImage (Optional, enabled)"
@@ -443,12 +440,6 @@ proc wenv {} {
     set env(CSF_MDTVTexturesDirectory) [string range [wokinfo -p source:. [woklocate -u Textures]] 0 [expr {[string length [wokinfo -p source:. $aTextures]] - 3}]]
   } else {
     puts "Warning! 'Textures'      package not found!"
-  }
-  set aFontMft [woklocate -u FontMFT]
-  if { $aFontMft != "" } {
-    set env(CSF_MDTVFontDirectory)     [string range [wokinfo -p source:. [woklocate -u FontMFT]] 0 [expr {[string length [wokinfo -p source:. $aFontMft]] - 3}]]
-  } else {
-    puts "Warning! 'FontMFT'       package not found!"
   }
 
   set aXSMsg [woklocate -u XSMessage]

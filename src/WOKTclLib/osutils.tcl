@@ -1861,9 +1861,6 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_TclLibs)    "tcl8.5"
     set aCsfMap(CSF_TclTkLibs)  "tk8.5 X11"
 
-    #-- FTGL (font renderer for OpenGL)
-    set aCsfMap(CSF_FTGL)       "ftgl"
-
     #-- FreeType
     set aCsfMap(CSF_FREETYPE)   "freetype"
 

@@ -85,7 +85,4 @@
     @string %CSF_TclTkLibs = "-L" %X11_LIB " -lX11 -ltk8.5 ";
   @endif;
 
-  -- FTGL (font renderer for OpenGL)
-  @set %CSF_FTGL = "-lftgl ";
-
 @endif;

@@ -118,7 +118,6 @@ if [ "$WOKSTATION" == "mac" ]; then
 fi
 
 # Set envoronment variables used by OCCT
-export CSF_MDTVFontDirectory="${CASROOT}/src/FontMFT"
 export CSF_LANGUAGE="us"
 export MMGT_CLEAR="1"
 export CSF_EXCEPTION_PROMPT="1"
