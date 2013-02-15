@@ -1575,22 +1575,13 @@ proc osutils:am:PkCOption ppk {
   set FoundFlag "[lindex [osutils:intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options] 0]] ] 2]"
   foreach pk $ppk {
     if {[lsearch [uinfo -f -T source [woklocate -u $pk]] ${pk}_CMPLRS.edl] != "-1"} {
-      set CStr  [lindex [wokparam -e %CMPLRS_C_Options [woklocate -u $pk]] 0]
-      set LastIndex [expr {[string length $CCOMMON ] - 1}]
-      if {[string equal $CCOMMON [string range $CStr 0 $LastIndex]]} {
-        set COption [string range  $CStr $LastIndex end ]
-      } else {
-        set COption [string range $CStr 0 [expr {[string last $CCOMMON $CStr] - 1}]]
-      }
-      if {$COption != " " && $COption != "" && $COption != "  " && $COption != "   "} {
-        set FoundList [split $COption " "]
-        foreach elem $FoundList {
-          if {$elem != ""} {
-            if {[string first "-I" $elem] == "-1"  } {
-              if {[string first $elem $FoundFlag] == "-1"} {
-                set FoundFlag "$FoundFlag $elem"
-              }
-            }
+      set aPkList   [split "[lindex [wokparam -e %CMPLRS_C_Options [woklocate -u $pk]] 0]" " "]
+      set aCcomList [split "$CCOMMON" " "]
+
+      foreach aPkItem $aPkList {
+        if { [lsearch aCcomList $aPkItem] != -1 } {
+          if {[string first "-I" $aPkItem] == "-1"  } {
+            set FoundFlag "$FoundFlag $aPkItem"
           }
         }
       }
