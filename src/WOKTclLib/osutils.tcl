@@ -863,7 +863,12 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   }
   regsub -all -- {__PROJECT_GUID__} $theProjTmpl $aGuidsMap($theToolKit) theProjTmpl
 
-  set aUsedToolKits [concat [osutils:commonUsedTK  $theToolKit] [osutils:usedOsLibs $theToolKit "wnt"]]
+  set aCommonUsedTK [list]
+  foreach tkx [osutils:commonUsedTK  $theToolKit] {
+    lappend aCommonUsedTK "${tkx}.lib"
+  }
+  
+  set aUsedToolKits [concat $aCommonUsedTK [osutils:usedOsLibs $theToolKit "wnt"]]
 
   # correct names of referred third-party libraries that are named with suffix
   # depending on VC version
@@ -978,8 +983,13 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
       set aGuidsMap($aProjName) [OS:genGUID]
     }
     regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
-
-    set aUsedToolKits [concat [osutils:commonUsedTK  $theToolKit] [osutils:usedOsLibs $theToolKit "wnt"]]
+    
+    set aCommonUsedTK [list]
+    foreach tkx [osutils:commonUsedTK  $theToolKit] {
+      lappend aCommonUsedTK "${tkx}.lib"
+    }
+  
+    set aUsedToolKits [concat $aCommonUsedTK [osutils:usedOsLibs $theToolKit "wnt"]]
 
     set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $theToolKit]]
     if { [regexp {WOKStep_DLLink} $WOKSteps_exec_link] || [regexp {WOKStep_Libink} $WOKSteps_exec_link] } {
