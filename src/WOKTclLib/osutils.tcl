@@ -863,34 +863,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   }
   regsub -all -- {__PROJECT_GUID__} $theProjTmpl $aGuidsMap($theToolKit) theProjTmpl
 
-  # collect list of referred libraries to link with
-  set aUsedToolKits ""
-  foreach tkx [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] {
-    append aUsedToolKits "${tkx}.lib "
-  }
-
-  wokparam -l CSF
-  foreach tk [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] $theToolKit] {
-    foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
-      if {[wokparam -t %$element] == 0} {
-        continue
-      }
-      foreach fl [split [wokparam -v %$element] \{\ \}] {
-        if {[string first "-libpath" $fl] != "-1"} {
-          # this is library search path, not the library name
-          continue
-        }
-        set felem [file tail $fl]
-        if {[lsearch $aUsedToolKits $felem] == "-1"} {
-          if {$felem != "\{\}" & $felem != "lib"} {
-            if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
-              set aUsedToolKits [concat $aUsedToolKits $felem]
-            }
-          }
-        }
-      }
-    }
-  }
+  set aUsedToolKits [concat [osutils:commonUsedTK  $theToolKit] [osutils:usedOsLibs $theToolKit "wnt"]]
 
   # correct names of referred third-party libraries that are named with suffix
   # depending on VC version
@@ -1006,39 +979,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     }
     regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
 
-    set aUsedToolKits ""
-    set aDepToolkits [LibToLinkX [woklocate -u $theToolKit] $aProjName]
-    foreach tkx $aDepToolkits {
-      if {[uinfo -t [woklocate -u $tkx]] == "toolkit"} {
-        append aUsedToolKits "${tkx}.lib "
-      }
-      if {[lsearch [w_info -l] $tkx] == "-1"} {
-        append aUsedToolKits "${tkx}.lib "
-      }
-    }
-
-    wokparam -l CSF
-    foreach tk $aDepToolkits {
-      foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
-        if {[wokparam -t %$element] == 0} {
-          continue
-        }
-        foreach fl [split [wokparam -v %$element] \{\ \}] {
-          if {[string first "-libpath" $fl] != "-1"} {
-            # this is library search path, not the library name
-            continue
-          }
-          set felem [file tail $fl]
-          if {[lsearch $aUsedToolKits $felem] == "-1"} {
-            if {$felem != "\{\}"} {
-              if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
-                  set aUsedToolKits [concat $aUsedToolKits $felem]
-              }
-            }
-          }
-        }
-      }
-    }
+    set aUsedToolKits [concat [osutils:commonUsedTK  $theToolKit] [osutils:usedOsLibs $theToolKit "wnt"]]
 
     set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $theToolKit]]
     if { [regexp {WOKStep_DLLink} $WOKSteps_exec_link] || [regexp {WOKStep_Libink} $WOKSteps_exec_link] } {
