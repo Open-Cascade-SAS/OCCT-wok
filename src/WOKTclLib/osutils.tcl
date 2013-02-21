@@ -2139,13 +2139,23 @@ proc osutils:cbpx { theOutDir theToolKit } {
         if {[wokparam -t %$element] == 0} {
           continue
         }
+        set isFrameworkNext 0
         foreach fl [split [wokparam -v %$element] \{\ \}] {
           if {[string first "-libpath" $fl] != "-1"} {
             # this is library search path, not the library name
             continue
+          } elseif {[string first "-framework" $fl] != "-1"} {
+            set isFrameworkNext 1
+            continue
           }
+
           set felem [file tail $fl]
-          if {[lsearch $aUsedToolKits $felem] == "-1"} {
+          if {$isFrameworkNext == 1} {
+            if {[lsearch $aFrameworks $felem] == "-1"} {
+              lappend aFrameworks "${felem}"
+            }
+            set isFrameworkNext 0
+          } elseif {[lsearch $aUsedToolKits $felem] == "-1"} {
             if {$felem != "\{\}" & $felem != "lib"} {
               if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
                 lappend aUsedToolKits [string trimleft "${felem}" "-l"]
