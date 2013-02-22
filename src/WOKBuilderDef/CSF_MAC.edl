@@ -62,27 +62,31 @@
   @set %CSF_Appkit          = "-framework Appkit ";
   @set %CSF_IOKit           = "-framework IOKit ";
 
-  @set %CSF_X11_INCLUDE    = "-I/usr/X11R6/include ";
-  @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
-
-  @set %X11_LIB = "/usr/X11R6/lib";
-
-  @string %CSF_XwLibs     = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
   @if (%MACOSX_USE_GLX == "true") then
+    @set %CSF_X11_INCLUDE    = "-I/usr/X11R6/include ";
+    @set %CSF_OPENGL_INCLUDE = "-I/usr/X11R6/include ";
+
+    @set %X11_LIB = "/usr/X11R6/lib";
+    @string %CSF_XwLibs     = "-L" %X11_LIB " -lX11 -lXext -lXmu -lXi ";
     @string %CSF_OpenGlLibs = %CSF_XwLibs " -lGLU -lGL ";
+    @string %CSF_MotifLibs  = "-L" %X11_LIB " -lX11 ";
   @else
     @string %CSF_OpenGlLibs = " -framework OpenGL";
   @endif;
-  @string %CSF_MotifLibs  = "-L" %X11_LIB " -lX11 ";
 
   -- Tcl/Tk configuration
+  @string %CSF_TclTkLibs = "";
+  @if (%MACOSX_USE_GLX == "true") then
+    @string %CSF_TclTkLibs = "-L" %X11_LIB " -lX11 ";
+  @endif;
+
   @if (%CSF_TCL_HOME != "") then
     @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include ";
     @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl8.5 ";
-    @string %CSF_TclTkLibs = "-L" %X11_LIB " -lX11 -L" %CSF_TCL_HOME "/lib -ltk8.5 ";
+    @string %CSF_TclTkLibs += "-L" %CSF_TCL_HOME "/lib -ltk8.5 ";
   @else
     @string %CSF_TclLibs   = " -ltcl8.5 ";
-    @string %CSF_TclTkLibs = "-L" %X11_LIB " -lX11 -ltk8.5 ";
+    @string %CSF_TclTkLibs += "-ltk8.5 ";
   @endif;
 
 @endif;

@@ -665,7 +665,7 @@ proc wokdep:SearchX11 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   upvar $theErrBin64 anErrBin64
 
   set isFound "true"
-  if { "$::tcl_platform(platform)" == "windows" } {
+  if { "$::tcl_platform(platform)" == "windows" || ( "$::tcl_platform(os)" == "Darwin" && "$::MACOSX_USE_GLX" != "true" ) } {
     return "$isFound"
   }
 

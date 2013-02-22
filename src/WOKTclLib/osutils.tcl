@@ -241,7 +241,7 @@ proc osutils:juststation {goaway listloc} {
 }
 
 proc osutils:justwnt { listloc } {
-  set goaway [list Xdps Xw ImageUtility WOKUnix]
+  set goaway [list Xdps Xw WOKUnix]
   return [osutils:juststation $goaway $listloc]
 }
 
@@ -249,7 +249,11 @@ proc osutils:justwnt { listloc } {
 ;# remove from listloc OpenCascade units indesirables on Unix
 ;#
 proc osutils:justunix { listloc } {
-  set goaway [list WNT WOKNT]
+  if { "$::tcl_platform(os)" == "Darwin" && "$::MACOSX_USE_GLX" != "true" } {
+    set goaway [list Xw WNT WOKNT]
+  } else {
+    set goaway [list WNT WOKNT]
+  }
   return [osutils:juststation $goaway $listloc]
 }
 
@@ -1991,10 +1995,12 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "X11" } {
-      lappend aFileBuff "  find_package(X11 COMPONENTS X11 Xext Xmu Xi)"
-      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_LIBRARIES\} )"
-      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xi_LIB\} )"
-      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xmu_LIB\} )"
+      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "    find_package(X11 COMPONENTS X11 Xext Xmu Xi)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_LIBRARIES\} )"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xi_LIB\} )"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xmu_LIB\} )"
+      lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Appkit" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_APPKIT NAMES Appkit)"
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_APPKIT\} )"
@@ -2003,7 +2009,12 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_IOKIT\} )"
     } elseif { $anUsedMacLib == "OpenGL" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_OPENGL NAMES OpenGL)"
-      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_OPENGL\} )"
+      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS GL )"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS GLU )"
+      lappend aFileBuff "  else()"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_OPENGL\} )"
+      lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib != "" } {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
     }
