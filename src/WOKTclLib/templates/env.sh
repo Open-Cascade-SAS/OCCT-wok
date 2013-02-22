@@ -5,6 +5,13 @@ aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath
 
 export CASROOT="__CASROOT__"
 
+if [ "${CASROOT}" != "" ] && [ -d "${aScriptPath}/${CASROOT}" ]; then
+  export CASROOT="${aScriptPath}/${CASROOT}"
+fi
+if [ "${CASROOT}" == "" ]; then
+  export CASROOT="${aScriptPath}"
+fi
+
 # Reset values
 export CASDEB=""
 export HAVE_TBB="false";
