@@ -241,7 +241,8 @@ proc osutils:juststation {goaway listloc} {
 }
 
 proc osutils:justwnt { listloc } {
-  set goaway [list Xdps Xw WOKUnix]
+  # ImageUtility is required for support for old (<6.5.4) versions of OCCT
+  set goaway [list Xdps Xw  ImageUtility WOKUnix]
   return [osutils:juststation $goaway $listloc]
 }
 
@@ -1803,10 +1804,14 @@ proc osutils:csfList { theOS  theCsfMap } {
 
     set aCsfMap(CSF_MotifLibs)  "X11"
 
-    # -- Tcl/Tk configuration
+    #-- Tcl/Tk configuration
     set aCsfMap(CSF_TclLibs)    "tcl8.5"
     set aCsfMap(CSF_TclTkLibs)  "tk8.5 X11"
 
+    # variable is required for support for OCCT version that use fgtl
+    #-- FTGL (font renderer for OpenGL)
+    set aCsfMap(CSF_FTGL)       "ftgl"
+    
     #-- FreeType
     set aCsfMap(CSF_FREETYPE)   "freetype"
 
