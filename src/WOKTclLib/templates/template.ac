@@ -489,6 +489,108 @@ else
 fi
 AM_CONDITIONAL( HAVE_FREETYPE, [test "xyes" = "x$HAVE_FREETYPE"] )
 
+---------------------------------------------------------------------
+#
+# Check for FTGL Libraries
+# 
+# 
+#---------------------------------------------------------------------
+AC_ARG_WITH([ftgl],
+  [AC_HELP_STRING([--with-ftgl=DIR],[Location of FTGL])],
+  [ftgl="${withval}"],[ftgl=yes])
+
+CSF_FTGL_INCLUDES=""
+CSF_FTGL_LIB=""
+HAVE_FTGL=no
+
+if test "xno" = "x${HAVE_FREETYPE}"; then
+  DISABLE_FTGL_REASON=$DISABLE_FREETYPE_REASON
+else
+  AC_LANG([C++])
+  if test "xno" = "x${ftgl}"; then
+    dnl ftgl check is explicitly disabled by --without-ftgl or --with-ftgl=no
+    AC_MSG_NOTICE([ftgl check is explicitly disabled])
+    DISABLE_FTGL_REASON="(ftgl check was explicitly disabled)"
+  else
+    if test "xyes" = "x${ftgl}" -o "x/usr" = "x${ftgl}"; then
+      dnl try native ftgl (default)
+      ftgl=/usr
+      AC_MSG_NOTICE(try system ftgl)
+      FTGL_INCLUDES="-I/usr/include/FTGL"
+      FTGL_LIBS="-lftgl"
+      FTGL_OPT_INC="/usr/include/FTGL"
+      FTGL_OPT_LIB=
+    else
+      AC_MSG_NOTICE(try ftgl in ${ftgl})
+      if test ! -d ${ftgl}; then
+    DISABLE_FTGL_REASON="(${ftgl} directory does not exists)"
+    AC_MSG_ERROR([${ftgl} directory does not exists])
+      fi
+      FTGL_INCLUDES="-I${ftgl}/include -I${ftgl}/include/FTGL"
+      FTGL_LIBS="-L${ftgl}/lib -lftgl"
+      FTGL_OPT_INC="${ftgl}/include:${ftgl}/include/FTGL"
+      FTGL_OPT_LIB="${ftgl}/lib"
+    fi
+    for hf in ftgl.h FTGL.h; do
+      dnl check presence of ftgl header file in the specified directory
+      test -f ${ftgl}/include/FTGL/${hf} -o -f ${ftgl}/include/${hf} && HAVE_FTGL_INC=yes
+      test "xyes" = "x${HAVE_FTGL_INC}" -a "${hf}" = "FTGL.h" && HAVE_FTGL_UPPERCASE=-DHAVE_FTGL_UPPERCASE
+      test "xyes" = "x${HAVE_FTGL_INC}" && break
+    done
+    if test "xyes" = "x${HAVE_FTGL_INC}" ; then
+      CPPFLAGS_old=${CPPFLAGS}
+      LDFLAGS_old=${LDFLAGS}
+      CPPFLAGS="${FTGL_INCLUDES} ${HAVE_FTGL_UPPERCASE} ${CSF_FREETYPE_INCLUDES} $CPPFLAGS"
+      LDFLAGS="${FTGL_LIBS} ${CSF_FREETYPE_LIB} $LDFLAGS"
+      AC_CHECK_HEADERS([${hf}], 
+      [
+        HAVE_FTGL_INC=yes
+        break
+      ],
+      [
+        HAVE_FTGL_INC=no
+      ])
+      if test "x${HAVE_FTGL_INC}" = "xyes"; then
+        AC_MSG_CHECKING([for FTGLTextureFont in -lftgl])
+        CPPFLAGS="${FTGL_INCLUDES} ${HAVE_FTGL_UPPERCASE} ${CSF_FREETYPE_INCLUDES} ${CPPFLAGS_old}"
+        AC_TRY_LINK(
+        [
+          #ifdef HAVE_FTGL_UPPERCASE
+          #include <FTGL/FTGL.h>
+          #include <FTGL/FTGLTextureFont.h>
+          #else
+          #include <FTGL/ftgl.h>
+          #endif
+        ],
+        [
+          FTGLTextureFont font("");
+        ],
+        [
+          AC_MSG_RESULT(yes)
+          HAVE_FTGL=yes
+          CSF_FTGL_INCLUDES="${FTGL_INCLUDES} ${HAVE_FTGL_UPPERCASE}"
+          CSF_FTGL_LIB="${FTGL_LIBS}"
+          CSF_OPT_INC="${FTGL_OPT_INC}:${CSF_OPT_INC}"
+          CSF_OPT_LIB="${FTGL_OPT_LIB}:${CSF_OPT_LIB}"
+        ],
+        [
+          AC_MSG_RESULT(no)
+          DISABLE_FTGL_REASON="(ftgl was not found)"
+      AC_MSG_ERROR([Unable to locate the required ftgl library])
+        ]) 
+      else
+        DISABLE_FTGL_REASON="(ftgl was not found)"
+      fi
+      CPPFLAGS=${CPPFLAGS_old}
+      LDFLAGS=${LDFLAGS_old}
+    else
+      AC_MSG_RESULT([ftgl was not found])
+      DISABLE_FTGL_REASON="(ftgl was not found)"
+    fi
+  fi
+fi
+AM_CONDITIONAL( HAVE_FTGL, [test "xyes" = "x$HAVE_FTGL"] )
+
 #---------------------------------------------------------------------
 #
 # Check for GL2PS Libraries
@@ -823,6 +925,9 @@ AC_SUBST(CSF_OpenGlLibs_LIB)
 AC_SUBST(HAVE_FREETYPE)
 AC_SUBST(CSF_FREETYPE_INCLUDES)
 AC_SUBST(CSF_FREETYPE_LIB)
+AC_SUBST(HAVE_FTGL)
+AC_SUBST(CSF_FTGL_INCLUDES)
+AC_SUBST(CSF_FTGL_LIB)
 AC_SUBST(HAVE_GL2PS)
 AC_SUBST(CSF_GL2PS_INCLUDES)
 AC_SUBST(CSF_GL2PS_LIB)

@@ -2,6 +2,7 @@
 #
 # Mandatory 3rd-parties switches
 export HAVE_FREETYPE=@HAVE_FREETYPE@
+export HAVE_FTGL=@HAVE_FTGL@
 export HAVE_TCLTK=@HAVE_TCLTK@
 # Optional 3rd-parties switches
 export HAVE_FREEIMAGE=@HAVE_FREEIMAGE@
