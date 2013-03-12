@@ -3183,13 +3183,118 @@ proc OS:MKCBP { theOutDir {theModules {}} {theAllSolution ""} } {
   puts "The Code Blocks workspace and project files are stored in the $theOutDir directory"
 }
 
+# Generates toolkits sections for Xcode workspace file.
+proc OS:xcworkspace:toolkits { theModule } {
+  set aBuff ""
+
+  # Adding toolkits for module in workspace.
+  foreach aToolKit [osutils:tk:sort [${theModule}:toolkits]] {
+    append aBuff "         <FileRef\n"
+    append aBuff "            location = \"group:${aToolKit}.xcodeproj\">\n"
+    append aBuff "         </FileRef>\n"
+  }
+
+  # Adding executables for module, assume one project per cxx file...
+  foreach aUnit [OS:executable ${theModule}] {
+    set aUnitLoc [woklocate -u $aUnit]
+    set aSrcFiles [uinfo -f -T source $aUnitLoc]
+    foreach aSrcFile $aSrcFiles {
+      set aFileExtension [file extension $aSrcFile]
+      if { $aFileExtension == ".cxx" } {
+        set aPrjName [file rootname $aSrcFile]
+        append aBuff "         <FileRef\n"
+        append aBuff "            location = \"group:${aPrjName}.xcodeproj\">\n"
+        append aBuff "         </FileRef>\n"
+      }
+    }
+  }
+
+  # Removing unnecessary newline character from the end.
+  set aBuff [string replace $aBuff end end]
+  return $aBuff
+}
+
+# Generates workspace files for Xcode.
+proc OS:xcworkspace { theWorkspaceName theModules theOutDir } {
+  # Creating workspace directory for Xcode.
+  set aWorkspaceDir "${theOutDir}/${theWorkspaceName}.xcworkspace"
+  OS:mkdir $aWorkspaceDir
+  if { ! [file exists $aWorkspaceDir] } {
+    puts stderr "Error: Could not create workspace directory \"$aWorkspaceDir\""
+    return
+  }
+
+  # Creating workspace file.
+  set aWsFilePath "${aWorkspaceDir}/contents.xcworkspacedata"
+  set aFile [open $aWsFilePath "w"]
+  
+  # Adding header and section for main Group.
+  puts $aFile "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+  puts $aFile "<Workspace"
+  puts $aFile "   version = \"1.0\">"
+  puts $aFile "   <Group"
+  puts $aFile "      location = \"container:\""
+  puts $aFile "      name = \"${theWorkspaceName}\">"
+  
+  # Adding modules.
+  if { [llength "$theModules"] > 1 } {
+    foreach aModule $theModules {
+      puts $aFile "      <Group"
+      puts $aFile "         location = \"container:\""
+      puts $aFile "         name = \"${aModule}\">"
+      puts $aFile [OS:xcworkspace:toolkits $aModule]
+      puts $aFile "      </Group>"
+    }
+  } else {
+    puts $aFile [OS:xcworkspace:toolkits $theModules]
+  }
+
+  # Adding footer.
+  puts $aFile "   </Group>"
+  puts $aFile "</Workspace>"
+  close $aFile
+}
+
+# Generates Xcode project files.
+proc OS:xcodeproj { theModules theOutDir theGuidsMap} {
+  upvar $theGuidsMap aGuidsMap
+
+  set aProjectFiles {}
+  foreach aModule $theModules {
+    foreach aToolKit [${aModule}:toolkits] {
+      lappend aProjectFiles [osutils:xcdtk $theOutDir $aToolKit      aGuidsMap "dylib"]
+    }
+    foreach anExecutable [OS:executable ${aModule}] {
+      lappend aProjectFiles [osutils:xcdtk  $theOutDir $anExecutable aGuidsMap "executable"]
+    }
+  }
+  return $aProjectFiles
+}
+
+# Function to generate Xcode workspace and project files
+proc OS:MKXCD { theOutDir {theModules {}} {theAllSolution ""} } {
+
+  puts stderr "Generating project files for Xcode"
+
+  # Generate projects for toolkits and separate workspace for each module
+  foreach aModule $theModules {
+    OS:xcworkspace $aModule $aModule $theOutDir
+    OS:xcodeproj   $aModule          $theOutDir ::THE_GUIDS_LIST
+  }
+
+  # Generate single workspace "OCCT" containing projects from all modules
+  if { "$theAllSolution" != "" } {
+    OS:xcworkspace $theAllSolution $theModules $theOutDir
+  }
+}
+
 # Store global GUIDs map to reproduce same values on sequential calls
 set aTKNullKey "TKNull"
 set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" "xcd"}
 
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
@@ -3256,6 +3361,10 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
     "cmake" { OS:MKCMK "${anOutRoot}/${theIDE}" $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
+    "xcd"   {
+      set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000" 
+      OS:MKXCD $anOutDir $aModules $anAllSolution
+    }
   }
 
   # generate config.txt file

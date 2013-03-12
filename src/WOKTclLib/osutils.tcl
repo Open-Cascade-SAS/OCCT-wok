@@ -2430,3 +2430,618 @@ proc relativePath {thePathFrom thePathTo} {
 
   return $thePathTo
 }
+
+# Generates dependencies section for Xcode project files.
+proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids} {
+  upvar $theGuidsMap         aGuidsMap
+  upvar $theFileRefSection   aFileRefSection
+  upvar $theDepsGuids        aDepsGuids
+  upvar $theDepsRefGuids     aDepsRefGuids
+
+  set aBuildFileSection ""
+  set aFrameworks       [list]
+  set aUsedToolKits     [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]]
+  set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] $theToolKit]
+  
+  if { "$theTargetType" == "executable" } {
+    set aFile [osutils:tk:files $theToolKit osutils:compilable 0]
+    set aProjName [file rootname [file tail $aFile]]
+    set aDepToolkits [LibToLinkX [woklocate -u $theToolKit] $aProjName]
+  }
+ 
+  wokparam -l CSF
+
+  foreach tk $aDepToolkits {
+    foreach element [osutils:tk:hascsf [woklocate -p ${tk}:source:EXTERNLIB [wokcd]]] {
+      if {[wokparam -t %$element] == 0} {
+        continue
+      }
+      set isFrameworkNext 0
+      foreach fl [split [wokparam -v %$element] \{\ \}] {
+        if {[string first "-libpath" $fl] != "-1"} {
+          # this is library search path, not the library name
+          continue
+        } elseif {[string first "-framework" $fl] != "-1"} {
+          set isFrameworkNext 1
+          continue
+        }
+        set felem [file tail $fl]
+        if {$isFrameworkNext == 1} {
+          lappend aFrameworks "${felem}"
+          set isFrameworkNext 0
+        }
+        if {[lsearch $aUsedToolKits $felem] == "-1"} {
+          if {$felem != "\{\}" & $felem != "lib"} {
+            if {[lsearch -nocase [osutils:optinal_libs] $felem] == -1} {
+              set aLibName [string trimleft "${felem}" "-l"]
+              if { [string length $aLibName] > 0 && [lsearch $aUsedToolKits $aLibName] == "-1" } {
+                lappend aUsedToolKits $aLibName
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  foreach tkx $aUsedToolKits {
+    set aDepLib    "${tkx}_Dep"
+    set aDepLibRef "${tkx}_DepRef"
+
+    if { ! [info exists aGuidsMap($aDepLib)] } {
+      set aGuidsMap($aDepLib) [OS:genGUID "xcd"]
+    }
+    if { ! [info exists aGuidsMap($aDepLibRef)] } {
+      set aGuidsMap($aDepLibRef) [OS:genGUID "xcd"]
+    }
+
+    append aBuildFileSection "\t\t$aGuidsMap($aDepLib) = \{isa = PBXBuildFile; fileRef = $aGuidsMap($aDepLibRef) ; \};\n"
+    if {[lsearch -nocase $aFrameworks $tkx] == -1} {
+      append aFileRefSection   "\t\t$aGuidsMap($aDepLibRef) = \{isa = PBXFileReference; lastKnownFileType = file; name = lib${tkx}.dylib; path = lib${tkx}.dylib; sourceTree = \"<group>\"; \};\n"
+    } else {
+      append aFileRefSection   "\t\t$aGuidsMap($aDepLibRef) = \{isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ${tkx}.framework; path = /System/Library/Frameworks/${tkx}.framework; sourceTree = \"<absolute>\"; \};\n"
+    }
+    append aDepsGuids        "\t\t\t\t$aGuidsMap($aDepLib) ,\n"
+    append aDepsRefGuids     "\t\t\t\t$aGuidsMap($aDepLibRef) ,\n"
+  }
+
+  return $aBuildFileSection
+}
+
+# Generates PBXBuildFile and PBXGroup sections for project file.
+proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGroupSection thePackageGuids theSrcFileGuids theGuidsMap theIncPaths} {
+  upvar $theSrcFileRefSection aSrcFileRefSection
+  upvar $theGroupSection      aGroupSection
+  upvar $thePackageGuids      aPackagesGuids
+  upvar $theSrcFileGuids      aSrcFileGuids
+  upvar $theGuidsMap          aGuidsMap
+  upvar $theIncPaths          anIncPaths
+
+  set listloc [osutils:tk:units [woklocate -u $theToolKit]]
+  set resultloc [osutils:justunix $listloc]
+  set aBuildFileSection ""
+  set aPackages [lsort -nocase $resultloc]
+  if { "$theTargetType" == "executable" } {
+    set aPackages [list "$theToolKit"]
+  }
+
+  # Generating PBXBuildFile, PBXGroup sections and groups for each package.
+  foreach fxlo $aPackages {
+    set xlo [wokinfo -n $fxlo]
+    set aPackage "${xlo}_Package"
+    set aSrcFileRefGuids ""
+    lappend anIncPaths "../../../drv/${xlo}"
+    lappend anIncPaths "../../../src/${xlo}"
+    if { ! [info exists aGuidsMap($aPackage)] } {
+      set aGuidsMap($aPackage) [OS:genGUID "xcd"]
+    }
+
+    set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    foreach aSrcFile [lsort $aSrcFiles] {
+      set aFileExt "sourcecode.cpp.cpp"
+
+      if { [file extension $aSrcFile] == ".c" } {
+        set aFileExt "sourcecode.c.c"
+      } elseif { [file extension $aSrcFile] == ".mm" } {
+        set aFileExt "sourcecode.cpp.objcpp"
+      }
+
+      if { ! [info exists aGuidsMap($aSrcFile)] } {
+        set aGuidsMap($aSrcFile) [OS:genGUID "xcd"]
+      }
+      set aSrcFileRef "${aSrcFile}_Ref"
+      if { ! [info exists aGuidsMap($aSrcFileRef)] } {
+        set aGuidsMap($aSrcFileRef) [OS:genGUID "xcd"]
+      }
+      if { ! [info exists written([file tail $aSrcFile])] } {
+        set written([file tail $aSrcFile]) 1
+        append aBuildFileSection  "\t\t$aGuidsMap($aSrcFile) = \{isa = PBXBuildFile; fileRef = $aGuidsMap($aSrcFileRef) ;\};\n"
+        append aSrcFileRefSection "\t\t$aGuidsMap($aSrcFileRef) = \{isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = ${aFileExt}; name = [wokUtils:FILES:wtail $aSrcFile 1]; path = ../../../[wokUtils:FILES:wtail $aSrcFile 3]; sourceTree = \"<group>\"; \};\n"
+        append aSrcFileGuids      "\t\t\t\t$aGuidsMap($aSrcFile) ,\n"
+        append aSrcFileRefGuids   "\t\t\t\t$aGuidsMap($aSrcFileRef) ,\n"
+      } else {
+        puts "Warning : more than one occurences for [file tail $aSrcFile]"
+      }
+    }
+
+    append aGroupSection "\t\t$aGuidsMap($aPackage) = \{\n"
+    append aGroupSection "\t\t\tisa = PBXGroup;\n"
+    append aGroupSection "\t\t\tchildren = (\n"
+    append aGroupSection $aSrcFileRefGuids
+    append aGroupSection "\t\t\t);\n"
+    append aGroupSection "\t\t\tname = $xlo;\n"
+    append aGroupSection "\t\t\tsourceTree = \"<group>\";\n"
+    append aGroupSection "\t\t\};\n"
+
+    # Storing packages IDs for adding them later as a child of toolkit
+    append aPackagesGuids "\t\t\t\t$aGuidsMap($aPackage) ,\n"
+  }
+
+  # Removing unnecessary newline character from the end.
+  set aPackagesGuids [string replace $aPackagesGuids end end]
+
+  return $aBuildFileSection
+}
+
+# Creates folders structure and all necessary files for Xcode project.
+proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } {
+  set aPBXBuildPhase "Headers"
+  set aRunOnlyForDeployment "0"
+  set aProductType "library.dynamic"
+  set anExecExtension "\t\t\t\tEXECUTABLE_EXTENSION = dylib;"
+  set anExecPrefix "\t\t\t\tEXECUTABLE_PREFIX = lib;"
+  set aWrapperExtension "\t\t\t\tWRAPPER_EXTENSION = dylib;"
+  set aTKDefines [list "CSFDB" "HAVE_WOK_CONFIG_H" "HAVE_CONFIG_H" "OCC_CONVERT_SIGNALS"]
+
+  if { "$theTargetType" == "executable" } {
+    set aPBXBuildPhase "CopyFiles"
+    set aRunOnlyForDeployment "1"
+    set aProductType "tool"
+    set anExecExtension ""
+    set anExecPrefix ""
+    set aWrapperExtension ""
+  }
+
+  set aUsername [exec whoami]
+
+  # Creation of folders for Xcode projectP.
+  set aToolkitDir "${theOutDir}/${theToolKit}.xcodeproj"
+  OS:mkdir $aToolkitDir
+  if { ! [file exists $aToolkitDir] } {
+    puts stderr "Error: Could not create project directory \"$aToolkitDir\""
+    return
+  }
+
+  set aUserDataDir "${aToolkitDir}/xcuserdata"
+  OS:mkdir $aUserDataDir
+  if { ! [file exists $aUserDataDir] } {
+    puts stderr "Error: Could not create xcuserdata directorty in \"$aToolkitDir\""
+    return
+  }
+
+  set aUserDataDir "${aUserDataDir}/${aUsername}.xcuserdatad"
+  OS:mkdir $aUserDataDir
+  if { ! [file exists $aUserDataDir] } {
+    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directorty in \"$aToolkitDir\"/xcuserdata"
+    return
+  }
+
+  set aSchemesDir "${aUserDataDir}/xcschemes"
+  OS:mkdir $aSchemesDir
+  if { ! [file exists $aSchemesDir] } {
+    puts stderr "Error: Could not create xcschemes directorty in \"$aUserDataDir\""
+    return
+  }
+  # End of folders creation.
+
+  # Generating GUID for tookit.
+  upvar $theGuidsMap aGuidsMap
+  if { ! [info exists aGuidsMap($theToolKit)] } {
+    set aGuidsMap($theToolKit) [OS:genGUID "xcd"]
+  }
+
+  # Creating xcscheme file for toolkit from template.
+  set aXcschemeTmpl [osutils:readtemplate "xcscheme" "xcd"]
+  regsub -all -- {__TOOLKIT_NAME__} $aXcschemeTmpl $theToolKit aXcschemeTmpl
+  regsub -all -- {__TOOLKIT_GUID__} $aXcschemeTmpl $aGuidsMap($theToolKit) aXcschemeTmpl
+  set aXcschemeFile [open "$aSchemesDir/${theToolKit}.xcscheme"  "w"]
+  puts $aXcschemeFile $aXcschemeTmpl
+  close $aXcschemeFile
+
+  # Creating xcschememanagement.plist file for toolkit from template.
+  set aPlistTmpl [osutils:readtemplate "plist" "xcd"]
+  regsub -all -- {__TOOLKIT_NAME__} $aPlistTmpl $theToolKit aPlistTmpl
+  regsub -all -- {__TOOLKIT_GUID__} $aPlistTmpl $aGuidsMap($theToolKit) aPlistTmpl
+  set aPlistFile [open "$aSchemesDir/xcschememanagement.plist"  "w"]
+  puts $aPlistFile $aPlistTmpl
+  close $aPlistFile
+
+  # Creating project.pbxproj file for toolkit.
+  set aPbxprojFile [open "$aToolkitDir/project.pbxproj" "w"]
+  puts $aPbxprojFile "// !\$*UTF8*\$!"
+  puts $aPbxprojFile "\{"
+  puts $aPbxprojFile "\tarchiveVersion = 1;"
+  puts $aPbxprojFile "\tclasses = \{"
+  puts $aPbxprojFile "\t\};"
+  puts $aPbxprojFile "\tobjectVersion = 46;"
+  puts $aPbxprojFile "\tobjects = \{\n"
+
+  # Begin PBXBuildFile section
+  set aPackagesGuids ""
+  set aGroupSection ""
+  set aSrcFileRefSection ""
+  set aSrcFileGuids ""
+  set aDepsFileRefSection ""
+  set aDepsGuids ""
+  set aDepsRefGuids ""
+  set anIncPaths [list "../../../inc" $::env(WOK_LIBRARY)]
+  puts $aPbxprojFile [osutils:xcdtk:sources $theToolKit $theTargetType aSrcFileRefSection aGroupSection aPackagesGuids aSrcFileGuids aGuidsMap anIncPaths]
+  puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids]
+  # End PBXBuildFile section
+
+  # Begin PBXFileReference section
+  set aToolkitLib "lib${theToolKit}.dylib"
+  set aPath "$aToolkitLib"
+  if { "$theTargetType" == "executable" } {
+    set aPath "$theToolKit"
+  }
+
+  if { ! [info exists aGuidsMap($aToolkitLib)] } {
+    set aGuidsMap($aToolkitLib) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($aToolkitLib) = {isa = PBXFileReference; explicitFileType = \"compiled.mach-o.${theTargetType}\"; includeInIndex = 0; path = $aPath; sourceTree = BUILT_PRODUCTS_DIR; };\n"
+  puts $aPbxprojFile $aSrcFileRefSection
+  puts $aPbxprojFile $aDepsFileRefSection
+  # End PBXFileReference section
+
+
+  # Begin PBXFrameworksBuildPhase section
+  set aTkFrameworks "${theToolKit}_Frameworks"
+  if { ! [info exists aGuidsMap($aTkFrameworks)] } {
+    set aGuidsMap($aTkFrameworks) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkFrameworks) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXFrameworksBuildPhase;"
+  puts $aPbxprojFile "\t\t\tbuildActionMask = 2147483647;"
+  puts $aPbxprojFile "\t\t\tfiles = ("
+  puts $aPbxprojFile $aDepsGuids
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\trunOnlyForDeploymentPostprocessing = 0;"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXFrameworksBuildPhase section
+
+  # Begin PBXGroup section
+  set aTkPBXGroup "${theToolKit}_PBXGroup"
+  if { ! [info exists aGuidsMap($aTkPBXGroup)] } {
+    set aGuidsMap($aTkPBXGroup) [OS:genGUID "xcd"]
+  }
+
+  set aTkSrcGroup "${theToolKit}_SrcGroup"
+  if { ! [info exists aGuidsMap($aTkSrcGroup)] } {
+    set aGuidsMap($aTkSrcGroup) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile $aGroupSection
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkPBXGroup) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXGroup;"
+  puts $aPbxprojFile "\t\t\tchildren = ("
+  puts $aPbxprojFile $aDepsRefGuids
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkSrcGroup) ,"
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aToolkitLib) ,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tsourceTree = \"<group>\";"
+  puts $aPbxprojFile "\t\t\};"
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkSrcGroup) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXGroup;"
+  puts $aPbxprojFile "\t\t\tchildren = ("
+  puts $aPbxprojFile $aPackagesGuids
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tname = \"Source files\";"
+  puts $aPbxprojFile "\t\t\tsourceTree = \"<group>\";"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXGroup section
+
+  # Begin PBXHeadersBuildPhase section
+  set aTkHeaders "${theToolKit}_Headers"
+  if { ! [info exists aGuidsMap($aTkHeaders)] } {
+    set aGuidsMap($aTkHeaders) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkHeaders) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBX${aPBXBuildPhase}BuildPhase;"
+  puts $aPbxprojFile "\t\t\tbuildActionMask = 2147483647;"
+  puts $aPbxprojFile "\t\t\tfiles = ("
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\trunOnlyForDeploymentPostprocessing = ${aRunOnlyForDeployment};"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXHeadersBuildPhase section
+
+  # Begin PBXNativeTarget section
+  set aTkBuildCfgListNativeTarget "${theToolKit}_BuildCfgListNativeTarget"
+  if { ! [info exists aGuidsMap($aTkBuildCfgListNativeTarget)] } {
+    set aGuidsMap($aTkBuildCfgListNativeTarget) [OS:genGUID "xcd"]
+  }
+
+  set aTkSources "${theToolKit}_Sources"
+  if { ! [info exists aGuidsMap($aTkSources)] } {
+    set aGuidsMap($aTkSources) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($theToolKit) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXNativeTarget;"
+  puts $aPbxprojFile "\t\t\tbuildConfigurationList = $aGuidsMap($aTkBuildCfgListNativeTarget) ;"
+  puts $aPbxprojFile "\t\t\tbuildPhases = ("
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkSources) ,"
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkFrameworks) ,"
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkHeaders) ,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tbuildRules = ("
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tdependencies = ("
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tname = $theToolKit;"
+  puts $aPbxprojFile "\t\t\tproductName = $theToolKit;"
+  puts $aPbxprojFile "\t\t\tproductReference = $aGuidsMap($aToolkitLib) ;"
+  puts $aPbxprojFile "\t\t\tproductType = \"com.apple.product-type.${aProductType}\";"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXNativeTarget section
+
+  # Begin PBXProject section
+  set aTkProjectObj "${theToolKit}_ProjectObj"
+  if { ! [info exists aGuidsMap($aTkProjectObj)] } {
+    set aGuidsMap($aTkProjectObj) [OS:genGUID "xcd"]
+  }
+
+  set aTkBuildCfgListProj "${theToolKit}_BuildCfgListProj"
+  if { ! [info exists aGuidsMap($aTkBuildCfgListProj)] } {
+    set aGuidsMap($aTkBuildCfgListProj) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkProjectObj) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXProject;"
+  puts $aPbxprojFile "\t\t\tattributes = \{"
+  puts $aPbxprojFile "\t\t\t\tLastUpgradeCheck = 0430;"
+  puts $aPbxprojFile "\t\t\t\};"
+  puts $aPbxprojFile "\t\t\tbuildConfigurationList = $aGuidsMap($aTkBuildCfgListProj) ;"
+  puts $aPbxprojFile "\t\t\tcompatibilityVersion = \"Xcode 3.2\";"
+  puts $aPbxprojFile "\t\t\tdevelopmentRegion = English;"
+  puts $aPbxprojFile "\t\t\thasScannedForEncodings = 0;"
+  puts $aPbxprojFile "\t\t\tknownRegions = ("
+  puts $aPbxprojFile "\t\t\t\ten,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tmainGroup = $aGuidsMap($aTkPBXGroup);"
+  puts $aPbxprojFile "\t\t\tproductRefGroup = $aGuidsMap($aTkPBXGroup);"
+  puts $aPbxprojFile "\t\t\tprojectDirPath = \"\";"
+  puts $aPbxprojFile "\t\t\tprojectRoot = \"\";"
+  puts $aPbxprojFile "\t\t\ttargets = ("
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($theToolKit) ,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXProject section
+
+  # Begin PBXSourcesBuildPhase section
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkSources) = \{"
+  puts $aPbxprojFile "\t\t\tisa = PBXSourcesBuildPhase;"
+  puts $aPbxprojFile "\t\t\tbuildActionMask = 2147483647;"
+  puts $aPbxprojFile "\t\t\tfiles = ("
+  puts $aPbxprojFile $aSrcFileGuids
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\trunOnlyForDeploymentPostprocessing = 0;"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End PBXSourcesBuildPhase section
+
+  # Begin XCBuildConfiguration section
+  set aTkDebugProject "${theToolKit}_DebugProject"
+  if { ! [info exists aGuidsMap($aTkDebugProject)] } {
+    set aGuidsMap($aTkDebugProject) [OS:genGUID "xcd"]
+  }
+
+  set aTkReleaseProject "${theToolKit}_ReleaseProject"
+  if { ! [info exists aGuidsMap($aTkReleaseProject)] } {
+    set aGuidsMap($aTkReleaseProject) [OS:genGUID "xcd"]
+  }
+
+  set aTkDebugNativeTarget "${theToolKit}_DebugNativeTarget"
+  if { ! [info exists aGuidsMap($aTkDebugNativeTarget)] } {
+    set aGuidsMap($aTkDebugNativeTarget) [OS:genGUID "xcd"]
+  }
+
+  set aTkReleaseNativeTarget "${theToolKit}_ReleaseNativeTarget"
+  if { ! [info exists aGuidsMap($aTkReleaseNativeTarget)] } {
+    set aGuidsMap($aTkReleaseNativeTarget) [OS:genGUID "xcd"]
+  }
+
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkDebugProject) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
+  puts $aPbxprojFile "\t\t\tbuildSettings = \{"
+  puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+  puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
+  puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = NO;"
+  puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
+  puts $aPbxprojFile "\t\t\t\tGCC_DYNAMIC_NO_PIC = NO;"
+  puts $aPbxprojFile "\t\t\t\tGCC_ENABLE_OBJC_EXCEPTIONS = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_OPTIMIZATION_LEVEL = 0;"
+  puts $aPbxprojFile "\t\t\t\tGCC_PREPROCESSOR_DEFINITIONS = ("
+  puts $aPbxprojFile "\t\t\t\t\t\"DEBUG=1\","
+  puts $aPbxprojFile "\t\t\t\t\t\"\$\(inherited\)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tGCC_SYMBOLS_PRIVATE_EXTERN = NO;"
+  puts $aPbxprojFile "\t\t\t\tGCC_VERSION = com.apple.compilers.llvm.clang.1_0;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_64_TO_32_BIT_CONVERSION = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_ABOUT_RETURN_TYPE = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNINITIALIZED_AUTOS = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNUSED_VARIABLE = YES;"
+  puts $aPbxprojFile "\t\t\t\tOTHER_LDFLAGS = \"\$(CSF_OPT_LNK64)\"; "
+  puts $aPbxprojFile "\t\t\t\tONLY_ACTIVE_ARCH = YES;"
+  puts $aPbxprojFile "\t\t\t\};"
+  puts $aPbxprojFile "\t\t\tname = Debug;"
+  puts $aPbxprojFile "\t\t\};"
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkReleaseProject) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
+  puts $aPbxprojFile "\t\t\tbuildSettings = \{"
+  puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+  puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
+  puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = YES;"
+  puts $aPbxprojFile "\t\t\t\tDEBUG_INFORMATION_FORMAT = \"dwarf-with-dsym\";"
+  puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
+  puts $aPbxprojFile "\t\t\t\tGCC_ENABLE_OBJC_EXCEPTIONS = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_VERSION = com.apple.compilers.llvm.clang.1_0;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_64_TO_32_BIT_CONVERSION = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_ABOUT_RETURN_TYPE = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNINITIALIZED_AUTOS = YES;"
+  puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNUSED_VARIABLE = YES;"
+  puts $aPbxprojFile "\t\t\t\tOTHER_LDFLAGS = \"\$(CSF_OPT_LNK64D)\";"
+  puts $aPbxprojFile "\t\t\t\};"
+  puts $aPbxprojFile "\t\t\tname = Release;"
+  puts $aPbxprojFile "\t\t\};"
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkDebugNativeTarget) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
+  puts $aPbxprojFile "\t\t\tbuildSettings = \{"
+  puts $aPbxprojFile "${anExecExtension}"
+  puts $aPbxprojFile "${anExecPrefix}"
+  puts $aPbxprojFile "\t\t\t\tGCC_PREPROCESSOR_DEFINITIONS = ("
+  foreach aMacro $aTKDefines {
+    puts $aPbxprojFile "\t\t\t\t\t${aMacro} ,"
+  }
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tHEADER_SEARCH_PATHS = ("
+  foreach anIncPath $anIncPaths {
+    puts $aPbxprojFile "\t\t\t\t\t${anIncPath},"
+  }
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tOTHER_CPLUSPLUSFLAGS = ("
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(OTHER_CFLAGS)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tPRODUCT_NAME = \"\$(TARGET_NAME)\";"
+  set anUserHeaderSearchPath "\t\t\t\tUSER_HEADER_SEARCH_PATHS = \""
+  foreach anIncPath $anIncPaths {
+    append anUserHeaderSearchPath " ${anIncPath}"
+  }
+  append anUserHeaderSearchPath "\";"
+  puts $aPbxprojFile $anUserHeaderSearchPath
+  puts $aPbxprojFile "${aWrapperExtension}"
+  puts $aPbxprojFile "\t\t\t\};"
+  puts $aPbxprojFile "\t\t\tname = Debug;"
+  puts $aPbxprojFile "\t\t\};"
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkReleaseNativeTarget) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
+  puts $aPbxprojFile "\t\t\tbuildSettings = \{"
+  puts $aPbxprojFile "${anExecExtension}"
+  puts $aPbxprojFile "${anExecPrefix}"
+  puts $aPbxprojFile "\t\t\t\tGCC_PREPROCESSOR_DEFINITIONS = ("
+  foreach aMacro $aTKDefines {
+    puts $aPbxprojFile "\t\t\t\t\t${aMacro} ,"
+  }
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tHEADER_SEARCH_PATHS = ("
+  foreach anIncPath $anIncPaths {
+    puts $aPbxprojFile "\t\t\t\t\t${anIncPath},"
+  }
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tOTHER_CPLUSPLUSFLAGS = ("
+  puts $aPbxprojFile "\t\t\t\t\t\"\$(OTHER_CFLAGS)\","
+  puts $aPbxprojFile "\t\t\t\t);"
+  puts $aPbxprojFile "\t\t\t\tPRODUCT_NAME = \"\$(TARGET_NAME)\";"
+  puts $aPbxprojFile $anUserHeaderSearchPath
+  puts $aPbxprojFile "${aWrapperExtension}"
+  puts $aPbxprojFile "\t\t\t\};"
+  puts $aPbxprojFile "\t\t\tname = Release;"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End XCBuildConfiguration section
+
+  # Begin XCConfigurationList section
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkBuildCfgListProj) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCConfigurationList;"
+  puts $aPbxprojFile "\t\tbuildConfigurations = ("
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkDebugProject) ,"
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkReleaseProject) ,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tdefaultConfigurationIsVisible = 0;"
+  puts $aPbxprojFile "\t\t\tdefaultConfigurationName = Release;"
+  puts $aPbxprojFile "\t\t\};"
+  puts $aPbxprojFile "\t\t$aGuidsMap($aTkBuildCfgListNativeTarget) = \{"
+  puts $aPbxprojFile "\t\t\tisa = XCConfigurationList;"
+  puts $aPbxprojFile "\t\t\tbuildConfigurations = ("
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkDebugNativeTarget) ,"
+  puts $aPbxprojFile "\t\t\t\t$aGuidsMap($aTkReleaseNativeTarget) ,"
+  puts $aPbxprojFile "\t\t\t);"
+  puts $aPbxprojFile "\t\t\tdefaultConfigurationIsVisible = 0;"
+  puts $aPbxprojFile "\t\t\tdefaultConfigurationName = Release;"
+  puts $aPbxprojFile "\t\t\};\n"
+  # End XCConfigurationList section
+
+  puts $aPbxprojFile "\t\};"
+  puts $aPbxprojFile "\trootObject = $aGuidsMap($aTkProjectObj) ;"
+  puts $aPbxprojFile "\}"
+
+  close $aPbxprojFile
+}
+
+proc osutils:xcdx { theOutDir theExecutable theGuidsMap } {
+  set aUsername [exec whoami]
+
+  # Creating folders for Xcode project file.
+  set anExecutableDir "${theOutDir}/${theExecutable}.xcodeproj"
+  OS:mkdir $anExecutableDir
+  if { ! [file exists $anExecutableDir] } {
+    puts stderr "Error: Could not create project directory \"$anExecutableDir\""
+    return
+  }
+
+  set aUserDataDir "${anExecutableDir}/xcuserdata"
+  OS:mkdir $aUserDataDir
+  if { ! [file exists $aUserDataDir] } {
+    puts stderr "Error: Could not create xcuserdata directorty in \"$anExecutableDir\""
+    return
+  }
+
+  set aUserDataDir "${aUserDataDir}/${aUsername}.xcuserdatad"
+  OS:mkdir $aUserDataDir
+  if { ! [file exists $aUserDataDir] } {
+    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directorty in \"$anExecutableDir\"/xcuserdata"
+    return
+  }
+
+  set aSchemesDir "${aUserDataDir}/xcschemes"
+  OS:mkdir $aSchemesDir
+  if { ! [file exists $aSchemesDir] } {
+    puts stderr "Error: Could not create xcschemes directorty in \"$aUserDataDir\""
+    return
+  }
+  # End folders creation. 
+
+  # Generating GUID for tookit.
+  upvar $theGuidsMap aGuidsMap
+  if { ! [info exists aGuidsMap($theExecutable)] } {
+    set aGuidsMap($theExecutable) [OS:genGUID "xcd"]
+  }
+
+  # Creating xcscheme file for toolkit from template.
+  set aXcschemeTmpl [osutils:readtemplate "xcscheme" "xcode"]
+  regsub -all -- {__TOOLKIT_NAME__} $aXcschemeTmpl $theExecutable aXcschemeTmpl
+  regsub -all -- {__TOOLKIT_GUID__} $aXcschemeTmpl $aGuidsMap($theExecutable) aXcschemeTmpl
+  set aXcschemeFile [open "$aSchemesDir/${theExecutable}.xcscheme"  "w"]
+  puts $aXcschemeFile $aXcschemeTmpl
+  close $aXcschemeFile
+
+  # Creating xcschememanagement.plist file for toolkit from template.
+  set aPlistTmpl [osutils:readtemplate "plist" "xcode"]
+  regsub -all -- {__TOOLKIT_NAME__} $aPlistTmpl $theExecutable aPlistTmpl
+  regsub -all -- {__TOOLKIT_GUID__} $aPlistTmpl $aGuidsMap($theExecutable) aPlistTmpl
+  set aPlistFile [open "$aSchemesDir/xcschememanagement.plist"  "w"]
+  puts $aPlistFile $aPlistTmpl
+  close $aPlistFile
+
+}

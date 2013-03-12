@@ -59,7 +59,7 @@
 
   -- Cocoa staff
   @set %CSF_objc            = "-lobjc ";
-  @set %CSF_Appkit          = "-framework Appkit ";
+  @set %CSF_Appkit          = "-framework AppKit ";
   @set %CSF_IOKit           = "-framework IOKit ";
 
   @if (%MACOSX_USE_GLX == "true") then

@@ -267,25 +267,41 @@ proc wgenprojbat {thePath theIDE} {
     if { "$theIDE" == "amk" } {
       regsub -all -- {__CASROOT__}   $anEnvTmpl "\$PWD" anEnvTmpl
       regsub -all -- {__CASBIN__}    $anEnvTmpl ""      anEnvTmpl
-      
-    } else {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"    anEnvTmpl
+      regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
+      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
+    } elseif {"$theIDE" == "cbp"} {
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"           anEnvTmpl
       regsub -all -- {__CASBIN__}    $anEnvTmpl "\${WOKSTATION}/cbp/" anEnvTmpl
+      regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
+      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
+    } elseif {"$theIDE" == "xcd"} {
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"         anEnvTmpl
+      regsub -all -- {__CASBIN__}    $anEnvTmpl "adm/mac/xcd/build" anEnvTmpl
+      regsub -all -- {__BIN_PATH__}  $anEnvTmpl {[[ ${CASDEB} == "d" ]] \&\& BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"} anEnvTmpl
+      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\"\$BIN_PATH\"" anEnvTmpl
     }
-    
+
     regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
-    
+
     if { "$::tcl_platform(platform)" != "windows" } {
+      if {"$theIDE" == "cbp"} {
+        set aReleaseLibsPath "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"
+        set aDebugLibsPath   "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd"
+      } elseif {"$theIDE" == "xcd"} {
+        set aReleaseLibsPath "${anOsRootPath}/adm/mac/xcd/build/Release"
+        set aDebugLibsPath   "${anOsRootPath}/adm/mac/xcd/build/Debug"
+      }
+
       if { "$::ARCH" == "32"} {
-        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${aReleaseLibsPath}"  anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "${aDebugLibsPath}"    anEnvTmpl
         regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "" anEnvTmpl
         regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "" anEnvTmpl
       } else {
         regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "" anEnvTmpl
         regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "" anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"  anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd" anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${aReleaseLibsPath}"  anEnvTmpl
+        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${aDebugLibsPath}"    anEnvTmpl
       }
     }
     set anEnvFile [open "$aBox/env.${aPlatformExt}" "w"]
@@ -300,9 +316,11 @@ proc wgenprojbat {thePath theIDE} {
     "vc7"   -
     "vc8"   -
     "vc9"   -
-    "vc10"   -
+    "vc10"  -
     "vc11"  { file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat" }
     "cbp"   { file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
+    "xcd"   { file copy -force -- "$::env(WOKHOME)/lib/templates/xcode.sh" "$aBox/xcode.sh" }
+
   }
 }
 
@@ -316,7 +334,7 @@ proc removeAllOccurrencesOf { theObject theList } {
 
 # Wrapper-function to generate VS project files
 proc wgenproj { args } {
-  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" }
+  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" "xcd" }
   set anArgs $args
 
   # Setting default IDE.
@@ -380,7 +398,8 @@ proc wgenproj { args } {
       vc11  -  Visual Studio 2012
       cbp   -  CodeBlocks
       cmake -  CMake
-      amk   -  AutoMake"
+      amk   -  AutoMake
+      xcd   -  Xcode"
       return
   }
 
