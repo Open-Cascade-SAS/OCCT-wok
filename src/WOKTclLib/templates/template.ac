@@ -768,7 +768,11 @@ else
 	HAVE_TBB=no
      fi
      if test "x$tbb_lib" != "x"; then
-     	CSF_TBB_LIB="-L$tbb_lib -ltbb -ltbbmalloc"
+       if test "x$enable_debug" = "xyes"; then
+        CSF_TBB_LIB="-L$tbb_lib -ltbb_debug -ltbbmalloc_debug"
+       else
+        CSF_TBB_LIB="-L$tbb_lib -ltbb -ltbbmalloc"
+       fi
      else
 	HAVE_TBB=no
      fi
