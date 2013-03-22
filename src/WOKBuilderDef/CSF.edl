@@ -51,6 +51,7 @@
 
   @set %CSF_JavaHome = "";
   @set %CSF_JavaLibs = "";
+  @string %CXX_JAVA = "";
 
   @string %CSF_C_INCLUDE   = "";
   @string %CSF_CXX_INCLUDE = "";
