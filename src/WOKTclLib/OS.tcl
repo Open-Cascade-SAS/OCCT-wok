@@ -2984,7 +2984,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   regsub -all -- {__PROJECT_NAME__} $theProjTmpl $aProjectName theProjTmpl
   regsub -all -- {__BITNESS__}      $theProjTmpl $::env(ARCH) theProjTmpl
   regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl
-  regsub -all -- {__CASROOT_DIR__} $theProjTmpl "[OS:casroot]" theProjTmpl
+  regsub -all -- {__CASROOT_DIR__} $theProjTmpl "../.." theProjTmpl
 
 
   set aBuff [list]
