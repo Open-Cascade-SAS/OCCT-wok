@@ -241,22 +241,34 @@ proc wgenprojbat {thePath theIDE} {
   set anOsRootPath [pwd]
   wokcd $aWokCD
 
-  set aPlatformExt sh
-  set aPlatformCurrentDir "\$PWD" 
+  set aTargetPlatform "lin"
   if { "$::tcl_platform(platform)" == "windows" } {
-    set aPlatformExt bat
-    set aPlatformCurrentDir "\%\~dp0" 
+    set aTargetPlatform "wnt"
+  }
+
+  switch -exact -- "$theIDE" {
+    "vc7"   -
+    "vc8"   -
+    "vc9"   -
+    "vc10"  -
+    "vc11"  { set aTargetPlatform wnt }
+    "amk"   { set aTargetPlatform lin  }
+  }
+  
+  set aTargetPlatformExt sh
+  if { "$aTargetPlatform" == "wnt" } {
+    set aTargetPlatformExt bat
   }
 
   set aBox [file normalize "$thePath/.."]
 
   if {"$theIDE" == "cmake"} {
-    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aPlatformExt}" "$aBox/adm/cmake/draw.${aPlatformExt}"
-    file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}.in" "$aBox/adm/cmake/env.${aPlatformExt}.in"
+    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aTargetPlatformExt}" "$aBox/adm/cmake/draw.${aTargetPlatformExt}"
+    file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}.in" "$aBox/adm/cmake/env.${aTargetPlatformExt}.in"
     file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
   } else {
 
-    set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aPlatformExt}" "r"]
+    set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}" "r"]
     set anEnvTmpl [read $anEnvTmplFile]
     close $anEnvTmplFile
 
@@ -267,7 +279,7 @@ proc wgenprojbat {thePath theIDE} {
     set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
 
     if { "$theIDE" == "amk" } {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aPlatformCurrentDir" anEnvTmpl
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "\$PWD" anEnvTmpl
       regsub -all -- {__CASBIN__}    $anEnvTmpl ""      anEnvTmpl
       regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
       regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
@@ -281,11 +293,16 @@ proc wgenprojbat {thePath theIDE} {
       regsub -all -- {__CASBIN__}    $anEnvTmpl "adm/mac/xcd/build" anEnvTmpl
       regsub -all -- {__BIN_PATH__}  $anEnvTmpl {[[ ${CASDEB} == "d" ]] \&\& BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"} anEnvTmpl
       regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\"\$BIN_PATH\"" anEnvTmpl
+    } else {
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
     }
 
     regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
 
-    if { "$::tcl_platform(platform)" != "windows" } {
+    if { "$aTargetPlatform" != "wnt" } {
+      set aReleaseLibsPath ""
+      set aDebugLibsPath   ""
+      
       if {"$theIDE" == "cbp"} {
         set aReleaseLibsPath "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"
         set aDebugLibsPath   "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd"
@@ -306,12 +323,12 @@ proc wgenprojbat {thePath theIDE} {
         regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${aDebugLibsPath}"    anEnvTmpl
       }
     }
-    set anEnvFile [open "$aBox/env.${aPlatformExt}" "w"]
+    set anEnvFile [open "$aBox/env.${aTargetPlatformExt}" "w"]
     puts $anEnvFile $anEnvTmpl
     close $anEnvFile
 
-    catch {file copy -- "$::env(WOKHOME)/site/custom.${aPlatformExt}"        "$aBox/custom.${aPlatformExt}"}
-    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aPlatformExt}" "$aBox/draw.${aPlatformExt}"
+    catch {file copy -- "$::env(WOKHOME)/site/custom.${aTargetPlatformExt}"        "$aBox/custom.${aTargetPlatformExt}"}
+    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aTargetPlatformExt}" "$aBox/draw.${aTargetPlatformExt}"
   }
 
   switch -exact -- "$theIDE" {
