@@ -279,7 +279,7 @@ proc wgenprojbat {thePath theIDE} {
     set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
 
     if { "$theIDE" == "amk" } {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "\$PWD" anEnvTmpl
+      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
       regsub -all -- {__CASBIN__}    $anEnvTmpl ""      anEnvTmpl
       regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
       regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
