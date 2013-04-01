@@ -2358,7 +2358,6 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   foreach anIncPath $theIncPaths {
     puts $aFile "\t\t\t<Add directory=\"$anIncPath\" />"
   }
-  puts $aFile "\t\t\t<Add directory=\"$::env(WOK_LIBRARY)\" />"
   puts $aFile "\t\t</Compiler>"
 
   # COMMON linker options
@@ -2674,7 +2673,7 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   set aDepsFileRefSection ""
   set aDepsGuids ""
   set aDepsRefGuids ""
-  set anIncPaths [list "../../../inc" $::env(WOK_LIBRARY)]
+  set anIncPaths [list "../../../inc"]
   puts $aPbxprojFile [osutils:xcdtk:sources $theToolKit $theTargetType aSrcFileRefSection aGroupSection aPackagesGuids aSrcFileGuids aGuidsMap anIncPaths]
   puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids]
   # End PBXBuildFile section

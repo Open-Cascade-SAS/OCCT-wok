@@ -29,15 +29,17 @@ if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
 
 # Read script arguments
 shopt -s nocasematch
-if [[ "$1" == "debug" ]]; then export CASDEB="d"; fi
-if [[ "$1" == "d" ]]; then export CASDEB="d"; fi
+if [[ "$1" == "cbp" ]]; then
+  export TARGET="cbp";
+elif [[ "$1" == "xcd" ]]; then
+  export TARGET="xcd";
+else
+  echo "Error: wrong target identifier. Should be \"cbp\" (Code::Blocks) or \"xcd\" (Xcode)"
+  exit
+fi
+if [[ "$2" == "debug" ]]; then export CASDEB="d"; fi
+if [[ "$2" == "d" ]]; then export CASDEB="d"; fi
 shopt -u nocasematch
-
-export CSF_OPT_INC="${CSF_OPT_INC}:__CSF_OPT_INC__"
-export CSF_OPT_LIB32="${CSF_OPT_LIB32}:__CSF_OPT_LIB32__"
-export CSF_OPT_LIB64="${CSF_OPT_LIB64}:__CSF_OPT_LIB64__"
-export CSF_OPT_LIB32D="__CSF_OPT_LIB32D__"
-export CSF_OPT_LIB64D="__CSF_OPT_LIB64D__"
 
 # ----- Setup Environment Variables -----
 anArch=`uname -m`
@@ -55,7 +57,27 @@ else
   export WOKSTATION="lin";
 fi
 
-export CASBIN="__CASBIN__"
+export CASBIN=""
+if [ "${TARGET}" == "cbp" ]; then
+  export CASBIN="${WOKSTATION}/cbp"
+elif [ "${TARGET}" == "xcd" ]; then
+  export CASBIN="adm/mac/xcd/build"
+fi
+
+export CSF_OPT_INC="${CSF_OPT_INC}:${CASROOT}/inc"
+
+if [ "${TARGET}" == "cbp" ]; then
+  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libd"
+  export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libd"
+elif [ "${TARGET}" == "xcd" ]; then
+  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Release"
+  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Release"
+  export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Debug"
+  export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Debug"
+fi
+
 
 export CSF_OPT_CMPL=""
 
@@ -118,10 +140,16 @@ else
   export CSF_OPT_LNK32D="$OPT_LINKER_OPTIONS"
 fi
 
-__BIN_PATH__
-__LIBS_PATH__
-export BIN_PATH
-export LIBS_PATH
+
+BIN_PATH=""
+LIBS_PATH=""
+if [ "${TARGET}" == "cbp" ]; then
+  BIN_PATH="${CASBIN}/bin${CASDEB}"
+  LIBS_PATH="${CASBIN}/lib${CASDEB}"
+elif [ "${TARGET}" == "xcd" ]; then
+  [[ "${CASDEB}" == "d" ]] && BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"
+  LIBS_PATH="$BIN_PATH"
+fi
 
 export PATH="${CASROOT}/${BIN_PATH}:${PATH}"
 export LD_LIBRARY_PATH="${CASROOT}/${LIBS_PATH}:${LD_LIBRARY_PATH}"

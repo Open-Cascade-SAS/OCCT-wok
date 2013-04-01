@@ -262,10 +262,13 @@ proc wgenprojbat {thePath theIDE} {
 
   set aBox [file normalize "$thePath/.."]
 
+  if { "$aTargetPlatform" != "wnt" } {
+    file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
+  }
+
   if {"$theIDE" == "cmake"} {
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aTargetPlatformExt}" "$aBox/adm/cmake/draw.${aTargetPlatformExt}"
     file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}.in" "$aBox/adm/cmake/env.${aTargetPlatformExt}.in"
-    file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
   } else {
 
     set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}" "r"]
@@ -278,51 +281,8 @@ proc wgenprojbat {thePath theIDE} {
     }
     set anOsIncPath [relativePath "$aBox" "$anOsRootPath"]
 
-    if { "$theIDE" == "amk" } {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
-      regsub -all -- {__CASBIN__}    $anEnvTmpl ""      anEnvTmpl
-      regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
-      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
-    } elseif {"$theIDE" == "cbp"} {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"           anEnvTmpl
-      regsub -all -- {__CASBIN__}    $anEnvTmpl "\${WOKSTATION}/cbp/" anEnvTmpl
-      regsub -all -- {__BIN_PATH__}  $anEnvTmpl "BIN_PATH=\${CASBIN}bin\${CASDEB}"  anEnvTmpl
-      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\${CASBIN}lib\${CASDEB}" anEnvTmpl
-    } elseif {"$theIDE" == "xcd"} {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot"         anEnvTmpl
-      regsub -all -- {__CASBIN__}    $anEnvTmpl "adm/mac/xcd/build" anEnvTmpl
-      regsub -all -- {__BIN_PATH__}  $anEnvTmpl {[[ ${CASDEB} == "d" ]] \&\& BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"} anEnvTmpl
-      regsub -all -- {__LIBS_PATH__} $anEnvTmpl "LIBS_PATH=\"\$BIN_PATH\"" anEnvTmpl
-    } else {
-      regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
-    }
+    regsub -all -- {__CASROOT__}   $anEnvTmpl "$aCasRoot" anEnvTmpl
 
-    regsub -all -- {__CSF_OPT_INC__} $anEnvTmpl "$anOsIncPath" anEnvTmpl
-
-    if { "$aTargetPlatform" != "wnt" } {
-      set aReleaseLibsPath ""
-      set aDebugLibsPath   ""
-      
-      if {"$theIDE" == "cbp"} {
-        set aReleaseLibsPath "${anOsRootPath}/${::env(WOKSTATION)}/cbp/lib"
-        set aDebugLibsPath   "${anOsRootPath}/${::env(WOKSTATION)}/cbp/libd"
-      } elseif {"$theIDE" == "xcd"} {
-        set aReleaseLibsPath "${anOsRootPath}/adm/mac/xcd/build/Release"
-        set aDebugLibsPath   "${anOsRootPath}/adm/mac/xcd/build/Debug"
-      }
-
-      if { "$::ARCH" == "32"} {
-        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "${aReleaseLibsPath}"  anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "${aDebugLibsPath}"    anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "" anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "" anEnvTmpl
-      } else {
-        regsub -all -- {__CSF_OPT_LIB32__}  $anEnvTmpl "" anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB32D__} $anEnvTmpl "" anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64__}  $anEnvTmpl "${aReleaseLibsPath}"  anEnvTmpl
-        regsub -all -- {__CSF_OPT_LIB64D__} $anEnvTmpl "${aDebugLibsPath}"    anEnvTmpl
-      }
-    }
     set anEnvFile [open "$aBox/env.${aTargetPlatformExt}" "w"]
     puts $anEnvFile $anEnvTmpl
     close $anEnvFile
