@@ -2935,7 +2935,9 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   }
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
   puts $aPbxprojFile "\t\t\t\t);"
-  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  if { "$::MACOSX_USE_GLX" == "true" } {
+    puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  }
   puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
   puts $aPbxprojFile "\t\t\t\t);"
@@ -2969,7 +2971,9 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   }
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
   puts $aPbxprojFile "\t\t\t\t);"
-  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  if { "$::MACOSX_USE_GLX" == "true" } {
+    puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+  }
   puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
   puts $aPbxprojFile "\t\t\t\t);"
