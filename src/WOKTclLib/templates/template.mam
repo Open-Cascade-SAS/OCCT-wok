@@ -15,7 +15,8 @@ __INCLUDES__
 lib_LTLIBRARIES=lib__TKNAM__.la
 
 lib__TKNAM___la_LIBADD = $(CSF_OPT_LIBS) \
-__LIBADD____EXTERNLIB__
+__LIBADD__ \
+__EXTERNLIB__
 
 lib__TKNAM___la_SOURCES = \
 __SOURCES__

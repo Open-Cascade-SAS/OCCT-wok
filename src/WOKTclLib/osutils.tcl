@@ -1574,9 +1574,26 @@ proc osutils:am:__INCLUDES__ { l } {
 ;# Used to replace the string __LIBADD__ in Makefile.am
 ;# l is the toolkit closure list of a toolkit.
 ;#
-proc osutils:am:__LIBADD__ { l {final 0} } {
-  set fmt "../%s/lib%s.la"
-  return [wokUtils:EASY:FmtString2 $fmt $l $final]
+proc osutils:am:__LIBADD__ { theIncToolkits {final 0} } {
+
+  set aCurrentWorkBench [wokinfo -w]
+  while { "[w_info -f]" != "" } {
+    wokcd [w_info -f]
+  }
+  set aOriginModules [w_info -k]
+  wokcd $aCurrentWorkBench
+
+  set aLibString ""
+  
+  foreach aIncToolkit $theIncToolkits {
+    if { [lsearch $aOriginModules $aIncToolkit] != -1} {
+      append aLibString " \\\n-l$aIncToolkit"
+    } else {
+      append aLibString " \\\n../$aIncToolkit/lib$aIncToolkit.la"
+    }
+  }
+
+  return $aLibString
 }
 
 ;#
@@ -2673,7 +2690,7 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   set aDepsFileRefSection ""
   set aDepsGuids ""
   set aDepsRefGuids ""
-  set anIncPaths [list "../../../inc"]
+  set anIncPaths [list "../../../inc" $::env(WOK_LIBRARY)]
   puts $aPbxprojFile [osutils:xcdtk:sources $theToolKit $theTargetType aSrcFileRefSection aGroupSection aPackagesGuids aSrcFileGuids aGuidsMap anIncPaths]
   puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids]
   # End PBXBuildFile section
