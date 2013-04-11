@@ -1577,11 +1577,18 @@ proc osutils:am:__INCLUDES__ { l } {
 proc osutils:am:__LIBADD__ { theIncToolkits {final 0} } {
 
   set aCurrentWorkBench [wokinfo -w]
+  set aFirstFatherWorkBench $aCurrentWorkBench
+  
   while { "[w_info -f]" != "" } {
     wokcd [w_info -f]
+    set aFirstFatherWorkBench [wokinfo -w]
   }
-  set aOriginModules [w_info -k]
-  wokcd $aCurrentWorkBench
+  
+  set aOriginModules {}
+  if { "$aCurrentWorkBench" != "$aFirstFatherWorkBench" } {
+    set aOriginModules [w_info -k]
+    wokcd $aCurrentWorkBench
+  }
 
   set aLibString ""
   
