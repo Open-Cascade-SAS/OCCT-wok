@@ -8,6 +8,39 @@
 ;# Author: yolanda_forbes@hotmail.com
 ;#
 
+# change station (and its environment) and return old station
+proc changeStationAndDependentEnvironment { theNewStation } {
+
+  # save old station
+  set anOldStation [wokparam -v %Station]
+  
+  if { "$anOldStation" == "$theNewStation" } {
+    return $anOldStation
+  }
+  
+  wokprofile -S $theNewStation
+
+  # change station
+  wokparam -s %Station=$theNewStation
+  
+  # we should unset CSF_EDL variable due to it is necessary 
+  # to update all CSF's variables after station change
+  wokparam -u %CSF_EDL
+  wokparam -u %CMPLRS_EDL
+
+  # unseting is require
+  wokparam -u %CSF_[string toupper $theNewStation]_EDL
+  wokparam -u %CSF_[string toupper $anOldStation]_EDL
+
+  # change env(WOKSTATION)
+  set ::env(WOKSTATION) $theNewStation
+
+  # redefine csf variables
+  wokparam -l CMPLRS
+  
+  return $anOldStation
+}
+
 # intersect3 - perform the intersecting of two lists, returning a list containing three lists.
 # The first list is everything in the first list that wasn't in the second,
 # the second list contains the intersection of the two lists, the third list contains everything
@@ -34,19 +67,7 @@ proc osutils:intersect3 {list1 list2} {
 
 # Sort a list, returning the sorted version minus any duplicates
 proc osutils:lrmdups list {
-  if { [llength $list] == 0 } {
-    return {}
-  }
-  set list [lsort $list]
-  set last [lvarpop list]
-  lappend result $last
-  foreach element $list {
-    if ![cequal $last $element] {
-      lappend result $element
-      set last $element
-    }
-  }
-  return $result
+  return [lsort -unique $list]
 }
 
 # Return the logical union of two lists, removing any duplicates
@@ -880,7 +901,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   regsub -all -- {vc[0-9]+} $aUsedToolKits $theVcVer aUsedToolKits
 
   # and put this list to project file
-  puts "$theToolKit requires  $aUsedToolKits"
+  #puts "$theToolKit requires  $aUsedToolKits"
   if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" } { set aUsedToolKits [join $aUsedToolKits {;}] }
   regsub -all -- {__TKDEP__} $theProjTmpl $aUsedToolKits theProjTmpl
 
@@ -893,7 +914,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   if [array exists written] { unset written }
   set fxloparamfcxx [lindex [osutils:intersect3 [split [lindex [wokparam -v %CMPLRS_CXX_Options [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_CXX_Options] 0]] ] 2]
   set fxloparamfc   [lindex [osutils:intersect3 [split [lindex [wokparam -v %CMPLRS_C_Options   [w_info -f]] 0]] [split [lindex [wokparam -v %CMPLRS_C_Options]   0]] ] 2]
-  set fxloparam    "[osutils:union [split $fxloparamfcxx] [split $fxloparamfc]]"
+  set fxloparam ""
   foreach fxlo $resultloc {
     set xlo  [wokinfo -n $fxlo]
     set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]

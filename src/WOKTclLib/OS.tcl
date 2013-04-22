@@ -1884,28 +1884,32 @@ proc OS:init {{os {}}} {
     global tcl_platform
     global OpenSource
     if [info exists OpenSource] {
-	unset OpenSource
+      unset OpenSource
     }
+    
     set askplat $os
     if { "$os" == "" } {
-	set os $tcl_platform(os)
+      set os $tcl_platform(os)
     }
+
     if { [wokcd] == {} } {
-	puts stderr " Pas de definition pour [wokcd]. Adm du wb courant "
-	return {}
+      puts stderr " Pas de definition pour [wokcd]. Adm du wb courant "
+      return {}
     }
+
     ;#
     ;# ou se trouve tout ce bordel.
     ;#
     set OpenSource(box)       [OS:defbox]
-
+    
     ;# On utilise gtar si possible. =>
     ;#
+    
     set OpenSource(tar)  tar
     if { $tcl_platform(os) == "SunOS"} { set OpenSource(tar) [file join $env(WOK_LIBRARY) sun gtar] }
     if { $tcl_platform(os) == "IRIX" } { set OpenSource(tar) [file join $env(WOK_LIBRARY) sil gtar] }
     set OpenSource(gtar) yes
-
+    
     ;#
     ;# Load list of OCCT modules and their definitions
     ;#
@@ -2149,10 +2153,10 @@ proc OS:procs { module plat} {
 proc OS:casroot {} {
     global env
     if { [info exists env(CASROOT)] } {
-	return $env(CASROOT)
+      return $env(CASROOT)
     }
 
-    return [lindex [wokinfo -R [lindex [w_info -A [wokcd]] end]] 0]
+    return [wokinfo -p HomeDir [lindex [w_info -A [wokcd]] end]]
 }
 ;#
 ;#
@@ -3300,7 +3304,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
     return
   }
-
+  
   set anOutRoot $theOutDir
   if { $anOutRoot == "" } {
     set anOutRoot [OS -box]
@@ -3344,7 +3348,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   if { "$theIDE" == "cmake" } {
     set anOutDir "${anOutRoot}/${theIDE}"
   }
-
+  
   OS:mkdir $anOutDir
   if { ! [file exists $anOutDir] } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
@@ -3944,6 +3948,7 @@ proc OS:defbox {} {
 # otherwise returns input value (assumed to be already a list of modules)
 proc OS:listmodules {what {platforms {}}} {
   OS:init
+
   if { "$what" == "" } {
     if { "$platforms" != "" } {
       return [OS -lm -plat $platforms]

@@ -384,6 +384,17 @@ proc wgenproj { args } {
 
   puts "the \'$anTarget\' target has been applied"
 
+  source "$::env(WOKHOME)/lib/osutils.tcl"
+  source "$::env(WOKHOME)/lib/OS.tcl"
+
+  # change station if it is necessary
+  set anOldStation "$::env(WOKSTATION)"
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11} $anTarget] != -1 && "$anOldStation" != "wnt"} {
+      changeStationAndDependentEnvironment wnt
+  } elseif { "$anTarget" == "amk" && "$anOldStation" != "lin"} {
+    changeStationAndDependentEnvironment lin
+  }
+
   # create the inc directory. The directory should be created by wprocess function.
   wokcd -P Home
   file mkdir [file join [pwd] inc]
@@ -395,8 +406,7 @@ proc wgenproj { args } {
   } else {
     puts "skip wprocess"
   }
-  source "$::env(WOKHOME)/lib/osutils.tcl"
-  source "$::env(WOKHOME)/lib/OS.tcl"
+
   set aWokCD [wokcd]
   wadm [wokinfo -w]
   set anAdmPath [pwd]
@@ -408,7 +418,11 @@ proc wgenproj { args } {
   if { [wokinfo -x VAS] } {
     OS:MKPRC "$anAdmPath" "VAS" "$anTarget"
   }
+
   wgenprojbat "$anAdmPath" "$anTarget"
+  
+  # change back station if it is require
+  changeStationAndDependentEnvironment "$anOldStation"
 }
 
 # Function to prepare environment
