@@ -232,6 +232,10 @@ proc osutils:compilable { } {
   return [list .c .cxx .cpp]
 }
 
+proc osutils:mm_compilable { } {
+  return [list .mm]
+}
+
 proc osutils:optinal_libs { } {
   return [list tbb.lib tbbmalloc.lib FreeImage.lib FreeImagePlus.lib gl2ps.lib]
 }
@@ -1829,7 +1833,6 @@ proc osutils:csfList { theOS  theCsfMap } {
 
     if { "$theOS" == "lin" } {
       set aCsfMap(CSF_ThreadLibs) "pthread rt"
-      set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
       set aCsfMap(CSF_OpenGlLibs) "GLU GL"
 
     } elseif { "$theOS" == "mac" } {
@@ -1841,11 +1844,12 @@ proc osutils:csfList { theOS  theCsfMap } {
       set aCsfMap(CSF_OpenGlLibs) "OpenGL"
     }
 
+    set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
     set aCsfMap(CSF_MotifLibs)  "X11"
 
     #-- Tcl/Tk configuration
     set aCsfMap(CSF_TclLibs)    "tcl8.5"
-    set aCsfMap(CSF_TclTkLibs)  "tk8.5 X11"
+    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.5"
 
     # variable is required for support for OCCT version that use fgtl
     #-- FTGL (font renderer for OpenGL)
@@ -1898,13 +1902,18 @@ proc osutils:incpaths { theUnits theRelatedPath } {
   return $anIncPaths
 }
 
-proc osutils:tksrcfiles { theUnits  theRelatedPath } {
+proc osutils:tksrcfiles { theUnits  theRelatedPath {theCompatible {}} } {
   set aTKSrcFiles [list]
 
   if [array exists written] { unset written }
   foreach anUnit $theUnits {
     set xlo       [wokinfo -n $anUnit]
     set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
+    
+    if { $theCompatible != {} } {
+      set aSrcFiles [osutils:tk:files $xlo $theCompatible 0]
+    }
+
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
@@ -1981,6 +1990,8 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   set aCommonTKSrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath]
   set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits  $aRelatedPath]
   set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits $aRelatedPath]
+  
+  set aCommonTK_mm_SrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath osutils:mm_compilable]
 
   set aFileBuff [list "project(${theToolKit})\n"]
 
@@ -2045,6 +2056,18 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xi_LIB\} )"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xmu_LIB\} )"
       lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "Xext" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "Xmu" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "Xi" } {
+      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+      lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Appkit" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_APPKIT NAMES Appkit)"
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_APPKIT\} )"
@@ -2095,6 +2118,12 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aWntTKSrcFile] 1 end] FILES \"${aWntTKSrcFile}\")\n"
   }
   lappend aFileBuff "else()\n"
+  lappend aFileBuff "  if (APPLE)\n"
+  foreach aCommonTK_mm_SrcFile $aCommonTK_mm_SrcFiles {
+    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"${aCommonTK_mm_SrcFile}\" )"
+    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTK_mm_SrcFile] 1 end] FILES \"${aCommonTK_mm_SrcFile}\")\n"
+  }
+  lappend aFileBuff "  endif()\n"
   foreach aUnixTKSrcFile $aUnixTKSrcFiles {
     lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aUnixTKSrcFile}\" )"
     lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"${aUnixTKSrcFile}\")\n"
