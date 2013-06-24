@@ -91,17 +91,17 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/bin)
 
 # RESOURCES
-install(DIRECTORY "__CASROOT_DIR__/src/DrawResources" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/StdResource" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/SHMessage" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/Textures" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/XSMessage" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/TObj" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/XSTEPResource" DESTINATION  "${INSTALL_DIR}/res" )
-install(DIRECTORY "__CASROOT_DIR__/src/XmlOcafResource" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/DrawResources" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/StdResource" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/SHMessage" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/Textures" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XSMessage" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/TObj" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XSTEPResource" DESTINATION  "${INSTALL_DIR}/res" )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/XmlOcafResource" DESTINATION  "${INSTALL_DIR}/res" )
 
-install(FILES "__CASROOT_DIR__/src/UnitsAPI/Lexi_Expr.dat" DESTINATION  "${INSTALL_DIR}/res/UnitsAPI" )
-install(FILES "__CASROOT_DIR__/src/UnitsAPI/Units.dat"     DESTINATION  "${INSTALL_DIR}/res/UnitsAPI" )
+install(FILES "${CMAKE_SOURCE_DIR}/src/UnitsAPI/Lexi_Expr.dat" DESTINATION  "${INSTALL_DIR}/res/UnitsAPI" )
+install(FILES "${CMAKE_SOURCE_DIR}/src/UnitsAPI/Units.dat"     DESTINATION  "${INSTALL_DIR}/res/UnitsAPI" )
 
 IF("${BUILD_TYPE}" STREQUAL "Release") 
   SET(BUILD_SUFFIX "")
@@ -489,14 +489,14 @@ IF("${INSTALL_DIR}" STREQUAL "")
   MESSAGE(FATAL_ERROR "INSTALL_DIR is empty")
 ELSE()
   # INC DIRECTORY
-  install(DIRECTORY __CASROOT_DIR__/inc DESTINATION  "${INSTALL_DIR}" )
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/inc DESTINATION  "${INSTALL_DIR}" )
 
   # DRAW.BAT or DRAW.SH
-  install(FILES draw.${SCRIPT_EXT} DESTINATION  "${INSTALL_DIR}" PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE 
+  install(FILES "${CMAKE_SOURCE_DIR}/adm/cmake/draw.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" PERMISSIONS  OWNER_READ OWNER_WRITE OWNER_EXECUTE 
                                                                               GROUP_READ GROUP_WRITE GROUP_EXECUTE 
                                                                               WORLD_READ WORLD_WRITE WORLD_EXECUTE)
 
-  configure_file(env.${SCRIPT_EXT}.in env.${SCRIPT_EXT} @ONLY)
+  configure_file("${CMAKE_SOURCE_DIR}/adm/cmake/env.${SCRIPT_EXT}.in" env.${SCRIPT_EXT} @ONLY)
   install(FILES "${__PROJECT_NAME___BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION  "${INSTALL_DIR}" )
 ENDIF()
 
@@ -504,9 +504,9 @@ IF(MSVC AND "${BUILD_TYPE}" STREQUAL "Debug")
   SET(RUN_PROJECT "start __PROJECT_NAME__.sln")
   SET(BIN_DIR_POSTFIX "out\\bin\\Debug")
   SET(RESOURCE_DIR_PREFIX "%CASROOT%\\src")
-  SET(CASROOT_DEFINITION "set \"CASROOT=__CASROOT_DIR__\"")
+  SET(CASROOT_DEFINITION "set \"CASROOT=${CMAKE_SOURCE_DIR}\"")
   
-  configure_file(env.bat.in __PROJECT_NAME__.bat @ONLY)
+  configure_file("${CMAKE_SOURCE_DIR}/adm/cmake/env.bat.in" __PROJECT_NAME__.bat @ONLY)
 ENDIF()
   
 __TOOLKIT_DEPS__

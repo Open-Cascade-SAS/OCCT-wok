@@ -2980,6 +2980,7 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
 proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   puts stderr "Generating CMake meta project"
 
+  set anSubPath "adm/cmake"
   set anOutFileName "CMakeLists.txt"
   set aProjectName $theAllSolution
 
@@ -2988,8 +2989,6 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   regsub -all -- {__PROJECT_NAME__} $theProjTmpl $aProjectName theProjTmpl
   regsub -all -- {__BITNESS__}      $theProjTmpl $::env(ARCH) theProjTmpl
   regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl
-  regsub -all -- {__CASROOT_DIR__} $theProjTmpl "../.." theProjTmpl
-
 
   set aBuff [list]
   foreach aModule $theModules {
@@ -3034,27 +3033,27 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
       #create directory
-      if {![file exists "$theOutDir/$aToolKit"]} {
-        file mkdir "$theOutDir/$aToolKit"
+      if {![file exists "$theOutDir/$anSubPath/$aToolKit"]} {
+        file mkdir "$theOutDir/$anSubPath/$aToolKit"
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "subdirs(${aToolKit})"
+      lappend aBuff "subdirs($anSubPath/${aToolKit})"
 
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir $aToolKit false ${aModule}
+      osutils:cmktk $theOutDir/$anSubPath $aToolKit false ${aModule}
     }
     foreach anExecutable [OS:executable ${aModule}] {
       #create directory
-      if {![file exists "$theOutDir/$anExecutable"]} {
-        file mkdir "$theOutDir/$anExecutable"
+      if {![file exists "$theOutDir/$anSubPath/$anExecutable"]} {
+        file mkdir "$theOutDir/$anSubPath/$anExecutable"
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "subdirs(${anExecutable})"
+      lappend aBuff "subdirs($anSubPath/${anExecutable})"
 
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir $anExecutable true ${aModule}
+      osutils:cmktk $theOutDir/$anSubPath $anExecutable true ${aModule}
     }
   }
   regsub -all -- {__INCLUDE_TOOLKITS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
@@ -3065,7 +3064,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   puts $aFile $theProjTmpl
   close $aFile
 
-  puts "The Cmake meta-files are stored in the $theOutDir directory"
+  puts "The Cmake meta-files are stored in the [file normalize $theOutDir] and [file normalize $theOutDir/$anSubPath] directories"
 }
 
 # Generates Code Blocks workspace.
@@ -3363,7 +3362,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc10"   -
     "vc11"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
-    "cmake" { OS:MKCMK "${anOutRoot}/${theIDE}" $aModules $anAllSolution }
+    "cmake" { OS:MKCMK "${anOutRoot}/.." $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
     "xcd"   {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000" 
