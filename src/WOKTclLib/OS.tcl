@@ -2981,21 +2981,20 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   puts stderr "Generating CMake meta project"
 
   set anSubPath "adm/cmake"
-  set anOutFileName "CMakeLists.txt"
-  set aProjectName $theAllSolution
+  set anModulesFileName "CMakeModules.txt"
+  set anToolKitDepsFileName "CMakeToolKitsDeps.txt"
 
-  set theProjTmpl [osutils:readtemplate cmake "CMake main meta-project"]
+  set anModulesTmpl [osutils:readtemplate cmake_modules "Modules of OCCT"]
+  set anDepsTmpl [osutils:readtemplate cmake_dinf "toolkits and includes of OCCT"]
 
-  regsub -all -- {__PROJECT_NAME__} $theProjTmpl $aProjectName theProjTmpl
-  regsub -all -- {__BITNESS__}      $theProjTmpl $::env(ARCH) theProjTmpl
-  regsub -all -- {__WOK_LIB_PATH__} $theProjTmpl [file normalize $::env(WOK_LIBRARY)] theProjTmpl
-
+  # modules of occt
   set aBuff [list]
   foreach aModule $theModules {
     lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
   }
-  regsub -all -- {__MODULE_LIST__}  $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+  regsub -all -- {__MODULE_LIST__}  $anModulesTmpl  [join $aBuff "\n"] anModulesTmpl
 
+  # dynamic content of occt
   set aBuff [list]
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
@@ -3007,7 +3006,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       lappend aBuff "set(${anExecutable}_DEPS \"${aDepToolkits}\")"
     }
   }
-  regsub -all -- {__TOOLKIT_DEPS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+  regsub -all -- {__TOOLKIT_DEPS__} $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
 
   set aBuff [list]
   foreach aModule $theModules {
@@ -3027,7 +3026,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
     }
     lappend aBuff "endif()"
   }
-  regsub -all -- {__MODULE_DEPS__}  $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+  regsub -all -- {__MODULE_DEPS__}  $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
 
   set aBuff [list]
   foreach aModule $theModules {
@@ -3056,15 +3055,20 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       osutils:cmktk $theOutDir/$anSubPath $anExecutable true ${aModule}
     }
   }
-  regsub -all -- {__INCLUDE_TOOLKITS__} $theProjTmpl  [join $aBuff "\n"] theProjTmpl
+  regsub -all -- {__INCLUDE_TOOLKITS__} $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
 
-  #generate cmake meta file
-  set aFile [open [set fdsw [file join $theOutDir $anOutFileName]] w]
+  #generate cmake files
+  set aFile [open [set fdsw [file join "$theOutDir/$anSubPath" $anModulesFileName]] w]
   fconfigure $aFile -translation crlf
-  puts $aFile $theProjTmpl
+  puts $aFile $anModulesTmpl
+  close $aFile
+  
+  set aFile [open [set fdsw [file join "$theOutDir/$anSubPath" $anToolKitDepsFileName]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile $anDepsTmpl
   close $aFile
 
-  puts "The Cmake meta-files are stored in the [file normalize $theOutDir] and [file normalize $theOutDir/$anSubPath] directories"
+  puts "The Cmake meta-files are stored in the [file normalize $theOutDir/$anSubPath] directories"
 }
 
 # Generates Code Blocks workspace.

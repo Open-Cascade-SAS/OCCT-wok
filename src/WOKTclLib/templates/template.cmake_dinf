@@ -1,0 +1,17 @@
+
+# dynamic content of OCCT
+
+__TOOLKIT_DEPS__
+
+__MODULE_DEPS__
+
+list( APPEND USED_TOOLKITS ${BUILD_TOOLKITS})
+
+foreach( TOOLKIT ${USED_TOOLKITS} )
+ set(TurnONthe${TOOLKIT} ON)
+ foreach( TK ${${TOOLKIT}_DEPS})
+   set(TurnONthe${TK} ON)
+ endforeach()
+endforeach()
+
+__INCLUDE_TOOLKITS__
