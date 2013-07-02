@@ -11,7 +11,7 @@
     @set %CSF_VC_MACHINE = " -machine:X64";
     @set %CSF_ARCH = "64";
   @else
-    @set %CSF_VC_MACHINE = " -machine:IX86";
+    @set %CSF_VC_MACHINE = " -machine:X86";
     @set %CSF_ARCH = "32";
   @endif;
 
