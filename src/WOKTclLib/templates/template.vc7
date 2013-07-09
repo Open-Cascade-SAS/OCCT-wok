@@ -90,6 +90,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="1"
 				PreprocessorDefinitions="DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
+        BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\..\..\..\win32\vc7\objd\__TKNAM__\__TKNAM__.pch"
 				AssemblerListingLocation=".\..\..\..\win32\vc7\objd\__TKNAM__/"
