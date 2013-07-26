@@ -145,7 +145,7 @@
 				PreprocessorDefinitions="DEB;_DEBUG;WIN32;_WINDOWS;WNT;CSFDB;$(CSF_DEFINES)__TKDEFS__"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				AssemblerListingLocation=".\..\..\..\win32\vc9\objd\__XQTNAM__/"
 				ObjectFile=".\..\..\..\win32\vc9\objd\__XQTNAM__/"
 				ProgramDataBaseFileName=".\..\..\..\win32\vc9\objd\__XQTNAM__/"
