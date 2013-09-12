@@ -205,6 +205,7 @@ $}
 $
 $void %Schema_%Type::SWrite(const %Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
+$  (void)pp; (void)theSchema; // dummy to avoid compiler warning on unused arg
 $  f.BeginWriteObjectData();
 $%Body
 $  f.EndWriteObjectData();
@@ -219,6 +220,8 @@ ${
 $  if (!p.IsNull()) {
 $    Handle(%Type) &pp = (Handle(%Type)&)p;
 $    theSchema->WritePersistentObjectHeader(p,f);
+$
+$    (void)pp; // dummy to avoid compiler warning on unused arg
 $    
 $    f.BeginWritePersistentObjectData();
 $%Body
@@ -258,6 +261,7 @@ $}
 $
 $void %Schema_%Type::SRead(%Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
+$  (void)pp; (void)theSchema; // dummy to avoid compiler warning on unused arg
 $  f.BeginReadObjectData();
 $%Body
 $  f.EndReadObjectData();
@@ -270,6 +274,8 @@ $void %Schema_%Type::SRead(const Handle(Standard_Persistent)& p, Storage_BaseDri
 ${ 
 $  if (!p.IsNull()) {
 $    Handle(%Type) &pp = (Handle(%Type)&)p;
+$
+$    (void)pp; // dummy to avoid compiler warning on unused arg
 $
 $    theSchema->ReadPersistentObjectHeader(f);
 $    f.BeginReadPersistentObjectData();
@@ -366,11 +372,11 @@ $  }
 $
 $void %Schema_%Type::SWrite(const %Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
-$  Standard_Integer i;
+$  (void)theSchema; // dummy to avoid compiler warning on unused arg
 $
 $  f.BeginWriteObjectData();
 $  f.PutInteger(pp.Length());
-$  for (i = 0; i < pp.Length(); i++) {
+$  for (Standard_Integer i = 0; i < pp.Length(); i++) {
 $%Body
 $  }
 $  f.EndWriteObjectData();
@@ -381,6 +387,7 @@ $}
 $
 $void %Schema_%Type::SRead(%Type& pp, Storage_BaseDriver& f, const Handle(Storage_Schema)& theSchema)
 ${
+$  (void)theSchema; // dummy to avoid compiler warning on unused arg
 $  Standard_Integer size = 0;
 $
 $  f.BeginReadObjectData();
