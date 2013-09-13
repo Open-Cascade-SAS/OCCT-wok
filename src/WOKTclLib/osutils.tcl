@@ -1075,6 +1075,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     puts $aFile $aProjTmpl
     close $aFile
 
+    set aCommonSettingsFile "$aVcFilePath.user"
     lappend aVcFiles $aVcFilePath
 
     # write filters file for vc10
@@ -1082,9 +1083,15 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
       lappend aVcFiles [osutils:vcxproj:filters $theOutDir $aProjName aVcFilesX]
     }
 
+    set aCommonSettingsFileTmpl ""
     if { "$theVcVer" == "vc9" } {
       set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcproj.user.vc9x"
-      set aCommonSettingsFile     "$aVcFilePath.user"
+    } elseif { "$theVcVer" == "vc10" } {
+      set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcxproj.user.vc10x"
+    } elseif { "$theVcVer" == "vc11" } {
+      set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcxproj.user.vc11x"
+    }
+    if { "$aCommonSettingsFileTmpl" != "" } {
       file copy -force -- "$aCommonSettingsFileTmpl" "$aCommonSettingsFile"
       lappend aVcFiles "$aCommonSettingsFile"
     }
