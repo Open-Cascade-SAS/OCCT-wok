@@ -30,7 +30,7 @@
 				AssemblerListingLocation=".\..\..\..\win32\vc7\obj\__TKNAM__/"
 				ObjectFile=".\..\..\..\win32\vc7\obj\__TKNAM__/"
 				ProgramDataBaseFileName=".\..\..\..\win32\vc7\obj\__TKNAM__/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -96,7 +96,7 @@
 				AssemblerListingLocation=".\..\..\..\win32\vc7\objd\__TKNAM__/"
 				ObjectFile=".\..\..\..\win32\vc7\objd\__TKNAM__/"
 				ProgramDataBaseFileName=".\..\..\..\win32\vc7\objd\__TKNAM__/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="TRUE"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"

@@ -89,7 +89,7 @@
       <AssemblerListingLocation>.\..\..\..\win32\vc10\obj\__TKNAM__/</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\win32\vc10\obj\__TKNAM__/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\win32\vc10\obj\__TKNAM__/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -129,7 +129,7 @@
       <AssemblerListingLocation>.\..\..\..\win32\vc10\objd\__TKNAM__/</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\win32\vc10\objd\__TKNAM__/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\win32\vc10\objd\__TKNAM__/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
@@ -175,7 +175,7 @@
       <AssemblerListingLocation>.\..\..\..\win64\vc10\obj\__TKNAM__/</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\win64\vc10\obj\__TKNAM__/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\win64\vc10\obj\__TKNAM__/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
@@ -215,7 +215,7 @@
       <AssemblerListingLocation>.\..\..\..\win64\vc10\objd\__TKNAM__/</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\win64\vc10\objd\__TKNAM__/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\win64\vc10\objd\__TKNAM__/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
