@@ -1,5 +1,6 @@
 #ifdef WNT
 #define EXPORT
+#include <WOKNT_FindData.hxx>
 #include <stdlib.h>
 #include <io.h>
 #include <sys/stat.h>
@@ -139,7 +140,7 @@ retry:
  else if ( pData -> fRecurse ) {
 
   cerr << fileName << endl;
-  status = RemoveDirectory ( fileName );
+  status = RemoveDirectoryA ( fileName );
 
  }
 
@@ -196,4 +197,100 @@ static void _print_error ( LPCTSTR fName ) {
  cerr << "wokRM: could not remove " << fName << " - " << buffer << endl << flush;
 
 }  // end _set_error
+
+BOOL DirWalk (LPCTSTR theDirName,
+              LPCTSTR theWildCard,
+              BOOL  (*theFunc )(LPCTSTR , BOOL , void* ),
+              BOOL    theRecurse,
+              void*   theClientData)
+{
+  HANDLE aHeap = GetProcessHeap();
+  PWIN32_FIND_DATA aFindData = (PWIN32_FIND_DATA )HeapAlloc (aHeap, 0, sizeof(WIN32_FIND_DATA));
+  if (aFindData == NULL)
+  {
+    return FALSE;
+  }
+
+  LPTSTR aName = (LPTSTR )HeapAlloc (aHeap, 0, lstrlen (theDirName) + lstrlen (theWildCard) + sizeof(TEXT('\x00')));
+  if (aName == NULL)
+  {
+    HeapFree (aHeap, 0, aFindData);
+    return FALSE;
+  }
+  lstrcpy (aName, theDirName);
+  lstrcat (aName, theWildCard);
+
+  LPTSTR aFullName = NULL;
+  BOOL   aRetVal   = TRUE;
+  HANDLE hFindFile = FindFirstFile (aName, aFindData);
+  for (BOOL hasNext = hFindFile != INVALID_HANDLE_VALUE; hasNext; hasNext = FindNextFile (hFindFile, aFindData))
+  {
+    if (aFindData->cFileName[0] != TEXT('.') ||
+        aFindData->cFileName[0] != TEXT('.') &&
+        aFindData->cFileName[1] != TEXT('.'))
+    {
+      aFullName = (LPTSTR )HeapAlloc (aHeap, 0,
+                                      lstrlen (theDirName) + lstrlen (aFindData->cFileName)
+                                    + sizeof(TEXT('/')) + sizeof(TEXT('\x00')));
+      if (aFullName == NULL)
+      {
+        aRetVal = FALSE;
+        break;
+      }
+    }
+
+    lstrcpy (aFullName, theDirName);
+    lstrcat (aFullName, aFindData->cFileName);
+    if (aFindData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
+     && theRecurse)
+    {
+      lstrcat (aFullName, TEXT("/"));
+      if (!DirWalk (aFullName, theWildCard, theFunc, theRecurse, theClientData))
+      {
+        aRetVal = FALSE;
+      }
+    }
+    else if (!theFunc (aFullName, aFindData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? TRUE : FALSE, theClientData))
+    {
+      aRetVal = FALSE;
+    }
+
+    HeapFree (aHeap, 0, aFullName);
+    aFullName = NULL;
+  }
+  if (hFindFile != INVALID_HANDLE_VALUE)
+  {
+    FindClose (hFindFile);
+  }
+
+  if (theRecurse)
+  {
+    LPTSTR aTmp = NULL;
+    int aLen = lstrlen (theDirName) - 1;
+    if (aLen > 0
+     && theDirName[aLen] == TEXT('/'))
+    {
+      aTmp = (LPTSTR )HeapAlloc (aHeap, 0, aLen + 2);
+      if (aTmp != NULL)
+      {
+        lstrcpy (aTmp, theDirName);
+        aTmp[aLen] = 0;
+        aRetVal = theFunc (aTmp != NULL ? aTmp : theDirName, TRUE, theClientData);
+        HeapFree (aHeap, 0, aTmp);
+      }
+      else
+      {
+        aRetVal = FALSE;
+        aLen    = 0;
+      }
+    }
+  }
+
+  if (aFullName != NULL) HeapFree (aHeap, 0, aFullName);
+  if (aName     != NULL) HeapFree (aHeap, 0, aName    );
+  if (aFindData != NULL) HeapFree (aHeap, 0, aFindData);
+
+  return aRetVal;
+}
+
 #endif

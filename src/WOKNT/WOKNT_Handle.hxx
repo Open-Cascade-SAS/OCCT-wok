@@ -23,7 +23,6 @@ typedef HANDLE WOKNT_Handle ;
 # undef RemoveDirectory
 #endif  // CreateFile
 
-
 #else
 
 

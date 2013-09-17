@@ -57,9 +57,6 @@ int main(int argc, char **argv)
 #include <WOKTCL_TriggerHandler.hxx>
 
 #ifdef WNT
-# ifdef _DEBUG
-extern "C" void _debug_break ( char* );
-# endif  // _DEBUG
 # define WOK_EXPORT __declspec( dllexport )
 #else
 # define WOK_EXPORT
@@ -75,10 +72,6 @@ void Wok_ExitHandler(void *)
 
 int Wok_Init(WOKTclTools_PInterp interp)
 {
-#if defined( WNT ) && defined( _DEBUG )
-  _debug_break ( "Wok_Init" );
-#endif  // WNT && _DEBUG
-  
   Handle(WOKTclTools_Interpretor)& CurrentInterp = WOKTclTools_Interpretor::Current();
 
   if(WOKTclTools_Interpretor::Current().IsNull())

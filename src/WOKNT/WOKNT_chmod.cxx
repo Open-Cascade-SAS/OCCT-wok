@@ -1,5 +1,6 @@
 #ifdef WNT
 #define EXPORT
+#include <WOKNT_FindData.hxx>
 #include <Standard_Stream.hxx>
 #include <stdlib.h>
 

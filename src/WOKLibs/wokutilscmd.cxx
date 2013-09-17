@@ -11,9 +11,6 @@
 #include <WOKTclTools_Package.hxx>
 
 #ifdef WNT
-# ifdef _DEBUG
-extern "C" void _debug_break ( char* );
-# endif  // _DEBUG
 # define WOKUTILS_EXPORT __declspec( dllexport )
 #else
 # define WOKUTILS_EXPORT

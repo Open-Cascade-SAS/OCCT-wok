@@ -23,8 +23,11 @@ typedef WIN32_FIND_DATA WOKNT_FindData;
 # undef RemoveDirectory
 #endif  // CreateFile
 
-
-
+extern BOOL DirWalk (LPCTSTR theDirName,
+                     LPCTSTR theWildCard,
+                     BOOL  (*theFunc )(LPCTSTR , BOOL , void* ),
+                     BOOL    theRecurse,
+                     void*   theClientData);
 
 #else
 

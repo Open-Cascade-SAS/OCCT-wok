@@ -22,9 +22,6 @@
 #include <MSAPI_MemberMet.hxx>
 
 #ifdef WNT
-# ifdef _DEBUG
-extern "C" void _debug_break ( char* );
-# endif  // _DEBUG
 # define MS_EXPORT __declspec( dllexport )
 #else
 # define MS_EXPORT

@@ -12,6 +12,19 @@
 /win32
 /win64
 
+# project files and artifacts
+/adm/msvc
+/adm/wnt
+/adm/lin
+/adm/mac
+/adm/make
+/adm/cmake
+*.vcproj*user
+*.csproj*user
+*.ncb
+*.suo
+*.sdf
+
 # /adm/
 /adm/win32
 /adm/win64

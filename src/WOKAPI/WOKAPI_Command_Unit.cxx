@@ -32,11 +32,6 @@
 
 #include <WOKAPI_Command.jxx>
 
-#if defined( WNT ) && defined( _DEBUG )
-#include <OSD_Timer.hxx>
-extern "C" void _debug_break ( char* );
-#endif  // WNT && _DEBUG
-
 //=======================================================================
 void WOKAPI_UnitBuild_Usage(char *cmd)
 {
@@ -541,11 +536,6 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     					  const Standard_Integer argc, const WOKTools_ArgTable& argv, 
     					  WOKTools_Return&  returns)
 {
-#if defined( WNT ) && defined( _DEBUG )
-  _debug_break ( "WOKAPI_Command :: UnitMake" );
-  OSD_Timer t;
-  t.Start ();
-#endif  // WNT && _DEBUG
   WOKTools_Options opts(argc, argv, "s:e:u:o:t:fhSL", WOKAPI_UnitMake_Usage, "hfS");
   Standard_Boolean force    = Standard_False;
   Standard_Boolean hasonly  = Standard_False;
@@ -721,13 +711,7 @@ Standard_Integer WOKAPI_Command::UnitMake(const WOKAPI_Session& asession,
     	}
       
     }
-  
-  
-  // 
-#if defined( WNT ) && defined( _DEBUG )
-  t.Show ();
-#endif    // WNT && _DEBUG
-  
+
   return status;
 }
 //=======================================================================
