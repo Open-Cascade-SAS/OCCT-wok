@@ -108,8 +108,6 @@ cp -f src/WOKStepsDef/WOKStepsOBJY.edl $installRelatePath/lib/
 cp -f src/WOKStepsDef/WOKStepsOrbix.edl $installRelatePath/lib/
 cp -f src/WOKStepsDef/WOKStepsStep.edl $installRelatePath/lib/
 
-cp -f src/WOKsite/wok.csh $installRelatePath/site/
-cp -f src/WOKsite/wokinit.csh $installRelatePath/site/
 cp -f src/WOKsite/DEFAULT.edl $installRelatePath/site/
 cp -f src/WOKsite/WOKSESSION.edl $installRelatePath/site/
 cp -f src/WOKsite/CreateFactory.tcl $installRelatePath/site/
@@ -123,7 +121,6 @@ cp -f src/WOKsite/wok_emacs.sh $installRelatePath/site/
 cp -f src/WOKsite/wok_env.sh $installRelatePath/site/
 cp -f src/WOKsite/wok_init.sh $installRelatePath/site/
 cp -f src/WOKsite/wok_tclsh.sh $installRelatePath/site/
-cp -f src/WOKsite/tclshrc_Wok $installRelatePath/site/
 
 cp -f src/CPPClient/CPPClient_General.edl $installRelatePath/lib/
 cp -f src/CPPClient/CPPClient_Template.edl $installRelatePath/lib/

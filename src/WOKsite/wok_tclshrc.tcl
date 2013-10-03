@@ -321,7 +321,7 @@ proc wgenproj { args } {
   set anTarget ""
   switch -exact -- "$::env(WOKSTATION)" {
     "wnt"   {set anTarget "$::VCVER"}
-    "lin"   {set anTarget "cbp"}
+    "lin"   {set anTarget "cmake"}
     "mac"   {set anTarget "cmake"}
   }
 
