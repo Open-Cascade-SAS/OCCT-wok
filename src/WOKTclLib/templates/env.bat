@@ -110,6 +110,7 @@ set MMGT_CLEAR=1
 set CSF_EXCEPTION_PROMPT=1
 set "CSF_SHMessage=%CASROOT%\src\SHMessage"
 set "CSF_MDTVTexturesDirectory=%CASROOT%\src\Textures"
+set "CSF_ShadersDirectory=%CASROOT%\src\Shaders"
 set "CSF_XSMessage=%CASROOT%\src\XSMessage"
 set "CSF_TObjMessage=%CASROOT%\src\TObj"
 set "CSF_StandardDefaults=%CASROOT%\src\StdResource"

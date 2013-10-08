@@ -453,6 +453,13 @@ proc wenv {} {
   } else {
     puts "Warning! 'Textures'      package not found!"
   }
+  
+  set aShaders [woklocate -u Shaders]
+  if { $aShaders != "" } {
+    set env(CSF_ShadersDirectory) [string range [wokinfo -p source:. [woklocate -u Shaders]] 0 [expr {[string length [wokinfo -p source:. $aShaders]] - 3}]]
+  } else {
+    puts "Warning! 'Shaders'	   package not found!"
+  }
 
   set aXSMsg [woklocate -u XSMessage]
   if { $aXSMsg != "" } {
