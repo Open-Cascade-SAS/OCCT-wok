@@ -17,14 +17,14 @@
 
   -- Visual Studio compilers and tools should be set in PATH
   @set %CSF_CXX_COMPILER   = "cl.exe ";
-  @set %CSF_CXX_SysOptions = " -nologo -W3 ";
+  @set %CSF_CXX_SysOptions = " -nologo -arch:SSE2 -W3 ";
   @string %CSF_CXX_Options = " -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE " %CSF_PRODUCTS_DEFINES " ";
   @set %CSF_CXX_ModeOpt    = " -MD  -EHa -O2 -Gy -DNDEBUG -DNo_Exception ";
   @set %CSF_CXX_ModeOptDeb = " -MDd -EHa -Od -Gm -Zi -DDEB -D_DEBUG ";
 
   -- C compiler
   @set %CSF_C_COMPILER   = "cl.exe ";
-  @set %CSF_C_SysOptions = " -nologo -W3 ";
+  @set %CSF_C_SysOptions = " -nologo -arch:SSE2 -W3 ";
   @string %CSF_C_Options = " -DWNT -D_WINDOWS -D_CRT_SECURE_NO_DEPRECATE " %CSF_PRODUCTS_DEFINES " ";
   @set %CSF_C_ModeOpt    = " -MD  -EHa -O2 -Gy -DNDEBUG -DNo_Exception ";
   @set %CSF_C_ModeOptDeb = " -MDd -EHa -Od -Gm -Zi -DDEB -D_DEBUG ";

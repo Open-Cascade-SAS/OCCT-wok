@@ -2345,12 +2345,17 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   puts $aFile "\t\t\t\t<Compiler>"
   if { "$aWokStation" == "wnt" } {
     puts $aFile "\t\t\t\t\t<Add option=\"-MD\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-arch:SSE2\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-EHsc\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-W3\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-MP\" />"
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O2\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-msse2\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-mfpmath=sse\" />"
   }
   foreach aMacro $theDefines {
     puts $aFile "\t\t\t\t\t<Add option=\"-D${aMacro}\" />"
@@ -2396,6 +2401,7 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   puts $aFile "\t\t\t\t<Compiler>"
   if { "$aWokStation" == "wnt" } {
     puts $aFile "\t\t\t\t\t<Add option=\"-MDd\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-arch:SSE2\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-EHsc\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-Od\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-Zi\" />"
@@ -2404,6 +2410,10 @@ proc osutils:cbp { theOutDir theProjName theSrcFiles theLibsList theFrameworks t
   } else {
     puts $aFile "\t\t\t\t\t<Add option=\"-O0\" />"
     puts $aFile "\t\t\t\t\t<Add option=\"-g\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-mmmx\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-msse\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-msse2\" />"
+    puts $aFile "\t\t\t\t\t<Add option=\"-mfpmath=sse\" />"
   }
   foreach aMacro $theDefines {
     puts $aFile "\t\t\t\t\t<Add option=\"-D${aMacro}\" />"

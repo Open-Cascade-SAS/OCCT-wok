@@ -143,8 +143,8 @@ CXXFLAGS="$CXXFLAGS -DCSFDB -DOCC_CONVERT_SIGNALS"
 CFLAGS="$CFLAGS -DCSFDB -DOCC_CONVERT_SIGNALS"
 
 case $platform in
-	Linux*) CXXFLAGS="$CXXFLAGS -DLIN -DLININTEL -D_GNU_SOURCE=1 -Wall"
-		CFLAGS="$CFLAGS -DLIN -DLININTEL -fexceptions -Wall"
+	Linux*) CXXFLAGS="$CXXFLAGS -DLIN -DLININTEL -D_GNU_SOURCE=1 -mmmx -msse -msse2 -mfpmath=sse -Wall"
+		CFLAGS="$CFLAGS -DLIN -DLININTEL -fexceptions -mmmx -msse -msse2 -mfpmath=sse -Wall"
 		LDFLAGS="$LDFLAGS -lstdc++ -lrt";;
 	SunOS*) CXXFLAGS="$CXXFLAGS -Usun -DSOLARIS -instances=static"
 		CFLAGS="$CFLAGS -Usun -DSOLARIS -instances=static"
