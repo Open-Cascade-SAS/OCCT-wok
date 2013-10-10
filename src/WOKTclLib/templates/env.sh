@@ -29,16 +29,14 @@ if [ -e "${aScriptPath}/custom.sh" ]; then source "${aScriptPath}/custom.sh"; fi
 
 # Read script arguments
 shopt -s nocasematch
-if [[ "$1" == "cbp" ]]; then
+export TARGET="";
+if [[ "$2" == "cbp" ]]; then
   export TARGET="cbp";
-elif [[ "$1" == "xcd" ]]; then
+elif [[ "$2" == "xcd" ]]; then
   export TARGET="xcd";
-else
-  echo "Error: wrong target identifier. Should be \"cbp\" (Code::Blocks) or \"xcd\" (Xcode)"
-  exit
 fi
-if [[ "$2" == "debug" ]]; then export CASDEB="d"; fi
-if [[ "$2" == "d" ]]; then export CASDEB="d"; fi
+if [[ "$1" == "debug" ]]; then export CASDEB="d"; fi
+if [[ "$1" == "d" ]]; then export CASDEB="d"; fi
 shopt -u nocasematch
 
 # ----- Setup Environment Variables -----
@@ -141,12 +139,9 @@ else
 fi
 
 
-BIN_PATH=""
-LIBS_PATH=""
-if [ "${TARGET}" == "cbp" ]; then
-  BIN_PATH="${CASBIN}/bin${CASDEB}"
-  LIBS_PATH="${CASBIN}/lib${CASDEB}"
-elif [ "${TARGET}" == "xcd" ]; then
+BIN_PATH="${CASBIN}bin${CASDEB}"
+LIBS_PATH="${CASBIN}lib${CASDEB}"
+if [ "${TARGET}" == "xcd" ]; then
   [[ "${CASDEB}" == "d" ]] && BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"
   LIBS_PATH="$BIN_PATH"
 fi
