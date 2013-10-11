@@ -125,7 +125,7 @@ do
   if [ "${LD_LIBRARY_PATH}" == "" ]; then
     export LD_LIBRARY_PATH="${anItem}"
   else
-    export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${anItem}"
+    export LD_LIBRARY_PATH="${anItem}:${LD_LIBRARY_PATH}"
   fi
   OPT_LINKER_OPTIONS="${OPT_LINKER_OPTIONS} -L${anItem}"
 done
