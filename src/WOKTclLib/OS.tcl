@@ -3301,7 +3301,7 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
 proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
-  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" "xcd"}
+  set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "cmake" "amk" "xcd"}
 
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
     puts stderr "WOK does not support generation of project files for the selected IDE: $theIDE\nSupported IDEs: [join ${aSupportedIDE} " "]"
@@ -3342,7 +3342,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
   # Create output directory
   set aWokStation "$::env(WOKSTATION)"
 
-  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11} $theIDE] != -1 } {
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12} $theIDE] != -1 } {
     set aWokStation "msvc"
   }
 
@@ -3364,7 +3364,8 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "vc8"   -
     "vc9"   -
     "vc10"   -
-    "vc11"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
+    "vc11"   -
+    "vc12"  { OS:MKVC  $anOutDir $aModules $anAllSolution $theIDE }
     "cbp"   { OS:MKCBP $anOutDir $aModules $anAllSolution }
     "cmake" { OS:MKCMK "${anOutRoot}/.." $aModules $anAllSolution }
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}

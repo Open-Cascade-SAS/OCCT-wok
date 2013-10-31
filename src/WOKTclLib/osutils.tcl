@@ -140,6 +140,10 @@ proc osutils:vcsolution:header { vcversion } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 2012\n"
+  } elseif { "$vcversion" == "vc12" } {
+    append var \
+      "Microsoft Visual Studio Solution File, Format Version 13.00\n" \
+      "# Visual Studio 2013\n"
   } else {
     puts stderr "Error: Visual Studio version $vcversion is not supported by this function!"
   }
@@ -156,7 +160,9 @@ proc osutils:vcsolution:config:begin { vcversion } {
       "\t\tRelease = Release\n" \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ProjectConfiguration) = postSolution\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || "$vcversion" == "vc10" || "$vcversion" == "vc11" } {
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
+             "$vcversion" == "vc10" || "$vcversion" == "vc11" || 
+             "$vcversion" == "vc12" } {
     append var \
       "Global\n" \
       "\tGlobalSection(SolutionConfigurationPlatforms) = preSolution\n" \
@@ -180,7 +186,9 @@ proc osutils:vcsolution:config:project { vcversion guid } {
       "\t\t$guid.Debug.Build.0 = Debug|Win32\n" \
       "\t\t$guid.Release.ActiveCfg = Release|Win32\n" \
       "\t\t$guid.Release.Build.0 = Release|Win32\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || "$vcversion" == "vc10" || "$vcversion" == "vc11" } {
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
+             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
+             "$vcversion" == "vc12" } {
     append var \
       "\t\t$guid.Debug|Win32.ActiveCfg = Debug|Win32\n" \
       "\t\t$guid.Debug|Win32.Build.0 = Debug|Win32\n" \
@@ -205,7 +213,9 @@ proc osutils:vcsolution:config:end { vcversion } {
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ExtensibilityAddIns) = postSolution\n" \
       "\tEndGlobalSection\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || "$vcversion" == "vc10" || "$vcversion" == "vc11" } {
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
+             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
+             "$vcversion" == "vc12" } {
     append var \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(SolutionProperties) = preSolution\n" \
@@ -783,7 +793,7 @@ proc osutils:vcxproj:file { vcversion file params } {
 proc osutils:vcproj:ext { vcversion } {
   if { "$vcversion" == "vc7" || "$vcversion" == "vc8" || "$vcversion" == "vc9" } {
     return "vcproj"
-  } elseif { "$vcversion" == "vc10" || "$vcversion" == "vc11" } {
+  } elseif { "$vcversion" == "vc10" || "$vcversion" == "vc11" || "$vcversion" == "vc12" } {
     return "vcxproj"
   } else {
     puts stderr "Error: Visual Studio version $vc is not supported by this function!"
@@ -906,7 +916,9 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
 
   # and put this list to project file
   #puts "$theToolKit requires  $aUsedToolKits"
-  if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" } { set aUsedToolKits [join $aUsedToolKits {;}] }
+  if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+    set aUsedToolKits [join $aUsedToolKits {;}]
+  }
   regsub -all -- {__TKDEP__} $theProjTmpl $aUsedToolKits theProjTmpl
 
   set anIncPaths "..\\..\\..\\inc"
@@ -939,7 +951,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
     }
 
     # Format of projects in vc10 and vc11 is different from vc7-9
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" } {
+    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
       foreach aSrcFile [lsort $aSrcFiles] {
         if { ![info exists written([file tail $aSrcFile])] } {
           set written([file tail $aSrcFile]) 1
@@ -985,7 +997,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   # write filters file for vc10 and vc11
   if { "$theVcVer" == "vc10" } {
     lappend aVcFiles [osutils:vcxproj:filters $theOutDir $theToolKit aVcFilesX]
-  } elseif { "$theVcVer" == "vc11" } {
+  } elseif { "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
     lappend aVcFiles [osutils:vcx1proj:filters $theOutDir $theToolKit aVcFilesX]
   }
 
@@ -1034,7 +1046,9 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     regsub -all -- {vc[0-9]+} $aUsedToolKits $theVcVer aUsedToolKits
 
     puts "$aProjName requires  $aUsedToolKits"
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11"  } { set aUsedToolKits [join $aUsedToolKits {;}] }
+    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+      set aUsedToolKits [join $aUsedToolKits {;}]
+    }
     regsub -all -- {__TKDEP__} $aProjTmpl $aUsedToolKits aProjTmpl
 
     set aFilesSection ""
@@ -1043,7 +1057,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     if { ![info exists written([file tail $f])] } {
       set written([file tail $f]) 1
 
-      if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" } {
+      if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
         append aFilesSection [osutils:vcxproj:file $theVcVer $f ""]
         if { ! [info exists aVcFilesX($theToolKit)] } { lappend aVcFilesX(units) $theToolKit }
         lappend aVcFilesX($theToolKit) $f
@@ -1079,7 +1093,7 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     lappend aVcFiles $aVcFilePath
 
     # write filters file for vc10
-    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" } {
+    if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
       lappend aVcFiles [osutils:vcxproj:filters $theOutDir $aProjName aVcFilesX]
     }
 
@@ -1090,6 +1104,8 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
       set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcxproj.user.vc10x"
     } elseif { "$theVcVer" == "vc11" } {
       set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcxproj.user.vc11x"
+    } elseif { "$theVcVer" == "vc12" } {
+      set aCommonSettingsFileTmpl "$::env(WOK_LIBRARY)/templates/vcxproj.user.vc12x"
     }
     if { "$aCommonSettingsFileTmpl" != "" } {
       file copy -force -- "$aCommonSettingsFileTmpl" "$aCommonSettingsFile"

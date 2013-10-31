@@ -20,7 +20,11 @@ if "%VCVER%" == "vc8" (
   set "DevEnvDir=%VS100COMNTOOLS%..\IDE"
 ) else if "%VCVER%" == "vc11" (
   set "DevEnvDir=%VS110COMNTOOLS%..\IDE"
-  rem Visual Studio 2012 Express for Windows Desktop have a new name for executable - WDExpress
+  rem Visual Studio Express starting from VS 2012 is called "for Windows Desktop"
+  rem and has a new name for executable - WDExpress
+  set "VisualStudioExpressName=WDExpress"
+) else if "%VCVER%" == "vc12" (
+  set "DevEnvDir=%VS120COMNTOOLS%..\IDE"
   set "VisualStudioExpressName=WDExpress"
 ) else (
   echo Error: wrong VS identifier

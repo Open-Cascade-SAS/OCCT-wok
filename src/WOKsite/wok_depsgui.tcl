@@ -17,8 +17,18 @@ set SYS_VC_LIST {}
 set SYS_VCVARS_LIST {}
 
 # detect installed Visual Studio instances from global environment
+if { [info exists ::env(VS130COMNTOOLS)] } {
+  lappend ::SYS_VS_LIST "Visual Studio 201x (vc13)"
+  lappend ::SYS_VC_LIST "vc13"
+  lappend ::SYS_VCVARS_LIST "%VS130COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
+}
+if { [info exists ::env(VS120COMNTOOLS)] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2013 (vc12)"
+  lappend ::SYS_VC_LIST "vc12"
+  lappend ::SYS_VCVARS_LIST "%VS120COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
+}
 if { [info exists ::env(VS110COMNTOOLS)] } {
-  lappend ::SYS_VS_LIST "Visual Studio 201x (vc11)"
+  lappend ::SYS_VS_LIST "Visual Studio 2012 (vc11)"
   lappend ::SYS_VC_LIST "vc11"
   lappend ::SYS_VCVARS_LIST "%VS110COMNTOOLS%..\\..\\VC\\vcvarsall.bat"
 }

@@ -251,7 +251,8 @@ proc wgenprojbat {thePath theIDE} {
     "vc8"   -
     "vc9"   -
     "vc10"  -
-    "vc11"  { set aTargetPlatform wnt }
+    "vc11"  -
+    "vc12"  { set aTargetPlatform wnt }
     "amk"   { set aTargetPlatform lin  }
   }
   
@@ -313,7 +314,7 @@ proc removeAllOccurrencesOf { theObject theList } {
 
 # Wrapper-function to generate VS project files
 proc wgenproj { args } {
-  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "cbp" "cmake" "amk" "xcd" }
+  set aSupportedTargets { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "cmake" "amk" "xcd" }
   set anArgs $args
 
   # Setting default IDE.
@@ -375,6 +376,7 @@ proc wgenproj { args } {
       vc9   -  Visual Studio 2008
       vc10  -  Visual Studio 2010
       vc11  -  Visual Studio 2012
+      vc12  -  Visual Studio 2013
       cbp   -  CodeBlocks
       cmake -  CMake
       amk   -  AutoMake
@@ -389,8 +391,8 @@ proc wgenproj { args } {
 
   # change station if it is necessary
   set anOldStation "$::env(WOKSTATION)"
-  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11} $anTarget] != -1 && "$anOldStation" != "wnt"} {
-      changeStationAndDependentEnvironment wnt
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12} $anTarget] != -1 && "$anOldStation" != "wnt"} {
+    changeStationAndDependentEnvironment wnt
   } elseif { "$anTarget" == "amk" && "$anOldStation" != "lin"} {
     changeStationAndDependentEnvironment lin
   }
