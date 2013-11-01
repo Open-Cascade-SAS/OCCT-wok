@@ -621,7 +621,8 @@ else
 	   DISABLE_GL2PS_REASON="($gl2ps directory is not exists)"
 	   AC_MSG_ERROR([$gl2ps directory is not exists])
 	elif test "x$HAVE_GL2PS_INC" = "xyes"; then
-	   CSF_GL2PS_INCLUDES="-I$gl2ps/include -DHAVE_GL2PS"
+	   CSF_GL2PS_INCLUDES=""
+	   CSF_OPT_INCLUDES="${CSF_OPT_INCLUDES} -I$gl2ps/include -DHAVE_GL2PS"
 	   HAVE_GL2PS_LIB=yes
 	   AC_MSG_CHECKING([for gl2psEndPage in -lgl2ps])
 	   LDFLAGS="-L$gl2ps/lib $LDFLAGS"
@@ -674,7 +675,8 @@ else
     DISABLE_FREEIMAGE_REASON="($freeimage directory is not exists)"
     AC_MSG_ERROR([$freeimage directory is not exists])
   elif test "x$HAVE_FREEIMAGE_INC" = "xyes"; then
-    CSF_FreeImagePlus_INCLUDES="-I$freeimage/include -DHAVE_FREEIMAGE"
+    CSF_FreeImagePlus_INCLUDES=""
+    CSF_OPT_INCLUDES="${CSF_OPT_INCLUDES} -I$freeimage/include -DHAVE_FREEIMAGE"
     HAVE_FREEIMAGE_LIB=yes
     AC_MSG_CHECKING([for FreeImage_OpenMemory in -lfreeimageplus])
     LDFLAGS="-L$freeimage/lib $LDFLAGS"
@@ -797,7 +799,8 @@ else
 
   if test "x$HAVE_TBB" = "xyes"; then
      if test "x$tbb_inc" != "x"; then
-     	CSF_TBB_INCLUDES="-I$tbb_inc -DHAVE_TBB"
+      CSF_TBB_INCLUDES=""
+      CSF_OPT_INCLUDES="${CSF_OPT_INCLUDES} -I$tbb_inc -DHAVE_TBB"
      else
 	HAVE_TBB=no
      fi
@@ -856,7 +859,8 @@ else
 
   if test "x$HAVE_OPENCL" = "xyes"; then
     if test "x$opencl_inc" != "x"; then
-      CSF_OPENCL_INCLUDES="-I$opencl_inc -DHAVE_OPENCL"
+      CSF_OPENCL_INCLUDES=""
+      CSF_OPT_INCLUDES="${CSF_OPT_INCLUDES} -I$opencl_inc -DHAVE_OPENCL"
     else
       HAVE_OPENCL=no
     fi
