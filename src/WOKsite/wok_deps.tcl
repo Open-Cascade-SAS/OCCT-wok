@@ -222,9 +222,9 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
   set aTclHPath [wokdep:SearchHeader "tcl.h"]
   set aTkHPath  [wokdep:SearchHeader "tcl.h"]
   if { "$aTclHPath" == "" || "$aTkHPath" == "" } {
-    if { [file exists "/usr/include/tcl8.5/tcl.h"]
-      && [file exists "/usr/include/tcl8.5/tk.h" ] } {
-      lappend ::CSF_OPT_INC "/usr/include/tcl8.5"
+    if { [file exists "/usr/include/tcl8.6/tcl.h"]
+      && [file exists "/usr/include/tcl8.6/tk.h" ] } {
+      lappend ::CSF_OPT_INC "/usr/include/tcl8.6"
     } else {
       set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tcl}*] "$::VCVER" "$::ARCH" ]
       if { "$aPath" != "" && [file exists "$aPath/include/tcl.h"] && [file exists "$aPath/include/tk.h"] } {
@@ -237,11 +237,11 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
   }
 
   if { "$::tcl_platform(platform)" == "windows" } {
-    set aTclLibName "tcl85"
-    set aTkLibName  "tk85"
+    set aTclLibName "tcl86"
+    set aTkLibName  "tk86"
   } else {
-    set aTclLibName "tcl8.5"
-    set aTkLibName  "tk8.5"
+    set aTclLibName "tcl8.6"
+    set aTkLibName  "tk8.6"
   }
 
   foreach anArchIter {64 32} {

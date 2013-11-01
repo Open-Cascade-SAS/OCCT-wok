@@ -82,11 +82,11 @@
 
   @if (%CSF_TCL_HOME != "") then
     @string %CSF_TCL_INCLUDE = "-I" %CSF_TCL_HOME "/include ";
-    @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl8.5 ";
-    @string %CSF_TclTkLibs += "-L" %CSF_TCL_HOME "/lib -ltk8.5 ";
+    @string %CSF_TclLibs   = "-L" %CSF_TCL_HOME "/lib -ltcl8.6 ";
+    @string %CSF_TclTkLibs += "-L" %CSF_TCL_HOME "/lib -ltk8.6 ";
   @else
-    @string %CSF_TclLibs   = " -ltcl8.5 ";
-    @string %CSF_TclTkLibs += "-ltk8.5 ";
+    @string %CSF_TclLibs   = " -ltcl8.6 ";
+    @string %CSF_TclTkLibs += "-ltk8.6 ";
   @endif;
 
 @endif;

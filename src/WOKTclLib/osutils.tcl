@@ -1848,8 +1848,8 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_OpenGlLibs) "opengl32.lib glu32.lib"
 
     # -- 3rd-parties precompiled libraries
-    set aCsfMap(CSF_TclLibs)    "tcl85.lib"
-    set aCsfMap(CSF_TclTkLibs)  "tk85.lib"
+    set aCsfMap(CSF_TclLibs)    "tcl86.lib"
+    set aCsfMap(CSF_TclTkLibs)  "tk86.lib"
     set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
 
   } else {
@@ -1871,8 +1871,8 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_MotifLibs)  "X11"
 
     #-- Tcl/Tk configuration
-    set aCsfMap(CSF_TclLibs)    "tcl8.5"
-    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.5"
+    set aCsfMap(CSF_TclLibs)    "tcl8.6"
+    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.6"
 
     # variable is required for support for OCCT version that use fgtl
     #-- FTGL (font renderer for OpenGL)

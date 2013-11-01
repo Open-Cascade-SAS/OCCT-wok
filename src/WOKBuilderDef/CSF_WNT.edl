@@ -70,8 +70,8 @@
   --
 
   -- Tcl/Tk configuration
-  @string %CSF_TclLibs   = "tcl85.lib";
-  @string %CSF_TclTkLibs = "tk85.lib";
+  @string %CSF_TclLibs   = "tcl86.lib";
+  @string %CSF_TclTkLibs = "tk86.lib";
 
   -- Qt4 framework, doesn't required for OCCT itself
   @string %CSF_QT_INCLUDES = " ";
