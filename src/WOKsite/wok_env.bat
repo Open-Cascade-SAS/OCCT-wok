@@ -15,6 +15,7 @@ set "INCLUDE="
 set "LIB="
 set "DevEnvDir="
 set "HAVE_TBB=false"
+set "HAVE_OPENCL=false"
 set "HAVE_FREEIMAGE=false"
 set "HAVE_GL2PS=false"
 set "VCVARS="
@@ -26,6 +27,7 @@ if exist "%~dp0custom.bat" (
 
 set "PRODUCTS_DEFINES="
 if ["%HAVE_TBB%"]       == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_TBB"
+if ["%HAVE_OPENCL%"]    == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_OPENCL"
 if ["%HAVE_GL2PS%"]     == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_GL2PS"
 if ["%HAVE_FREEIMAGE%"] == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_FREEIMAGE"
 

@@ -102,6 +102,9 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_TBB" == "true" } {
     wokdep:SearchTBB     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+  if { "$::HAVE_OPENCL" == "true" } {
+    wokdep:SearchOpenCL  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
   if { "$::CHECK_QT4" == "true" } {
     wokdep:SearchQt4     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -340,6 +343,8 @@ checkbutton   .myFrame.myGl2psCheck    -offvalue "false" -onvalue "true" -variab
 ttk::label    .myFrame.myGl2psLbl      -text "Use GL2PS"
 checkbutton   .myFrame.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myTbbLbl        -text "Use Intel TBB"
+checkbutton   .myFrame.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
 ttk::label    .myFrame.myMacGLXLbl     -text "Use X11 for windows drawing"
 checkbutton   .myFrame.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
@@ -433,6 +438,9 @@ grid .myFrame.myJDKLbl        -row $aRowIter -column 3 -sticky w
 incr aRowIter
 grid .myFrame.myTbbCheck      -row $aRowIter -column 0 -sticky e
 grid .myFrame.myTbbLbl        -row $aRowIter -column 1 -sticky w
+incr aRowIter
+grid .myFrame.myOpenClCheck   -row $aRowIter -column 0 -sticky e
+grid .myFrame.myOpenClLbl     -row $aRowIter -column 1 -sticky w
 incr aRowIter
 if { "$::tcl_platform(os)" == "Darwin" } {
   grid .myFrame.myMacGLXCheck -row $aRowIter -column 0 -sticky e

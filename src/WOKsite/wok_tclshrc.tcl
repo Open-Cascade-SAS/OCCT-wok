@@ -169,6 +169,11 @@ if { "$::HAVE_TBB" == "true" } {
     puts "  not found: Intel TBB (Optional, enabled)"
   }
 }
+if { "$::HAVE_OPENCL" == "true" } {
+  if { [wokdep:SearchOpenCL anErrs anErrs anErrs anErrs anErrs] == "false" } {
+    puts "  not found: OpenCL SDK (Optional, enabled)"
+  }
+}
 if { "$::CHECK_QT4" == "true" } {
   if { [wokdep:SearchQt4 anErrs anErrs anErrs anErrs anErrs] == "false" } {
     puts "  not found: Qt4 (Optional, set to check)"

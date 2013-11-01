@@ -26,6 +26,7 @@ if { "$tcl_platform(platform)" == "unix" } {
 set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
 set HAVE_TBB       "false"
+set HAVE_OPENCL    "false"
 set MACOSX_USE_GLX "false"
 set CHECK_QT4      "true"
 set CHECK_JDK      "true"
@@ -53,6 +54,9 @@ if { [info exists ::env(HAVE_GL2PS)] } {
 }
 if { [info exists ::env(HAVE_TBB)] } {
   set HAVE_TBB "$::env(HAVE_TBB)"
+}
+if { [info exists ::env(HAVE_OPENCL)] } {
+  set HAVE_OPENCL "$::env(HAVE_OPENCL)"
 }
 if { [info exists ::env(MACOSX_USE_GLX)] } {
   set MACOSX_USE_GLX "$::env(MACOSX_USE_GLX)"
@@ -124,6 +128,20 @@ proc wokdep:SearchLib {theLib theBitness {theSearchPath ""}} {
     set aPath "/usr/lib/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
     if { [file exists "$aPath"] } {
       return "$aPath"
+    }
+  }
+
+  if { "$::tcl_platform(platform)" == "linux" } {
+    if { "$theBitness" == "64" } {
+      set aPath "/usr/lib/x86_64-linux-gnu/lib${theLib}.so"
+      if { [file exists "$aPath"] } {
+        return "$aPath"
+      }
+    } else {
+      set aPath "/usr/lib/i386-linux-gnu/lib${theLib}.so"
+      if { [file exists "$aPath"] } {
+        return "$aPath"
+      }
     }
   }
 
@@ -540,6 +558,48 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   return "$isFound"
 }
 
+# Search OpenCL library placement
+proc wokdep:SearchOpenCL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc   anErrInc
+  upvar $theErrLib32 anErrLib32
+  upvar $theErrLib64 anErrLib64
+  upvar $theErrBin32 anErrBin32
+  upvar $theErrBin64 anErrBin64
+
+  set isFound "true"
+  if { "$::tcl_platform(os)" == "Darwin" } {
+    # OpenCL framework available since Mac OS X 16
+    return "$isFound"
+  }
+
+  set aCLHPath [wokdep:SearchHeader "CL/cl_gl.h"]
+  if { "$aCLHPath"  == "" } {
+    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{OpenCL}*] "$::VCVER" "$::ARCH" ]
+    if { "$aPath" != "" && [file exists "$aPath/include/CL/cl_gl.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/include"
+    } else {
+      lappend anErrInc "Error: 'CL/cl_gl.h' not found (OpenCL)"
+      set isFound "false"
+    }
+  }
+
+  foreach anArchIter {64 32} {
+    set aCLLibPath [wokdep:SearchLib "OpenCL" "$anArchIter"]
+    if { "$aCLLibPath" == "" } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{OpenCL}*] "$::VCVER" "$anArchIter" ]
+      set aCLLibPath [wokdep:SearchLib "OpenCL" "$anArchIter" "$aPath/lib"]
+      if { "$aCLLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+      } else {
+        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}OpenCL.${::SYS_LIB_SUFFIX}' not found (OpenCL)"
+        if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+      }
+    }
+  }
+
+  return "$isFound"
+}
+
 # Search Qt4 libraries placement
 proc wokdep:SearchQt4 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
   upvar $theErrInc   anErrInc
@@ -704,6 +764,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "set HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "set HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "set HAVE_TBB=$::HAVE_TBB"
+    puts $aFile "set HAVE_OPENCL=$::HAVE_OPENCL"
     puts $aFile "set CHECK_QT4=$::CHECK_QT4"
     puts $aFile "set CHECK_JDK=$::CHECK_JDK"
 
@@ -750,6 +811,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "export HAVE_FREEIMAGE=$::HAVE_FREEIMAGE"
     puts $aFile "export HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "export HAVE_TBB=$::HAVE_TBB"
+    puts $aFile "export HAVE_OPENCL=$::HAVE_OPENCL"
     if { "$::tcl_platform(os)" == "Darwin" } {
       puts $aFile "export MACOSX_USE_GLX=$::MACOSX_USE_GLX"
     }

@@ -107,6 +107,8 @@
   @set %CSF_GL2PS = "";
   @set %CSF_TBB_INCLUDES = "";
   @set %CSF_TBB = "";
+  @set %CSF_OPENCL_INCLUDES = "";
+  @set %CSF_OPENCL = "";
 
   @set %CSF_QT_INCLUDES = "";
   @set %CSF_QT = "";
@@ -140,6 +142,7 @@
   @set %ENV_HAVE_FREEIMAGE = "${HAVE_FREEIMAGE}";
   @set %ENV_HAVE_GL2PS     = "${HAVE_GL2PS}";
   @set %ENV_HAVE_TBB       = "${HAVE_TBB}";
+  @set %ENV_HAVE_OPENCL    = "${HAVE_OPENCL}";
   @set %CSF_PRODUCTS_DEFINES = "";
   @if (%ENV_HAVE_FREEIMAGE == "true") then
     @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_FREEIMAGE";
@@ -157,6 +160,16 @@
     @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_TBB";
     @if (%Station != "wnt") then
       @set %CSF_TBB = "-ltbb -ltbbmalloc ";
+    @endif;
+  @endif;
+  @if (%ENV_HAVE_OPENCL == "true") then
+    @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_OPENCL";
+    @if (%Station == "mac") then
+      @set %CSF_OPENCL = "-framework OpenCL ";
+    @else
+      @if (%Station != "wnt") then
+        @set %CSF_OPENCL = "-lOpenCL ";
+      @endif;
     @endif;
   @endif;
 

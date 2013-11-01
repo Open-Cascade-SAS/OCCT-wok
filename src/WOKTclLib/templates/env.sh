@@ -15,6 +15,7 @@ fi
 # Reset values
 export CASDEB=""
 export HAVE_TBB="false";
+export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
 export MACOSX_USE_GLX="false";
@@ -82,6 +83,9 @@ export CSF_OPT_CMPL=""
 # Optiona 3rd-parties should be enabled by HAVE macros
 if [ "$HAVE_TBB" == "true" ]; then
   export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TBB"
+fi
+if [ "$HAVE_OPENCL" == "true" ]; then
+  export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENCL"
 fi
 if [ "$HAVE_FREEIMAGE" == "true" ]; then
   export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_FREEIMAGE"

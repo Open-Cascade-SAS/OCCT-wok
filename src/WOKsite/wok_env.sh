@@ -22,6 +22,7 @@ export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH";
 export CPATH="";
 export LIBRARY_PATH="";
 export HAVE_TBB="false";
+export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
 export PRODUCTS_DEFINES="";
@@ -33,6 +34,9 @@ fi
 
 if [ "$HAVE_TBB"       == "true" ]; then
   export PRODUCTS_DEFINES="$PRODUCTS_DEFINES -DHAVE_TBB";
+fi
+if [ "$HAVE_OPENCL"    == "true" ]; then
+  export PRODUCTS_DEFINES="$PRODUCTS_DEFINES -DHAVE_OPENCL";
 fi
 if [ "$HAVE_GL2PS"     == "true" ]; then
   export PRODUCTS_DEFINES="$PRODUCTS_DEFINES -DHAVE_GL2PS";

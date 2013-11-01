@@ -1890,6 +1890,9 @@ proc osutils:csfList { theOS  theCsfMap } {
 
     #-- GL2PS
     set aCsfMap(CSF_GL2PS)          "gl2ps"
+
+    #-- OpenCL
+    set aCsfMap(CSF_OPENCL)         "OpenCL"
   }
 }
 
