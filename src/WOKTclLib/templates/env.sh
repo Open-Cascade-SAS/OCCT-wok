@@ -152,8 +152,8 @@ else
 fi
 
 
-BIN_PATH="${CASBIN}bin${CASDEB}"
-LIBS_PATH="${CASBIN}lib${CASDEB}"
+BIN_PATH="${CASBIN}/bin${CASDEB}"
+LIBS_PATH="${CASBIN}/lib${CASDEB}"
 if [ "${TARGET}" == "xcd" ]; then
   [[ "${CASDEB}" == "d" ]] && BIN_PATH="${CASBIN}/Debug" || BIN_PATH="${CASBIN}/Release"
   LIBS_PATH="$BIN_PATH"
