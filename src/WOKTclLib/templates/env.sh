@@ -66,17 +66,16 @@ fi
 export CSF_OPT_INC="${CSF_OPT_INC}:${CASROOT}/inc"
 
 if [ "${TARGET}" == "cbp" ]; then
-  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
-  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
   export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/libd"
   export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/libd"
+  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/lib"
+  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/lib"
 elif [ "${TARGET}" == "xcd" ]; then
-  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Release"
-  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Release"
   export CSF_OPT_LIB32D="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Debug"
   export CSF_OPT_LIB64D="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Debug"
+  export CSF_OPT_LIB32="${CSF_OPT_LIB32}:${CASROOT}/${CASBIN}/Release"
+  export CSF_OPT_LIB64="${CSF_OPT_LIB64}:${CASROOT}/${CASBIN}/Release"
 fi
-
 
 export CSF_OPT_CMPL=""
 
@@ -115,13 +114,23 @@ done
 if [ "$ARCH" == "32" ]; then
   set -- "$CSF_OPT_LIB32"
   declare -a aPartiesLibs=($*)
+  set -- "$CSF_OPT_LIB32D"
+  declare -a aPartiesLibsDeb=($*)
 else
   set -- "$CSF_OPT_LIB64"
   declare -a aPartiesLibs=($*)
+  set -- "$CSF_OPT_LIB64D"
+  declare -a aPartiesLibsDeb=($*)
 fi
 
 # Turn back value
 IFS=$aDelimBack
+
+OPT_LINKER_OPTIONS_DEB=""
+for anItem in ${aPartiesLibsDeb[*]}
+do
+  OPT_LINKER_OPTIONS_DEB="${OPT_LINKER_OPTIONS_DEB} -L${anItem}"
+done
 
 OPT_LINKER_OPTIONS=""
 for anItem in ${aPartiesLibs[*]}
@@ -136,10 +145,10 @@ done
 
 if [ "$ARCH" == "64" ]; then
   export CSF_OPT_LNK64="$OPT_LINKER_OPTIONS"
-  export CSF_OPT_LNK64D="$OPT_LINKER_OPTIONS"
+  export CSF_OPT_LNK64D="$OPT_LINKER_OPTIONS_DEB"
 else
   export CSF_OPT_LNK32="$OPT_LINKER_OPTIONS"
-  export CSF_OPT_LNK32D="$OPT_LINKER_OPTIONS"
+  export CSF_OPT_LNK32D="$OPT_LINKER_OPTIONS_DEB"
 fi
 
 
