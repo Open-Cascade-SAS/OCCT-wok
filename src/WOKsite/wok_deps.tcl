@@ -218,9 +218,12 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
   upvar $theErrBin32 anErrBin32
   upvar $theErrBin64 anErrBin64
 
+  set tclver_maj 8
+  set tclver_min 6
+  
   set isFound "true"
   set aTclHPath [wokdep:SearchHeader "tcl.h"]
-  set aTkHPath  [wokdep:SearchHeader "tcl.h"]
+  set aTkHPath  [wokdep:SearchHeader "tk.h"]
   if { "$aTclHPath" == "" || "$aTkHPath" == "" } {
     if { [file exists "/usr/include/tcl8.6/tcl.h"]
       && [file exists "/usr/include/tcl8.6/tk.h" ] } {
@@ -229,6 +232,7 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
       set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tcl}*] "$::VCVER" "$::ARCH" ]
       if { "$aPath" != "" && [file exists "$aPath/include/tcl.h"] && [file exists "$aPath/include/tk.h"] } {
         lappend ::CSF_OPT_INC "$aPath/include"
+        set aTclHPath "$aPath/include/tcl.h"
       } else {
         lappend anErrInc "Error: 'tcl.h' or 'tk.h' not found (Tcl/Tk)"
         set isFound "false"
@@ -236,12 +240,21 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
     }
   }
 
+  # detect tcl version by parsing header file
+  if { $isFound } {
+    set fh [open $aTclHPath]
+    set tcl_h [read $fh]
+    close $fh
+    regexp {define\s+TCL_MAJOR_VERSION\s+([0-9]+)} $tcl_h dummy tclver_maj
+    regexp {define\s+TCL_MINOR_VERSION\s+([0-9]+)} $tcl_h dummy tclver_min
+  }
+
   if { "$::tcl_platform(platform)" == "windows" } {
-    set aTclLibName "tcl86"
-    set aTkLibName  "tk86"
+    set aTclLibName "tcl${tclver_maj}${tclver_min}"
+    set aTkLibName  "tk${tclver_maj}${tclver_min}"
   } else {
-    set aTclLibName "tcl8.6"
-    set aTkLibName  "tk8.6"
+    set aTclLibName "tcl${tclver_maj}.${tclver_min}"
+    set aTkLibName  "tk${tclver_maj}.${tclver_min}"
   }
 
   foreach anArchIter {64 32} {

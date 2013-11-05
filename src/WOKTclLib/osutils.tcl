@@ -1848,8 +1848,9 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_OpenGlLibs) "opengl32.lib glu32.lib"
 
     # -- 3rd-parties precompiled libraries
-    set aCsfMap(CSF_TclLibs)    "tcl86.lib"
-    set aCsfMap(CSF_TclTkLibs)  "tk86.lib"
+    # Note: Tcl library name depends on version and is chosen by #pragma
+#    set aCsfMap(CSF_TclLibs)    "tcl86.lib"
+#    set aCsfMap(CSF_TclTkLibs)  "tk86.lib"
     set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
 
   } else {
