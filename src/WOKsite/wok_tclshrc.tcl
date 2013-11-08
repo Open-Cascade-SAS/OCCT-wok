@@ -492,6 +492,15 @@ proc wenv {} {
     puts "Warning! 'XSTEPResource' package not found!"
   }
 
+  set aUnitsAPI [woklocate -u UnitsAPI]
+  if { $aUnitsAPI != "" } {
+    set aUnitsAPIPath [string range [wokinfo -p source:. $aUnitsAPI] 0 [expr {[string length [wokinfo -p source:. $aUnitsAPI]] - 3}]]
+    set env(CSF_UnitsLexicon) "$aUnitsAPIPath/Lexi_Expr.dat"
+    set env(CSF_UnitsDefinition) "$aUnitsAPIPath/Units.dat"
+  } else {
+    puts "Warning! 'UnitsAPI' package not found!"
+  }
+
   # main DRAWEXE commands
   set aDrawRes [woklocate -u DrawResources]
   if { $aDrawRes != "" } {
