@@ -179,11 +179,6 @@ export CSF_PluginDefaults="${CASROOT}/src/StdResource"
 export CSF_XCAFDefaults="${CASROOT}/src/StdResource"
 export CSF_TObjDefaults="${CASROOT}/src/StdResource"
 export CSF_StandardLiteDefaults="${CASROOT}/src/StdResource"
-if [ "$WOKSTATION" == "mac" ]; then
-  export CSF_GraphicShr="libTKOpenGl.dylib"
-else
-  export CSF_GraphicShr="libTKOpenGl.so"
-fi
 export CSF_UnitsLexicon="${CASROOT}/src/UnitsAPI/Lexi_Expr.dat"
 export CSF_UnitsDefinition="${CASROOT}/src/UnitsAPI/Units.dat"
 export CSF_IGESDefaults="${CASROOT}/src/XSTEPResource"

@@ -520,19 +520,6 @@ proc wenv {} {
     #puts "Warning! 'DrawResourcesProducts' package not found!"
   }
 
-  if { $env(WOKSTATION) == "wnt" } {
-    set aTkGlLib [woklocate -p TKOpenGl:library:TKOpenGl.dll]
-  } elseif { $env(WOKSTATION) == "mac" } {
-    set aTkGlLib [woklocate -p TKOpenGl:library:libTKOpenGl.dylib]
-  } else {
-    set aTkGlLib [woklocate -p TKOpenGl:library:libTKOpenGl.so]
-  }
-  if { $aTkGlLib != "" } {
-    set env(CSF_GraphicShr) $aTkGlLib
-  } else {
-    puts "Warning! 'TKOpenGl'      library not found!"
-  }
-
   puts "Environment configured"
 }
 
