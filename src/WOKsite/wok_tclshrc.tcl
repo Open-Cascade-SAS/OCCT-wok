@@ -272,11 +272,7 @@ proc wgenprojbat {thePath theIDE} {
     file copy -force -- "$::env(WOKHOME)/lib/config.h" "$aBox/inc/config.h"
   }
 
-  if {"$theIDE" == "cmake"} {
-    file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aTargetPlatformExt}" "$aBox/adm/cmake/draw.${aTargetPlatformExt}"
-    file copy -force -- "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}.in" "$aBox/adm/cmake/env.${aTargetPlatformExt}.in"
-  } else {
-
+  if {"$theIDE" != "cmake"} {
     set anEnvTmplFile [open "$::env(WOKHOME)/lib/templates/env.${aTargetPlatformExt}" "r"]
     set anEnvTmpl [read $anEnvTmplFile]
     close $anEnvTmplFile
