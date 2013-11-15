@@ -28,7 +28,7 @@ proc wgendoc {args} {
     
   set modules {}
   set useSearch YES
-  set outDir "[lindex [wokinfo -R] 0]/documentation"
+  set outDir "[lindex [wokinfo -R] 0]/doc/refman"
   set createChmHelp NO
   set hhcPath ""
   set gthelpPath ""
@@ -44,7 +44,7 @@ proc wgendoc {args} {
       puts "  Options are : "
       puts "    -wb=<workbench name> : Name of OCCT workbench (current one by default)"
       puts "    -m=<list of modules> : Documentation will contain this list of modules"
-      puts "    -outdir=<path>       : Documentation output directory"
+      puts "    -outdir=<path>       : Documentation output directory (default doc/refman)"
       puts "    -chm                 : Generate CHM file"
       puts "    -hhc=<path>          : Path to HTML Help Compiler (hhc.exe) or equivalent"
       puts "    -qthelp=<path>       : Generate Qt Help file, specify path to qthelpgenerator executable"
@@ -266,7 +266,7 @@ proc OCCDoc_MakeDoxyfile {outDir {modules {}} {createChmHelp NO} {createQhpHelp 
   puts $fileid "OUTPUT_LANGUAGE  = English"
   puts $fileid "MULTILINE_CPP_IS_BRIEF = YES"
   puts $fileid "INHERIT_DOCS           = YES"
-  puts $fileid "REPEAT_BRIEF           = NO"
+  puts $fileid "REPEAT_BRIEF           = YES"
   puts $fileid "ALWAYS_DETAILED_SEC    = NO"
   puts $fileid "INLINE_INHERITED_MEMB  = NO"
   puts $fileid "FULL_PATH_NAMES        = NO"
