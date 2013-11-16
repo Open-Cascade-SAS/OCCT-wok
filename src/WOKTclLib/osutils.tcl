@@ -13,17 +13,17 @@ proc changeStationAndDependentEnvironment { theNewStation } {
 
   # save old station
   set anOldStation [wokparam -v %Station]
-  
+
   if { "$anOldStation" == "$theNewStation" } {
     return $anOldStation
   }
-  
+
   wokprofile -S $theNewStation
 
   # change station
   wokparam -s %Station=$theNewStation
-  
-  # we should unset CSF_EDL variable due to it is necessary 
+
+  # we should unset CSF_EDL variable due to it is necessary
   # to update all CSF's variables after station change
   wokparam -u %CSF_EDL
   wokparam -u %CMPLRS_EDL
@@ -37,7 +37,7 @@ proc changeStationAndDependentEnvironment { theNewStation } {
 
   # redefine csf variables
   wokparam -l CMPLRS
-  
+
   return $anOldStation
 }
 
@@ -160,8 +160,8 @@ proc osutils:vcsolution:config:begin { vcversion } {
       "\t\tRelease = Release\n" \
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ProjectConfiguration) = postSolution\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
-             "$vcversion" == "vc10" || "$vcversion" == "vc11" || 
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
+             "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
              "$vcversion" == "vc12" } {
     append var \
       "Global\n" \
@@ -186,7 +186,7 @@ proc osutils:vcsolution:config:project { vcversion guid } {
       "\t\t$guid.Debug.Build.0 = Debug|Win32\n" \
       "\t\t$guid.Release.ActiveCfg = Release|Win32\n" \
       "\t\t$guid.Release.Build.0 = Release|Win32\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
              "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
              "$vcversion" == "vc12" } {
     append var \
@@ -213,7 +213,7 @@ proc osutils:vcsolution:config:end { vcversion } {
       "\tEndGlobalSection\n" \
       "\tGlobalSection(ExtensibilityAddIns) = postSolution\n" \
       "\tEndGlobalSection\n"
-  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" || 
+  } elseif { "$vcversion" == "vc8" || "$vcversion" == "vc9" ||
              "$vcversion" == "vc10" || "$vcversion" == "vc11" ||
              "$vcversion" == "vc12" } {
     append var \
@@ -907,7 +907,7 @@ proc osutils:vcproj { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {} 
   foreach tkx [osutils:commonUsedTK  $theToolKit] {
     lappend aCommonUsedTK "${tkx}.lib"
   }
-  
+
   set aUsedToolKits [concat $aCommonUsedTK [osutils:usedOsLibs $theToolKit "wnt"]]
 
   # correct names of referred third-party libraries that are named with suffix
@@ -1025,12 +1025,12 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
       set aGuidsMap($aProjName) [OS:genGUID]
     }
     regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
-    
+
     set aCommonUsedTK [list]
     foreach tkx [osutils:commonUsedTK  $theToolKit] {
       lappend aCommonUsedTK "${tkx}.lib"
     }
-  
+
     set aUsedToolKits [concat $aCommonUsedTK [osutils:usedOsLibs $theToolKit "wnt"]]
 
     set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $theToolKit]]
@@ -1631,9 +1631,9 @@ proc osutils:am:__LIBADD__ { theIncToolkits {final 0} } {
     append aFatherModules [w_info -k]
   }
   wokcd $aCurrentWorkBench
-  
+
   set aLibString ""
-  
+
   foreach aIncToolkit $theIncToolkits {
     if { [lsearch [split $aFatherModules " "] $aIncToolkit] != -1} {
       append aLibString " \\\n-l$aIncToolkit"
@@ -1855,6 +1855,10 @@ proc osutils:csfList { theOS  theCsfMap } {
 
   } else {
 
+    #-- Tcl/Tk configuration
+    set aCsfMap(CSF_TclLibs)    "tcl8.6"
+    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.6"
+
     if { "$theOS" == "lin" } {
       set aCsfMap(CSF_ThreadLibs) "pthread rt"
       set aCsfMap(CSF_OpenGlLibs) "GLU GL"
@@ -1866,19 +1870,17 @@ proc osutils:csfList { theOS  theCsfMap } {
       set aCsfMap(CSF_Appkit)     "Appkit"
       set aCsfMap(CSF_IOKit)      "IOKit"
       set aCsfMap(CSF_OpenGlLibs) "OpenGL"
+      set aCsfMap(CSF_TclLibs)    "Tcl"
+      set aCsfMap(CSF_TclTkLibs)  "Tk"
     }
 
     set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
     set aCsfMap(CSF_MotifLibs)  "X11"
 
-    #-- Tcl/Tk configuration
-    set aCsfMap(CSF_TclLibs)    "tcl8.6"
-    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.6"
-
     # variable is required for support for OCCT version that use fgtl
     #-- FTGL (font renderer for OpenGL)
     set aCsfMap(CSF_FTGL)       "ftgl"
-    
+
     #-- FreeType
     set aCsfMap(CSF_FREETYPE)   "freetype"
 
@@ -1936,7 +1938,7 @@ proc osutils:tksrcfiles { theUnits  theRelatedPath {theCompatible {}} } {
   foreach anUnit $theUnits {
     set xlo       [wokinfo -n $anUnit]
     set aSrcFiles [osutils:tk:files $xlo osutils:compilable 0]
-    
+
     if { $theCompatible != {} } {
       set aSrcFiles [osutils:tk:files $xlo $theCompatible 0]
     }
@@ -2017,7 +2019,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   set aCommonTKSrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath]
   set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits  $aRelatedPath]
   set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits $aRelatedPath]
-  
+
   set aCommonTK_mm_SrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath osutils:mm_compilable]
 
   set aFileBuff [list "project(${theToolKit})\n"]
@@ -2101,6 +2103,12 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     } elseif { $anUsedMacLib == "IOKit" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_IOKIT NAMES IOKit)"
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_IOKIT\} )"
+    } elseif { $anUsedMacLib == "Tcl" } {
+      lappend aFileBuff "  find_library(FRAMEWORKS_TCL NAMES Tcl)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_TCL\} )"
+    } elseif { $anUsedMacLib == "Tk" } {
+      lappend aFileBuff "  find_library(FRAMEWORKS_TK NAMES Tk)"
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_TK\} )"
     } elseif { $anUsedMacLib == "OpenGL" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_OPENGL NAMES OpenGL)"
       lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
@@ -2546,13 +2554,13 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
   set aFrameworks       [list]
   set aUsedToolKits     [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]]
   set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close [woklocate -u $theToolKit]]] $theToolKit]
-  
+
   if { "$theTargetType" == "executable" } {
     set aFile [osutils:tk:files $theToolKit osutils:compilable 0]
     set aProjName [file rootname [file tail $aFile]]
     set aDepToolkits [LibToLinkX [woklocate -u $theToolKit] $aProjName]
   }
- 
+
   wokparam -l CSF
 
   foreach tk $aDepToolkits {
@@ -3128,7 +3136,7 @@ proc osutils:xcdx { theOutDir theExecutable theGuidsMap } {
     puts stderr "Error: Could not create xcschemes directorty in \"$aUserDataDir\""
     return
   }
-  # End folders creation. 
+  # End folders creation.
 
   # Generating GUID for tookit.
   upvar $theGuidsMap aGuidsMap
