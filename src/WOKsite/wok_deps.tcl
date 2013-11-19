@@ -228,6 +228,7 @@ proc wokdep:SearchTclTk {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin
     if { [file exists "/usr/include/tcl8.6/tcl.h"]
       && [file exists "/usr/include/tcl8.6/tk.h" ] } {
       lappend ::CSF_OPT_INC "/usr/include/tcl8.6"
+      set aTclHPath "/usr/include/tcl8.6/tcl.h"
     } else {
       set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{tcl}*] "$::VCVER" "$::ARCH" ]
       if { "$aPath" != "" && [file exists "$aPath/include/tcl.h"] && [file exists "$aPath/include/tk.h"] } {
