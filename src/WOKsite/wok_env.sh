@@ -71,7 +71,7 @@ fi
 
 # ----- 3rd-parties root -----
 if [ "$PRODUCTS_PATH" == "" ]; then
-  export PRODUCTS_PATH="${WOKHOME}/3rdparty/lin32"
+  export PRODUCTS_PATH="${WOKHOME}/3rdparty/${WOKSTATION}${ARCH}"
 fi
 
 # ----- Setup Environment Variables for WOK -----
