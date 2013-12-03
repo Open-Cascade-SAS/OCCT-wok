@@ -2067,34 +2067,34 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   lappend aFileBuff "elseif(APPLE)"
   foreach anUsedMacLib $anUsedMacLibs {
     if { $anUsedMacLib == "tbb" || $anUsedMacLib == "tbbmalloc" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_TBB)"
+      lappend aFileBuff "  if(USE_TBB)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "freeimage" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_FREEIMAGE)"
+      lappend aFileBuff "  if(USE_FREEIMAGE)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "gl2ps" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GL2PS)"
+      lappend aFileBuff "  if(USE_GL2PS)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "X11" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "  if(USE_GLX)"
       lappend aFileBuff "    find_package(X11 COMPONENTS X11 Xext Xmu Xi)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_LIBRARIES\} )"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xi_LIB\} )"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{X11_Xmu_LIB\} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Xext" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "  if(USE_GLX)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Xmu" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "  if(USE_GLX)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Xi" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "  if(USE_GLX)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib == "Appkit" } {
@@ -2111,11 +2111,15 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_TK\} )"
     } elseif { $anUsedMacLib == "OpenGL" } {
       lappend aFileBuff "  find_library(FRAMEWORKS_OPENGL NAMES OpenGL)"
-      lappend aFileBuff "  if(3RDPARTY_USE_GLX)"
+      lappend aFileBuff "  if(USE_GLX)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS GL )"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS GLU )"
       lappend aFileBuff "  else()"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS \$\{FRAMEWORKS_OPENGL\} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "OpenCL" } {
+      lappend aFileBuff "  if(USE_OPENCL)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib != "" } {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
@@ -2124,15 +2128,19 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   lappend aFileBuff "else()"
   foreach anUsedUnixLib $anUsedUnixLibs {
     if { $anUsedUnixLib == "tbb" || $anUsedUnixLib == "tbbmalloc" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_TBB)"
+      lappend aFileBuff "  if(USE_TBB)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedUnixLib == "freeimage" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_FREEIMAGE)"
+      lappend aFileBuff "  if(USE_FREEIMAGE)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedUnixLib == "gl2ps" } {
-      lappend aFileBuff "  if(3RDPARTY_USE_GL2PS)"
+      lappend aFileBuff "  if(USE_GL2PS)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedMacLib == "OpenCL" } {
+      lappend aFileBuff "  if(USE_OPENCL)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
     } elseif { $anUsedUnixLib != "" } {
