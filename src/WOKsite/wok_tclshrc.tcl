@@ -250,17 +250,13 @@ proc wgenprojbat {thePath theIDE} {
   if { "$::tcl_platform(platform)" == "windows" } {
     set aTargetPlatform "wnt"
   }
-
-  switch -exact -- "$theIDE" {
-    "vc7"   -
-    "vc8"   -
-    "vc9"   -
-    "vc10"  -
-    "vc11"  -
-    "vc12"  { set aTargetPlatform wnt }
-    "amk"   { set aTargetPlatform lin  }
-  }
   
+  if {[regexp {(vc)[0-9]*$} $theIDE] == 1} {
+    set aTargetPlatform wnt
+  } elseif {"$theIDE" == "amk"} {
+    set aTargetPlatform lin
+  }
+
   set aTargetPlatformExt sh
   if { "$aTargetPlatform" == "wnt" } {
     set aTargetPlatformExt bat
@@ -293,15 +289,13 @@ proc wgenprojbat {thePath theIDE} {
     file copy -force -- "$::env(WOKHOME)/lib/templates/draw.${aTargetPlatformExt}" "$aBox/draw.${aTargetPlatformExt}"
   }
 
-  switch -exact -- "$theIDE" {
-    "vc7"   -
-    "vc8"   -
-    "vc9"   -
-    "vc10"  -
-    "vc11"  { file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat" }
-    "cbp"   { file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
-    "xcd"   { file copy -force -- "$::env(WOKHOME)/lib/templates/xcode.sh" "$aBox/xcode.sh" }
-
+  if {[regexp {(vc)[0-9]*$} $theIDE] == 1} {
+    file copy -force -- "$::env(WOKHOME)/lib/templates/msvc.bat" "$aBox/msvc.bat"
+  } else {
+    switch -exact -- "$theIDE" {
+      "cbp"   { file copy -force -- "$::env(WOKHOME)/lib/templates/codeblocks.sh" "$aBox/codeblocks.sh" }
+      "xcd"   { file copy -force -- "$::env(WOKHOME)/lib/templates/xcode.sh" "$aBox/xcode.sh" }
+    }
   }
 }
 
