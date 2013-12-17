@@ -2139,7 +2139,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "  if(USE_GL2PS)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
-    } elseif { $anUsedMacLib == "OpenCL" } {
+    } elseif { $anUsedUnixLib == "OpenCL" } {
       lappend aFileBuff "  if(USE_OPENCL)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
