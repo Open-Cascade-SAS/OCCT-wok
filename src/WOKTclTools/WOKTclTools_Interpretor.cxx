@@ -471,7 +471,7 @@ Standard_Integer WOKTclTools_Interpretor::TreatReturn(const WOKTools_Return& ret
 //=======================================================================
 Standard_CString WOKTclTools_Interpretor::Result() const
 {
-  return myInterp->result;
+  return Tcl_GetStringResult (myInterp);
 }
 
 //=======================================================================
@@ -487,8 +487,11 @@ Standard_Boolean WOKTclTools_Interpretor::GetReturnValues(WOKTools_Return& retva
 #else
   Standard_PCharacter* argv;
 #endif
-  
-  if(Tcl_SplitList(myInterp, myInterp->result, &argc, &argv)) return Standard_True;
+
+  if (Tcl_SplitList (myInterp, Tcl_GetStringResult (myInterp), &argc, &argv))
+  {
+    return Standard_True;
+  }
 
   for(i=0; i<argc; i++)
     {

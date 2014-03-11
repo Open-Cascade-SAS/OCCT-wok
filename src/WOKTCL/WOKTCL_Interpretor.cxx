@@ -11,12 +11,12 @@
 #include <WOKTools_ChDirValue.hxx>
 #include <WOKTools_Messages.hxx>
 
-#ifdef WNT
-#include <WOKUtils_ShellManager.hxx>
-#define WOKUtils_ProcessManager WOKUtils_ShellManager
+#ifdef _WIN32
+  #include <WOKUtils_ShellManager.hxx>
+  #define WOKUtils_ProcessManager WOKUtils_ShellManager
 #else
-#include <WOKUtils_ProcessManager.hxx>
-#endif  // WNT
+  #include <WOKUtils_ProcessManager.hxx>
+#endif
 
 #include <TCollection_HAsciiString.hxx>
 
@@ -27,6 +27,17 @@
 
 
 #include <WOKTCL_DefaultCommand.hxx>
+
+// on MSVC, use #pragma to define name of the Tcl library to link with,
+// depending on Tcl version number
+#ifdef _MSC_VER
+  // two helper macros are needed to convert version number macro to string literal
+  #define STRINGIZE1(a) #a
+  #define STRINGIZE2(a) STRINGIZE1(a)
+  #pragma comment (lib, "tcl" STRINGIZE2(TCL_MAJOR_VERSION) STRINGIZE2(TCL_MINOR_VERSION) ".lib")
+  #undef  STRINGIZE2
+  #undef  STRINGIZE1
+#endif
 
 //=======================================================================
 //function : WOKTCL_Interpretor
