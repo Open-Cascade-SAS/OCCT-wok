@@ -33,7 +33,7 @@ void MS_Type::Package(const Handle(TCollection_HAsciiString)& aPackage)
 
 Handle(MS_Package) MS_Type::Package() const 
 {
-  if (GetMetaSchema() != UndefinedHandleAddress) {
+  if (GetMetaSchema() != 0) {
     return GetMetaSchema()->GetPackage(myPackage);
   }
   else {

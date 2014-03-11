@@ -31,7 +31,7 @@ Handle(MS_Type) MS_GenType::TYpe() const
 {
   Handle(MS_Type) tmpType;
 
-  if (GetMetaSchema() != UndefinedHandleAddress) {    
+  if (GetMetaSchema() != 0) {    
     if (GetMetaSchema()->IsDefined(myType)) {
       tmpType = GetMetaSchema()->GetType(myType);
     }

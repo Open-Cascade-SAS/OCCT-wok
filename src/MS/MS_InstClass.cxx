@@ -210,7 +210,7 @@ void MS_InstClass::Instantiates()
   Standard_Integer                        i;
   Standard_Boolean                        GenClassNotDefined = Standard_False;
 
-  if (GetMetaSchema() == UndefinedHandleAddress) {
+  if (GetMetaSchema() == 0) {
     MS_TraductionError::Raise("Error : Instantiation without MetaSchemna...");
   }
 
