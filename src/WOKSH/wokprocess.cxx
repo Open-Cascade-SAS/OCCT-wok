@@ -5,11 +5,17 @@
 
 #include <tcl.h>
 
-#ifdef WNT
-#  pragma message( "Information: tcl"TCL_VERSION".lib is using as TCL library" )
-#endif  // WNT
-
-
+// on MSVC, use #pragma to define name of the Tcl library to link with,
+// depending on Tcl version number
+#ifdef _MSC_VER
+  // two helper macros are needed to convert version number macro to string literal
+  #define STRINGIZE1(a) #a
+  #define STRINGIZE2(a) STRINGIZE1(a)
+  #pragma comment (lib, "tcl" STRINGIZE2(TCL_MAJOR_VERSION) STRINGIZE2(TCL_MINOR_VERSION) ".lib")
+  #undef  STRINGIZE2
+  #undef  STRINGIZE1
+  #pragma message ("Information: tcl"TCL_VERSION".lib is using as TCL library")
+#endif
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
