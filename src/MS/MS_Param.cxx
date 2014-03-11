@@ -93,7 +93,7 @@ Handle(MS_Type) MS_Param::Type() const
 {
   Handle(MS_Type) aType;
 
-  if (GetMetaSchema() != UndefinedHandleAddress) {
+  if (GetMetaSchema() != 0) {
     Handle(TCollection_HAsciiString) TheTypeName = TypeName();
 
     if (GetMetaSchema()->IsDefined(TheTypeName)) {

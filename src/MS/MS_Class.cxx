@@ -41,7 +41,7 @@ MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName,
   if (!aPackage.IsNull()) {
     Handle(TCollection_HAsciiString) aFullName =  MS::BuildFullName(aPackage,aName);
     
-    if (GetMetaSchema() != (MS_MetaSchemaPtr)UndefinedHandleAddress) {
+    if (GetMetaSchema() != 0) {
       Package(aPackage);
     }
     
@@ -115,7 +115,7 @@ Handle(MS_HSequenceOfClass) MS_Class::GetInherits() const
 {
   Handle(MS_HSequenceOfClass) aClassSeq = new MS_HSequenceOfClass();
   
-  if (GetMetaSchema() != UndefinedHandleAddress) {    
+  if (GetMetaSchema() != 0) {    
     Standard_Integer i;
     
     for (i = 1; i <= myInherits->Length(); i++) {
@@ -165,7 +165,7 @@ Handle(TColStd_HSequenceOfHAsciiString) MS_Class::GetFullInheritsNames()
   Handle(MS_Type)  aType;
   MS_Class*        aClass = 0l;
 
-  if (GetMetaSchema() == UndefinedHandleAddress) {
+  if (GetMetaSchema() == 0) {
     cerr << "Error : MS_Class::GetFullInheritsNames - Cannot compute inheritance tree without MetaSchema : " << 
          FullName()->ToCString() << endl;
     Standard_NoSuchObject::Raise();
@@ -219,7 +219,7 @@ Handle(MS_HSequenceOfType) MS_Class::GetUses() const
 {
   Handle(MS_HSequenceOfType) aTypeSeq;
   
-  if (GetMetaSchema() != UndefinedHandleAddress) {
+  if (GetMetaSchema() != 0) {
     Standard_Integer           i;
     
     aTypeSeq = new MS_HSequenceOfType;

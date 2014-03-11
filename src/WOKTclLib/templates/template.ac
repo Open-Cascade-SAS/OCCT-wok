@@ -79,7 +79,7 @@ CSF_SOCKETLibs_LIB=-ldl
 AC_MSG_CHECKING([if platform is 64-bit])
 AC_TRY_COMPILE( [], 
  [int array[((int)sizeof(void*))-6];],
- [AC_MSG_RESULT([yes]); ARCH=64; CPPFLAGS="$CPPFLAGS -D_OCC64"; case $platform in Linux*) CPPFLAGS="$CPPFLAGS -m64";; esac],
+ [AC_MSG_RESULT([yes]); ARCH=64; case $platform in Linux*) CPPFLAGS="$CPPFLAGS -m64";; esac],
  [AC_MSG_RESULT([no]); ARCH=32;] )
 AC_SUBST(ARCH)
 

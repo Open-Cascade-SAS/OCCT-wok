@@ -41,7 +41,7 @@ Handle(TColStd_HSequenceOfHAsciiString) MS_PrimType::GetFullInheritsNames() cons
   Handle(MS_Type)                         aType;
   Handle(MS_Class)                        aClass;
 
-  if (GetMetaSchema() == UndefinedHandleAddress) {
+  if (GetMetaSchema() == 0) {
     cerr << "Error : MS_Class::GetFullInheritsNames - Cannot compute inheritance tree without MetaSchema" << endl;
     Standard_NoSuchObject::Raise();
   }

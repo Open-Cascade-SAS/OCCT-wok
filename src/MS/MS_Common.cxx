@@ -1,7 +1,7 @@
 #include <MS_Common.ixx>
 #include <Standard_NullObject.hxx>
 
-MS_Common::MS_Common(const Handle(TCollection_HAsciiString)& aName) : myName(aName),myFullName(aName),myMetaSchema((MS_MetaSchemaPtr)UndefinedHandleAddress)
+MS_Common::MS_Common(const Handle(TCollection_HAsciiString)& aName) : myName(aName),myFullName(aName),myMetaSchema(0)
 {
 }
 
