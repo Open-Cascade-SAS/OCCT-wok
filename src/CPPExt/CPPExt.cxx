@@ -962,20 +962,18 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     // Transient classes
     //
     if (aClass->IsTransient() && !aName->IsSameString(MS::GetTransientRootName())) {
-      Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
-      
-      aHandleFile->AssignCat("Handle_");
-      aHandleFile->AssignCat(aName);
-      aHandleFile->AssignCat(".hxx");
-
-      outfile->Append(aHandleFile);
+      ///Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
+      ///aHandleFile->AssignCat("Handle_");
+      ///aHandleFile->AssignCat(aName);
+      ///aHandleFile->AssignCat(".hxx");
+      ///outfile->Append(aHandleFile);
 
       if (aClass->GetInheritsNames()->Length() == 0) {
 	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
 	Standard_NoSuchObject::Raise();
       }
 
-      CPP_TransientHandle(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+    ///  CPP_TransientHandle(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
 
       if (aClass->IsKind(STANDARD_TYPE(MS_Error))) {
 	CPP_ExceptionClass(aMeta,api,aClass,outfile);
@@ -987,13 +985,13 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
     // Persistent classes
     //
     else if (aClass->IsPersistent() && !aName->IsSameString(MS::GetPersistentRootName())) {
-      Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
+      ///Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
       
-      aHandleFile->AssignCat("Handle_");
-      aHandleFile->AssignCat(aName);
-      aHandleFile->AssignCat(".hxx");
+      ///aHandleFile->AssignCat("Handle_");
+      ///aHandleFile->AssignCat(aName);
+      ///aHandleFile->AssignCat(".hxx");
 
-      outfile->Append(aHandleFile);
+      ///outfile->Append(aHandleFile);
 
       if (aClass->GetInheritsNames()->Length() == 0) {
 	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
@@ -1001,19 +999,19 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       }
 
       if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJY")) {
-	CPP_PersistentHandleOBJY(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+	///CPP_PersistentHandleOBJY(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
 	CPP_PersistentClassOBJY(aMeta,api,aClass,outfile);
       }
       else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"MEM")) {
       }
       else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJS")) {
-	CPP_PersistentHandleOBJS(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+	///CPP_PersistentHandleOBJS(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
 	CPP_PersistentClassOBJS(aMeta,api,aClass,outfile);
       }
       else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OO2")) {
       }
       else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"CSFDB")) {
-	CPP_PersistentHandleCSFDB(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+	///CPP_PersistentHandleCSFDB(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
 	CPP_PersistentClassCSFDB(aMeta,api,aClass,outfile);
       }
     }

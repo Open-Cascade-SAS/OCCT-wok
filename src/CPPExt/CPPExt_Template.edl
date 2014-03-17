@@ -60,9 +60,12 @@ $#define _%Class_HeaderFile
 $
 $#include <Standard.hxx>
 $#include <Standard_DefineHandle.hxx>
-$#include <Handle_%Class.hxx>
 $
 $%TICIncludes
+$
+$class Handle(%Inherits);
+$class %Class;
+$DEFINE_STANDARD_HANDLE(%Class, %Inherits)
 $
 $%ClassComment
 $class %Class : public %Inherits
@@ -361,7 +364,9 @@ $#include <Standard_DefineHandle.hxx>
 $#include <Standard_DefineException.hxx>
 $#include <Standard_SStream.hxx>
 $#include <%Inherits.hxx>
-$#include <Handle_%Class.hxx>
+$
+$class %Class;
+$DEFINE_STANDARD_HANDLE(%Class, %Inherits)
 $
 $#if !defined No_Exception && !defined No_%Class
 $  #define %Class_Raise_if(CONDITION, MESSAGE) \
