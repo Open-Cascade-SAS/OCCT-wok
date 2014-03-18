@@ -1046,3 +1046,13 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
   }
 }
 		 
+Handle(TCollection_HAsciiString) CPP_WithoutHandleSuffix (const Handle(TCollection_HAsciiString)& theName)
+{
+  const Standard_Integer aSuffLen = Standard_Integer(sizeof("Handle_") - 1);
+  if (theName->Length() > aSuffLen
+   && theName->SubString (1, aSuffLen)->String() == "Handle_")
+  {
+    return theName->SubString (aSuffLen + 1, theName->Length());
+  }
+  return theName;
+}

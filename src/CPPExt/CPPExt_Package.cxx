@@ -62,7 +62,8 @@ void CPP_PackageDerivated(const Handle(MS_MetaSchema)& ,
   api->AddVariable(VSuffix,"hxx");
   
   for (i = 1; i <= inclist->Length(); i++) {
-    api->AddVariable(VIClass,inclist->Value(i)->ToCString());
+    Handle(TCollection_HAsciiString) aName = CPP_WithoutHandleSuffix (inclist->Value (i));
+    api->AddVariable (VIClass, aName->ToCString());
     api->Apply(VoutClass,"Include");
     result->AssignCat(api->GetVariableValue(VoutClass));
   }

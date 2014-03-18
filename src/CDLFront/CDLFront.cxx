@@ -209,6 +209,7 @@ namespace
   static Handle(TColStd_HSequenceOfHAsciiString) TheListOfName      = new TColStd_HSequenceOfHAsciiString();
   static Handle(TColStd_HSequenceOfHAsciiString) TheListOfCplusplus = new TColStd_HSequenceOfHAsciiString();
   static Handle(TColStd_HSequenceOfHAsciiString) TheListOfComments  = new TColStd_HSequenceOfHAsciiString();
+  static Standard_Boolean                        TheIsEmptyLineInComment = Standard_False;
 
   static Handle(TColStd_HSequenceOfInteger)      TheListOfCPPType   = new TColStd_HSequenceOfInteger();
   static Handle(TColStd_HSequenceOfHAsciiString) TheListOfInteger   = new TColStd_HSequenceOfHAsciiString();
@@ -303,6 +304,7 @@ void CDL_InitVariable()
   TheListOfName      = new TColStd_HSequenceOfHAsciiString();
   TheListOfCplusplus = new TColStd_HSequenceOfHAsciiString();
   TheListOfComments  = new TColStd_HSequenceOfHAsciiString();
+  TheIsEmptyLineInComment = Standard_False;
   TheListOfCPPType   = new TColStd_HSequenceOfInteger();
   TheListOfInteger   = new TColStd_HSequenceOfHAsciiString();
   TheListOfGlobalUsed.Nullify();
@@ -369,8 +371,9 @@ void Type_Name(char* aName)
 //function : CheckCommentListIsEmpty
 //purpose  :
 //=======================================================================
-void CheckCommentListIsEmpty (const char* /*theFunctionName*/)
+void CheckCommentListIsEmpty (const char* theFunctionName)
 {
+  (void )theFunctionName;
   if (TheListOfComments->IsEmpty())
   {
     return;
@@ -713,35 +716,83 @@ void Add_Type()
   TheListOfPackages->Append(aPackName);
 }
 
-void add_documentation(char* comment)
+void add_documentation (char* theComment)
 {
-  Handle(TCollection_HAsciiString) aComment;
-  Handle(TCollection_HAsciiString) aRealComment;
-  Standard_Integer pos;
-  aComment = new TCollection_HAsciiString(comment);
-  pos = aComment->Location(1,':',1,aComment->Length());
-  aRealComment = aComment->SubString(pos + 1, aComment->Length());
+  Handle(TCollection_HAsciiString) aComment     = new TCollection_HAsciiString (theComment);
+  Standard_Integer                 aPos         = aComment->Location (1, ':', 1, aComment->Length());
+  Handle(TCollection_HAsciiString) aRealComment = aComment->SubString (aPos + 1, aComment->Length());
   aRealComment->RightAdjust();
-  if (!aRealComment->IsEmpty())
+  aRealComment->LeftAdjust();
+  if (aRealComment->String() == ".")
   {
-    aRealComment->AssignCat (" <br>");
-    aRealComment->Insert(1,"//!");
-    TheListOfComments->Append(aRealComment);
+    aRealComment->Clear();
   }
+  for (; !aRealComment->IsEmpty()
+       && aRealComment->Value (aRealComment->Length()) == '\\'; )
+  {
+    // should not appear in comments
+    aRealComment->Remove (aRealComment->Length());
+  }
+  if (aRealComment->IsEmpty())
+  {
+    TheIsEmptyLineInComment = !TheListOfComments->IsEmpty();
+    return;
+  }
+
+  if (!TheListOfComments->IsEmpty()
+   && TheIsEmptyLineInComment)
+  {
+    TheListOfComments->Append (new TCollection_HAsciiString ("\n//!"));
+  }
+  TheIsEmptyLineInComment = Standard_False;
+  aRealComment->Insert (1, TheListOfComments->IsEmpty() ? "//! " : "\n//! ");
+  TheListOfComments->Append (aRealComment);
 }
 
-void add_documentation1(char* comment)
+void add_documentation1 (char* theComment)
 {
-  while ( *comment && IsSpace(*comment)) comment++;
-  while ( *comment == '-' ) comment++;
-  if ( ! *comment ) return;
+  while (*theComment != '\0'
+       && IsSpace (*theComment))
+  {
+    ++theComment;
+  }
+  while (*theComment == '-')
+  {
+    ++theComment;
+  }
+  if (*theComment == '\0')
+  {
+    return;
+  }
 
-  Handle(TCollection_HAsciiString) aRealComment;
-  aRealComment = new TCollection_HAsciiString(comment);
+  Handle(TCollection_HAsciiString) aRealComment = new TCollection_HAsciiString (theComment);
   aRealComment->RightAdjust();
-  aRealComment->AssignCat (" <br>");
-  aRealComment->Insert(1,"\n//!");
-  TheListOfComments->Append(aRealComment);
+  aRealComment->LeftAdjust();
+  if (aRealComment->String() == ".")
+  {
+    aRealComment->Clear();
+  }
+  for (; !aRealComment->IsEmpty()
+       && aRealComment->Value (aRealComment->Length()) == '\\'; )
+  {
+    // should not appear in comments
+    aRealComment->Remove (aRealComment->Length());
+  }
+  if (aRealComment->IsEmpty())
+  {
+    TheIsEmptyLineInComment = !TheListOfComments->IsEmpty();
+    return;
+  }
+
+  if (!TheListOfComments->IsEmpty()
+   && TheIsEmptyLineInComment)
+  {
+    TheListOfComments->Append (new TCollection_HAsciiString ("\n//!"));
+  }
+  TheIsEmptyLineInComment = Standard_False;
+  aRealComment->Insert (1, "\n//! ");
+  TheListOfComments->Append (aRealComment);
+  TheIsEmptyLineInComment = Standard_False;
 }
 
 //=======================================================================
@@ -2356,20 +2407,21 @@ void add_cpp_comment_to_method()
   }
   else
   {
-    int                               aCommentType;
-    Standard_Integer                  i, aNbCPP;
-    Handle(TCollection_HAsciiString)  aCP;
-
-    for(i = 1; i <= TheListOfComments->Length(); ++i)
+    Standard_Boolean isFirst = Standard_True;
+    for (Standard_Integer aLineIter = 1; aLineIter <= TheListOfComments->Length(); ++aLineIter)
     {
-      TheMethod->SetComment(TheListOfComments->Value(i));
+      Handle(TCollection_HAsciiString) aLine = TheListOfComments->ChangeValue (aLineIter);
+      aLine->Insert (aLine->Value (1) != '\n' ? 1 : 2, isFirst ? "\n  " : "  ");
+      TheMethod->SetComment (aLine);
+      isFirst = Standard_False;
     }
     TheListOfComments->Clear();
 
-    aNbCPP=TheListOfCplusplus->Length();
-    for(i = 1; i <= aNbCPP; ++i)
+    Handle(TCollection_HAsciiString) aCP;
+    const Standard_Integer aNbCPP = TheListOfCplusplus->Length();
+    for(Standard_Integer i = 1; i <= aNbCPP; ++i)
     {
-      aCommentType = TheListOfCPPType->Value(i);
+      Standard_Integer aCommentType = TheListOfCPPType->Value(i);
       //
       switch (aCommentType)
       {

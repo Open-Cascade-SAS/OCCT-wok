@@ -32,60 +32,58 @@ $#pragma pointer_size restore
 $#endif
 $#endif
 $
-$#ifndef _Handle_%HPInherits_HeaderFile
 $#include <Handle_%HPInherits.hxx>
-$#endif
 $
 $class Oid_%HPName;
 $class %HPName;
 $
-$class Handle_%HPName: public Handle_%HPInherits {
+$class Handle_%HPName: public Handle_%HPInherits
+${
 $
 $public:
 $
-$ Handle_%HPName();
-$ Handle_%HPName(const Handle_%HPName& AnObject);
-$ Handle_%HPName(const %HPName_ptr AnObject);
-$ Standard_EXPORT ~Handle_%HPName();
-$ Handle_%HPName& operator=(const Handle_%HPName& AnObject);
-$ Standard_EXPORT Handle_%HPName& operator=(const %HPName_ptr AnObject);
-$ Standard_EXPORT static const Handle_%HPName DownCast(const Handle_Standard_Persistent&);
-$ Standard_Boolean   operator==(const Handle_%HPName& AnObject) const ;
-$ Standard_Boolean operator!=(const Handle_%HPName& AnObject) const;
-$ Oid_%HPName* operator->() const;
+$  Handle_%HPName();
+$  Handle_%HPName(const Handle_%HPName& AnObject);
+$  Handle_%HPName(const %HPName_ptr AnObject);
+$  Standard_EXPORT ~Handle_%HPName();
+$  Handle_%HPName& operator=(const Handle_%HPName& AnObject);
+$  Standard_EXPORT Handle_%HPName& operator=(const %HPName_ptr AnObject);
+$  Standard_EXPORT static const Handle_%HPName DownCast(const Handle_Standard_Persistent&);
+$  Standard_Boolean   operator==(const Handle_%HPName& AnObject) const ;
+$  Standard_Boolean operator!=(const Handle_%HPName& AnObject) const;
+$  Oid_%HPName* operator->() const;
 $};
-$
 $
 $Handle_%HPName::Handle_%HPName()
 ${
 $}
 $
-$Handle_%HPName::Handle_%HPName(const Handle_%HPName& AnObject) 
-$ : Handle_%HPInherits(AnObject)
+$Handle_%HPName::Handle_%HPName (const Handle_%HPName& theObject)
+$: Handle_%HPInherits (theObject)
 ${
 $}
 $
-$Handle_%HPName::Handle_%HPName(const %HPName_ptr AnObject) 
-$ : Handle_%HPInherits((const %HPInherits_ptr)AnObject)
+$Handle_%HPName::Handle_%HPName (const %HPName_ptr theObject)
+$: Handle_%HPInherits ((const %HPInherits_ptr)theObject)
 ${
 $}
 $
-$Handle_%HPName& Handle_%HPName::operator=(const Handle_%HPName& AnObject) 
+$Handle_%HPName& Handle_%HPName::operator= (const Handle_%HPName& theObject)
 ${
-$  Identifier=AnObject.Identifier; return *this;
+$  Identifier = theObject.Identifier; return *this;
 $}
 $
-$Standard_Boolean Handle_%HPName::operator==(const Handle_%HPName& AnObject)const 
+$Standard_Boolean Handle_%HPName::operator== (const Handle_%HPName& theObject) const
 ${
-$  return Identifier==AnObject.Identifier;
+$  return Identifier == theObject.Identifier;
 $}
 $
-$Standard_Boolean Handle_%HPName::operator!=(const Handle_%HPName& AnObject)const 
+$Standard_Boolean Handle_%HPName::operator!= (const Handle_%HPName& theObject) const
 ${
-$  return Identifier!=AnObject.Identifier;
+$  return Identifier != theObject.Identifier;
 $}
 $
-$Oid_%HPName* Handle_%HPName::operator->() const 
+$Oid_%HPName* Handle_%HPName::operator->() const
 ${
 $  return (Oid_%HPName*)(void*)&(((Handle_%HPName_ptr)this)->Identifier);
 $}
@@ -134,16 +132,15 @@ $#pragma pointer_size restore
 $#endif
 $#endif
 $
-$#ifndef _Handle_%Class_HeaderFile
 $#include <Handle_%Class.hxx>
-$#endif
 $
 $%TICIncludes
 $#ifndef _Standard_ImmutableObject_HeaderFile
 $#include <Standard_ImmutableObject.hxx>
 $#endif
 $
-$class Oid_%Class : public Oid_%Inherits {
+$class Oid_%Class : public Oid_%Inherits
+${
 $
 $friend class %Class;
 $%TICPublicfriends
@@ -151,8 +148,8 @@ $
 $public:
 $
 $%TICOidpubMet 
-$Oid_%Class() {};
-$~Oid_%Class() {};
+$  Oid_%Class() {};
+$  ~Oid_%Class() {};
 $
 $protected:
 $

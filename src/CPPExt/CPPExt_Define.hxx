@@ -100,4 +100,7 @@ void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
 		      const Handle(MS_Class)& aClass,
 		      const Standard_CString var);
 
+//! Auxiliary function to remove Handle_ suffix
+Handle(TCollection_HAsciiString) CPP_WithoutHandleSuffix (const Handle(TCollection_HAsciiString)& theName);
+
 #endif

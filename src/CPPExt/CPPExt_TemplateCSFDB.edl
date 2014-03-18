@@ -16,18 +16,10 @@ $
 $#ifndef _Handle_%HPName_HeaderFile
 $#define _Handle_%HPName_HeaderFile
 $
-$#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
-$#endif
-$#ifndef _Standard_DefineHandle_HeaderFile
 $#include <Standard_DefineHandle.hxx>
-$#endif
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Handle_%HPInherits_HeaderFile
 $#include <Handle_%HPInherits.hxx>
-$#endif
 $
 $class Standard_Persistent;
 $class Handle(Standard_Type);
@@ -62,22 +54,15 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
-$#endif
-$#ifndef _Standard_DefineHandle_HeaderFile
 $#include <Standard_DefineHandle.hxx>
-$#endif
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Handle_%Class_HeaderFile
 $#include <Handle_%Class.hxx>
-$#endif
 $
 $%TICIncludes
 $
-$class %Class : public %Inherits {
+$class %Class : public %Inherits
+${
 $
 $public:
 $
@@ -102,10 +87,9 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other Inline functions and methods (like "C++: function call" methods)
 $%TICSuppMethod
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template PersistentCSFDBIxx(%Class,%Suffix,%Supplement,%TypeMgt,%Methods) is
@@ -116,9 +100,7 @@ $// this header file considered to be the "object code" form of the original sou
 $
 $#include <%Class.%Suffix>
 $
-$#ifndef _Standard_Type_HeaderFile
 $#include <Standard_Type.hxx>
-$#endif
 $
 $%Supplement 
 $
@@ -168,4 +150,3 @@ $// DBC_VArray : field
 $//
 $#endif
 @end;
-
