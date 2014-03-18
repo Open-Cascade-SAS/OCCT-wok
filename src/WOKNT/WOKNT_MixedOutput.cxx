@@ -13,13 +13,13 @@
 void                                      __fastcall _WOKNT_clear_pipe ( HANDLE );
 DWORD                                     __fastcall _WOKNT_nb_to_read ( HANDLE );
 Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe ( OSD_File*, HANDLE );
-void                                      __fastcall _WOKNT_create_pipe (
-                                                      Standard_Integer*, Standard_Integer*
-                                                     );
+void                                      __fastcall _WOKNT_create_pipe (Standard_Address* , Standard_Address* );
 
-WOKNT_MixedOutput :: WOKNT_MixedOutput () {
-
-}  // end constructor
+WOKNT_MixedOutput::WOKNT_MixedOutput()
+: myOutHandle (INVALID_HANDLE_VALUE)
+{
+  //
+}
 
 void WOKNT_MixedOutput :: Cleanup () {
 
@@ -28,32 +28,26 @@ void WOKNT_MixedOutput :: Cleanup () {
 
 }  // end WOKNT_MixedOutput :: Cleanup
 
-Standard_Integer WOKNT_MixedOutput :: OpenStdOut () {
+Standard_Address WOKNT_MixedOutput::OpenStdOut()
+{
+  _WOKNT_create_pipe (&myFileHandle, &myOutHandle);
+  myIO |= (FLAG_PIPE | FLAG_READ_PIPE);
+  return myOutHandle;
+}
 
- _WOKNT_create_pipe ( &myFileChannel, &myOutHandle );
- myIO |= ( FLAG_PIPE | FLAG_READ_PIPE );
+void WOKNT_MixedOutput::CloseStdOut()
+{
+  if ((HANDLE )myOutHandle != INVALID_HANDLE_VALUE)
+  {
+    CloseHandle ((HANDLE )myOutHandle);
+    myOutHandle = INVALID_HANDLE_VALUE;
+  }
+}
 
- return myOutHandle;
-
-}  // end WOKNT_MixedOutput :: OpenStdOut
-
-void WOKNT_MixedOutput :: CloseStdOut () {
-
- if (  ( HANDLE )myOutHandle != INVALID_HANDLE_VALUE  ) {
- 
-  CloseHandle (  ( HANDLE )myOutHandle  );
-  myOutHandle = ( Standard_Integer )INVALID_HANDLE_VALUE;
-
- }  // end if
-
-}  // end WOKNT_MixedOutput :: CloseStdOut
-
-Standard_Integer WOKNT_MixedOutput :: OpenStdErr () {
-
- return (  ( HANDLE )myOutHandle == INVALID_HANDLE_VALUE  ) ?
-         OpenStdOut () : myOutHandle;
-
-}  // end WOKNT_MixedOutput :: OpenStdErr
+Standard_Address WOKNT_MixedOutput::OpenStdErr()
+{
+  return ((HANDLE )myOutHandle == INVALID_HANDLE_VALUE) ? OpenStdOut() : myOutHandle;
+}
 
 void WOKNT_MixedOutput :: CloseStdErr () {
 
@@ -61,17 +55,15 @@ void WOKNT_MixedOutput :: CloseStdErr () {
 
 }  // end WOKNT_MixedOutput :: CloseStdErr
 
-void WOKNT_MixedOutput :: Clear () {
+void WOKNT_MixedOutput::Clear()
+{
+  _WOKNT_clear_pipe ((HANDLE )myFileHandle);
+}
 
- _WOKNT_clear_pipe (  ( HANDLE )myFileChannel  );
-
-}  // end WOKNT_MixedOutput :: Clear
-
-Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_MixedOutput :: Echo () {
-
- return _WOKNT_read_pipe (  this, ( HANDLE )myFileChannel  );
-
-}  // end WOKNT_MixedOutput :: Echo
+Handle(TColStd_HSequenceOfHAsciiString) WOKNT_MixedOutput::Echo()
+{
+  return _WOKNT_read_pipe (this, (HANDLE )myFileHandle);
+}
 
 Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_MixedOutput :: Errors () {
 
@@ -84,9 +76,11 @@ Handle( TColStd_HSequenceOfHAsciiString ) WOKNT_MixedOutput :: SyncStdOut () {
  DWORD                                     dummy;
  Handle( TColStd_HSequenceOfHAsciiString ) retVal;
 
- if (  ( HANDLE )myFileChannel != INVALID_HANDLE_VALUE  ) {
+ if ((HANDLE )myFileHandle != INVALID_HANDLE_VALUE)
+ {
  
-  while (  ReadFile (  ( HANDLE )myFileChannel, NULL, 0, ( LPDWORD )&dummy, NULL )  ) {
+  while (ReadFile ((HANDLE )myFileHandle, NULL, 0, (LPDWORD )&dummy, NULL))
+  {
   
    if (  retVal.IsNull ()  )
 
@@ -171,23 +165,21 @@ Handle( TColStd_HSequenceOfHAsciiString ) __fastcall _WOKNT_read_pipe (
 
 }  // end _WOKNT_read_pipe
 
-void __fastcall _WOKNT_create_pipe (
-                 Standard_Integer* readPipe, Standard_Integer* writePipe
-                ) {
-                
- SECURITY_ATTRIBUTES sa;
+void __fastcall _WOKNT_create_pipe (Standard_Address* readPipe,
+                                    Standard_Address* writePipe)
+{
+  SECURITY_ATTRIBUTES sa;
+  sa.nLength              = sizeof(SECURITY_DESCRIPTOR); // structure size
+  sa.lpSecurityDescriptor = NULL;                        // default protection
+  sa.bInheritHandle       = TRUE;                        // inheritable handle
 
- sa.nLength              = sizeof ( SECURITY_DESCRIPTOR );  // structure size
- sa.lpSecurityDescriptor = NULL;                            // default protection
- sa.bInheritHandle       = TRUE;                            // inheritable handle
+  if (!CreatePipe ((PHANDLE )readPipe,  // read  end of the pipe
+                   (PHANDLE )writePipe, // write end of the pipe
+                   &sa,                 // protection/inheritance
+                   4096))               // buffer size
+  {
+    *writePipe = INVALID_HANDLE_VALUE;
+  }
+}
 
- if (  !CreatePipe (
-         ( PHANDLE )readPipe,   // read end of the pipe
-         ( PHANDLE )writePipe,  // write end of the pipe
-         &sa,                   // protection/inheritance
-         4096                   // buffer size
-        )
- ) *writePipe = ( Standard_Integer )INVALID_HANDLE_VALUE;
-                
-}  // end _WOKNT_create_pipe
 #endif

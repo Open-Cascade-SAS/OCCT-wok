@@ -10,7 +10,7 @@ WOKNT_ShellOutput :: WOKNT_ShellOutput () {
 
 void WOKNT_ShellOutput :: Cleanup () {
 
- if (  ( HANDLE )myFileChannel != INVALID_HANDLE_VALUE  ) Close ();
+ if (  ( HANDLE )myFileHandle != INVALID_HANDLE_VALUE  ) Close ();
 
 }  // end WOKNT_ShellOutput :: Cleanup
 #endif
