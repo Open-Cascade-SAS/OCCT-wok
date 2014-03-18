@@ -17,14 +17,6 @@ $#ifndef _Standard_Transient_proto_HeaderFile
 $#include <Standard_Transient_proto.hxx>
 $#endif
 $
-$#ifndef UndefinedHandleAddress 
-$#ifdef DECOSF1
-$#define UndefinedHandleAddress ((Standard_Transient *)0xfefdfefdfefd0000)
-$#else
-$#define UndefinedHandleAddress ((Standard_Transient *)0xfefd0000)
-$#endif
-$#endif
-$
 $class Standard_Transient;
 $class Handle_Standard_Type;
 $
@@ -40,17 +32,17 @@ $    void RaiseNullObject(const Standard_CString S) const;
 $
 $    void BeginScope() const
 $      {
-$       if (entity != UndefinedHandleAddress) entity->count++;
+$       if (entity != 0) entity->count++;
 $      }    
 $
 $    void EndScope()
 $      {
-$       if (entity != UndefinedHandleAddress) 
+$       if (entity != 0)
 $         {
 $          entity->count--;
 $          if (entity->count == 0) {
 $	    entity->Delete();
-$	    entity = UndefinedHandleAddress ;
+$	    entity = 0;
 $	  }
 $	}
 $      }
@@ -60,7 +52,7 @@ $   public:
 $
 $    Handle(Standard_Transient)()
 $      {
-$       entity = UndefinedHandleAddress ;
+$       entity = 0;
 $      }
 $
 $    Handle(Standard_Transient)(const Handle(Standard_Transient)& aTid) 
@@ -72,7 +64,7 @@ $
 $    Handle(Standard_Transient)(const Standard_Transient *anItem)
 $      {
 $       if (!anItem)
-$           entity = UndefinedHandleAddress ;
+$           entity = 0;
 $       else
 $           entity = (Standard_Transient *)anItem;
 $       BeginScope();
@@ -115,12 +107,12 @@ $
 $    void Nullify()
 $      {
 $       EndScope();
-$       entity =  UndefinedHandleAddress ;
+$       entity = 0;
 $      }
 $
 $    Standard_Boolean IsNull() const
 $      {
-$       return entity == UndefinedHandleAddress ;
+$       return entity == 0;
 $      } 
 $
 $   protected:
@@ -139,7 +131,7 @@ $    void Assign(const Standard_Transient *anItem)
 $      {
 $       EndScope();
 $       if (!anItem)
-$           entity = UndefinedHandleAddress ;
+$           entity = 0;
 $       else
 $           entity = (Standard_Transient *)anItem;
 $       entity = (Standard_Transient *)anItem;

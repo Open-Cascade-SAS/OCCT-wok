@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <cdl_rules.h>
 
-extern void CDLerror ( char* );
+extern void CDLerror ( const char* );
 extern int  CDLlex   ( void  );
 
 %}

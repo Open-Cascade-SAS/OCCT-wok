@@ -25,7 +25,7 @@ int CDLlineno;
 # define YY_NO_UNPUT
 #endif  /* YY_NO_UNPUT */
 
-extern void CDLerror ( char* );
+extern void CDLerror ( const char* );
 
 %}
 
