@@ -7,178 +7,167 @@
 $#ifndef _Handle_Standard_Transient_HeaderFile
 $#define _Handle_Standard_Transient_HeaderFile
 $
-$#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
-$#endif
-$#ifndef _Standard_PrimitiveTypes_HeaderFile
 $#include <Standard_PrimitiveTypes.hxx>
-$#endif
-$#ifndef _Standard_Transient_proto_HeaderFile
 $#include <Standard_Transient_proto.hxx>
-$#endif
 $
 $class Standard_Transient;
 $class Handle_Standard_Type;
 $
-$Standard_Integer HashCode(const Handle(Standard_Transient)& ,const Standard_Integer);
+$Standard_Integer HashCode(const Handle(Standard_Transient)& , const Standard_Integer );
 $
 $class Handle(Standard_Transient)
-$ {
-$   private:
+${
+$private:
 $
-$    Standard_Transient *entity;
+$  Standard_Transient* entity;
 $
-$    void RaiseNullObject(const Standard_CString S) const;
+$  void RaiseNullObject (const Standard_CString S) const;
 $
-$    void BeginScope() const
+$  void BeginScope() const
+$  {
+$    if (entity != 0) entity->count++;
+$  }
+$
+$  void EndScope()
+$  {
+$    if (entity != 0)
+$    {
+$      entity->count--;
+$      if (entity->count == 0)
 $      {
-$       if (entity != 0) entity->count++;
-$      }    
+$	       entity->Delete();
+$	       entity = 0;
+$	     }
+$	   }
+$  }
 $
-$    void EndScope()
-$      {
-$       if (entity != 0)
-$         {
-$          entity->count--;
-$          if (entity->count == 0) {
-$	    entity->Delete();
-$	    entity = 0;
-$	  }
-$	}
-$      }
+$public:
 $
+$  Handle(Standard_Transient)()
+$  {
+$    entity = 0;
+$  }
 $
-$   public:
+$  Handle(Standard_Transient)(const Handle(Standard_Transient)& theTid)
+$  {
+$    entity = theTid.entity;
+$    BeginScope();
+$  }
 $
-$    Handle(Standard_Transient)()
-$      {
-$       entity = 0;
-$      }
+$  Handle(Standard_Transient)(const Standard_Transient* theItem)
+$  {
+$    if (!theItem)
+$      entity = 0;
+$    else
+$      entity = (Standard_Transient* )theItem;
+$    BeginScope();
+$  }
 $
-$    Handle(Standard_Transient)(const Handle(Standard_Transient)& aTid) 
-$      {
-$       entity = aTid.entity;
-$       BeginScope();
-$      } 
+$  void Dump (Standard_OStream& out) const;
+$  ~Handle(Standard_Transient)();
 $
-$    Handle(Standard_Transient)(const Standard_Transient *anItem)
-$      {
-$       if (!anItem)
-$           entity = 0;
-$       else
-$           entity = (Standard_Transient *)anItem;
-$       BeginScope();
-$      }
-$     void Dump(Standard_OStream& out) const;
-$    ~Handle(Standard_Transient)();
+$  void ShallowDump (Standard_OStream&) const;
 $
-$     void  ShallowDump(Standard_OStream&) const;
-$     
-$    int operator==(const Handle(Standard_Transient)& right) const
-$      {
-$       return entity == right.entity;
-$      }
+$  bool operator== (const Handle(Standard_Transient)& theRight) const
+$  {
+$    return entity == theRight.entity;
+$  }
 $
-$    int operator==(const Standard_Transient *right) const
-$      {
-$       return entity == (Standard_Transient *)right;
-$      }
+$  bool operator== (const Standard_Transient* theRight) const
+$  {
+$    return entity == (Standard_Transient* )theRight;
+$  }
 $
-$    friend int operator==(const Standard_Transient *left, const Handle(Standard_Transient)& right)
-$      {
-$       return left == right.entity;
-$      }
+$  friend bool operator== (const Standard_Transient*         theLeft,
+$                          const Handle(Standard_Transient)& theRight)
+$  {
+$    return theLeft == theRight.entity;
+$  }
 $
-$    int operator!=(const Handle(Standard_Transient)& right) const
-$      {
-$       return entity != right.entity;
-$      }
+$  bool operator!= (const Handle(Standard_Transient)& theRight) const
+$  {
+$    return entity != theRight.entity;
+$  }
 $
-$    int operator!=(const Standard_Transient *right) const
-$      {
-$       return entity != right;
-$      }
+$  bool operator!= (const Standard_Transient* theRight) const
+$  {
+$    return entity != theRight;
+$  }
 $
-$    friend int operator!=(const Standard_Transient *left, const Handle(Standard_Transient)& right)
-$      {
-$       return left != right.entity;
-$      }
+$  friend bool operator!= (const Standard_Transient*         theLeft,
+$                          const Handle(Standard_Transient)& theRight)
+$  {
+$    return theLeft != theRight.entity;
+$  }
 $
-$    void Nullify()
-$      {
-$       EndScope();
-$       entity = 0;
-$      }
+$  void Nullify()
+$  {
+$    EndScope();
+$    entity = 0;
+$  }
 $
-$    Standard_Boolean IsNull() const
-$      {
-$       return entity == 0;
-$      } 
+$  Standard_Boolean IsNull() const
+$  {
+$    return entity == 0;
+$  }
 $
-$   protected:
+$protected:
 $
-$    Standard_Transient* Access() const
-$      {
-$       return entity;
-$      } 
+$  Standard_Transient* Access() const
+$  {
+$    return entity;
+$  }
 $
-$    Standard_Transient* ControlAccess() const
-$      {
-$       return entity;
-$      } 
+$  Standard_Transient* ControlAccess() const
+$  {
+$    return entity;
+$  }
 $
-$    void Assign(const Standard_Transient *anItem)
-$      {
-$       EndScope();
-$       if (!anItem)
-$           entity = 0;
-$       else
-$           entity = (Standard_Transient *)anItem;
-$       entity = (Standard_Transient *)anItem;
-$       BeginScope();
-$      }
+$  void Assign (const Standard_Transient* theItem)
+$  {
+$    EndScope();
+$    entity = (Standard_Transient* )theItem;
+$    BeginScope();
+$  }
 $
+$public:
 $
-$  public:
+$  operator Standard_Transient*()
+$  {
+$    return Access();
+$  }
 $
-$   operator Standard_Transient*()
-$     {
-$       return Access();
-$     }
+$  Handle(Standard_Transient)& operator= (const Handle(Standard_Transient)& theHandle);
+$  Handle(Standard_Transient)& operator= (const Standard_Transient* theItem);
 $
+$  Standard_Transient* operator->()
+$  {
+$    return ControlAccess();
+$  }
 $
-$   Handle(Standard_Transient)& operator=(const Handle(Standard_Transient)& aHandle);
-$   Handle(Standard_Transient)& operator=(const Standard_Transient* anItem);
+$  Standard_Transient* operator->() const
+$  {
+$    return ControlAccess();
+$  }
 $
-$   Standard_Transient* operator->() 
-$     {
-$      return ControlAccess();
-$     }
+$  Standard_Transient& operator*()
+$  {
+$    return *(ControlAccess());
+$  }
 $
-$   Standard_Transient* operator->() const
-$     {
-$      return ControlAccess();
-$     }
+$  const Standard_Transient& operator*() const
+$  {
+$    return *(ControlAccess());
+$  }
 $
-$   Standard_Transient& operator*()
-$     {
-$      return *(ControlAccess());
-$     }
+$  static const Handle(Standard_Transient) DownCast (const Handle(Standard_Transient)& theObject);
 $
-$   const Standard_Transient& operator*() const
-$     {
-$      return *(ControlAccess());
-$     }
+$  friend void ShallowDump (const Handle_Standard_Transient&, Standard_OStream&);
 $
-$   static const Handle(Standard_Transient) DownCast(const Handle(Standard_Transient)& AnObject);
+$};
 $
-$   friend void ShallowDump(const Handle_Standard_Transient&,Standard_OStream&);
-$
-$ };
-$
-$#ifndef _Standard_Type_HeaderFile
 $#include <Standard_Type.hxx>
-$#endif
 $
 $#endif
 @end;
@@ -187,68 +176,54 @@ $#endif
 $#ifndef _Standard_Transient_HeaderFile
 $#define _Standard_Transient_HeaderFile
 $
-$#ifndef _Handle_Standard_Transient_HeaderFile
 $#include <Handle_Standard_Transient.hxx>
-$#endif
-$#ifndef _Standard_PrimitiveTypes_HeaderFile
 $#include <Standard_PrimitiveTypes.hxx>
-$#endif
-$#ifndef _Standard_Transient_proto_HeaderFile
 $#include <Standard_Transient_proto.hxx>
-$#endif
-$#ifndef _Standard_Type_HeaderFile
 $#include <Standard_Type.hxx>
-$#endif
 $
-$#endif 
+$#endif
 @end;
 
 @template StandardErrorHandler is
-$//============================================================================
-$//==== Titre: Standard_ErrorHandler.hxx
-$//==== Role : the header file of class "Standard_ErrorHandler".
-$//====        define the syntaxe "try" and "catch". 
-$//============================================================================
+$#ifndef _Standard_ErrorHandler_HeaderFile
+$#define _Standard_ErrorHandler_HeaderFile
 $
-$#ifndef	  _Standard_ErrorHandler_HeaderFile
-$#define   _Standard_ErrorHandler_HeaderFile
-$
-$#ifndef _Standard_Failure_HeaderFile
 $#include <Standard_Failure.hxx>
-$#endif
 $
 $#include <stdlib.h>
 $#include <setjmp.h>
 $
-$class Standard_ErrorHandler 
+$//! Define the syntaxe "try" and "catch".
+$class Standard_ErrorHandler
 ${
-$ friend class  Standard_Failure;     // To execute the raise exception.
+$  friend class Standard_Failure; // To execute the raise exception
 $
-$ public:
-$  
-$                                 Standard_ErrorHandler();
-$                                ~Standard_ErrorHandler();
-$           Standard_Boolean      Catches (const Handle(Standard_Type)&);
+$public:
 $
-$ private:
-$  static  void                      Abort();
-$  static  void                      Error(const Handle(Standard_Failure)&);
-$  static  Handle(Standard_Failure)  LastCaughtError();
+$  Standard_ErrorHandler();
+$  ~Standard_ErrorHandler();
+$  Standard_Boolean Catches (const Handle(Standard_Type)& );
 $
-$ //==== The fields ===========================================================
-$ private:
-$           Standard_ErrorHandler*   Previous;
-$           Handle(Standard_Failure) CaughtError;
+$private:
 $
-$ public:
-$           jmp_buf      Label;
+$  static void                     Abort();
+$  static void                     Error (const Handle(Standard_Failure)& );
+$  static Handle(Standard_Failure) LastCaughtError();
+$
+$private:
+$
+$  Standard_ErrorHandler*   Previous;
+$  Handle(Standard_Failure) CaughtError;
+$
+$public:
+$
+$  jmp_buf Label;
 $
 $};
 $
-$
 $#include <Standard_ErrorHandler.lxx>
 $
-$#endif 
+$#endif // _Standard_ErrorHandler_HeaderFile
 @end;
 
 @template StandardSStream is 
@@ -258,18 +233,19 @@ $
 $#include <strstream.h>
 $
 $class Handle_Standard_Type;
-$
 $Handle_Standard_Type& Standard_SStream_Type_();
 $
-$class Standard_SStream : public strstreambase, public ostream {
+$class Standard_SStream : public strstreambase, public ostream
+${
 $
-$  public:
-$    Standard_SStream();
-$    Standard_SStream(ostream& );
+$public:
+$  Standard_SStream();
+$  Standard_SStream(ostream& );
 $
-$    ~Standard_SStream();
+$  ~Standard_SStream();
 $};
-$#endif
+$
+$#endif // _Standard_SStream_HeaderFile
 @end;
 
 @template StandardIStream is
@@ -278,14 +254,11 @@ $#define _Standard_IStream_HeaderFile
 $
 $#include <stream.h>
 $
-$
 $class Handle_Standard_Type;
-$
 $Handle_Standard_Type& Standard_IStream_Type_();
-$
 $#define Standard_IStream istream
 $
-$#endif
+$#endif // _Standard_IStream_HeaderFile
 @end;
 
 @template StandardOStream is
@@ -294,14 +267,11 @@ $#define _Standard_OStream_HeaderFile
 $
 $#include <stream.h>
 $
-$
 $class Handle_Standard_Type;
-$
 $Handle_Standard_Type& Standard_OStream_Type_();
-$
 $#define Standard_OStream ostream
 $
-$#endif
+$#endif // _Standard_OStream_HeaderFile
 @end;
 
 @template HandleStandardPersistent is
@@ -314,7 +284,8 @@ $//============================================================================
 $
 $#ifndef _Handle_Standard_Persistent_HeaderFile
 $#define _Handle_Standard_Persistent_HeaderFile
+$
 $#include <Handle_StandardDB_Persistent.hxx>
 $
-$#endif
+$#endif // _Handle_Standard_Persistent_HeaderFile
 @end;

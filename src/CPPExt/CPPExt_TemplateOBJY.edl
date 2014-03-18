@@ -113,16 +113,13 @@ $//
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Handle_%Class_HeaderFile
 $#include <Handle_%Class.hxx>
-$#endif
 $
 $%TICIncludes
-$#ifndef _Standard_ImmutableObject_HeaderFile
 $#include <Standard_ImmutableObject.hxx>
-$#endif
 $
-$class Oid_%Class : public Oid_%Inherits {
+$class Oid_%Class : public Oid_%Inherits
+${
 $
 $friend class %Class;
 $%TICPublicfriends
@@ -130,8 +127,8 @@ $
 $public:
 $
 $%TICOidpubMet 
-$Oid_%Class() {};
-$~Oid_%Class() {};
+$  Oid_%Class() {};
+$  ~Oid_%Class() {};
 $
 $protected:
 $
@@ -142,20 +139,17 @@ $
 $%TICOidpriMet 
 $};
 $
-$class %Class : public %Inherits {
+$class %Class : public %Inherits
+${
 $
 $friend class Oid_%Class;
 $
 $public:
 $
-$ // Methods PUBLIC
-$ // 
 $%TICPublicmets
 $
 $%TICPublicfriends
 $
-$ // Type management
-$ //
 $ friend Handle_Standard_Type& %Class_Type_();
 $ const Handle(Standard_Type)& DynamicType() const;
 $ Standard_Boolean	       IsKind(const Handle(Standard_Type)&) const;
@@ -163,22 +157,14 @@ $ void* operator new(size_t);
 $
 $protected:
 $
-$ // Methods PROTECTED
-$ // 
 $%TICProtectedmets
 $
-$ // Fields PROTECTED
-$ //
 $%TICProtectedfields
 $
 $private: 
 $
-$ // Methods PRIVATE
-$ // 
 $%TICPrivatemets
 $
-$ // Fields PRIVATE
-$ //
 $%TICPrivatefields
 $%TICPrivatefriends
 $};
@@ -187,8 +173,6 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other Inline functions and methods (like "C++: function call or Oid methods" methods)
-$//
 $%TICSuppMethod
 $
 $#endif
@@ -202,27 +186,24 @@ $// this header file considered to be the "object code" form of the original sou
 $//
 $#include <%Class.%Suffix>
 $
-$#ifndef _Standard_TypeMismatch_HeaderFile
 $#include <Standard_TypeMismatch.hxx>
-$#endif
 $
 $%Supplement 
 $
 $%TypeMgt
 $
-$ // new operator
-$ //
-$ void* %Class::operator new (size_t ASize) 
-$ {
-$   Standard_Container _aContainer = PreNew();
-$   return (opiNewObj(ASize,ooTypeN(%Class),_aContainer));
-$ }
+$// new operator
+$void* %Class::operator new (size_t theSize)
+${
+$  Standard_Container _aContainer = PreNew();
+$  return (opiNewObj(theSize, ooTypeN(%Class),_aContainer));
+$}
 $
-$ Handle_%Class& Handle_%Class::operator=(const %Class* AnObject) 
-$ {
-$   Identifier = AnObject; 
-$   return *this;
-$ }
+$Handle_%Class& Handle_%Class::operator= (const %Class* theObject)
+${
+$  Identifier = theObject;
+$  return *this;
+$}
 $
 $%Methods
 @end;

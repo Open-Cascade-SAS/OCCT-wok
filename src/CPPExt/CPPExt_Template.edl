@@ -17,27 +17,19 @@ $
 $#ifndef _Handle_%HTName_HeaderFile
 $#define _Handle_%HTName_HeaderFile
 $
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Standard_DefineHandle_HeaderFile
 $#include <Standard_DefineHandle.hxx>
-$#endif
-$
-$#ifndef _Handle_%HTInherits_HeaderFile
 $#include <Handle_%HTInherits.hxx>
-$#endif
 $
 $class Standard_Transient;
 $class Handle(Standard_Type);
 $class Handle(%HTInherits);
 $class %HTName;
 $
-$DEFINE_STANDARD_HANDLE(%HTName,%HTInherits)
+$DEFINE_STANDARD_HANDLE(%HTName, %HTInherits)
 $
-$#endif
+$#endif // _Handle_%HTName_HeaderFile
 @end;
-
 
 -- ===============================
 -- extraction of a transient class
@@ -66,20 +58,15 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Standard_DefineHandle_HeaderFile
 $#include <Standard_DefineHandle.hxx>
-$#endif
-$#ifndef _Handle_%Class_HeaderFile
 $#include <Handle_%Class.hxx>
-$#endif
 $
 $%TICIncludes
 $
 $%ClassComment
-$class %Class : public %Inherits {
+$class %Class : public %Inherits
+${
 $
 $public:
 $
@@ -104,10 +91,9 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other Inline functions and methods (like "C++: function call" methods)
 $%TICSuppMethod
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template TransientIxx (%Class,%Suffix,%Supplement,%TypeMgt,%Methods) is
@@ -118,9 +104,7 @@ $// this header file considered to be the "object code" form of the original sou
 $
 $#include <%Class.%Suffix>
 $
-$#ifndef _Standard_Type_HeaderFile
 $#include <Standard_Type.hxx>
-$#endif
 $
 $%Supplement 
 $
@@ -156,20 +140,15 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Standard_DefineAlloc_HeaderFile
 $#include <Standard_DefineAlloc.hxx>
-$#endif
-$#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
-$#endif
 $
 $%TICIncludes
 $
 $%ClassComment
-$class %Class %Inherits {
+$class %Class %Inherits
+${
 $public:
 $
 $  DEFINE_STANDARD_ALLOC
@@ -177,7 +156,6 @@ $
 $%TICPublicmets
 $
 $%TICPublicfriends
-$
 $
 $protected:
 $
@@ -197,10 +175,9 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other Inline functions and methods (like "C++: function call" methods)
 $%TICSuppMethod
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template MPVIxx (%Class,%Suffix,%Supplement,%Methods) is
@@ -243,22 +220,17 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Standard_DefineAlloc_HeaderFile
 $#include <Standard_DefineAlloc.hxx>
-$#endif
-$#ifndef _Standard_Macro_HeaderFile
 $#include <Standard_Macro.hxx>
-$#endif
 $
 $%TICIncludes
 $
 $Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(%Class);
 $
 $%ClassComment
-$class %Class %Inherits {
+$class %Class %Inherits
+${
 $
 $public:
 $
@@ -283,10 +255,9 @@ $%TICDefines
 $%TICInlineIncludes
 $%TICUndefines
 $
-$// other Inline functions and methods (like "C++: function call" methods)
 $%TICSuppMethod
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template StorableIxx(%Class,%Suffix,%Supplement,%Methods) is
@@ -297,9 +268,7 @@ $// this header file considered to be the "object code" form of the original sou
 $
 $#include <%Class.%Suffix>
 $
-$#ifndef _Standard_Type_HeaderFile
 $#include <Standard_Type.hxx>
-$#endif
 $
 $%Supplement 
 $
@@ -319,16 +288,15 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
+$#include <Standard_PrimitiveTypes.hxx>
+$
 $%EnumComment
-$enum %Class {
+$enum %Class
+${
 $%Values
 $};
 $
-$#ifndef _Standard_PrimitiveTypes_HeaderFile
-$#include <Standard_PrimitiveTypes.hxx>
-$#endif
-$
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template EnumCXX(%Class,%Values,%Nb) is
@@ -347,16 +315,14 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _%Inherits_HeaderFile
 $#include <%Inherits.hxx>
-$#endif
 $
 $typedef %Inherits %Class;
 $%HandleTypedef
 $
 $#define %Class_Type_() %Inherits_Type_()
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 -- ==================
@@ -373,10 +339,9 @@ $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
 $class %Inherits;
-$
 $typedef %Inherits* %Class;
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 -- =====================
@@ -391,36 +356,23 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#ifndef _Standard_HeaderFile
 $#include <Standard.hxx>
-$#endif
-$#ifndef _Standard_DefineHandle_HeaderFile
 $#include <Standard_DefineHandle.hxx>
-$#endif
-$#ifndef _Standard_DefineException_HeaderFile
 $#include <Standard_DefineException.hxx>
-$#endif
-$#ifndef _Standard_SStream_HeaderFile
 $#include <Standard_SStream.hxx>
-$#endif
-$
-$#ifndef _%Inherits_HeaderFile
 $#include <%Inherits.hxx>
-$#endif
-$#ifndef _Handle_%Class_HeaderFile
 $#include <Handle_%Class.hxx>
-$#endif
 $
 $#if !defined No_Exception && !defined No_%Class
-$#define %Class_Raise_if(CONDITION,MESSAGE) \
+$  #define %Class_Raise_if(CONDITION, MESSAGE) \
 $  if (CONDITION) %Class::Raise(MESSAGE);
 $#else
-$#define %Class_Raise_if(CONDITION,MESSAGE)
+$  #define %Class_Raise_if(CONDITION, MESSAGE)
 $#endif
 $
-$DEFINE_STANDARD_EXCEPTION(%Class,%Inherits)
+$DEFINE_STANDARD_EXCEPTION(%Class, %Inherits)
 $
-$#endif
+$#endif // _%Class_HeaderFile
 @end;
 
 @template ExceptionMethod(%Class) is
@@ -432,9 +384,7 @@ $IMPLEMENT_STANDARD_EXCEPTION(%Class)
 -- ==============
 
 @template Include(%IClass,%Suffix) is
-$#ifndef _%IClass_HeaderFile
 $#include <%IClass.%Suffix>
-$#endif
 @end; 
 
 @template IncludeNoSafe(%IClass,%Suffix) is

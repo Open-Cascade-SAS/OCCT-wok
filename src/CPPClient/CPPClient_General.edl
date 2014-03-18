@@ -12,10 +12,14 @@
 -- ==============
 
 @template Include(%IClass,%Suffix) is
+$#include <%IClass.%Suffix>
+@end;
+
+@template IncludeSafe(%IClass,%Suffix) is
 $#ifndef _%IClass_HeaderFile
 $#include <%IClass.%Suffix>
 $#endif
-@end; 
+@end;
 
 @template IncludeNoSafe(%IClass,%Suffix) is
 $#include <%IClass.%Suffix>

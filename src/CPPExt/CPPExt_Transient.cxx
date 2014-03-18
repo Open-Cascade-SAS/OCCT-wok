@@ -86,8 +86,10 @@ void CPP_TransientDerivated(const Handle(MS_MetaSchema)& aMeta,
 
   api->AddVariable(VSuffix,"hxx");
   
-  for (i = 1; i <= inclist->Length(); i++) {
-    api->AddVariable(VIClass,inclist->Value(i)->ToCString());
+  for (i = 1; i <= inclist->Length(); i++)
+  {
+    Handle(TCollection_HAsciiString) aName = CPP_WithoutHandleSuffix (inclist->Value (i));
+    api->AddVariable (VIClass, aName->ToCString());
     api->Apply(VoutClass,"Include");
     result->AssignCat(api->GetVariableValue(VoutClass));
   }
@@ -368,14 +370,19 @@ void CPP_TransientClass(const Handle(MS_MetaSchema)& aMeta,
 
     api->AddVariable(VSuffix,"hxx");
 
-    for (i = 1; i <= List->Length(); i++) {
-      if (!List->Value(i)->IsSameString(theClass->FullName())) {
-	api->AddVariable(VIClass,List->Value(i)->ToCString());
-	api->Apply(VTICIncludes,"Include");
-	publics->AssignCat(api->GetVariableValue(VTICIncludes));
+    for (i = 1; i <= List->Length(); i++)
+    {
+      Handle(TCollection_HAsciiString) aName = List->Value (i);
+      if (aName->IsSameString (theClass->FullName()))
+      {
+        continue;
       }
-    }
 
+      ///aName = CPP_WithoutHandleSuffix (aName);
+      api->AddVariable (VIClass, aName->ToCString());
+      api->Apply (VTICIncludes, "Include");
+      publics->AssignCat (api->GetVariableValue (VTICIncludes));
+    }
 
     for (i = 1; i <= incp->Length(); i++) {
       if (!incp->Value(i)->IsSameString(theClass->FullName())) {
