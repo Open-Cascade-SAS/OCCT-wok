@@ -162,7 +162,7 @@ Handle(TCollection_HAsciiString) CPP_BuildType
 Handle(TCollection_HAsciiString) CPP_BuildField(const Handle(MS_MetaSchema)& aMeta,
 						const Handle(MS_Field)& aField)
 {
-  Handle(TCollection_HAsciiString)   result = new TCollection_HAsciiString;
+  Handle(TCollection_HAsciiString)   result = new TCollection_HAsciiString ("  ");
   Handle(MS_Type)                    aType;
   Handle(TColStd_HSequenceOfInteger) dim;
   Standard_Integer                   i;
@@ -199,7 +199,7 @@ Handle(TCollection_HAsciiString) CPP_BuildParameterList(const Handle(MS_MetaSche
   if(!aSeq.IsNull()) {
     for (i = 1; i <= aSeq->Length(); i++) {
       if (i > 1) {
-	result->AssignCat(",");
+	result->AssignCat(", ");
       }
 
       if (!aSeq->Value(i)->IsOut()) {
@@ -345,7 +345,13 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   // here we process all the common attributes of methods
   //
   api->AddVariable(VMethodComment, m->Comment()->ToCString());
-  api->AddVariable(VMethodName,methodName->ToCString());
+  Handle(TCollection_HAsciiString) aMethodName = methodName;
+  if (!m->Params().IsNull())
+  {
+    aMethodName = new TCollection_HAsciiString (aMethodName);
+    aMethodName->AssignCat (" ");
+  }
+  api->AddVariable(VMethodName, aMethodName->ToCString());
   api->AddVariable(VVirtual,"");
   
   // it s inline method ?
@@ -362,7 +368,7 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
   // it s returning const ?
   //
   if (m->IsConstReturn()) {
-    api->AddVariable(VRetSpec,"const");
+    api->AddVariable(VRetSpec,"const ");
   }
   else {
     api->AddVariable(VRetSpec,"");
@@ -437,21 +443,21 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
 
     if (!im->IsDeferred() || !forDeclaration) {
       if (!im->IsStatic() && forDeclaration) {
-	api->AddVariable(VVirtual,"virtual");
+	api->AddVariable(VVirtual,"virtual ");
       }
     
       if (im->IsConst()) {
-	api->AddVariable(VMetSpec,"const");
+	api->AddVariable(VMetSpec," const");
       }
       else {
 	api->AddVariable(VMetSpec,"");
       }
     }
     else if (forDeclaration) {
-      api->AddVariable(VVirtual,"virtual");
+      api->AddVariable(VVirtual,"virtual ");
 
       if (im->IsConst()) {
-	api->AddVariable(VMetSpec,"const = 0");
+	api->AddVariable(VMetSpec," const = 0");
       }
       else {
 	api->AddVariable(VMetSpec," = 0");
@@ -471,7 +477,7 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     api->AddVariable(VIsCreateMethod,"no");
     api->AddVariable(VMetSpec,"");
     if (forDeclaration) {
-      api->AddVariable(VVirtual,"static");
+      api->AddVariable(VVirtual,"static ");
     }
     api->Apply(VMethod,MetTemplate->ToCString());
     
@@ -497,7 +503,7 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     api->AddVariable(VIsCreateMethod,"no");
     api->AddVariable(VMetSpec,"");
     if (forDeclaration) {
-      api->AddVariable(VVirtual,"static");
+      api->AddVariable(VVirtual,"static ");
     }
 
     api->Apply(VMethod,MetTemplate->ToCString());
