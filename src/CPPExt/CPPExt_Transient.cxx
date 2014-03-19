@@ -378,7 +378,7 @@ void CPP_TransientClass(const Handle(MS_MetaSchema)& aMeta,
         continue;
       }
 
-      ///aName = CPP_WithoutHandleSuffix (aName);
+      aName = CPP_WithoutHandleSuffix (aName);
       api->AddVariable (VIClass, aName->ToCString());
       api->Apply (VTICIncludes, "Include");
       publics->AssignCat (api->GetVariableValue (VTICIncludes));
