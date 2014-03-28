@@ -249,93 +249,85 @@ void WOKBuilder_MSchema::RemoveAutoTypes() const
 //function : AssociatedFile
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) WOKBuilder_MSchema::AssociatedFile(const Handle(TCollection_HAsciiString)& anentity) const
+Handle(TCollection_HAsciiString) WOKBuilder_MSchema::AssociatedFile (const Handle(TCollection_HAsciiString)& theEntity) const
 {
-  Handle(TCollection_HAsciiString) filename;
-  Handle(MS_InstClass) instclass;
-  Handle(MS_GenClass)  genclass;
-  Handle(MS_StdClass) stdclass;
-  Handle(MS_Class)    aclass;
+  if (myschema->IsPackage (theEntity)
+  || !myschema->IsDefined (theEntity))
+  {
+    Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString (theEntity);
+    aFileName->AssignCat (".cdl");
+    return aFileName;
+  }
 
-  if(myschema->IsPackage(anentity))
+  const Handle(MS_Type)& aType = myschema->GetType (theEntity);
+  if (aType->IsKind (STANDARD_TYPE(MS_NatType)))
+  {
+    // Nat Type : PK.cdl
+    Handle(TCollection_HAsciiString) aFileName = AssociatedEntity (theEntity);
+    aFileName->AssignCat (".cdl");
+    return aFileName;
+  }
+  else if (aType->IsKind(STANDARD_TYPE(MS_GenClass)))
+  {
+    // GenClass : PK_GenClass.cdl
+    Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString (theEntity);
+    aFileName->AssignCat(".cdl");
+    return aFileName;
+  }
+  else if (aType->IsKind (STANDARD_TYPE(MS_Error)))
+  {
+    // Execption : PK.cdl
+    Handle(TCollection_HAsciiString) aFileName = AssociatedEntity (theEntity);
+    aFileName->AssignCat(".cdl");
+    return aFileName;
+  }
+
+  Handle(MS_Class) aClass = Handle(MS_Class)::DownCast (aType);
+  if (aClass.IsNull())
+  {
+    Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString (theEntity);
+    aFileName->AssignCat(".cdl");
+    return aFileName;
+  }
+
+  if (aClass->IsNested())
+  {
+    // Nested Class : PK_NestingGenClass.cdl
+    return AssociatedFile (aClass->GetNestingClass());
+  }
+
+  Handle(MS_StdClass) aStdClass = Handle(MS_StdClass)::DownCast (aType);
+  if (!aStdClass.IsNull())
+  {
+    if (aStdClass->GetMyCreator().IsNull())
     {
-      filename = new TCollection_HAsciiString(anentity);
-      filename->AssignCat(".cdl");
-      return filename;
+      // StdClasss
+      Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString (theEntity);
+      aFileName->AssignCat (".cdl");
+      return aFileName;
     }
-  if(myschema->IsDefined(anentity))
+    else
     {
-      const Handle(MS_Type)& atype = myschema->GetType(anentity);
-
-      if(atype->IsKind(STANDARD_TYPE(MS_NatType)))
-	{
-	  // Nat Type : PK.cdl
-	  filename = AssociatedEntity(anentity);
-	  filename->AssignCat(".cdl");
-	  return filename;
-	}
-      if(atype->IsKind(STANDARD_TYPE(MS_GenClass)))
-	{
-	  // GenClass : PK_GenClass.cdl
-	  filename = new TCollection_HAsciiString(anentity);
-	  filename->AssignCat(".cdl");
-	  return filename;
-	}
-      if(atype->IsKind(STANDARD_TYPE(MS_Error)))
-	{
-	  // Execption : PK.cdl
-	  filename = AssociatedEntity(anentity);
-	  filename->AssignCat(".cdl");
-	  return filename;
-	}
-      
-      
-      aclass = Handle(MS_Class)::DownCast(atype);
-
-      if(!aclass.IsNull())
-	{
-	  if(aclass->IsNested())
-	    {
-	      // Nested Class : PK_NestingGenClass.cdl
-	      return AssociatedFile(aclass->GetNestingClass());
-	    }
-	  
-	  
-	  stdclass = Handle(MS_StdClass)::DownCast(atype);
-	  if(!stdclass.IsNull())
-	    {
-	      if(stdclass->GetMyCreator().IsNull())
-		{
-		  // StdClasss
-		  filename = new TCollection_HAsciiString(anentity);
-		  filename->AssignCat(".cdl");
-		  return filename;
-		}
-	      else
-		{
-		  // Instantiation : PK.cdl
-		  filename = AssociatedEntity(anentity);
-		  filename->AssignCat(".cdl");
-		  return filename;
-		}
-	    }
-
-	  instclass = Handle(MS_InstClass)::DownCast(atype);
-
-	  if(!instclass.IsNull())
-	    {
-	      // Root Instantiation : PK.cdl
-	      filename = AssociatedEntity(anentity);
-	      filename->AssignCat(".cdl");
-	      return filename;
-	    }
-	}
+      // Instantiation : PK.cdl
+      Handle(TCollection_HAsciiString) aFileName = AssociatedEntity (theEntity);
+      aFileName->AssignCat(".cdl");
+      return aFileName;
     }
-  filename = new TCollection_HAsciiString(anentity);
-  filename->AssignCat(".cdl");
-  return filename;
+  }
+
+  Handle(MS_InstClass) anInstClass = Handle(MS_InstClass)::DownCast (aType);
+  if (!anInstClass.IsNull())
+  {
+    // Root Instantiation : PK.cdl
+    Handle(TCollection_HAsciiString) aFileName = AssociatedEntity (theEntity);
+    aFileName->AssignCat (".cdl");
+    return aFileName;
+  }
+
+  Handle(TCollection_HAsciiString) aFileName = new TCollection_HAsciiString (theEntity);
+  aFileName->AssignCat(".cdl");
+  return aFileName;
 }
-
 
 //=======================================================================
 //function : AssociatedEntity

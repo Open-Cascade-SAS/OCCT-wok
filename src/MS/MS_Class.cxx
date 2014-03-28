@@ -25,6 +25,7 @@ MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName,
     myIncomplete     = Standard_True;
     myPrivate        = Standard_False;
     myDeferred       = Standard_False;
+    myImported       = Standard_False;
   }
   else {
     Standard_NullObject::Raise("MS_Class::MS_Class - aPakage is NULL");
@@ -73,6 +74,16 @@ void MS_Class::Deferred(const Standard_Boolean aDeferred)
 Standard_Boolean MS_Class::Deferred() const 
 {
   return myDeferred;
+}
+
+void MS_Class::Imported(const Standard_Boolean theImported)
+{
+  myImported = theImported;
+}
+
+Standard_Boolean MS_Class::Imported() const
+{
+  return myImported;
 }
 
 void MS_Class::Private(const Standard_Boolean aPrivate)

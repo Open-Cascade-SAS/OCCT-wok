@@ -106,6 +106,7 @@ extern int  CDLlex   ( void  );
 %token		STRING
 %token		INVALID
 %token 		DOCU
+%token		transient
 %union {
  char str[MAX_STRING];
 }
@@ -436,6 +437,8 @@ Separated_Declaration	: Seper_Class_Declaration
 /*==========================================================================*/
 Seper_Class_Declaration : Sep_Class_Declaration_1
 			| deferred dollardSet_Defe Sep_Class_Declaration_1 
+      | imported dollardSet_Imported Sep_Class_Declaration_1 
+      | imported dollardSet_Imported deferred dollardSet_Defe Sep_Class_Declaration_1 
 			;
 Sep_Class_Declaration_1	: Generic_C_Declaration
 			| Generic_C_Instanciation
@@ -569,6 +572,9 @@ Pointer_Declaration	: pointer dollardset_inc_state Type_Name dollardrestore_stat
 /*==== Imported Definition =================================================*/
 /*==========================================================================*/
 Imported_Declaration	: imported  dollardset_inc_state Type_Name dollardrestore_state dollardImported_Begin ';' dollardImported_End
+      | imported transient class dollardSet_HandleClass dollardset_inc_state Type_Name dollardrestore_state dollardImported_Begin ';' dollardImported_End
+			| imported dollardSet_Imported Pac_Class_Declaration_1 
+      | imported dollardSet_Imported deferred dollardSet_Defe Pac_Class_Declaration_1 
 			;
 
 /*==========================================================================*/
@@ -923,6 +929,8 @@ dollardSet_Mutable_Any	: {Set_Mutable_Any();}
 dollardSet_Immutable		: {Set_Immutable();}
 dollardSet_Priv		: {Set_Priv();}
 dollardSet_Defe		: {Set_Defe();}
+dollardSet_Imported : {Set_Imported();}
+dollardSet_HandleClass : {Set_HandleClass();}
 dollardSet_Redefined		: {Set_Redefined();}
 dollardSet_Prot		: {Set_Prot();}
 dollardSet_Static		: {Set_Static();}

@@ -42,7 +42,11 @@ is
     Deferred(me: mutable; aDeferred: Boolean);
     Deferred(me)
     	returns Boolean;
-    
+
+    Imported(me: mutable; theImported: Boolean);
+    Imported(me)
+    	returns Boolean;
+
     Private(me: mutable; aPrivate: Boolean);
     Private(me)
     	returns Boolean;
@@ -126,6 +130,7 @@ fields
 
     myIncomplete : Boolean                 from Standard;
     myDeferred   : Boolean                 from Standard;
+    myImported   : Boolean                 from Standard;
     myPrivate    : Boolean                 from Standard;
     myInherits   : HSequenceOfHAsciiString from TColStd;
     myUses       : HSequenceOfHAsciiString from TColStd;
