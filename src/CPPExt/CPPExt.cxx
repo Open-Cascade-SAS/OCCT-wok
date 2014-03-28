@@ -114,47 +114,47 @@ void CPP_UsedTypes(const Handle(MS_MetaSchema)& aMeta,
 //function : CPP_BuildType
 //purpose  : 
 //=======================================================================
-Handle(TCollection_HAsciiString) CPP_BuildType
-       (const Handle(MS_MetaSchema)& aMeta,
-	const Handle(TCollection_HAsciiString)& aTypeName)
+Handle(TCollection_HAsciiString) CPP_BuildType (const Handle(MS_MetaSchema)&            theMeta,
+                                                const Handle(TCollection_HAsciiString)& theTypeName)
 {
-  Handle(TCollection_HAsciiString)   result = new TCollection_HAsciiString;
-  Handle(MS_Type)                    aType;
-
-  if (aMeta->IsDefined(aTypeName)) {
-    aType = aMeta->GetType(aTypeName);
-
-    if (aType->IsKind(STANDARD_TYPE(MS_Alias))) {
-      Handle(MS_Alias) analias = *((Handle(MS_Alias)*)&aType);
-
-      aType = aMeta->GetType(analias->DeepType());
-    }
-
-    if (aType->IsKind(STANDARD_TYPE(MS_Class))) {
-      Handle(MS_Class) aClass;
-      
-      aClass = *((Handle(MS_Class)*)&aType);
-      
-      if (aClass->IsPersistent() || aClass->IsTransient()) {
-	result->AssignCat("Handle_");
-	result->AssignCat(aTypeName);
-      }
-      else {
-	result->AssignCat(aTypeName);
-      } 
-    }
-    else {
-      result->AssignCat(aTypeName);
-    }
-  }
-  else {
-     ErrorMsg() << "CPPExt" \
-       << "type " << aType->FullName()->ToCString() \
-	 << " not defined..." << endm;
-     Standard_NoSuchObject::Raise();
+  if (!theMeta->IsDefined (theTypeName))
+  {
+    ErrorMsg() << "CPPExt" << "type " << theTypeName << " not defined..." << endm;
+    Standard_NoSuchObject::Raise();
+    return new TCollection_HAsciiString();
   }
 
-  return result;
+  Handle(MS_Type) aType = theMeta->GetType (theTypeName);
+  if (aType->IsKind (STANDARD_TYPE(MS_Alias)))
+  {
+    Handle(MS_Alias) anAlias = *((Handle(MS_Alias)*)&aType);
+    aType = theMeta->GetType (anAlias->DeepType());
+  }
+
+  Standard_Boolean isHandle = Standard_False;
+
+  if (aType->IsKind(STANDARD_TYPE(MS_Class)))
+  {
+    Handle(MS_Class) aClass = *((Handle(MS_Class)*)&aType);
+    isHandle = aClass->IsPersistent()
+            || aClass->IsTransient();
+  }
+  else if (aType->IsKind(STANDARD_TYPE(MS_Imported)))
+  {
+    Handle(MS_Imported) anImported = *((Handle(MS_Imported)*)&aType);
+    isHandle = anImported->IsTransient();
+  }
+
+  if (isHandle)
+  {
+    Handle(TCollection_HAsciiString) aResult = new TCollection_HAsciiString();
+    aResult->AssignCat ("Handle(");
+    aResult->AssignCat (theTypeName);
+    aResult->AssignCat (")");
+    return aResult;
+  }
+
+  return new TCollection_HAsciiString (theTypeName);
 }
 
 // Build a c++ field 
@@ -187,119 +187,116 @@ Handle(TCollection_HAsciiString) CPP_BuildField(const Handle(MS_MetaSchema)& aMe
 // Build a parameter list for methods
 //    the output is in C++
 //
-Handle(TCollection_HAsciiString) CPP_BuildParameterList(const Handle(MS_MetaSchema)& aMeta, 
-							const Handle(MS_HArray1OfParam)& aSeq,
-							const Standard_Boolean withDefaultValue)
+Handle(TCollection_HAsciiString) CPP_BuildParameterList (const Handle(MS_MetaSchema)&     theMeta,
+                                                         const Handle(MS_HArray1OfParam)& theSeq,
+                                                         const Standard_Boolean           withDefaultValue)
 {
-  Standard_Integer                 i;
-  Handle(TCollection_HAsciiString) result = new TCollection_HAsciiString;
-  Handle(MS_Type)                  aType;
-  Handle(MS_Class)                 aClass;
+  if (theSeq.IsNull())
+  {
+    return new TCollection_HAsciiString();
+  }
 
-  if(!aSeq.IsNull()) {
-    for (i = 1; i <= aSeq->Length(); i++) {
-      if (i > 1) {
-	result->AssignCat(", ");
+  Handle(TCollection_HAsciiString) aResult = new TCollection_HAsciiString();
+  for (Standard_Integer aParamIter = 1; aParamIter <= theSeq->Length(); ++aParamIter)
+  {
+    Handle(MS_Param) aParam = theSeq->Value (aParamIter);
+    if (aParamIter > 1)
+    {
+      aResult->AssignCat (", ");
+    }
+    if (!aParam->IsOut())
+    {
+      aResult->AssignCat ("const ");
+    }
+    if (theMeta->IsDefined (aParam->TypeName()))
+    {
+      Handle(MS_Type) aType = theMeta->GetType (aParam->TypeName());
+      if (aType->IsKind (STANDARD_TYPE(MS_Alias)))
+      {
+        Handle(MS_Alias)                 anAlias   = *((Handle(MS_Alias)*)&aType);
+        Handle(TCollection_HAsciiString) aDeepType = anAlias->DeepType();
+        if (!theMeta->IsDefined (aDeepType))
+        {
+          ErrorMsg() << "CPPExt" << "incomplete alias deep type in method's parameter..." << endm;
+          Standard_NoSuchObject::Raise();
+          break;
+        }
+        aType = theMeta->GetType (aDeepType);
       }
 
-      if (!aSeq->Value(i)->IsOut()) {
-	result->AssignCat("const ");
+      if (aType->IsKind (STANDARD_TYPE(MS_Class)))
+      {
+        Handle(MS_Class) aClass = *((Handle(MS_Class)*)&aType);
+        if (aClass->IsPersistent()
+         || aClass->IsTransient())
+        {
+          aResult->AssignCat ("Handle(");
+          aResult->AssignCat (aParam->TypeName());
+          aResult->AssignCat (")& ");
+          aResult->AssignCat (aParam->Name());
+        }
+        else
+        {
+          aResult->AssignCat (aParam->TypeName());
+          aResult->AssignCat ("& ");
+          aResult->AssignCat (aParam->Name());
+        }
+      } // CLASS ^
+      else if (aType->IsKind (STANDARD_TYPE(MS_Imported)))
+      {
+        Handle(MS_Imported) anImported = *((Handle(MS_Imported)*)&aType);
+        if (anImported->IsTransient())
+        {
+          aResult->AssignCat ("Handle(");
+          aResult->AssignCat (aParam->TypeName());
+          aResult->AssignCat (")& ");
+          aResult->AssignCat (aParam->Name());
+        }
+        else
+        {
+          aResult->AssignCat (aParam->TypeName());
+          aResult->AssignCat ("& ");
+          aResult->AssignCat (aParam->Name());
+        }
       }
-      
-      if (aMeta->IsDefined(aSeq->Value(i)->TypeName())) {
-	aType = aMeta->GetType(aSeq->Value(i)->TypeName());
-	
-	if (aType->IsKind(STANDARD_TYPE(MS_Class))) {
-	  aClass = *((Handle(MS_Class)*)&aType);
-
-	  if (aClass->IsPersistent() || aClass->IsTransient()) {
-	    result->AssignCat("Handle(");
-	    result->AssignCat(aSeq->Value(i)->TypeName());
-	    result->AssignCat(")& ");
-	    result->AssignCat(aSeq->Value(i)->Name());
-	  }
-	  else {
-	    result->AssignCat(aSeq->Value(i)->TypeName());
-	    result->AssignCat("& ");
-	    result->AssignCat(aSeq->Value(i)->Name());
-	  }
-	} // CLASS ^ 
-	else if ((aType->IsKind(STANDARD_TYPE(MS_Imported)) || aType->IsKind(STANDARD_TYPE(MS_Pointer)) || aSeq->Value(i)->IsItem() || aSeq->Value(i)->IsOut()) && !(aType->IsKind(STANDARD_TYPE(MS_Alias)))) {
-	  result->AssignCat(aSeq->Value(i)->TypeName());
-	  result->AssignCat("& ");
-	  result->AssignCat(aSeq->Value(i)->Name());
-	}
-	// WARNING : ALIASES
-	//
-	else if (aType->IsKind(STANDARD_TYPE(MS_Alias))) {
-	  Handle(MS_Alias)                 analias  = *((Handle(MS_Alias)*)&aType);
-	  Handle(TCollection_HAsciiString) deeptype = analias->DeepType();
-
-	  if (aMeta->IsDefined(deeptype)) {
-	    Handle(MS_Type) dt = aMeta->GetType(deeptype);
-
-	    
-	    if (dt->IsKind(STANDARD_TYPE(MS_Class))) {
-	      aClass = *((Handle(MS_Class)*)&dt);
-	      
-	      if (aClass->IsPersistent() || aClass->IsTransient()) {
-		result->AssignCat("Handle(");
-		result->AssignCat(aSeq->Value(i)->TypeName());
-		result->AssignCat(")& ");
-		result->AssignCat(aSeq->Value(i)->Name());
-	      }
-	      else {
-		result->AssignCat(aSeq->Value(i)->TypeName());
-		result->AssignCat("& ");
-		result->AssignCat(aSeq->Value(i)->Name());
-	      }
-	    } 
-	    else if (dt->IsKind(STANDARD_TYPE(MS_Imported)) || dt->IsKind(STANDARD_TYPE(MS_Pointer)) || aSeq->Value(i)->IsItem() || aSeq->Value(i)->IsOut()) {
-	      result->AssignCat(aSeq->Value(i)->TypeName());
-	      result->AssignCat("& ");
-	      result->AssignCat(aSeq->Value(i)->Name());
-	    } 
-	    else {
-	      result->AssignCat(aSeq->Value(i)->TypeName());
-	      if (aSeq->Value(i)->IsOut()) {
-		result->AssignCat("& ");
-	      }
-	      else {
-		result->AssignCat(" ");
-	      }
-	      result->AssignCat(aSeq->Value(i)->Name());
-	    }
-	  }
-	  else {
-	    ErrorMsg() << "CPPExt" << "incomplete alias deep type in method's parameter..." << endm;
-	    Standard_NoSuchObject::Raise();
-	  }
-	}
-	else {
-	  result->AssignCat(aSeq->Value(i)->TypeName());
-	  if (aSeq->Value(i)->IsOut()) {
-	    result->AssignCat("& ");
-	  }
-	  else {
-	    result->AssignCat(" ");
-	  }
-	  result->AssignCat(aSeq->Value(i)->Name());
-	}
+      else if (aType->IsKind (STANDARD_TYPE(MS_Pointer))
+            || aParam->IsItem()
+            || aParam->IsOut())
+      {
+        aResult->AssignCat (aParam->TypeName());
+        aResult->AssignCat ("& ");
+        aResult->AssignCat (aParam->Name());
       }
-      else {
-	result->AssignCat(aSeq->Value(i)->TypeName());
-	result->AssignCat("& ");
-	result->AssignCat(aSeq->Value(i)->Name());
-      }
-
-      if (aSeq->Value(i)->GetValueType() != MS_NONE && withDefaultValue) {
-	MS_ParamWithValue* pwv = (MS_ParamWithValue*)aSeq->Value(i).operator->();
-	result->AssignCat(" = ");
-	result->AssignCat(pwv->GetValue());
+      else
+      {
+        aResult->AssignCat (aParam->TypeName());
+        if (aParam->IsOut())
+        {
+          aResult->AssignCat ("& ");
+        }
+        else
+        {
+          aResult->AssignCat (" ");
+        }
+        aResult->AssignCat (aParam->Name());
       }
     }
+    else
+    {
+      aResult->AssignCat (aParam->TypeName());
+      aResult->AssignCat ("& ");
+      aResult->AssignCat (aParam->Name());
+    }
+
+    if (aParam->GetValueType() != MS_NONE
+     && withDefaultValue)
+    {
+      MS_ParamWithValue* pwv = (MS_ParamWithValue*)aParam.operator->();
+      aResult->AssignCat (" = ");
+      aResult->AssignCat (pwv->GetValue());
+    }
   }
-  return result;
+  return aResult;
 }
 
 // build a c++ declaration method
@@ -953,7 +950,9 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       Standard_NoSuchObject::Raise();
     }
 
-    if (aClass->IsGeneric()) {
+    if (aClass->IsGeneric()
+     || aClass->Imported())
+    {
       return;
     }
 
@@ -961,32 +960,43 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
 
     // Transient classes
     //
-    if (aClass->IsTransient() && !aName->IsSameString(MS::GetTransientRootName())) {
+    if (aClass->IsTransient()
+    && !aName->IsSameString (MS::GetTransientRootName()))
+    {
+      if (aClass->GetInheritsNames()->Length() == 0)
+      {
+        ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
+        Standard_NoSuchObject::Raise();
+      }
+
       Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
-      
       aHandleFile->AssignCat("Handle_");
       aHandleFile->AssignCat(aName);
       aHandleFile->AssignCat(".hxx");
 
       outfile->Append(aHandleFile);
-
-      if (aClass->GetInheritsNames()->Length() == 0) {
-	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
-	Standard_NoSuchObject::Raise();
-      }
-
       CPP_TransientHandle(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
 
-      if (aClass->IsKind(STANDARD_TYPE(MS_Error))) {
-	CPP_ExceptionClass(aMeta,api,aClass,outfile);
+      if (aClass->IsKind(STANDARD_TYPE(MS_Error)))
+      {
+        CPP_ExceptionClass(aMeta,api,aClass,outfile);
       }
-      else {
-	CPP_TransientClass(aMeta,api,aClass,outfile);
+      else
+      {
+        CPP_TransientClass(aMeta,api,aClass,outfile);
       }
     }
     // Persistent classes
     //
-    else if (aClass->IsPersistent() && !aName->IsSameString(MS::GetPersistentRootName())) {
+    else if (aClass->IsPersistent()
+         && !aName->IsSameString(MS::GetPersistentRootName()))
+    {
+      if (aClass->GetInheritsNames()->Length() == 0)
+      {
+        ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
+        Standard_NoSuchObject::Raise();
+      }
+
       Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
       
       aHandleFile->AssignCat("Handle_");
@@ -995,42 +1005,45 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
 
       outfile->Append(aHandleFile);
 
-      if (aClass->GetInheritsNames()->Length() == 0) {
-	ErrorMsg() << "CPPExt" << "incomplete metaschema..." << endm;
-	Standard_NoSuchObject::Raise();
+      if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJY"))
+      {
+        CPP_PersistentHandleOBJY(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+        CPP_PersistentClassOBJY(aMeta,api,aClass,outfile);
       }
-
-      if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJY")) {
-	CPP_PersistentHandleOBJY(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-	CPP_PersistentClassOBJY(aMeta,api,aClass,outfile);
+      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"MEM"))
+      {
       }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"MEM")) {
+      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJS"))
+      {
+        CPP_PersistentHandleOBJS(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+        CPP_PersistentClassOBJS(aMeta,api,aClass,outfile);
       }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJS")) {
-	CPP_PersistentHandleOBJS(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-	CPP_PersistentClassOBJS(aMeta,api,aClass,outfile);
+      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OO2"))
+      {
       }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OO2")) {
-      }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"CSFDB")) {
-	CPP_PersistentHandleCSFDB(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-	CPP_PersistentClassCSFDB(aMeta,api,aClass,outfile);
+      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"CSFDB"))
+      {
+        CPP_PersistentHandleCSFDB(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
+        CPP_PersistentClassCSFDB(aMeta,api,aClass,outfile);
       }
     }
     // Storable classes
     //
-    else if (aClass->IsStorable()) {
+    else if (aClass->IsStorable())
+    {
       CPP_StorableClass(aMeta,api,aClass,outfile);
     } 
     // MPV classes
     //
-    else {
+    else
+    {
       CPP_MPVClass(aMeta,api,aClass,outfile);
     }
   }
   // Enumerations
   //
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Enum))) {
+  else if (srcType->IsKind(STANDARD_TYPE(MS_Enum)))
+  {
     Handle(MS_Enum) anEnum = *((Handle(MS_Enum)*)&srcType);
   
     api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
@@ -1038,13 +1051,15 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
   }
   // Aliases
   //
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Alias))) {
+  else if (srcType->IsKind(STANDARD_TYPE(MS_Alias)))
+  {
     Handle(MS_Alias) anAlias = *((Handle(MS_Alias)*)&srcType);
 
     api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
     CPP_Alias(aMeta,api,anAlias,outfile);
   }
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Pointer))) {
+  else if (srcType->IsKind(STANDARD_TYPE(MS_Pointer)))
+  {
     Handle(MS_Pointer) aPointer = *((Handle(MS_Pointer)*)&srcType);
 
     api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);

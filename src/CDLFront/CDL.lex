@@ -122,6 +122,7 @@ from		{ BEGIN(0); return(CDL_from); }
 generic		{ BEGIN(0); return(generic); }
 immutable	{ BEGIN(0); return(immutable); }
 imported	{ BEGIN(0); return(imported); }
+transient	{ BEGIN(0); return(transient); }
 in		{ BEGIN(0); return(in); }
 inherits	{ BEGIN(0); return(inherits); }
 instantiates	{ BEGIN(0); return(instantiates); }

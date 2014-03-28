@@ -126,6 +126,8 @@ namespace
                           TheIsProtected      = Standard_False,
                           TheIsStatic         = Standard_True,
                           TheIsDeferred       = Standard_False,
+                          TheIsImported       = Standard_False,
+                          TheIsTransient      = Standard_False,
                           TheIsRedefined      = Standard_False,
                           TheIsLike           = Standard_False,
                           TheIsAny            = Standard_False,
@@ -245,6 +247,8 @@ void CDL_InitVariable()
   TheIsProtected      = Standard_False;
   TheIsStatic         = Standard_True;
   TheIsDeferred       = Standard_False;
+  TheIsImported       = Standard_False;
+  TheIsTransient      = Standard_False;
   TheIsRedefined      = Standard_False;
   TheIsLike           = Standard_False;
   TheIsAny            = Standard_False;
@@ -1052,6 +1056,8 @@ void Client_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -1175,6 +1181,8 @@ void Executable_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -1278,6 +1286,8 @@ void Interface_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -1400,12 +1410,18 @@ void Pointer_End()
   ThePointer.Nullify();
 }
 
+void Set_HandleClass()
+{
+  TheIsTransient = Standard_True;
+}
 
 void Imported_Begin()
 {
   Handle(TCollection_HAsciiString) anImportedName = new TCollection_HAsciiString(TheTypeName);
 
   TheImported = new MS_Imported(anImportedName,TheContainer,TheContainer,TheIsPrivate);
+
+  TheImported->SetTransient (TheIsTransient);
 
   TheImported->MetaSchema(TheMetaSchema);
 
@@ -1415,13 +1431,15 @@ void Imported_Begin()
     YY_nb_error++;
   }
 
-  TheIsPrivate = Standard_False;
+  TheIsPrivate   = Standard_False;
+  TheIsTransient = Standard_False;
 }
 
 void Imported_End()
 {
   ThePackage->Imported (TheImported->Name());
   TheImported.Nullify();
+  TheIsTransient = Standard_False;
 }
 
 
@@ -1538,6 +1556,7 @@ void Inc_Class_Dec()
 
   TheStdClass->Private    (TheIsPrivate);
   TheStdClass->Deferred   (TheIsDeferred);
+  TheStdClass->Imported   (TheIsImported);
   TheStdClass->Incomplete (Standard_True);
   ThePackage->Class (TheStdClass->Name());
   TheStdClass->Package (ThePackage->FullName());
@@ -1550,6 +1569,8 @@ void Inc_Class_Dec()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
   CheckCommentListIsEmpty("Inc_Class_Dec");
@@ -1585,6 +1606,7 @@ void Inc_GenClass_Dec()
 
     TheGenClass->Private   (TheIsPrivate);
     TheGenClass->Deferred  (TheIsDeferred);
+    TheGenClass->Imported  (TheIsImported);
     TheGenClass->Incomplete(Standard_True);
 
     ThePackage->Class (TheGenClass->Name());
@@ -1596,6 +1618,8 @@ void Inc_GenClass_Dec()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 
@@ -1639,6 +1663,7 @@ void GenClass_Begin()
 
     TheGenClass->Private   (TheIsPrivate);
     TheGenClass->Deferred  (TheIsDeferred);
+    TheGenClass->Imported  (TheIsImported);
     TheGenClass->Incomplete(Standard_False);
 
     TheMetaSchema->AddType (TheGenClass);
@@ -1657,6 +1682,12 @@ void GenClass_Begin()
     if (TheIsPrivate != TheGenClass->Private())
     {
       ErrorMsg() << "CDL\"" << TheCDLFileName->ToCString() << "\", line " << CDLlineno << ": " << "Class " << TheGenClass->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
+      YY_nb_error++;
+    }
+
+    if (TheIsImported != TheGenClass->Imported())
+    {
+      ErrorMsg() << "CDL\"" << TheCDLFileName->ToCString() << "\", line " << CDLlineno << ": " << "Class " << TheGenClass->FullName() << " has not the same 'imported' keyword in package declaration and in class definition." << endm;
       YY_nb_error++;
     }
 
@@ -1687,6 +1718,8 @@ void GenClass_Begin()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
   CheckCommentListIsEmpty("GenClass_Begin");
@@ -1918,6 +1951,8 @@ void InstClass_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -2027,6 +2062,7 @@ void StdClass_Begin()
     TheStdClass->MetaSchema (TheMetaSchema);
     TheStdClass->Private    (TheIsPrivate);
     TheStdClass->Deferred   (TheIsDeferred);
+    TheStdClass->Imported   (TheIsImported);
     TheStdClass->Incomplete (Standard_False);
 
     TheMetaSchema->AddType (TheStdClass);
@@ -2049,6 +2085,12 @@ void StdClass_Begin()
     if (TheIsPrivate != TheStdClass->Private())
     {
       ErrorMsg() << "CDL\"" << TheCDLFileName->ToCString() << "\", line " << CDLlineno << ": " << "Class " << TheStdClass->FullName() << " has not the same visibility keyword in package declaration and in class definition." << endm;
+      YY_nb_error++;
+    }
+
+    if (TheIsImported != TheStdClass->Imported())
+    {
+      ErrorMsg() << "CDL\"" << TheCDLFileName->ToCString() << "\", line " << CDLlineno << ": " << "Class " << TheStdClass->FullName() << " has not the same 'imported' keyword in package declaration and in class definition." << endm;
       YY_nb_error++;
     }
 
@@ -2081,6 +2123,8 @@ void StdClass_Begin()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 
@@ -2796,6 +2840,8 @@ void MemberMet_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -2812,6 +2858,8 @@ void ExternMet_End()
   TheIsProtected = Standard_False;
   TheIsStatic    = Standard_True;
   TheIsDeferred  = Standard_False;
+  TheIsImported  = Standard_False;
+  TheIsTransient = Standard_False;
   TheIsRedefined = Standard_False;
   TheIsLike      = Standard_False;
 }
@@ -2950,6 +2998,11 @@ void Set_Priv()
 void Set_Defe()
 {
   TheIsDeferred = Standard_True;
+}
+
+void Set_Imported()
+{
+  TheIsImported = Standard_True;
 }
 
 void Set_Redefined()

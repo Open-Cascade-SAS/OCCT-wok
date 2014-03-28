@@ -18,5 +18,14 @@ is
 
     Create(aName, aPackage, aContainer: HAsciiString; aPrivate: Boolean) 
     	returns mutable Imported from MS;
-    
+
+    IsTransient(me)
+    	returns Boolean from Standard;
+
+    SetTransient(me : mutable; theValue : Boolean from Standard) is static;
+
+fields
+
+  myIsTransient : Boolean from Standard;
+
 end Imported from MS;

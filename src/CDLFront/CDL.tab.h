@@ -59,6 +59,6 @@ typedef union {
 #define	STRING	313
 #define	INVALID	314
 #define DOCU 315
-
+#define	transient 316
 
 extern YYSTYPE CDLlval;
