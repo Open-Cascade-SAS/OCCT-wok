@@ -103,4 +103,7 @@ void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& aMeta,
 //! Auxiliary function to remove Handle_ suffix
 Handle(TCollection_HAsciiString) CPP_WithoutHandleSuffix (const Handle(TCollection_HAsciiString)& theName);
 
+//! Read $CSF_HANDLEHXX variable
+Standard_Boolean CPP_HaveHandleHeaders();
+
 #endif
