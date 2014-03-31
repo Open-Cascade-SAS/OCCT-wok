@@ -2273,20 +2273,20 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff ""
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
-    lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/bin\" )"
+    lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\" )"
   } else {
     lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
     lappend aFileBuff " install( TARGETS ${theToolKit}
-                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/bin\"
-                                 ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/lib\"
-                                 LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/lib\")"
+                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\"
+                                 ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_SUFFIX\}\"
+                                 LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_SUFFIX\}\")"
     lappend aFileBuff ""
     lappend aFileBuff " if (MSVC)"
     lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bin/Debug/${theToolKit}.pdb CONFIGURATIONS Debug
-                                  DESTINATION \"\$\{INSTALL_DIR\}/bin\")"
+                                  DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\")"
     lappend aFileBuff " endif()"
     lappend aFileBuff ""
   }
