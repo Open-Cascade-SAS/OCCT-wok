@@ -9,6 +9,12 @@
 #include <WOKTools_Messages.hxx>
 #include <MS_ParamWithValue.hxx>
 #include <MS_HArray1OfParam.hxx>
+#include <OSD_Environment.hxx>
+
+namespace
+{
+  static OSD_Environment THE_HANDLEHXX ("CSF_HANDLEHXX");
+}
 
 // Standard Extractor API : list the EDL files used by this program
 //
@@ -915,56 +921,60 @@ void CPP_ClassTypeMgt(const Handle(MS_MetaSchema)& ,
   api->Apply(var,"TypeMgt");
 }
 
+Standard_Boolean CPP_HaveHandleHeaders()
+{
+  return THE_HANDLEHXX.Value() != "0";
+}
 
 // Standard extractor API : launch the extraction of C++ files
 //                          from the type <aName>
 // 
-void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
-		 const Handle(TCollection_HAsciiString)& aName,
-		 const Handle(TColStd_HSequenceOfHAsciiString)& edlsfullpath,
-		 const Handle(TCollection_HAsciiString)& outdir,
-		 const Handle(TColStd_HSequenceOfHAsciiString)& outfile,
-		 const Standard_CString DBMS)
+void CPP_Extract (const Handle(MS_MetaSchema)&                   theMeta,
+                  const Handle(TCollection_HAsciiString)&        theName,
+                  const Handle(TColStd_HSequenceOfHAsciiString)& theEdlsFullPath,
+                  const Handle(TCollection_HAsciiString)&        theOutDir,
+                  const Handle(TColStd_HSequenceOfHAsciiString)& theOutFile,
+                  const Standard_CString                         theDBMS)
 {
-  Handle(MS_Type)     srcType;
-  Handle(MS_Package)  srcPackage;
-  
-
-  // before begining, we look if the entity has something to extract...
-  //
-  if (aMeta->IsDefined(aName)) {
-    srcType   = aMeta->GetType(aName); 
+  // look if the entity has something to extract...
+  Handle(MS_Type)    aSrcType;
+  Handle(MS_Package) aSrcPackage;
+  if (theMeta->IsDefined (theName))
+  {
+    aSrcType = theMeta->GetType (theName);
   }
-  else if (aMeta->IsPackage(aName)) {
-    srcPackage = aMeta->GetPackage(aName);
+  else if (theMeta->IsPackage (theName))
+  {
+    aSrcPackage = theMeta->GetPackage (theName);
   }
-  else {
-    ErrorMsg() << "CPPExt" << aName->ToCString() << " not defined..." << endm;
+  else
+  {
+    ErrorMsg() << "CPPExt" << theName->ToCString() << " not defined..." << endm;
     Standard_NoSuchObject::Raise();
   }
-  
-  // ... and we load the templates
-  //
-  Handle(EDL_API)     api;
 
   // Package Extraction
-  //
-  if (!srcPackage.IsNull()) {
-    if (srcPackage->Methods()->Length() > 0) {
-      api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
-      CPP_Package(aMeta,api,srcPackage,outfile);
-    }
-    else {
+  if (!aSrcPackage.IsNull())
+  {
+    if (aSrcPackage->Methods()->Length() < 1)
+    {
       return;
     }
+
+    Handle(EDL_API) anApi = CPP_LoadTemplate (theEdlsFullPath, theOutDir, theDBMS);
+    CPP_Package (theMeta, anApi, aSrcPackage, theOutFile);
+    return;
   }
+
   // Extraction of Classes
-  //
-  else if (srcType->IsKind(STANDARD_TYPE(MS_StdClass)) && !srcType->IsKind(STANDARD_TYPE(MS_GenClass)) && !srcType->IsKind(STANDARD_TYPE(MS_InstClass))) {
-    Handle(MS_StdClass) aClass = *((Handle(MS_StdClass)*)&srcType);
-    
-    if (aClass->Incomplete()) {
-      ErrorMsg() << "CPPExt" << aName->ToCString() << " not complete..." << endm;
+  if (aSrcType->IsKind (STANDARD_TYPE(MS_StdClass))
+  && !aSrcType->IsKind (STANDARD_TYPE(MS_GenClass))
+  && !aSrcType->IsKind (STANDARD_TYPE(MS_InstClass)))
+  {
+    Handle(MS_StdClass) aClass = *((Handle(MS_StdClass)*)&aSrcType);
+    if (aClass->Incomplete())
+    {
+      ErrorMsg() << "CPPExt" << theName->ToCString() << " not complete..." << endm;
       Standard_NoSuchObject::Raise();
     }
 
@@ -974,12 +984,10 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
       return;
     }
 
-    api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
-
-    // Transient classes
-    //
+    Handle(EDL_API) anApi = CPP_LoadTemplate (theEdlsFullPath, theOutDir, theDBMS);
+    const Standard_Boolean haveHandleHeaders = CPP_HaveHandleHeaders();
     if (aClass->IsTransient()
-    && !aName->IsSameString (MS::GetTransientRootName()))
+    && !theName->IsSameString (MS::GetTransientRootName()))
     {
       if (aClass->GetInheritsNames()->Length() == 0)
       {
@@ -987,27 +995,27 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
         Standard_NoSuchObject::Raise();
       }
 
-      Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
-      aHandleFile->AssignCat("Handle_");
-      aHandleFile->AssignCat(aName);
-      aHandleFile->AssignCat(".hxx");
-
-      outfile->Append(aHandleFile);
-      CPP_TransientHandle(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-
-      if (aClass->IsKind(STANDARD_TYPE(MS_Error)))
+      if (haveHandleHeaders)
       {
-        CPP_ExceptionClass(aMeta,api,aClass,outfile);
+        Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString (theOutDir);
+        aHandleFile->AssignCat ("Handle_");
+        aHandleFile->AssignCat (theName);
+        aHandleFile->AssignCat (".hxx");
+        theOutFile->Append (aHandleFile);
+        CPP_TransientHandle (anApi, theName, aClass->GetInheritsNames()->Value (1), aHandleFile);
+      }
+
+      if (aClass->IsKind (STANDARD_TYPE(MS_Error)))
+      {
+        CPP_ExceptionClass (theMeta, anApi, aClass, theOutFile);
       }
       else
       {
-        CPP_TransientClass(aMeta,api,aClass,outfile);
+        CPP_TransientClass (theMeta, anApi, aClass, theOutFile);
       }
     }
-    // Persistent classes
-    //
     else if (aClass->IsPersistent()
-         && !aName->IsSameString(MS::GetPersistentRootName()))
+         && !theName->IsSameString (MS::GetPersistentRootName()))
     {
       if (aClass->GetInheritsNames()->Length() == 0)
       {
@@ -1015,76 +1023,76 @@ void CPP_Extract(const Handle(MS_MetaSchema)& aMeta,
         Standard_NoSuchObject::Raise();
       }
 
-      Handle(TCollection_HAsciiString) aHandleFile = new TCollection_HAsciiString(outdir);
-      
-      aHandleFile->AssignCat("Handle_");
-      aHandleFile->AssignCat(aName);
-      aHandleFile->AssignCat(".hxx");
+      Handle(TCollection_HAsciiString) aHandleFile;
+      if (haveHandleHeaders)
+      {
+        aHandleFile = new TCollection_HAsciiString (theOutDir);
+        aHandleFile->AssignCat ("Handle_");
+        aHandleFile->AssignCat (theName);
+        aHandleFile->AssignCat (".hxx");
+        theOutFile->Append (aHandleFile);
+      }
 
-      outfile->Append(aHandleFile);
-
-      if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJY"))
+      if (!strcmp (anApi->GetVariableValue ("%CPPEXTDBMS")->ToCString(), "OBJY"))
       {
-        CPP_PersistentHandleOBJY(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-        CPP_PersistentClassOBJY(aMeta,api,aClass,outfile);
+        if (haveHandleHeaders)
+        {
+          CPP_PersistentHandleOBJY (anApi, theName, aClass->GetInheritsNames()->Value (1), aHandleFile);
+        }
+        CPP_PersistentClassOBJY (theMeta, anApi, aClass, theOutFile);
       }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"MEM"))
-      {
-      }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OBJS"))
-      {
-        CPP_PersistentHandleOBJS(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-        CPP_PersistentClassOBJS(aMeta,api,aClass,outfile);
-      }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"OO2"))
+      else if (!strcmp (anApi->GetVariableValue ("%CPPEXTDBMS")->ToCString(), "MEM"))
       {
       }
-      else if (!strcmp(api->GetVariableValue("%CPPEXTDBMS")->ToCString(),"CSFDB"))
+      else if (!strcmp (anApi->GetVariableValue ("%CPPEXTDBMS")->ToCString(), "OBJS"))
       {
-        CPP_PersistentHandleCSFDB(api,aName,aClass->GetInheritsNames()->Value(1),aHandleFile);
-        CPP_PersistentClassCSFDB(aMeta,api,aClass,outfile);
+        if (haveHandleHeaders)
+        {
+          CPP_PersistentHandleOBJS (anApi, theName, aClass->GetInheritsNames()->Value (1), aHandleFile);
+        }
+        CPP_PersistentClassOBJS (theMeta, anApi, aClass, theOutFile);
+      }
+      else if (!strcmp (anApi->GetVariableValue ("%CPPEXTDBMS")->ToCString(), "OO2"))
+      {
+      }
+      else if (!strcmp (anApi->GetVariableValue ("%CPPEXTDBMS")->ToCString(), "CSFDB"))
+      {
+        if (haveHandleHeaders)
+        {
+          CPP_PersistentHandleCSFDB (anApi, theName, aClass->GetInheritsNames()->Value (1), aHandleFile);
+        }
+        CPP_PersistentClassCSFDB (theMeta, anApi, aClass, theOutFile);
       }
     }
-    // Storable classes
-    //
     else if (aClass->IsStorable())
     {
-      CPP_StorableClass(aMeta,api,aClass,outfile);
-    } 
-    // MPV classes
-    //
+      CPP_StorableClass (theMeta, anApi, aClass, theOutFile);
+    }
     else
     {
-      CPP_MPVClass(aMeta,api,aClass,outfile);
+      CPP_MPVClass (theMeta, anApi, aClass, theOutFile);
     }
   }
-  // Enumerations
-  //
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Enum)))
+  else if (aSrcType->IsKind (STANDARD_TYPE(MS_Enum)))
   {
-    Handle(MS_Enum) anEnum = *((Handle(MS_Enum)*)&srcType);
-  
-    api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
-    CPP_Enum(aMeta,api,anEnum,outfile);
+    Handle(MS_Enum) anEnum = *((Handle(MS_Enum)*)&aSrcType);
+    Handle(EDL_API) anApi  = CPP_LoadTemplate (theEdlsFullPath, theOutDir, theDBMS);
+    CPP_Enum (theMeta, anApi, anEnum, theOutFile);
   }
-  // Aliases
-  //
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Alias)))
+  else if (aSrcType->IsKind (STANDARD_TYPE(MS_Alias)))
   {
-    Handle(MS_Alias) anAlias = *((Handle(MS_Alias)*)&srcType);
-
-    api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
-    CPP_Alias(aMeta,api,anAlias,outfile);
+    Handle(MS_Alias) anAlias = *((Handle(MS_Alias)*)&aSrcType);
+    Handle(EDL_API)  anApi   = CPP_LoadTemplate (theEdlsFullPath, theOutDir, theDBMS);
+    CPP_Alias (theMeta, anApi, anAlias, theOutFile);
   }
-  else if (srcType->IsKind(STANDARD_TYPE(MS_Pointer)))
+  else if (aSrcType->IsKind (STANDARD_TYPE(MS_Pointer)))
   {
-    Handle(MS_Pointer) aPointer = *((Handle(MS_Pointer)*)&srcType);
-
-    api = CPP_LoadTemplate(edlsfullpath,outdir,DBMS);
-    CPP_Pointer(aMeta,api,aPointer,outfile);
+    Handle(MS_Pointer) aPointer = *((Handle(MS_Pointer)*)&aSrcType);
+    Handle(EDL_API)    anApi    = CPP_LoadTemplate (theEdlsFullPath, theOutDir, theDBMS);
+    CPP_Pointer (theMeta, anApi, aPointer, theOutFile);
   }
 }
-		 
+
 Handle(TCollection_HAsciiString) CPP_WithoutHandleSuffix (const Handle(TCollection_HAsciiString)& theName)
 {
   const Standard_Integer aSuffLen = Standard_Integer(sizeof("Handle_") - 1);

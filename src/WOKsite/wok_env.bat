@@ -20,6 +20,7 @@ set "HAVE_FREEIMAGE=false"
 set "HAVE_GL2PS=false"
 set "HAVE_VTK=false"
 set "VCVARS="
+set "CSF_HANDLEHXX=1"
 
 rem ----- Set local settings (M$ Visual Studio compilers etc.) -----
 if exist "%~dp0custom.bat" (

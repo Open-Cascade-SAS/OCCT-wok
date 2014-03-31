@@ -146,6 +146,11 @@ if { "$tcl_platform(platform)" == "windows" } {
 if { "$PRODUCTS_PATH" != "" } {
   puts "  3rd-parties root: '$::env(PRODUCTS_PATH)'"
 }
+if { [info exists ::env(CSF_HANDLEHXX)] && "$::env(CSF_HANDLEHXX)" == "0" } {
+  puts "  Generate Handle_XXX.hxx files: OFF"
+} else {
+  puts "  Generate Handle_XXX.hxx files: ON"
+}
 
 set anErrs {}
 if { [wokdep:SearchTclTk anErrs anErrs anErrs anErrs anErrs] == "false" } {

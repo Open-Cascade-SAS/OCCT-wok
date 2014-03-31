@@ -27,6 +27,7 @@ export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
 export HAVE_VTK="false";
 export PRODUCTS_DEFINES="";
+export CSF_HANDLEHXX="1";
 
 # ----- Set local settings -----
 if [ -e "${aScriptPath}/custom.sh" ]; then
