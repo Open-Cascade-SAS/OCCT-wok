@@ -45,6 +45,7 @@
 #include <MS_HSequenceOfExecPart.hxx>
 #include <MS_HSequenceOfGenType.hxx>
 #include <MS_HSequenceOfParam.hxx>
+#include <OSD_Environment.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
@@ -109,6 +110,8 @@ enum
 
 namespace
 {
+  static const Standard_Boolean THE_TO_WARN_LOST_DOCS = !OSD_Environment ("CSF_LOSTDOCS").Value().IsEmpty();
+
   static int   YY_nb_error;
   static int   YY_nb_warning;
   static Handle(TCollection_HAsciiString) TheCDLFileName;
@@ -377,7 +380,6 @@ void Type_Name(char* aName)
 //=======================================================================
 void CheckCommentListIsEmpty (const char* theFunctionName)
 {
-  (void )theFunctionName;
   if (TheListOfComments->IsEmpty())
   {
     return;
@@ -393,9 +395,12 @@ void CheckCommentListIsEmpty (const char* theFunctionName)
     aMsg += "\n";
   }
 
-//  WarningMsg() << "CDL line " << CDLlineno << " : Documentation lost\n" // << theFunctionName
-//               << aMsg.ToCString() << endm;
-//  YY_nb_warning++;
+  if (THE_TO_WARN_LOST_DOCS)
+  {
+    WarningMsg() << "CDL line " << CDLlineno << " : Documentation lost ("  << theFunctionName << ")\n"
+                 << aMsg.ToCString() << endm;
+    ++YY_nb_warning;
+  }
 }
 
 // WARNING : dirty code : look at "Standard_" (but faster than build a string from MS::RootPackageName() + "_")
