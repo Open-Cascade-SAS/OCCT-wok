@@ -426,8 +426,7 @@ $#include <Standard_DefineException.hxx>
 $#include <Standard_SStream.hxx>
 $#include <%Inherits.hxx>
 $
-$class %Class;
-$DEFINE_STANDARD_HANDLE(%Class, %Inherits)
+$DEFINE_STANDARD_EXCEPTION(%Class, %Inherits)
 $
 $#if !defined No_Exception && !defined No_%Class
 $  #define %Class_Raise_if(CONDITION, MESSAGE) \
@@ -435,8 +434,6 @@ $  if (CONDITION) %Class::Raise(MESSAGE);
 $#else
 $  #define %Class_Raise_if(CONDITION, MESSAGE)
 $#endif
-$
-$DEFINE_STANDARD_EXCEPTION(%Class, %Inherits)
 $
 $#endif // _%Class_HeaderFile
 @end;
