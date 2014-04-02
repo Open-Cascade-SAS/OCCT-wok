@@ -73,7 +73,7 @@ $
 $%TICPublicmets
 $%TICPublicfriends
 $
-$  DEFINE_STANDARD_RTTI(%Class)
+$  DEFINE_STANDARD_RTTI(%Class,%Inherits)
 $
 $protected:
 $
@@ -137,7 +137,7 @@ $
 $%TICPublicmets
 $%TICPublicfriends
 $
-$  DEFINE_STANDARD_RTTI(%Class)
+$  DEFINE_STANDARD_RTTI(%Class,%Inherits)
 $
 $protected:
 $
