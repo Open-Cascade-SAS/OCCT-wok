@@ -222,16 +222,26 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
 
     api->AddVariable(VSuffix,"hxx");
 
-    for (i = 1; i <= List->Length(); i++) {
-      if (!List->Value(i)->IsSameString(aPackage->Name())) {
-	api->AddVariable(VIClass,List->Value(i)->ToCString());
-#ifdef WNT
-	api->Apply(VTICIncludes,"IncludeNoSafe");
-#else
-	api->Apply(VTICIncludes,"Include");
-#endif
-	publics->AssignCat(api->GetVariableValue(VTICIncludes));
+    for (i = 1; i <= List->Length(); i++)
+    {
+      Handle(TCollection_HAsciiString) aName = List->Value (i);
+      if (aName->IsSameString (aPackage->Name()))
+      {
+        continue;
       }
+
+      //if (!CPP_HaveHandleHeaders())
+      {
+        aName = CPP_WithoutHandleSuffix (aName);
+      }
+
+      api->AddVariable (VIClass, aName->ToCString());
+    #ifdef _WIN32
+      api->Apply(VTICIncludes,"IncludeNoSafe");
+    #else
+      api->Apply(VTICIncludes,"Include");
+    #endif
+      publics->AssignCat (api->GetVariableValue (VTICIncludes));
     }
 
     for (i = 1; i <= incp->Length(); i++) {
@@ -283,4 +293,3 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
     Standard_NoSuchObject::Raise();
   }
 }
-
