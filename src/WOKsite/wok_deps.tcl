@@ -304,11 +304,23 @@ proc wokdep:SearchFreeType {theErrInc theErrLib32 theErrLib64 theErrBin32 theErr
   set isFound "true"
   set aFtPath      [wokdep:SearchHeader "freetype/freetype.h"]
   set aFtBuildPath [wokdep:SearchHeader "ft2build.h"]
+
+  # New version of headers
+  if { "$aFtPath" == "" } {
+    set aFtPath [wokdep:SearchHeader "freetype2/freetype.h"]
+  }
+  
+  if { "$aFtBuildPath" == "" } {
+    set aFtBuildPath [wokdep:SearchHeader "freetype2/ft2build.h"]
+  }
+
   if { "$aFtPath"  == "" || "$aFtBuildPath" == "" } {
     # TODO - use `freetype-config --cflags` instead
     set aSysFreeType "/usr/include/freetype2"
     if { [file exists "$aSysFreeType/freetype/freetype.h"] } {
       lappend ::CSF_OPT_INC "$aSysFreeType"
+    } elseif { [file exists "$aSysFreeType/freetype2/freetype.h"] } {
+      lappend ::CSF_OPT_INC "$aSysFreeType/freetype2"
     } else {
       set aSysFreeType "/usr/X11/include/freetype2"
       if { [file exists "$aSysFreeType/freetype/freetype.h"] } {
@@ -316,8 +328,12 @@ proc wokdep:SearchFreeType {theErrInc theErrLib32 theErrLib64 theErrBin32 theErr
         lappend ::CSF_OPT_INC "$aSysFreeType"
       } else {
         set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{freetype}*] "$::VCVER" "$::ARCH" ]
-        if { "$aPath" != "" && [file exists "$aPath/include/freetype/freetype.h"] && [file exists "$aPath/include/ft2build.h"] } {
-          lappend ::CSF_OPT_INC "$aPath/include"
+        if {"$aPath" != "" && ([file exists "$aPath/include/freetype/freetype.h"] || [file exists "$aPath/include/freetype2/freetype.h"])} {
+          if {[file exists "$aPath/include/ft2build.h"]} {
+            lappend ::CSF_OPT_INC "$aPath/include"
+          } elseif {[file exists "$aPath/include/freetype2/ft2build.h"]} {
+            lappend ::CSF_OPT_INC "$aPath/include/freetype2"
+          }
         } else {
           lappend anErrInc "Error: 'freetype.h' not found (FreeType2)"
           set isFound "false"
