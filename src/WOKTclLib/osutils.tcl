@@ -1931,7 +1931,7 @@ proc osutils:incpaths { theUnits theRelatedPath } {
   return $anIncPaths
 }
 
-proc osutils:tksrcfiles { theUnits  theRelatedPath {theCompatible {}} } {
+proc osutils:tksrcfiles { theUnits  {theRelatedPath ""} {theCompatible {}} } {
   set aTKSrcFiles [list]
 
   if [array exists written] { unset written }
@@ -1990,7 +1990,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     set anUnits [wokinfo -n [woklocate -u $theToolKit]]
   }
 
-  set anCommonUnits [list]
+  set aCommonUnits [list]
   set aWntUnits     [osutils:justwnt  $anUnits]
   set anUnixUnits   [osutils:justunix  $anUnits]
 
@@ -1999,7 +1999,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   foreach aWntUnit $aWntUnits {
     if { [set anIndex [lsearch -exact $anUnixUnits $aWntUnit]] != -1 } {
       #add to common list
-      lappend anCommonUnits $aWntUnit
+      lappend aCommonUnits $aWntUnit
 
       #remove from wnt list
       set anUnixUnits [lreplace $anUnixUnits $anIndex $anIndex]
@@ -2010,23 +2010,19 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     }
   }
 
-  set aRelatedPath [relativePath "$theOutDir/$theToolKit" [pwd]]
+  # set aRelatedPath [relativePath "$theOutDir/$theToolKit" [pwd]]
 
-  set anCommonIncPaths  [osutils:incpaths $anCommonUnits $aRelatedPath]
-  set anWntIncPaths     [osutils:incpaths $aWntUnits $aRelatedPath]
-  set anUnixIncPaths    [osutils:incpaths $anUnixUnits $aRelatedPath]
+  set aCommonTKSrcFiles [osutils:tksrcfiles $aCommonUnits]
+  set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits]
+  set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits]
 
-  set aCommonTKSrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath]
-  set aWntTKSrcFiles    [osutils:tksrcfiles $aWntUnits  $aRelatedPath]
-  set aUnixTKSrcFiles   [osutils:tksrcfiles $anUnixUnits $aRelatedPath]
-
-  set aCommonTK_mm_SrcFiles [osutils:tksrcfiles $anCommonUnits $aRelatedPath osutils:mm_compilable]
+  set aCommonTK_mm_SrcFiles [osutils:tksrcfiles $aCommonUnits "" osutils:mm_compilable]
 
   set aFileBuff [list "project(${theToolKit})\n"]
 
   # macros for wnt
   lappend aFileBuff "if (WIN32)"
-  foreach aMacro [osutils:tkdefs [concat $anCommonUnits $aWntUnits]] {
+  foreach aMacro [osutils:tkdefs [concat $aCommonUnits $aWntUnits]] {
     lappend aFileBuff "  list( APPEND ${theToolKit}_PRECOMPILED_DEFS \"-D${aMacro}\" )"
   }
   lappend aFileBuff "  string( REGEX REPLACE \";\" \" \" ${theToolKit}_PRECOMPILED_DEFS \"\$\{${theToolKit}_PRECOMPILED_DEFS\}\")"
@@ -2035,20 +2031,84 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
 
   # compiler directories
   lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\$\{WOK_LIB_PATH\}\" )"
-  lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$aRelatedPath/inc\" )"
-  foreach anCommonIncPath $anCommonIncPaths {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anCommonIncPath\" )"
-  }
+  lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\" AND EXISTS \"\${BUILD_PATCH_DIR}/inc\")"
+  lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/inc\" )"
+  lappend aFileBuff "  ENDIF()"
+  lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/inc\")"
+  lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/inc\" )"
+  lappend aFileBuff "  ENDIF()"
+  lappend aFileBuff ""
+  
+  # common drv and src
+  lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\")"
+  foreach aCommonUnit $aCommonUnits {
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/drv/${aCommonUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/drv/${aCommonUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/src/${aCommonUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/src/${aCommonUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
     lappend aFileBuff ""
-  lappend aFileBuff "if (WIN32)"
-  foreach anWntIncPath $anWntIncPaths {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anWntIncPath\" )"
   }
-  lappend aFileBuff "else()"
-  foreach anUnixIncPath $anUnixIncPaths {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"$anUnixIncPath\" )"
+  lappend aFileBuff "  ENDIF()"
+  lappend aFileBuff ""
+  foreach aCommonUnit $aCommonUnits {
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/drv/${aCommonUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/drv/${aCommonUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/src/${aCommonUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/src/${aCommonUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
   }
-  lappend aFileBuff "endif()"
+
+  # wnt drv and src
+  lappend aFileBuff "IF (WIN32)"
+  lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\")"
+  foreach aWntUnit $aWntUnits {
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/drv/${aWntUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/drv/${aWntUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/src/${aWntUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/src/${aWntUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff ""
+  }
+  lappend aFileBuff "  ENDIF()"
+  lappend aFileBuff ""
+  foreach aWntUnit $aWntUnits {
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/drv/${aWntUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/drv/${aWntUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/src/${aWntUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/src/${aWntUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
+  }
+  lappend aFileBuff "ELSE()"
+  
+  lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\")"
+  foreach anUnixUnit $anUnixUnits {
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/drv/${anUnixUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/drv/${anUnixUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "    IF(EXISTS \"\${BUILD_PATCH_DIR}/src/${anUnixUnit}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${BUILD_PATCH_DIR}/src/${anUnixUnit}\" )"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff ""
+  }
+  lappend aFileBuff "  ENDIF()"
+  lappend aFileBuff ""
+  foreach anUnixUnit $anUnixUnits {
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/drv/${anUnixUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/drv/${anUnixUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff "  IF(EXISTS \"\${CMAKE_SOURCE_DIR}/src/${anUnixUnit}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_COMPILER_DIRECTORIES \"\${CMAKE_SOURCE_DIR}/src/${anUnixUnit}\" )"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
+  }
+  lappend aFileBuff "ENDIF()"
   lappend aFileBuff ""
 
   # used libs
@@ -2151,27 +2211,60 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
 
   #used source files
   foreach aCommonTKSrcFile $aCommonTKSrcFiles {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aCommonTKSrcFile}\" )"
-    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTKSrcFile] 1 end] FILES \"${aCommonTKSrcFile}\")\n"
+    lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\" AND EXISTS \"\${BUILD_PATCH_DIR}/${aCommonTKSrcFile}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"\${BUILD_PATCH_DIR}/${aCommonTKSrcFile}\" )"
+    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTKSrcFile] 1 end] FILES \"\${BUILD_PATCH_DIR}/${aCommonTKSrcFile}\")"
+    lappend aFileBuff "  ELSE()"
+    lappend aFileBuff "    IF(EXISTS \"\${CMAKE_SOURCE_DIR}/${aCommonTKSrcFile}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_USED_SRCFILES \"\${CMAKE_SOURCE_DIR}/${aCommonTKSrcFile}\" )"
+    lappend aFileBuff "      SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTKSrcFile] 1 end] FILES \"\${CMAKE_SOURCE_DIR}/${aCommonTKSrcFile}\")"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
   }
-
-  lappend aFileBuff "if (WIN32)"
+  lappend aFileBuff ""
+  lappend aFileBuff "IF (WIN32)"
   foreach aWntTKSrcFile $aWntTKSrcFiles {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aWntTKSrcFile}\" )"
-    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aWntTKSrcFile] 1 end] FILES \"${aWntTKSrcFile}\")\n"
+    lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\" AND EXISTS \"\${BUILD_PATCH_DIR}/${aWntTKSrcFile}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"\${BUILD_PATCH_DIR}/${aWntTKSrcFile}\" )"
+    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aWntTKSrcFile] 1 end] FILES \"\${BUILD_PATCH_DIR}/${aWntTKSrcFile}\")"
+    lappend aFileBuff "  ELSE()"
+    lappend aFileBuff "    IF(EXISTS \"\${CMAKE_SOURCE_DIR}/${aWntTKSrcFile}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_USED_SRCFILES \"\${CMAKE_SOURCE_DIR}/${aWntTKSrcFile}\" )"
+    lappend aFileBuff "      SOURCE_GROUP ([string range [osutils:fileGroupName $aWntTKSrcFile] 1 end] FILES \"\${CMAKE_SOURCE_DIR}/${aWntTKSrcFile}\")"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
   }
-  lappend aFileBuff "else()\n"
-  lappend aFileBuff "  if (APPLE)\n"
+  lappend aFileBuff "ELSE()\n"
+  lappend aFileBuff "  IF (APPLE)\n"
   foreach aCommonTK_mm_SrcFile $aCommonTK_mm_SrcFiles {
-    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"${aCommonTK_mm_SrcFile}\" )"
-    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTK_mm_SrcFile] 1 end] FILES \"${aCommonTK_mm_SrcFile}\")\n"
+    lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\" AND EXISTS \"\${BUILD_PATCH_DIR}/${aCommonTK_mm_SrcFile}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"\${BUILD_PATCH_DIR}/${aCommonTK_mm_SrcFile}\" )"
+    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTK_mm_SrcFile] 1 end] FILES \"\${BUILD_PATCH_DIR}/${aCommonTK_mm_SrcFile}\")"
+    lappend aFileBuff "  ELSE()"
+    lappend aFileBuff "    IF(EXISTS \"\${CMAKE_SOURCE_DIR}/${aCommonTK_mm_SrcFile}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_USED_SRCFILES \"\${CMAKE_SOURCE_DIR}/${aCommonTK_mm_SrcFile}\" )"
+    lappend aFileBuff "      SOURCE_GROUP ([string range [osutils:fileGroupName $aCommonTK_mm_SrcFile] 1 end] FILES \"\${CMAKE_SOURCE_DIR}/${aCommonTK_mm_SrcFile}\")"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
   }
-  lappend aFileBuff "  endif()\n"
+  lappend aFileBuff "  ENDIF()\n"
   foreach aUnixTKSrcFile $aUnixTKSrcFiles {
-    lappend aFileBuff "  list( APPEND ${theToolKit}_USED_SRCFILES \"${aUnixTKSrcFile}\" )"
-    lappend aFileBuff "  SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"${aUnixTKSrcFile}\")\n"
+  
+    lappend aFileBuff "  IF(NOT \"\${BUILD_PATCH_DIR}\" STREQUAL \"\" AND EXISTS \"\${BUILD_PATCH_DIR}/${aUnixTKSrcFile}\")"
+    lappend aFileBuff "    list( APPEND ${theToolKit}_USED_SRCFILES \"\${BUILD_PATCH_DIR}/${aUnixTKSrcFile}\" )"
+    lappend aFileBuff "    SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"\${BUILD_PATCH_DIR}/${aUnixTKSrcFile}\")"
+    lappend aFileBuff "  ELSE()"
+    lappend aFileBuff "    IF(EXISTS \"\${CMAKE_SOURCE_DIR}/${aUnixTKSrcFile}\")"
+    lappend aFileBuff "      list( APPEND ${theToolKit}_USED_SRCFILES \"\${CMAKE_SOURCE_DIR}/${aUnixTKSrcFile}\" )"
+    lappend aFileBuff "      SOURCE_GROUP ([string range [osutils:fileGroupName $aUnixTKSrcFile] 1 end] FILES \"\${CMAKE_SOURCE_DIR}/${aUnixTKSrcFile}\")"
+    lappend aFileBuff "    ENDIF()"
+    lappend aFileBuff "  ENDIF()"
+    lappend aFileBuff ""
   }
-  lappend aFileBuff "endif()\n"
+  lappend aFileBuff "ENDIF()\n"
 
   #install instrutions
   lappend aFileBuff "if (\"\$\{USED_TOOLKITS\}\" STREQUAL \"\" OR DEFINED TurnONthe${theToolKit})"

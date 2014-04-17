@@ -3037,7 +3037,11 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "subdirs($anSubPath/${aToolKit})"
+      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$anSubPath/${aToolKit}\")"
+      lappend aBuff "  subdirs(\$\{TK_ROOT_DIR\}/$anSubPath/${aToolKit})"
+      lappend aBuff "ELSE()"
+      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$anSubPath/${aToolKit}\")"
+      lappend aBuff "ENDIF()"
 
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir/$anSubPath $aToolKit false ${aModule}
@@ -3049,7 +3053,11 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "subdirs($anSubPath/${anExecutable})"
+      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$anSubPath/${anExecutable}\")"
+      lappend aBuff "  subdirs(\$\{TK_ROOT_DIR\}/$anSubPath/${anExecutable})"
+      lappend aBuff "ELSE()"
+      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$anSubPath/${anExecutable}\")"
+      lappend aBuff "ENDIF()\n"
 
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir/$anSubPath $anExecutable true ${aModule}
