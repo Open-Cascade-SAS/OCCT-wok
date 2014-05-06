@@ -26,6 +26,7 @@ p WOKTools
 p WOKUnix
 p WOKUtils
 p WOKernel
+p GraphTools
 r WOKBuilderDef
 r WOKEntityDef
 r WOKStepsDef

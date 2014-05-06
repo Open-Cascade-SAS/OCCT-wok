@@ -30,11 +30,6 @@ if [ -e "$preOCCTLibPath/libTKernel.so" ]; then
 else
   echo "$preOCCTLibPath/libTKernel.so does not exist"
 fi
-if [ -e "$preOCCTLibPath/libTKAdvTools.so" ]; then
-  cp -f "$preOCCTLibPath/libTKAdvTools.so" $installRelatePath/lib/lin/
-else
-  echo "$preOCCTLibPath/libTKAdvTools.so does not exist"
-fi
 
 #wok libs checking
 preWOKLibPath="./lin${ARCH}/${cmdArg2}/lib${CASDEB}"

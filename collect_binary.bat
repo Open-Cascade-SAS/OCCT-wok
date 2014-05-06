@@ -114,9 +114,6 @@ if exist "%CASROOT%\win%ARCH%\%VCVER%\bin%CASDEB%" (
   goto :eof
 )
 
-xcopy "%CASROOT%\%preOCCDLLPath%\TKAdvTools.dll" "%installPath%\lib\wnt\"
-if not %errorlevel%. == 0. (set "doNotCopyForeignFileList=%doNotCopyForeignFileList%;TKAdvTools.dll")
-
 xcopy "%CASROOT%\%preOCCDLLPath%\TKernel.dll" "%installPath%\lib\wnt\"
 if not %errorlevel%. == 0. (set "doNotCopyForeignFileList=%doNotCopyForeignFileList%;TKernel.dll")
 
