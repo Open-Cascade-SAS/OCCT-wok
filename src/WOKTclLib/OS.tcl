@@ -2980,19 +2980,21 @@ proc OS:MKVC { theOutDir {theModules {}} {theAllSolution ""} {theVcVer "vc8"} } 
 proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   puts stderr "Generating CMake meta project"
 
-  set anSubPath "adm/cmake"
-  set anModulesFileName "CMakeModules.txt"
-  set anToolKitDepsFileName "CMakeToolKitsDeps.txt"
+  set aSubPath "adm/cmake"
+  set aModulesFileName       "occt_modules.cmake"
+  set aBeingIncludedToolkits "occt_inc_toolkits.cmake"
+  set aBeingUsedToolkits     "occt_toolkits.cmake"
 
-  set anModulesTmpl [osutils:readtemplate cmake_modules "Modules of OCCT"]
-  set anDepsTmpl [osutils:readtemplate cmake_dinf "toolkits and includes of OCCT"]
+  set aModulesTmpl       [osutils:readtemplate cmake_modules       "OCCT modules"]
+  set aToolkitsTmpl      [osutils:readtemplate cmake_toolkits      "toolkit dependencies"]
+  set anIncToolkitsTmpl  [osutils:readtemplate cmake_inc_toolkits  "toolkits including"]
 
   # modules of occt
   set aBuff [list]
   foreach aModule $theModules {
     lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
   }
-  regsub -all -- {__MODULE_LIST__}  $anModulesTmpl  [join $aBuff "\n"] anModulesTmpl
+  regsub -all -- {__MODULE_LIST__}  $aModulesTmpl  [join $aBuff "\n"] aModulesTmpl
 
   # dynamic content of occt
   set aBuff [list]
@@ -3006,7 +3008,7 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       lappend aBuff "set(${anExecutable}_DEPS \"${aDepToolkits}\")"
     }
   }
-  regsub -all -- {__TOOLKIT_DEPS__} $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
+  regsub -all -- {__TOOLKIT_DEPS__} $aToolkitsTmpl  [join $aBuff "\n"] aToolkitsTmpl
 
   set aBuff [list]
   foreach aModule $theModules {
@@ -3026,57 +3028,62 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
     }
     lappend aBuff "endif()"
   }
-  regsub -all -- {__MODULE_DEPS__}  $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
+  regsub -all -- {__MODULE_DEPS__}  $aToolkitsTmpl  [join $aBuff "\n"] aToolkitsTmpl
 
   set aBuff [list]
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
       #create directory
-      if {![file exists "$theOutDir/$anSubPath/$aToolKit"]} {
-        file mkdir "$theOutDir/$anSubPath/$aToolKit"
+      if {![file exists "$theOutDir/$aSubPath/$aToolKit"]} {
+        file mkdir "$theOutDir/$aSubPath/$aToolKit"
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$anSubPath/${aToolKit}\")"
-      lappend aBuff "  subdirs(\$\{TK_ROOT_DIR\}/$anSubPath/${aToolKit})"
+      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit}\")"
+      lappend aBuff "  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit})"
       lappend aBuff "ELSE()"
-      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$anSubPath/${aToolKit}\")"
+      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$aSubPath/${aToolKit}\")"
       lappend aBuff "ENDIF()"
 
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir/$anSubPath $aToolKit false ${aModule}
+      osutils:cmktk $theOutDir/$aSubPath $aToolKit false ${aModule}
     }
     foreach anExecutable [OS:executable ${aModule}] {
       #create directory
-      if {![file exists "$theOutDir/$anSubPath/$anExecutable"]} {
-        file mkdir "$theOutDir/$anSubPath/$anExecutable"
+      if {![file exists "$theOutDir/$aSubPath/$anExecutable"]} {
+        file mkdir "$theOutDir/$aSubPath/$anExecutable"
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$anSubPath/${anExecutable}\")"
-      lappend aBuff "  subdirs(\$\{TK_ROOT_DIR\}/$anSubPath/${anExecutable})"
+      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${anExecutable}\")"
+      lappend aBuff "  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${anExecutable})"
       lappend aBuff "ELSE()"
-      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$anSubPath/${anExecutable}\")"
+      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$aSubPath/${anExecutable}\")"
       lappend aBuff "ENDIF()\n"
 
       # create cmake metafile into target subdir
-      osutils:cmktk $theOutDir/$anSubPath $anExecutable true ${aModule}
+      osutils:cmktk $theOutDir/$aSubPath $anExecutable true ${aModule}
     }
   }
-  regsub -all -- {__INCLUDE_TOOLKITS__} $anDepsTmpl  [join $aBuff "\n"] anDepsTmpl
+  regsub -all -- {__INCLUDE_TOOLKITS__} $anIncToolkitsTmpl  [join $aBuff "\n"] anIncToolkitsTmpl
 
   #generate cmake files
-  set aFile [open [set fdsw [file join "$theOutDir/$anSubPath" $anModulesFileName]] w]
+  set aFile [open [set fdsw [file join "$theOutDir/$aSubPath" $aModulesFileName]] w]
   fconfigure $aFile -translation crlf
-  puts $aFile $anModulesTmpl
-  close $aFile
-  
-  set aFile [open [set fdsw [file join "$theOutDir/$anSubPath" $anToolKitDepsFileName]] w]
-  fconfigure $aFile -translation crlf
-  puts $aFile $anDepsTmpl
+  puts $aFile $aModulesTmpl
   close $aFile
 
-  puts "The Cmake meta-files are stored in the [file normalize $theOutDir/$anSubPath] directories"
+  set aFile [open [set fdsw [file join "$theOutDir/$aSubPath" $aBeingUsedToolkits]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile $aToolkitsTmpl
+  close $aFile
+  
+  set aFile [open [set fdsw [file join "$theOutDir/$aSubPath" $aBeingIncludedToolkits]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile $anIncToolkitsTmpl
+  close $aFile
+
+  puts "The Cmake meta-files are stored in the [file normalize $theOutDir/$aSubPath] directories"
 }
 
 # Generates Code Blocks workspace.

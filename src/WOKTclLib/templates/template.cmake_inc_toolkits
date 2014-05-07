@@ -1,0 +1,6 @@
+# include all being used toolkits
+
+# USED_TOOLKITS variable
+OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkits)
+
+__INCLUDE_TOOLKITS__

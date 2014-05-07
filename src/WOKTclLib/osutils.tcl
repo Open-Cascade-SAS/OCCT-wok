@@ -1852,7 +1852,7 @@ proc osutils:vtkCsf {{theLibSuffix ""}} {
   return [join $aLibArray " "]
 }
 
-proc osutils:csfList { theOS  theCsfMap } {
+proc osutils:csfList { theOS  theCsfMap theTarget} {
   upvar $theCsfMap aCsfMap
 
   unset theCsfMap
@@ -1871,9 +1871,11 @@ proc osutils:csfList { theOS  theCsfMap } {
     set aCsfMap(CSF_OpenGlLibs) "opengl32.lib glu32.lib"
 
     # -- 3rd-parties precompiled libraries
-    # Note: Tcl library name depends on version and is chosen by #pragma
-#    set aCsfMap(CSF_TclLibs)    "tcl86.lib"
-#    set aCsfMap(CSF_TclTkLibs)  "tk86.lib"
+    if { "$theTarget" == "cmake" } {
+      set aCsfMap(CSF_TclLibs)    "tcl\${3RDPARTY_TCL_LIBRARY_VERSION}.lib"
+      set aCsfMap(CSF_TclTkLibs)  "tk\${3RDPARTY_TCL_LIBRARY_VERSION}.lib"
+    }
+
     set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
 
     #-- VTK
@@ -1882,8 +1884,13 @@ proc osutils:csfList { theOS  theCsfMap } {
   } else {
 
     #-- Tcl/Tk configuration
-    set aCsfMap(CSF_TclLibs)    "tcl8.6"
-    set aCsfMap(CSF_TclTkLibs)  "X11 tk8.6"
+    if { "$theTarget" == "cmake" } {
+      set aCsfMap(CSF_TclLibs)    "tcl\${3RDPARTY_TCL_LIBRARY_VERSION}"
+      set aCsfMap(CSF_TclTkLibs)  "X11 tk\${3RDPARTY_TK_LIBRARY_VERSION}"
+    } else {
+      set aCsfMap(CSF_TclLibs)    "tcl8.6"
+      set aCsfMap(CSF_TclTkLibs)  "X11 tk8.6"
+    }
 
     if { "$theOS" == "lin" } {
       set aCsfMap(CSF_ThreadLibs) "pthread rt"
@@ -1928,10 +1935,10 @@ proc osutils:csfList { theOS  theCsfMap } {
   }
 }
 
-proc osutils:usedOsLibs { theToolKit theOS } {
+proc osutils:usedOsLibs { theToolKit theOS {theTarget ""}} {
   set aUsedLibs [list]
 
-  osutils:csfList $theOS anOsCsfList
+  osutils:csfList $theOS anOsCsfList $theTarget
 
   foreach element [osutils:tk:hascsf [woklocate -p ${theToolKit}:source:EXTERNLIB [wokcd]]] {
     # test if variable is not setted - continue
@@ -2006,8 +2013,8 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   set anOutFileName "CMakeLists.txt"
 
   set anCommonUsedToolKits [osutils:commonUsedTK  $theToolKit]
-  set anUsedWntLibs        [osutils:usedOsLibs $theToolKit "wnt"]
-  set anUsedUnixLibs       [osutils:usedOsLibs $theToolKit "lin"]
+  set anUsedWntLibs        [osutils:usedOsLibs $theToolKit "wnt" cmake]
+  set anUsedUnixLibs       [osutils:usedOsLibs $theToolKit "lin" cmake]
   set anUsedMacLibs        [osutils:usedOsLibs $theToolKit "mac"]
 
   set anUnits [list]
@@ -2306,20 +2313,20 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff ""
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
-    lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\" )"
+    lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_POSTFIX\}\" )"
   } else {
     lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
     lappend aFileBuff " install( TARGETS ${theToolKit}
-                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\"
-                                 ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_SUFFIX\}\"
-                                 LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_SUFFIX\}\")"
+                                 RUNTIME DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_POSTFIX\}\"
+                                 ARCHIVE DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_POSTFIX\}\"
+                                 LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_POSTFIX\}\")"
     lappend aFileBuff ""
     lappend aFileBuff " if (MSVC)"
-    lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bin/Debug/${theToolKit}.pdb CONFIGURATIONS Debug
-                                  DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_SUFFIX\}\")"
+    lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bind/Debug/${theToolKit}.pdb CONFIGURATIONS Debug
+                                  DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_POSTFIX\}\")"
     lappend aFileBuff " endif()"
     lappend aFileBuff ""
   }

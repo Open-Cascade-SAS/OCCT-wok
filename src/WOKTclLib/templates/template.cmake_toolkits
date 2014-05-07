@@ -1,5 +1,4 @@
-
-# dynamic content of OCCT
+# being used toolkits
 
 __TOOLKIT_DEPS__
 
@@ -13,5 +12,3 @@ foreach( TOOLKIT ${USED_TOOLKITS} )
    set(TurnONthe${TK} ON)
  endforeach()
 endforeach()
-
-__INCLUDE_TOOLKITS__
