@@ -41,7 +41,7 @@ $public:
 $
 $  Storage_DECLARE_SCHEMA_METHODS(%Schema)
 $
-$  DEFINE_STANDARD_RTTI(%Schema)
+$  DEFINE_STANDARD_RTTI(%Schema,Storage_Schema)
 $};
 $
 $#endif
@@ -65,8 +65,8 @@ $#endif
 $#ifndef _Storage_BaseDriver_HeaderFile
 $#include <Storage_BaseDriver.hxx>
 $#endif
-$#ifndef _Handle_%Type_HeaderFile
-$#include <Handle_%Type.hxx>
+$#ifndef _%Type_HeaderFile
+$#include <%Type.hxx>
 $#endif
 $
 $%Include
@@ -85,7 +85,7 @@ $  Standard_EXPORT void Add(const Handle(Standard_Persistent)&,const Handle(Stor
 $  Standard_EXPORT void Write(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
 $  Standard_EXPORT void Read(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const;
 $
-$  DEFINE_STANDARD_RTTI(%Schema_%Type)
+$  DEFINE_STANDARD_RTTI(%Schema_%Type,Storage_CallBack)
 $};
 $#endif
 @end;
