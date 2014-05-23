@@ -18,7 +18,6 @@ $#define _Handle_%HPName_HeaderFile
 $
 $#include <Standard_Macro.hxx>
 $#include <Standard_DefineHandle.hxx>
-$#include <Standard.hxx>
 $#include <Handle_%HPInherits.hxx>
 $
 $class Standard_Persistent;
@@ -54,9 +53,7 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#include <Standard_Macro.hxx>
-$#include <Standard_DefineHandle.hxx>
-$#include <Standard.hxx>
+$#include <Standard_Type.hxx>
 $#include <Handle_%Class.hxx>
 $
 $%TICIncludes
@@ -69,7 +66,7 @@ $
 $%TICPublicmets
 $%TICPublicfriends
 $
-$  DEFINE_STANDARD_RTTI(%Class)
+$  DEFINE_STANDARD_RTTI(%Class,%Inherits)
 $
 $protected:
 $

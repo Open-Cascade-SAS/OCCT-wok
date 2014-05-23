@@ -17,13 +17,9 @@ $
 $#ifndef _Handle_%HTName_HeaderFile
 $#define _Handle_%HTName_HeaderFile
 $
-$#include <Standard.hxx>
 $#include <Standard_DefineHandle.hxx>
 $#include <Handle_%HTInherits.hxx>
 $
-$class Standard_Transient;
-$class Handle(Standard_Type);
-$class Handle(%HTInherits);
 $class %HTName;
 $
 $DEFINE_STANDARD_HANDLE(%HTName, %HTInherits)
@@ -58,8 +54,7 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#include <Standard.hxx>
-$#include <Standard_DefineHandle.hxx>
+$#include <Standard_Type.hxx>
 $#include <Handle_%Class.hxx>
 $
 $%TICIncludes
@@ -120,11 +115,10 @@ $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
 $#include <Standard.hxx>
-$#include <Standard_DefineHandle.hxx>
+$#include <Standard_Type.hxx>
 $
 $%TICIncludes
 $
-$class Handle(%Inherits);
 $class %Class;
 $DEFINE_STANDARD_HANDLE(%Class, %Inherits)
 $
@@ -290,8 +284,6 @@ $#include <Standard_Macro.hxx>
 $
 $%TICIncludes
 $
-$Standard_EXPORT const Handle(Standard_Type)& STANDARD_TYPE(%Class);
-$
 $%ClassComment
 $class %Class %Inherits
 ${
@@ -352,8 +344,6 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#include <Standard_PrimitiveTypes.hxx>
-$
 $%EnumComment
 $enum %Class
 ${
@@ -383,8 +373,6 @@ $#include <%Inherits.hxx>
 $
 $typedef %Inherits %Class;
 $%HandleTypedef
-$
-$#define %Class_Type_() %Inherits_Type_()
 $
 $#endif // _%Class_HeaderFile
 @end;
@@ -420,8 +408,7 @@ $
 $#ifndef _%Class_HeaderFile
 $#define _%Class_HeaderFile
 $
-$#include <Standard.hxx>
-$#include <Standard_DefineHandle.hxx>
+$#include <Standard_Type.hxx>
 $#include <Standard_DefineException.hxx>
 $#include <Standard_SStream.hxx>
 $#include <%Inherits.hxx>
@@ -472,7 +459,6 @@ $#define Handle_%DName Handle_%DValue
 
 @template ItemHandleDefine (%DName,%DValue) is
 $#define Handle_%DName Handle_%DValue
-$#define %DName_Type_() %DValue_Type_()
 @end;
 
 @template Undefine(%DName) is
@@ -490,7 +476,6 @@ $#undef Handle_%DName
 
 @template ItemHandleUndefine(%DName) is
 $#undef Handle_%DName
-$#undef %DName_Type_
 @end;
 
 @template ShortDec(%IClass) is
@@ -561,26 +546,21 @@ $\^
 @end;
 
 @template TypeMgtAncestor(%Nb,%Ancestors) is
-$  STANDARD_TYPE(%Ancestors),
+$
 @end;
 
 @template TypeMgt(%Class,%Inherits,%Ancestors) is
 $
-$IMPLEMENT_STANDARD_TYPE(%Class)
-$IMPLEMENT_STANDARD_SUPERTYPE_ARRAY()
-$%Inherits
-$IMPLEMENT_STANDARD_SUPERTYPE_ARRAY_END()
-$IMPLEMENT_STANDARD_TYPE_END(%Class)
 @end;
 
 -- type management : END
 
 @template DownCast(%Class,%IClass) is
-$IMPLEMENT_DOWNCAST(%Class,%IClass)
+$
 @end;
 
 @template DynamicType(%Class) is
-$IMPLEMENT_STANDARD_RTTI(%Class)
+$
 @end;
 
 @template IsKind(%Class,%IClass) is
