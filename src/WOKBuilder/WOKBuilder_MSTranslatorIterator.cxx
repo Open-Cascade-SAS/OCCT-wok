@@ -83,22 +83,22 @@ void WOKBuilder_MSTranslatorIterator::Reset()
 const Handle(WOKBuilder_MSAction)& WOKBuilder_MSTranslatorIterator::Value()
 {
   if(!myglobal.IsEmpty())    {
-    mycurrent = myglobal.Front();    
+    mycurrent = myglobal.First();    
     return mycurrent;
   }
   if(!mygetypes.IsEmpty())   {
-    mycurrent = mygetypes.Front();   
+    mycurrent = mygetypes.First();   
     return mycurrent;
   }
   if(!mygentypes.IsEmpty())  {
-    mycurrent = mygentypes.Front();  
+    mycurrent = mygentypes.First();  
     return mycurrent;
   }
   if(!myinsttypes.IsEmpty()) {
-    mycurrent = myinsttypes.Front(); 
+    mycurrent = myinsttypes.First(); 
     return mycurrent;
   }
-  mycurrent = mytypes.Front(); 
+  mycurrent = mytypes.First(); 
   return mycurrent;
 }
 
@@ -171,25 +171,25 @@ void WOKBuilder_MSTranslatorIterator::AddInStack(const Handle(TCollection_HAscii
 	case WOKBuilder_SchUses:
 	case WOKBuilder_Uses:
 	case WOKBuilder_GlobEnt:
-	  myglobal.Push(anact);
+	  myglobal.Append(anact);
 	  break;
 	case WOKBuilder_Instantiate:
 	case WOKBuilder_InstToStd:
-	  myinsttypes.Push(anact);
+	  myinsttypes.Append(anact);
 	  break;
 	case WOKBuilder_InterfaceTypes:
 	case WOKBuilder_SchemaTypes:
 	case WOKBuilder_PackageMethods:
-	  mygetypes.Push(anact);
+	  mygetypes.Append(anact);
 	  break;
 	case WOKBuilder_GenType:
-	  mygentypes.Push(anact);
+	  mygentypes.Append(anact);
 	  break;
 	case WOKBuilder_CompleteType:
 	case WOKBuilder_SchemaType:
 	case WOKBuilder_Inherits:
 	case WOKBuilder_TypeUses:
-	  mytypes.Push(anact);
+	  mytypes.Append(anact);
 	  break;
 	default:
 	  Standard_ProgramError::Raise("WOKBuilder_MSTranslatorIterator::AddInStack : Unknown action type");
@@ -385,25 +385,25 @@ void WOKBuilder_MSTranslatorIterator::Next()
     case WOKBuilder_SchUses:
     case WOKBuilder_Uses:
     case WOKBuilder_GlobEnt:
-      myglobal.Pop();
+      myglobal.RemoveFirst();
       break;
     case WOKBuilder_InterfaceTypes:
     case WOKBuilder_SchemaTypes:
     case WOKBuilder_PackageMethods:
-      mygetypes.Pop();
+      mygetypes.RemoveFirst();
       break;
     case WOKBuilder_Instantiate:
     case WOKBuilder_InstToStd:
-      myinsttypes.Pop();
+      myinsttypes.RemoveFirst();
       break;
     case WOKBuilder_GenType:
-      mygentypes.Pop();
+      mygentypes.RemoveFirst();
       break;
     case WOKBuilder_SchemaType:
     case WOKBuilder_CompleteType:
     case WOKBuilder_Inherits:
     case WOKBuilder_TypeUses:
-      mytypes.Pop();
+      mytypes.RemoveFirst();
       break;
     default:
       Standard_ProgramError::Raise("WOKBuilder_MSTranslatorIterator::Next : Unknown action type");

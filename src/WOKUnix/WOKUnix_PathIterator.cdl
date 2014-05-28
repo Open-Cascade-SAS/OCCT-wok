@@ -12,7 +12,7 @@ uses
     Boolean from Standard,
     HAsciiString from TCollection,
     AsciiString from TCollection,
-    StackOfDir from WOKUnix,
+    ListOfDir from WOKUnix,
     Dir from WOKUnix,
     DirEnt from WOKUnix,
     Path from WOKUnix
@@ -57,7 +57,7 @@ fields
     mymask      : AsciiString from TCollection;
     mypath      : Path from WOKUnix;
     mydata      : DirEnt from WOKUnix;
-    mystack     : StackOfDir from WOKUnix;
+    mystack     : ListOfDir from WOKUnix;
     mymore      : Boolean from Standard;
     myrecflag   : Boolean from Standard;
 

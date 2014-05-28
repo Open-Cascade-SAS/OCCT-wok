@@ -18,9 +18,6 @@
 
 #include <edl_rule.h>
 
-#include <EDL.tab.h>
-
-
 #ifdef WNT
 # include <windows.h>
 #endif
@@ -29,9 +26,13 @@
 # include <unistd.h>
 #endif
 
-extern "C" {int EDLparse();}
-extern "C" {int EDLlex();}
-extern "C" {void EDL_SetFile();}
+extern "C" {
+  int EDLparse();
+  int EDLlex();
+  void EDL_SetFile();
+}
+
+#include <EDL.tab.h>
 
 #ifndef WNT
 extern FILE *EDLin;
@@ -185,7 +186,7 @@ EDL_Error EDL_Interpretor::Parse(const Standard_CString aFile)
     if (fic) {
       edlstring edlstr;
       edlstr.str = (char *)aFile;
-      edlstr.length = strlen(aFile);
+      edlstr.length = (int)strlen(aFile);
       EDL_SetCurrentFile(edlstr);
       EDLin           = fic;
       EDLlineno       = 1;
@@ -700,7 +701,7 @@ void EDL_Interpretor::RemoveLibrary(const Standard_CString aLibrary)
 
 void EDL_Interpretor::AddExecutionStatus(const Standard_Boolean aValue)
 {
-  myExecutionStatus.Push(aValue);
+  myExecutionStatus.Prepend(aValue);
 }
 
 Standard_Boolean EDL_Interpretor::RemoveExecutionStatus()
@@ -708,8 +709,8 @@ Standard_Boolean EDL_Interpretor::RemoveExecutionStatus()
   Standard_Boolean aResult;
 
   if (!myExecutionStatus.IsEmpty()) {
-    aResult = myExecutionStatus.Top();
-    myExecutionStatus.Pop();
+    aResult = myExecutionStatus.First();
+    myExecutionStatus.RemoveFirst();
   }
   else {
     aResult = Standard_True;
@@ -723,7 +724,7 @@ Standard_Boolean EDL_Interpretor::GetExecutionStatus()
   Standard_Boolean aResult;
 
   if (!myExecutionStatus.IsEmpty()) {
-    aResult = myExecutionStatus.Top();
+    aResult = myExecutionStatus.First();
   }
   else {
     aResult = Standard_True;
@@ -744,14 +745,14 @@ EDL_ParameterMode EDL_Interpretor::GetParameterType() const
 
 void EDL_Interpretor::AddExpressionMember(const Standard_Boolean aValue)
 {
-  myExpressionMember.Push(aValue);
+  myExpressionMember.Prepend(aValue);
 }
 
 Standard_Boolean EDL_Interpretor::GetExpressionMember()
 {
-  Standard_Boolean aResult = myExpressionMember.Top();
+  Standard_Boolean aResult = myExpressionMember.First();
 
-  myExpressionMember.Pop();
+  myExpressionMember.RemoveFirst();
 
   return aResult;
 }

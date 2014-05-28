@@ -57,8 +57,8 @@ package WOKNT
 
   private class CompareOfString;
 
-  private class StackOfHandle
-    	instantiates    Stack  from TCollection ( Handle from WOKNT );
+  private class ListOfHandle
+    	instantiates    List   from TCollection ( Handle from WOKNT );
 
   private class SequenceOfShell 
     	instantiates  Sequence from TCollection ( Shell from  WOKNT);

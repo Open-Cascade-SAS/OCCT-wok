@@ -5,6 +5,9 @@
 
 #include <WOKTools_Messages.hxx>
 #include <WOKTools_MapIteratorOfMapOfHAsciiString.hxx>
+
+extern "C" int DELIVERYparse();
+
 #include <WOKDeliv_ParseDelivery.hxx>
 
 #include <TCollection_HAsciiString.hxx>

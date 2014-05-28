@@ -74,7 +74,7 @@ is
    
    -- PRIVATE
    -- 
-   private class StackOfBoolean instantiates Stack from TCollection(Boolean from Standard);
+   private class ListOfBoolean instantiates List from TCollection(Boolean from Standard);
    ---Purpose: for evaluation of expressions
       
    private class Interpretor;

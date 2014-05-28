@@ -192,8 +192,8 @@ is
     	instantiates HSequence from TCollection ( Library              from WOKBuilder,  
                                                   SequenceOfLibrary    from WOKBuilder ); 
 
-    private class QueueOfMSAction
-    	instantiates     Queue from TCollection ( MSAction            from WOKBuilder );
+    private class ListOfMSAction
+    	instantiates      List from TCollection ( MSAction            from WOKBuilder );
 
     private class MapOfMSAction
     	instantiates       Map from WOKTools    ( MSAction            from WOKBuilder,  

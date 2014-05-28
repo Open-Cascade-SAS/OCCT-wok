@@ -23,7 +23,7 @@ uses
     MSActionType                  from WOKBuilder,
     HAsciiString                  from TCollection,
     HSequenceOfHAsciiString       from TColStd,
-    QueueOfMSAction               from WOKBuilder
+    ListOfMSAction                from WOKBuilder
 is
 
     Create(ams : MSchema from WOKBuilder; anaction : MSActionID from WOKBuilder)  
@@ -72,11 +72,11 @@ fields
 
     mytarget     : HAsciiString from TCollection;
     	    
-    myglobal     : QueueOfMSAction from WOKBuilder;
-    myinsttypes  : QueueOfMSAction from WOKBuilder;
-    mygentypes   : QueueOfMSAction from WOKBuilder;
-    mygetypes    : QueueOfMSAction from WOKBuilder;
-    mytypes      : QueueOfMSAction from WOKBuilder;
+    myglobal     : ListOfMSAction from WOKBuilder;
+    myinsttypes  : ListOfMSAction from WOKBuilder;
+    mygentypes   : ListOfMSAction from WOKBuilder;
+    mygetypes    : ListOfMSAction from WOKBuilder;
+    mytypes      : ListOfMSAction from WOKBuilder;
 
     mycurrent    : MSAction from WOKBuilder;
 

@@ -14,7 +14,7 @@ uses AsciiString            from TCollection,
      MapOfTemplate          from EDL,
      MapOfFile              from EDL,
      MapOfLibrary           from EDL,
-     StackOfBoolean         from EDL,
+     ListOfBoolean          from EDL,
      HSequenceOfVariable    from EDL,
      Error                  from EDL,
      ParameterMode          from EDL,
@@ -137,9 +137,9 @@ fields
     myTemplateTable    : MapOfTemplate          from EDL;
     myFileTable        : MapOfFile              from EDL;
     myLibraryTable     : MapOfLibrary           from EDL;
-    myExecutionStatus  : StackOfBoolean         from EDL;
+    myExecutionStatus  : ListOfBoolean          from EDL;
     myParameterType    : ParameterMode          from EDL;
-    myExpressionMember : StackOfBoolean         from EDL;
+    myExpressionMember : ListOfBoolean          from EDL;
     myPrintList        : AsciiString            from TCollection;
     myCurrentTemplate  : AsciiString            from TCollection;
     myVariableList     : HSequenceOfVariable    from EDL;

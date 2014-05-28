@@ -105,7 +105,7 @@ int wokCP( int argc, char** argv )
 	      if ( hFileSrc == INVALID_HANDLE_VALUE || hFileDst == INVALID_HANDLE_VALUE )
 		return retVal;
 
-	      while(TRUE) 
+	      for(;;) 
 		{
 		  if( !ReadFile( hFileSrc, buffer, BUFFER_SIZE, &dwBytesRead, NULL)) return retVal;
 		  if( dwBytesRead == 0 ) break;

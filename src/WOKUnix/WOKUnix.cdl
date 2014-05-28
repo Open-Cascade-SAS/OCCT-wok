@@ -85,8 +85,8 @@ is
     private class SequenceOfProcess 
   	instantiates  Sequence from TCollection ( Process from  WOKUnix);
 
-    private class StackOfDir
-    	instantiates     Stack from TCollection ( Dir from WOKUnix );
+    private class ListOfDir
+    	instantiates  List from TCollection ( Dir from WOKUnix );
 
     SystemLastError returns Integer from Standard;
 

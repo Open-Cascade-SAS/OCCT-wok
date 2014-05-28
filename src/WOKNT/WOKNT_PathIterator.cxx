@@ -15,8 +15,8 @@ WOKNT_PathIterator::WOKNT_PathIterator(const Handle(WOKNT_Path)& apath, const St
   mask.AssignCat("/");
   mask.AssignCat(mymask.ToCString());
 
-  myStack.Push(FindFirstFile(mask.ToCString(), &mydata));
-  if(myStack.Top() == INVALID_HANDLE_VALUE ) 
+  myStack.Prepend(FindFirstFile(mask.ToCString(), &mydata));
+  if(myStack.First() == INVALID_HANDLE_VALUE ) 
     mymore = Standard_False;
   else
     mymore = Standard_True;
@@ -43,7 +43,7 @@ void WOKNT_PathIterator::SkipDots()
 {
   while(IsDots((Standard_CString)mydata.cFileName) && !myStack.IsEmpty())
     {
-      if(!FindNextFile(myStack.Top(), &mydata))
+      if(!FindNextFile(myStack.First(), &mydata))
 	{
 	  if(GetLastError() == ERROR_NO_MORE_FILES) 
 	    {
@@ -76,12 +76,12 @@ void WOKNT_PathIterator::Push(const WOKNT_FindData& data, const WOKNT_Handle& ha
 	  mask.AssignCat(mymask);
 
 	  WOKNT_Handle nextone = FindFirstFile(mask.ToCString(), &mydata);
-	  myStack.Push(nextone);
+	  myStack.Prepend(nextone);
 	  SkipDots();
 
 	  if(!myStack.IsEmpty())
 	    {
-	      if(myStack.Top() == INVALID_HANDLE_VALUE ) 
+	      if(myStack.First() == INVALID_HANDLE_VALUE ) 
                 {
                   Pop();
 		  mymore = Standard_False;
@@ -107,11 +107,11 @@ void WOKNT_PathIterator::Pop()
 {
   if(!myStack.IsEmpty())
     {
-      FindClose(myStack.Top());
-      myStack.Pop();
+      FindClose(myStack.First());
+      myStack.RemoveFirst();
       if(!myStack.IsEmpty()) 
 	{
-	  if(!FindNextFile(myStack.Top(), &mydata))
+	  if(!FindNextFile(myStack.First(), &mydata))
 	    {
 	      if(GetLastError() == ERROR_NO_MORE_FILES) 
 		{
@@ -133,14 +133,14 @@ void WOKNT_PathIterator::Pop()
 
 void WOKNT_PathIterator::Next()
 {
-  if(myStack.Top()!=INVALID_HANDLE_VALUE && mymore) 
+  if(myStack.First()!=INVALID_HANDLE_VALUE && mymore) 
     {
       if(!IsDots(mydata.cFileName) && mydata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && myrecflag) 
-        Push(mydata, myStack.Top());
+        Push(mydata, myStack.First());
         if (!mymore) Pop(); 
       else
 	{
-	  if(!FindNextFile(myStack.Top(), &mydata))
+	  if(!FindNextFile(myStack.First(), &mydata))
 	    {
 	      if(GetLastError() == ERROR_NO_MORE_FILES) 
 		{
@@ -177,7 +177,7 @@ Handle(TCollection_HAsciiString) WOKNT_PathIterator::NameValue()  const
 
 Standard_Integer WOKNT_PathIterator::LevelValue() const
 {
-  return myStack.Depth();
+  return myStack.Extent();
 }
 
 Standard_Boolean WOKNT_PathIterator::More() const
@@ -187,7 +187,7 @@ Standard_Boolean WOKNT_PathIterator::More() const
 
 void WOKNT_PathIterator::Destroy() const
 {
-  if(myStack.Top() != INVALID_HANDLE_VALUE) FindClose(myStack.Top());
+  if(myStack.First() != INVALID_HANDLE_VALUE) FindClose(myStack.First());
 }
 
 #endif

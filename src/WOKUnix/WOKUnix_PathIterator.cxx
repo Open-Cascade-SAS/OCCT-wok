@@ -33,8 +33,8 @@ WOKUnix_PathIterator::WOKUnix_PathIterator(const Handle(WOKUnix_Path)& apath, co
       return;
     }
 
-  mystack.Push(adir);
-  mydata = readdir(mystack.Top());
+  mystack.Prepend(adir);
+  mydata = readdir(mystack.First());
   mymore = Standard_True;
   
   SkipDots();
@@ -60,7 +60,7 @@ void WOKUnix_PathIterator::SkipDots()
   if(!mydata) return;
   while(IsDots((Standard_CString)mydata->d_name) && !mystack.IsEmpty())
     {
-      mydata = readdir(mystack.Top());
+      mydata = readdir(mystack.First());
       if(!mydata)
 	{
 	  if(!mystack.IsEmpty())
@@ -85,13 +85,13 @@ void WOKUnix_PathIterator::Push(const Handle(WOKUnix_Path)& apath,  const WOKUni
       mypath = apath;
       
       WOKUnix_Dir nextone = opendir(mypath->Name()->ToCString());
-      mystack.Push(nextone);
-      mydata = readdir(mystack.Top());
+      mystack.Prepend(nextone);
+      mydata = readdir(mystack.First());
       SkipDots();
       
       if(!mystack.IsEmpty())
 	{
-	  if(!mystack.Top()) 
+	  if(!mystack.First()) 
 	    mymore = Standard_False;
 	  else
 	    mymore = Standard_True;
@@ -105,11 +105,11 @@ void WOKUnix_PathIterator::Pop()
 {
   if(!mystack.IsEmpty())
     {
-      closedir(mystack.Top());
-      mystack.Pop();
+      closedir(mystack.First());
+      mystack.RemoveFirst();
       if(!mystack.IsEmpty()) 
 	{
-	  mydata = readdir(mystack.Top());
+	  mydata = readdir(mystack.First());
 	  if(!mydata)
 	    {
 	      if(mystack.IsEmpty())
@@ -131,10 +131,10 @@ void WOKUnix_PathIterator::Next()
 {
   Handle(WOKUnix_Path) apath =  new WOKUnix_Path(mypath->Name(), new TCollection_HAsciiString(mydata->d_name));
   if(!IsDots(mydata->d_name) && myrecflag && apath->IsDirectory()) 
-    Push(apath, mystack.Top());
+    Push(apath, mystack.First());
   else
     {
-      mydata = readdir(mystack.Top());
+      mydata = readdir(mystack.First());
       if(!mydata)
 	{
 	  if(!mystack.IsEmpty())
@@ -162,7 +162,7 @@ Handle(TCollection_HAsciiString) WOKUnix_PathIterator::NameValue()  const
 
 Standard_Integer WOKUnix_PathIterator::LevelValue() const
 {
-  return mystack.Depth();
+  return mystack.Extent();
 }
 
 Standard_Boolean WOKUnix_PathIterator::More() const
@@ -174,8 +174,8 @@ void WOKUnix_PathIterator::Destroy()
 {
   while(!mystack.IsEmpty())
     {
-      if(mystack.Top()) closedir(mystack.Top());
-      mystack.Pop();
+      if(mystack.First()) closedir(mystack.First());
+      mystack.RemoveFirst();
     }
 }
 

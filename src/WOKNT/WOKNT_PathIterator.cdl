@@ -14,7 +14,7 @@ uses
     AsciiString from TCollection,
     FindData from WOKNT,
     Handle from WOKNT,
-    StackOfHandle   from WOKNT,
+    ListOfHandle from WOKNT,
     Path from WOKNT
     
 is
@@ -57,7 +57,7 @@ fields
     mymask      : AsciiString from TCollection;
     mypath      : Path from WOKNT;
     mydata      : FindData from WOKNT;
-    myStack     : StackOfHandle from WOKNT;
+    myStack     : ListOfHandle from WOKNT;
     mymore      : Boolean from Standard;
     myrecflag   : Boolean from Standard;
 

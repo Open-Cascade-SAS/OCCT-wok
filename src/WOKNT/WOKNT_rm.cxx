@@ -126,7 +126,7 @@ int wokRM ( int argc, char** argv ) {
 static BOOL _rm_func ( LPTSTR fileName, BOOL fDir, void* data ) {
  
  BOOL         fRetry = FALSE;
- BOOL         status;
+ BOOL         status = FALSE;
  PDELETE_DATA pData = ( PDELETE_DATA )data;
 
  ++nFiles;
