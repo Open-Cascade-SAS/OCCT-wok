@@ -2992,7 +2992,15 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   # modules of occt
   set aBuff [list]
   foreach aModule $theModules {
+    if {$aModule == "Draw"} {
+      lappend aBuff "IF (NOT DEFINED ANDROID)"
+    }
+    
     lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
+    
+    if {$aModule == "Draw"} {
+      lappend aBuff "ENDIF()"
+    }
   }
   regsub -all -- {__MODULE_LIST__}  $aModulesTmpl  [join $aBuff "\n"] aModulesTmpl
 

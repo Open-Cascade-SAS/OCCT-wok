@@ -1897,7 +1897,7 @@ proc osutils:csfList { theOS  theCsfMap theTarget} {
       set aCsfMap(CSF_OpenGlLibs) "GLU GL"
 
     } elseif { "$theOS" == "mac" } {
-      set aCsfMap(CSF_objc)     "objc"
+      set aCsfMap(CSF_objc)       "objc"
 
       # frameworks
       set aCsfMap(CSF_Appkit)     "Appkit"
@@ -1905,10 +1905,15 @@ proc osutils:csfList { theOS  theCsfMap theTarget} {
       set aCsfMap(CSF_OpenGlLibs) "OpenGL"
       set aCsfMap(CSF_TclLibs)    "Tcl"
       set aCsfMap(CSF_TclTkLibs)  "Tk"
+    } elseif { "$theOS" == "android" } {
+      set aCsfMap(CSF_ThreadLibs) "c"
+      set aCsfMap(CSF_OpenGlLibs) "EGL GLESv2"
     }
 
-    set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
-    set aCsfMap(CSF_MotifLibs)  "X11"
+    if { "$theOS" != "android" } {
+      set aCsfMap(CSF_XwLibs)     "X11 Xext Xmu Xi"
+      set aCsfMap(CSF_MotifLibs)  "X11"
+    }
 
     # variable is required for support for OCCT version that use fgtl
     #-- FTGL (font renderer for OpenGL)
@@ -1925,7 +1930,9 @@ proc osutils:csfList { theOS  theCsfMap theTarget} {
     set aCsfMap(CSF_FreeImagePlus)  "freeimage"
 
     #-- GL2PS
-    set aCsfMap(CSF_GL2PS)          "gl2ps"
+    if { "$theOS" != "android" } {
+      set aCsfMap(CSF_GL2PS)          "gl2ps"
+    }
 
     #-- OpenCL
     set aCsfMap(CSF_OPENCL)         "OpenCL"
@@ -2016,6 +2023,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
   set anUsedWntLibs        [osutils:usedOsLibs $theToolKit "wnt" cmake]
   set anUsedUnixLibs       [osutils:usedOsLibs $theToolKit "lin" cmake]
   set anUsedMacLibs        [osutils:usedOsLibs $theToolKit "mac"]
+  set anUsedAndroidLibs    [osutils:usedOsLibs $theToolKit "android"]
 
   set anUnits [list]
   foreach anUnitWithPath [osutils:tk:units [woklocate -u $theToolKit]] {
@@ -2219,6 +2227,24 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "  endif()"
     } elseif { $anUsedMacLib != "" } {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedMacLib} )"
+    }
+  }
+  lappend aFileBuff "elseif(ANDROID)"
+  foreach anUsedAndroidLib $anUsedAndroidLibs {
+    if { $anUsedAndroidLib == "tbb" || $anUsedAndroidLib == "tbbmalloc" } {
+      lappend aFileBuff "  if(USE_TBB)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedAndroidLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedAndroidLib == "freeimage" } {
+      lappend aFileBuff "  if(USE_FREEIMAGE)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedAndroidLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedAndroidLib == "gl2ps" } {
+      lappend aFileBuff "  if(USE_GL2PS)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedAndroidLib} )"
+      lappend aFileBuff "  endif()"
+    } elseif { $anUsedAndroidLib != "" } {
+      lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedAndroidLib} )"
     }
   }
   lappend aFileBuff "else()"
