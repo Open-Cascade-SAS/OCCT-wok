@@ -3,8 +3,15 @@
 ;; Load color settings
 ;;(set-default-font "Courier New:14")
 ;(set-default-font "DejaVu Sans Mono Bold:14")
-(set-screen-width  120)
-(set-screen-height 55)
+(if (>= emacs-major-version 20)
+    (progn
+      (message "Emacs 21!")
+      (set-frame-width  (selected-frame) 120)
+      (set-frame-height (selected-frame) 55))
+    (progn
+      (set-screen-width  120)
+      (set-screen-height 55)))
+
 ;;(set-background-color "MidnightBlue")
 (set-background-color "White")
 (set-foreground-color "Black")
