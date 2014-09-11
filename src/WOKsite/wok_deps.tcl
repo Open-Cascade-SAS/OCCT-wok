@@ -27,6 +27,7 @@ set HAVE_FREEIMAGE "false"
 set HAVE_GL2PS     "false"
 set HAVE_TBB       "false"
 set HAVE_OPENCL    "false"
+set HAVE_VTK       "false"
 set MACOSX_USE_GLX "false"
 set CHECK_QT4      "true"
 set CHECK_JDK      "true"
@@ -57,6 +58,9 @@ if { [info exists ::env(HAVE_TBB)] } {
 }
 if { [info exists ::env(HAVE_OPENCL)] } {
   set HAVE_OPENCL "$::env(HAVE_OPENCL)"
+}
+if { [info exists ::env(HAVE_VTK)] } {
+  set HAVE_VTK "$::env(HAVE_VTK)"
 }
 if { [info exists ::env(MACOSX_USE_GLX)] } {
   set MACOSX_USE_GLX "$::env(MACOSX_USE_GLX)"
@@ -625,6 +629,126 @@ proc wokdep:SearchOpenCL {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBi
   return "$isFound"
 }
 
+# Auxiliary function, gets VTK version to set default search directory
+proc wokdep:VtkVersion { thePath } {
+  set aResult "6.1"
+
+  set aVtkRoot [lindex [regexp -all -inline {[0-9.]*} [file tail $thePath]] 0]
+  if { "$aVtkRoot" != "" } {
+    set aVtkRoot [regexp -inline {[0-9]*.[0-9]*} $aVtkRoot]
+    if { "$aVtkRoot" != "" } {
+    set aResult $aVtkRoot
+    }
+  }
+
+  return $aResult
+}
+
+# Search VTK library placement
+proc wokdep:SearchVTK {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc   anErrInc
+  upvar $theErrLib32 anErrLib32
+  upvar $theErrLib64 anErrLib64
+  upvar $theErrBin32 anErrBin32
+  upvar $theErrBin64 anErrBin64
+
+  set isFound "true"
+  
+  set aVtkPath ""
+  set aVtkIncPath [wokdep:SearchHeader "vtkConfigure.h"]
+  set aVtkVer [wokdep:VtkVersion $aVtkIncPath]
+  if { "$aVtkIncPath" == ""} {
+    set aPathList [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*]
+    set aVtkPath [wokdep:Preferred "$aPathList" "$::VCVER" "$::ARCH" ]
+    if { "$aVtkPath" != "" && [file exists "$aVtkPath/include/vtk-[wokdep:VtkVersion $aVtkPath]/vtkConfigure.h"]} { 
+      set aVtkVer [wokdep:VtkVersion $aVtkPath]
+      lappend ::CSF_OPT_INC "$aVtkPath/include/vtk-[wokdep:VtkVersion $aVtkPath]"
+    } else { # try to search in all found paths
+      set isFound "false"
+      foreach anIt $aPathList {
+        if { [file exists "$anIt/include/vtk-[wokdep:VtkVersion $anIt]/vtkConfigure.h"] } {
+          set aVtkPath $anIt
+          set aVtkVer [wokdep:VtkVersion $aVtkPath]
+          lappend ::CSF_OPT_INC "$anIt/include/vtk-[wokdep:VtkVersion $anIt]"
+          set isFound "true"
+          break
+        }
+      }
+
+      # Bad case: we do not found vtkConfigure.h in all paths.
+      if { "$isFound" == "false"} {
+        lappend anErrInc "Error: 'vtkConfigure.h' not found (VTK)"
+        set isFound "false"
+      }
+    }
+  }
+
+  set aVtkLibPath ""
+  foreach anArchIter {64 32} {
+    set aVtkLibPath [wokdep:SearchLib "vtkCommonCore-$aVtkVer" "$anArchIter"]
+    if { "$aVtkLibPath" == "" } {
+      set aPathList [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*]
+      set aPath [wokdep:Preferred $aPathList "$::VCVER" "$anArchIter" ]
+      set aVtkLibPath [wokdep:SearchLib "vtkCommonCore-$aVtkVer" "$anArchIter" "$aPath/lib"]
+      if { "$aVtkLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+      } else {
+        set aPath [wokdep:SearchLib "vtkCommonCore-$aVtkVer" "$anArchIter" "$aVtkPath/lib"]
+        if { "$aPath" != "" } {
+          set aLibPath $aVtkIncPath
+          lappend ::CSF_OPT_LIB$anArchIter "$aLibPath/lib"
+        } else {
+          # The last chance: search /lib directory in all found paths
+          foreach anIt $aPathList {
+            set aVtkLibPath [wokdep:SearchLib "vtkCommonCore-$aVtkVer" "$anArchIter" "$anIt/lib"]
+            if { "$aVtkLibPath" != ""} {
+              lappend ::CSF_OPT_LIB$anArchIter "$anIt/lib"
+              break
+            }
+          }
+          if { "$aVtkLibPath" == "" } {
+            lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}vtkCommonCore-${aVtkVer}\.${::SYS_LIB_SUFFIX}' not found (VTK)"
+            if { "$::ARCH" == "$anArchIter" } {
+              set isFound "false"
+            }
+          }
+        }
+      }
+    }
+  }
+  
+    # Search binary path
+    if { "$::tcl_platform(platform)" == "windows" } {
+      foreach anArchIter {64 32} {
+        set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter"]
+        if { "$aVtkBinPath" == "" } {
+          set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*] "$::VCVER" "$anArchIter" ]
+          set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/bin"]
+          if { "$aVtkBinPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+          } else {
+            set aVtkBinPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aPath/lib"]
+            if { "$aVtkBinPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aPath/lib" } 
+          }
+        }
+      }
+      
+      # We didn't find preferred binary path => search through inc path or among all available VTK directories
+      if { "$aVtkBinPath" == "" } {
+        # Try to find in lib path
+        set aPath [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aLibPath/bin"]
+        if { "$aPath" != "" } { lappend ::CSF_OPT_BIN$anArchIter "$aLibPath/bin"
+        } elseif { [wokdep:SearchBin "vtkCommonCore-${aVtkVer}.dll" "$anArchIter" "$aLibPath/lib"] != "" } {
+          lappend ::CSF_OPT_BIN$anArchIter "$aLibPath/lib"
+        } else {
+           lappend anErrBin$anArchIter "Error: 'vtkCommonCore-${aVtkVer}.dll' not found (VTK)"
+           set isFound "false"
+        }
+      }
+    }
+
+  return "$isFound"
+}
+
 # Search Qt4 libraries placement
 proc wokdep:SearchQt4 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
   upvar $theErrInc   anErrInc
@@ -790,6 +914,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "set HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "set HAVE_TBB=$::HAVE_TBB"
     puts $aFile "set HAVE_OPENCL=$::HAVE_OPENCL"
+    puts $aFile "set HAVE_VTK=$::HAVE_VTK"
     puts $aFile "set CHECK_QT4=$::CHECK_QT4"
     puts $aFile "set CHECK_JDK=$::CHECK_JDK"
 
@@ -837,6 +962,7 @@ proc wokdep:SaveCustom {} {
     puts $aFile "export HAVE_GL2PS=$::HAVE_GL2PS"
     puts $aFile "export HAVE_TBB=$::HAVE_TBB"
     puts $aFile "export HAVE_OPENCL=$::HAVE_OPENCL"
+    puts $aFile "export HAVE_VTK=$::HAVE_VTK"
     if { "$::tcl_platform(os)" == "Darwin" } {
       puts $aFile "export MACOSX_USE_GLX=$::MACOSX_USE_GLX"
     }

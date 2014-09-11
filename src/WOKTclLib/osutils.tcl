@@ -1829,6 +1829,29 @@ proc osutils:commonUsedTK { theToolKit } {
   return $anUsedToolKits
 }
 
+# Load 3rd-party script to find preferred path for VTK version determination 
+global tcl_platform
+source "$::env(WOKHOME)/site/wok_deps.tcl"
+
+# Returns string of library dependencies for generation of Visual Studio project or make lists.
+# Parameter theLibSuffix determines if names of libraries are to include extensions in the end (i.e. *.lib)
+proc osutils:vtkCsf {{theLibSuffix ""}} {
+  set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{VTK}*] "$::VCVER" "$::ARCH" ]
+  set aVtkVer [wokdep:VtkVersion $aPath]
+
+  set aLibArray [list vtkCommonCore vtkCommonDataModel vtkCommonExecutionModel vtkCommonMath vtkCommonTransforms vtkRenderingCore \
+                      vtkRenderingOpenGL  vtkFiltersGeneral vtkIOCore vtkIOImage vtkImagingCore vtkInteractionStyle]
+                      
+  # Additional suffices for the libraries
+  set anIdx 0
+  foreach anItem $aLibArray {
+    lset aLibArray $anIdx $anItem-$aVtkVer$theLibSuffix
+    incr anIdx
+  }
+
+  return [join $aLibArray " "]
+}
+
 proc osutils:csfList { theOS  theCsfMap } {
   upvar $theCsfMap aCsfMap
 
@@ -1852,6 +1875,9 @@ proc osutils:csfList { theOS  theCsfMap } {
 #    set aCsfMap(CSF_TclLibs)    "tcl86.lib"
 #    set aCsfMap(CSF_TclTkLibs)  "tk86.lib"
     set aCsfMap(CSF_QT)         "QtCore4.lib QtGui4.lib"
+
+    #-- VTK
+    set aCsfMap(CSF_VTK)        [osutils:vtkCsf ".lib"]
 
   } else {
 
@@ -1896,6 +1922,9 @@ proc osutils:csfList { theOS  theCsfMap } {
 
     #-- OpenCL
     set aCsfMap(CSF_OPENCL)         "OpenCL"
+    
+    #-- VTK
+    set aCsfMap(CSF_VTK)            [osutils:vtkCsf]
   }
 }
 

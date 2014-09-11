@@ -174,6 +174,11 @@ if { "$::HAVE_OPENCL" == "true" } {
     puts "  not found: OpenCL SDK (Optional, enabled)"
   }
 }
+if { "$::HAVE_VTK" == "true" } {
+  if { [wokdep:SearchVTK anErrs anErrs anErrs anErrs anErrs] == "false"} {
+    puts "  not found: VTK (Optional, enabled)"
+  }
+}
 if { "$::CHECK_QT4" == "true" } {
   if { [wokdep:SearchQt4 anErrs anErrs anErrs anErrs anErrs] == "false" } {
     puts "  not found: Qt4 (Optional, set to check)"

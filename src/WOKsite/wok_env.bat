@@ -18,6 +18,7 @@ set "HAVE_TBB=false"
 set "HAVE_OPENCL=false"
 set "HAVE_FREEIMAGE=false"
 set "HAVE_GL2PS=false"
+set "HAVE_VTK=false"
 set "VCVARS="
 
 rem ----- Set local settings (M$ Visual Studio compilers etc.) -----
@@ -30,6 +31,7 @@ if ["%HAVE_TBB%"]       == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DH
 if ["%HAVE_OPENCL%"]    == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_OPENCL"
 if ["%HAVE_GL2PS%"]     == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_GL2PS"
 if ["%HAVE_FREEIMAGE%"] == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_FREEIMAGE"
+if ["%HAVE_VTK%"]       == ["true"] set "PRODUCTS_DEFINES=%PRODUCTS_DEFINES% -DHAVE_VTK"
 
 rem ----- Setup Environment Variables for M$ Visual Studio compilers -----
 if ["%ARCH%"] == ["32"] set VCARCH=x86

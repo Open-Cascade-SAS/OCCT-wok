@@ -109,7 +109,8 @@
   @set %CSF_TBB = "";
   @set %CSF_OPENCL_INCLUDES = "";
   @set %CSF_OPENCL = "";
-
+  @set %CSF_VTK_INCLUDES = "";
+  @set %CSF_VTK = "";
   @set %CSF_QT_INCLUDES = "";
   @set %CSF_QT = "";
 
@@ -143,6 +144,7 @@
   @set %ENV_HAVE_GL2PS     = "${HAVE_GL2PS}";
   @set %ENV_HAVE_TBB       = "${HAVE_TBB}";
   @set %ENV_HAVE_OPENCL    = "${HAVE_OPENCL}";
+  @set %ENV_HAVE_VTK       = "${HAVE_VTK}";
   @set %CSF_PRODUCTS_DEFINES = "";
   @if (%ENV_HAVE_FREEIMAGE == "true") then
     @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_FREEIMAGE";
@@ -170,6 +172,13 @@
       @if (%Station != "wnt") then
         @set %CSF_OPENCL = "-lOpenCL ";
       @endif;
+    @endif;
+  @endif;
+  @if (%ENV_HAVE_VTK == "true") then
+    @string %CSF_PRODUCTS_DEFINES = %CSF_PRODUCTS_DEFINES " -DHAVE_VTK";
+    @if (%Station != "wnt") then
+      @set %CSF_VTK = "-lvtkCommonCore-6.1 -lvtkCommonDataModel-6.1 -lvtkCommonExecutionModel-6.1 -lvtkCommonMath-6.1 -lvtkCommonTransforms-6.1 -lvtkRenderingCore-6.1 ";
+      @string %CSF_VTK += "-lvtkRenderingOpenGL-6.1  -lvtkFiltersGeneral-6.1 -lvtkIOCore-6.1 -lvtkIOImage-6.1 -lvtkImagingCore-6.1 -lvtkInteractionStyle-6.1 ";
     @endif;
   @endif;
 

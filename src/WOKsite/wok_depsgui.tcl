@@ -105,6 +105,9 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_OPENCL" == "true" } {
     wokdep:SearchOpenCL  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+  if { "$::HAVE_VTK" == "true" } {
+    wokdep:SearchVTK  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
   if { "$::CHECK_QT4" == "true" } {
     wokdep:SearchQt4     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -347,6 +350,8 @@ checkbutton   .myFrame.myOpenClCheck   -offvalue "false" -onvalue "true" -variab
 ttk::label    .myFrame.myOpenClLbl     -text "Use OpenCL"
 checkbutton   .myFrame.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
 ttk::label    .myFrame.myMacGLXLbl     -text "Use X11 for windows drawing"
+ttk::label    .myFrame.myVtkLbl        -text "Use VTK"
+checkbutton   .myFrame.myVtkCheck      -offvalue "false" -onvalue "true" -variable HAVE_VTK       -command wokdep:gui:UpdateList
 checkbutton   .myFrame.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myQt4Lbl        -text "Search Qt4"
 checkbutton   .myFrame.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
@@ -441,6 +446,9 @@ grid .myFrame.myTbbLbl        -row $aRowIter -column 1 -sticky w
 incr aRowIter
 grid .myFrame.myOpenClCheck   -row $aRowIter -column 0 -sticky e
 grid .myFrame.myOpenClLbl     -row $aRowIter -column 1 -sticky w
+incr aRowIter
+grid .myFrame.myVtkCheck      -row $aRowIter -column 0 -sticky e
+grid .myFrame.myVtkLbl        -row $aRowIter -column 1 -sticky w
 incr aRowIter
 if { "$::tcl_platform(os)" == "Darwin" } {
   grid .myFrame.myMacGLXCheck -row $aRowIter -column 0 -sticky e

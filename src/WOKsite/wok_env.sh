@@ -25,6 +25,7 @@ export HAVE_TBB="false";
 export HAVE_OPENCL="false";
 export HAVE_FREEIMAGE="false";
 export HAVE_GL2PS="false";
+export HAVE_VTK="false";
 export PRODUCTS_DEFINES="";
 
 # ----- Set local settings -----
@@ -44,7 +45,9 @@ fi
 if [ "$HAVE_FREEIMAGE" == "true" ]; then
   export PRODUCTS_DEFINES="$PRODUCTS_DEFINES -DHAVE_FREEIMAGE";
 fi
-
+if [ "$HAVE_VTK" == "true" ]; then
+  export PRODUCTS_DEFINES="$PRODUCTS_DEFINES -DHAVE_VTK";
+fi
 # ----- Setup Environment Variables -----
 anArch=`uname -m`
 if [ "$anArch" != "x86_64" ] && [ "$anArch" != "ia64" ]; then
