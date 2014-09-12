@@ -787,8 +787,8 @@ else
   AC_LANG([C++])
   HAVE_VTK_INC=yes
   if test ! -d $vtk_inc; then
-    DISABLE_VTK_REASON_INC="($vtk_inc directory is not exists)"
-    AC_MSG_ERROR([$vtk_inc directory is not exists])
+    DISABLE_VTK_REASON_INC="($vtk_inc directory does not exists)"
+    AC_MSG_ERROR([$vtk_inc directory does not exists])
   elif test "x$vtk_inc" != "x"; then
      CPPFLAGS="-I$vtk_inc $CPPFLAGS";
   else
@@ -1061,7 +1061,7 @@ else
   fi
 fi
 
-CSF_VTK="$CSF_VTK_LIB"
+#CSF_VTK="$CSF_VTK_LIB"
 AM_CONDITIONAL( HAVE_VTK, [test "xyes" = "x$HAVE_VTK"] )
 
 #----------------------------------------------------------------------

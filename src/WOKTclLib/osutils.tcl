@@ -2232,6 +2232,10 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
       lappend aFileBuff "  if(USE_OPENCL)"
       lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
       lappend aFileBuff "  endif()"
+    } elseif { $anUsedUnixLib == "VTK" } {
+      lappend aFileBuff "  if(USE_VTK)"
+      lappend aFileBuff "    list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
+      lappend aFileBuff "  endif()"
     } elseif { $anUsedUnixLib != "" } {
       lappend aFileBuff "  list( APPEND ${theToolKit}_USED_LIBS ${anUsedUnixLib} )"
     }
