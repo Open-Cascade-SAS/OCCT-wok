@@ -440,7 +440,7 @@ $%Class(%Arguments)\^
 @end;
 
 @template MethodHeader(%Virtual,%RetSpec,%Return,%And,%MethodName,%Arguments,%MetSpec) is
-$%Virtual%RetSpec%Return%And %MethodName(%Arguments)%MetSpec\^
+$%Virtual %RetSpec %Return%And %MethodName(%Arguments) %MetSpec\^
 @end;
 
 @template ExternalConstructorHeader(%Class,%Arguments) is
@@ -448,7 +448,7 @@ $%Class::%Class(%Arguments)\^
 @end;
 
 @template ExternalMethodHeader(%Class,%Virtual,%RetSpec,%Return,%And,%MethodName,%Arguments,%MetSpec) is
-$%Virtual%RetSpec%Return%And %Class::%MethodName(%Arguments)%MetSpec\^
+$%Virtual %RetSpec %Return%And %Class::%MethodName(%Arguments) %MetSpec\^
 @end;
 
 @template MethodTemplateDec(%MethodComment,%Method) is
