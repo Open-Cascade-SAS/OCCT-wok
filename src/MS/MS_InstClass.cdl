@@ -24,12 +24,7 @@ is
      
     Create(aName: HAsciiString from TCollection; aPackage: HAsciiString from TCollection) 
     	returns mutable InstClass from MS;
-    
-    Create(aName, aPackage : HAsciiString from TCollection;
-    	   Mother: HAsciiString from TCollection; 
-    	   aPrivate, aDeferred, aInComplete: Boolean) 
-    	returns mutable InstClass from MS;
-	       
+
     Validity(me; aName: HAsciiString from TCollection; aPackage: HAsciiString from TCollection);
     	    
     InstType(me : mutable; aType: HAsciiString from TCollection; aPackage: HAsciiString from TCollection);

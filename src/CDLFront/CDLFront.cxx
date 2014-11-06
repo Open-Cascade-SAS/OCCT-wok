@@ -315,7 +315,7 @@ void CDL_InitVariable()
   TheListOfCPPType   = new TColStd_HSequenceOfInteger();
   TheListOfInteger   = new TColStd_HSequenceOfHAsciiString();
   TheListOfGlobalUsed.Nullify();
-  TheListOfGlobalUsed.Nullify();
+  TheListOfTypeUsed.Nullify();
   TheListOfInst.Nullify();
   TheListOfGen.Nullify();
 }
@@ -421,7 +421,7 @@ Standard_Boolean VerifyClassUses(const Handle(TCollection_HAsciiString)& theType
     {
       if (TheMetaSchema->IsDefined(theTypeName))
       {
-        TheListOfGlobalUsed->Append(theTypeName);
+        TheListOfTypeUsed->Append(theTypeName);
 
         return Standard_True;
       }
@@ -1243,7 +1243,7 @@ void Interface_Class()
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(ThePackName);
 
   TheInterface->Class(MS::BuildFullName(aPackageName,aClassName));
-  TheListOfGlobalUsed->Append(MS::BuildFullName(aPackageName,aClassName));
+  TheListOfTypeUsed->Append(MS::BuildFullName(aPackageName,aClassName));
 }
 
 void Method_TypeName()
@@ -1251,7 +1251,7 @@ void Method_TypeName()
   Handle(TCollection_HAsciiString) aClassName = new TCollection_HAsciiString(TheTypeName);
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(ThePackName);
 
-  TheListOfGlobalUsed->Append(MS::BuildFullName(aPackageName,aClassName));
+  TheListOfTypeUsed->Append(MS::BuildFullName(aPackageName,aClassName));
 }
 
 void Interface_Method(char* entityName)
@@ -1372,7 +1372,7 @@ void Alias_Type()
 
 
   TheAlias->Type(anAliasName,aPackageName);
-  TheListOfGlobalUsed->Append(TheAlias->Type());
+  TheListOfTypeUsed->Append(TheAlias->Type());
 }
 
 void Alias_End()
@@ -1406,7 +1406,7 @@ void Pointer_Type()
   Handle(TCollection_HAsciiString) aPackageName = new TCollection_HAsciiString(ThePackName);
 
   ThePointer->Type(athetypename,aPackageName);
-  TheListOfGlobalUsed->Append(ThePointer->Type());
+  TheListOfTypeUsed->Append(ThePointer->Type());
 }
 
 void Pointer_End()
@@ -1566,7 +1566,7 @@ void Inc_Class_Dec()
   ThePackage->Class (TheStdClass->Name());
   TheStdClass->Package (ThePackage->FullName());
 
-  TheListOfGlobalUsed->Append(TheStdClass->FullName());
+  TheListOfTypeUsed->Append(TheStdClass->FullName());
 
   TheStdClass.Nullify();
 
@@ -2172,7 +2172,7 @@ void Add_Std_Ancestors()
 
       TheSimpleClass->Use(TheListOfTypes->Value(i),TheListOfPackages->Value(i));
 
-      TheListOfGlobalUsed->Append(aFullName);
+      TheListOfTypeUsed->Append(aFullName);
     }
     else
     {
@@ -2222,7 +2222,7 @@ void Add_Std_Uses()
 
     TheSimpleClass->Use(TheListOfTypes->Value(i),TheListOfPackages->Value(i));
 
-    TheListOfGlobalUsed->Append(aFullName);
+    TheListOfTypeUsed->Append(aFullName);
   }
 
   TheListOfComments->Clear();
@@ -2346,7 +2346,7 @@ void Add_Friend_Class()
   if (TheMetaSchema->IsDefined(theTypeName))
   {
     TheSimpleClass->Friend(aClassName,aPackName);
-    TheListOfGlobalUsed->Append(theTypeName);
+    TheListOfTypeUsed->Append(theTypeName);
   }
   else
   {
@@ -2631,7 +2631,7 @@ void Construct_Begin()
 
 void Friend_Construct_Begin()
 {
-  TheConstruc  = new MS_Construc(TheMethodName,TheListOfGlobalUsed->Value(TheListOfGlobalUsed->Length()));
+  TheConstruc  = new MS_Construc(TheMethodName,TheListOfTypeUsed->Value(TheListOfTypeUsed->Length()));
   TheMethod    = TheConstruc;
   TheMemberMet = TheConstruc;
   TheMethod->MetaSchema(TheMetaSchema);
@@ -2652,7 +2652,7 @@ void InstMet_Begin()
 
 void Friend_InstMet_Begin()
 {
-  TheInstMet   = new MS_InstMet(TheMethodName,TheListOfGlobalUsed->Value(TheListOfGlobalUsed->Length()));
+  TheInstMet   = new MS_InstMet(TheMethodName,TheListOfTypeUsed->Value(TheListOfTypeUsed->Length()));
   TheMethod    = TheInstMet;
   TheMemberMet = TheInstMet;
   TheMethod->MetaSchema(TheMetaSchema);
@@ -2673,7 +2673,7 @@ void ClassMet_Begin()
 
 void Friend_ClassMet_Begin()
 {
-  TheClassMet  = new MS_ClassMet(TheMethodName,TheListOfGlobalUsed->Value(TheListOfGlobalUsed->Length()));
+  TheClassMet  = new MS_ClassMet(TheMethodName,TheListOfTypeUsed->Value(TheListOfTypeUsed->Length()));
   TheMethod    = TheClassMet;
   TheMemberMet = TheClassMet;
   TheMethod->MetaSchema(TheMetaSchema);
@@ -3146,7 +3146,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 
   TheMetaSchema    = aMetaSchema;
   TheListOfGlobalUsed = aGlobalList;
-  TheListOfGlobalUsed   = aTypeList;
+  TheListOfTypeUsed   = aTypeList;
   TheListOfInst       = anInstList;
   TheListOfGen        = anGenList;
 
@@ -3172,7 +3172,7 @@ int CDLTranslate(const Handle(MS_MetaSchema)&             aMetaSchema,
 
   TheMetaSchema.Nullify();
   TheListOfGlobalUsed.Nullify();
-  TheListOfGlobalUsed.Nullify();
+  TheListOfTypeUsed.Nullify();
   TheListOfInst.Nullify();
   TheListOfGen.Nullify();
   TheListOfComments.Nullify();

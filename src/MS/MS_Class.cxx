@@ -32,40 +32,6 @@ MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName,
   }
 }
 
-MS_Class::MS_Class(const Handle(TCollection_HAsciiString)& aName, 
-		   const Handle(TCollection_HAsciiString)& aPackage, 
-		   const Handle(TCollection_HAsciiString)& Mother, 
-		   const Standard_Boolean aPrivate, 
-		   const Standard_Boolean aDeferred, 
-		   const Standard_Boolean aInComplete) : MS_Type(aName)
-{
-  if (!aPackage.IsNull()) {
-    Handle(TCollection_HAsciiString) aFullName =  MS::BuildFullName(aPackage,aName);
-    
-    if (GetMetaSchema() != 0) {
-      Package(aPackage);
-    }
-    
-    myIncomplete     = aInComplete;
-    myPrivate        = aPrivate;
-    myDeferred       = aDeferred;
-    myMother         = Mother;
-    myInherits       = new TColStd_HSequenceOfHAsciiString;
-    myUses           = new TColStd_HSequenceOfHAsciiString;
-    myRaises         = new TColStd_HSequenceOfHAsciiString;
-    myMethods        = new MS_HSequenceOfMemberMet;
-    myFields         = new MS_HSequenceOfField;
-    myFriendMets     = new TColStd_HSequenceOfHAsciiString;
-    myFriends        = new TColStd_HSequenceOfHAsciiString;
-    myComment        = new TCollection_HAsciiString("");
-
-    FullName(aFullName);
-  }
-  else {
-    Standard_NullObject::Raise("MS_Class::MS_Class - aPakage is NULL");
-  }
-}
-
 void MS_Class::Deferred(const Standard_Boolean aDeferred)
 {
   myDeferred = aDeferred;

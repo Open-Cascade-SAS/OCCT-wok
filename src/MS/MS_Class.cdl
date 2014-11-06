@@ -32,9 +32,6 @@ deferred class Class
 is
 
     Initialize(aName: HAsciiString; aPackage: HAsciiString);
-    Initialize(aName, aPackage : HAsciiString;
-    	       Mother : HAsciiString from TCollection; 
-    	       aPrivate, aDeferred, aInComplete: Boolean);
 	       
     Validity(me; aName: HAsciiString; aPackage: HAsciiString)
     	is deferred;

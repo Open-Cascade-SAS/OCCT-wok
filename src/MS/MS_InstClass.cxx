@@ -17,19 +17,6 @@ MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName,
     myComment        = new TCollection_HAsciiString(""); 
 }
 
-MS_InstClass::MS_InstClass(const Handle(TCollection_HAsciiString)& aName, 
-			   const Handle(TCollection_HAsciiString)& aPackage, 
-			   const Handle(TCollection_HAsciiString)& Mother, 
-			   const Standard_Boolean aPrivate, 
-			   const Standard_Boolean aDeferred, 
-			   const Standard_Boolean aInComplete) 
-: MS_Class(aName,aPackage,Mother,aPrivate,aDeferred,aInComplete), myGenClass(new TCollection_HAsciiString),myBasicInsType(new TColStd_HSequenceOfHAsciiString),myInstType(new TColStd_HSequenceOfHAsciiString),
-  myGenType(new TColStd_HSequenceOfHAsciiString),myNestStd(new TColStd_HSequenceOfHAsciiString),
-  myNestIns(new TColStd_HSequenceOfHAsciiString),myNestNeu(new TColStd_HSequenceOfHAsciiString),myInstFlag(Standard_False)
-{
-    myComment        = new TCollection_HAsciiString(""); 
-}
-
 void MS_InstClass::Validity(const Handle(TCollection_HAsciiString)& , 
 			    const Handle(TCollection_HAsciiString)& ) const 
 {
