@@ -1325,14 +1325,32 @@ proc osutils:am:adm { dir {lesmodules {}} } {
   set vpath "VPATH = @srcdir@ ${dir}: "
   set make ""
   set phony ".PHONY:"
+  set AllVTKToolkits {}
   foreach theModule $lesmodules {
     set units [osutils:tk:sort [$theModule:toolkits]]
     set units [concat $units [OS:executable $theModule]]
     append amstring "${theModule}_PKGS ="
     append vpath "\\\n"
+    set VTKToolkitsIndexs [lsearch -regexp -nocase -all $units ".*vtk.*"]
+    set VTKToolkits {}
+    if { "$VTKToolkitsIndexs" != "" } {
+      foreach vtktk [lreverse $VTKToolkitsIndexs] {
+        lappend VTKToolkits [lindex $units $vtktk]
+        set units [lreplace $units $vtktk $vtktk]
+      }
+    }
     foreach unit $units {
       append amstring " ${unit}"
       append vpath "${dir}/${unit}: "
+    }
+    if {[llength $VTKToolkits]} {
+      append amstring "\nif HAVE_VTK\n"
+      append amstring "  ${theModule}_PKGS +="
+      foreach vtktk $VTKToolkits {
+        append amstring " $vtktk"
+        lappend AllVTKToolkits $vtktk
+      }
+      append amstring "\nendif"
     }
     set up ${theModule}
     if { [info procs ${theModule}:alias] != "" } {
@@ -1352,7 +1370,16 @@ proc osutils:am:adm { dir {lesmodules {}} } {
     append phony " ${theModule}"
   }
   append amstring "$subdirs\n\n"
-  append amstring "$vpath\n\n"
+  append amstring "$vpath\n"
+  if {[llength $AllVTKToolkits]} {
+    append amstring "\nif HAVE_VTK\n"
+    append amstring "  VPATH +="
+    foreach vtktk $AllVTKToolkits {
+      append amstring " ${dir}/$vtktk:"
+    }
+    append amstring "\nendif\n"
+  }
+  append amstring "\n"
   append amstring $make
   append amstring $phony
   wokUtils:FILES:StringToFile $amstring [set fmam [file join $dir Makefile.am]]
@@ -1461,11 +1488,13 @@ proc osutils:am:root { dir theSubPath {lesmodules {}} } {
       append confstr "  fi\n"
     }
     foreach dep $acdeplist {
-      append confstr "  if test \"xyes\" = \"x\$ENABLE_${up}\" -a \"xyes\" != \"x\$HAVE_${dep}\"; then\n"
-      append confstr "    AC_MSG_NOTICE(\[Disabling ${theModule}: ${dep} not found\])\n"
-      append confstr "    DISABLE_${up}_REASON=\"(${dep} not found)\"\n"
-      append confstr "    ENABLE_${up}=no\n"
-      append confstr "  fi\n"
+      if { "${dep}" != "VTK" } {
+        append confstr "  if test \"xyes\" = \"x\$ENABLE_${up}\" -a \"xyes\" != \"x\$HAVE_${dep}\"; then\n"
+        append confstr "    AC_MSG_NOTICE(\[Disabling ${theModule}: ${dep} not found\])\n"
+        append confstr "    DISABLE_${up}_REASON=\"(${dep} not found)\"\n"
+        append confstr "    ENABLE_${up}=no\n"
+        append confstr "  fi\n"
+      }
     }
     if { [llength $deplist] > 0 || [llength $acdeplist] > 0 } {
       append confstr "else\n"
