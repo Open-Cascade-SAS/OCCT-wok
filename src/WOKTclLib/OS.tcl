@@ -3023,10 +3023,22 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
     lappend aBuff ""
     lappend aBuff "if (BUILD_${aModule})"
     foreach aToolKit [${aModule}:toolkits] {
-      lappend aBuff " LIST(APPEND USED_TOOLKITS ${aToolKit} )"
-      lappend aBuff " foreach( TK \$\{${aToolKit}_DEPS\})"
-      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
-      lappend aBuff " endforeach()"
+      set isVTK 0
+      set anIndent ""
+      if {[regexp -nocase {.*vtk.*} $aToolKit]} {
+        set isVTK 1
+        set anIndent "  "
+      }
+      if {$isVTK} {
+        lappend aBuff " if (USE_VTK)"
+      }
+      lappend aBuff "${anIndent} LIST(APPEND USED_TOOLKITS ${aToolKit} )"
+      lappend aBuff "${anIndent} foreach( TK \$\{${aToolKit}_DEPS\})"
+      lappend aBuff "${anIndent}    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
+      lappend aBuff "${anIndent} endforeach()"
+      if {$isVTK} {
+        lappend aBuff " endif()"
+      }
     }
     foreach anExecutable [OS:executable ${aModule}] {
       lappend aBuff " LIST(APPEND USED_TOOLKITS ${anExecutable} )"
@@ -3046,12 +3058,24 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
         file mkdir "$theOutDir/$aSubPath/$aToolKit"
       }
 
+      set isVTK 0
+      set anIndent ""
+      if {[regexp -nocase {.*vtk.*} $aToolKit]} {
+        set isVTK 1
+        set anIndent "  "
+      }
+      if {$isVTK} {
+        lappend aBuff "IF (USE_VTK)"
+      }
       #add directory to main cmake metafile
-      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit}\")"
-      lappend aBuff "  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit})"
-      lappend aBuff "ELSE()"
-      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$aSubPath/${aToolKit}\")"
-      lappend aBuff "ENDIF()"
+      lappend aBuff "${anIndent}IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit}\")"
+      lappend aBuff "${anIndent}  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit})"
+      lappend aBuff "${anIndent}ELSE()"
+      lappend aBuff "${anIndent}  LIST(APPEND UNSUBDIRS \"$aSubPath/${aToolKit}\")"
+      lappend aBuff "${anIndent}ENDIF()"
+      if {$isVTK} {
+        lappend aBuff "ENDIF()"
+      }
 
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir/$aSubPath $aToolKit false ${aModule}
