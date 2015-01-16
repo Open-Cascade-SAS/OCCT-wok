@@ -4,6 +4,8 @@
 // 10/1995
 //
 #include <CPPExt.hxx>
+#include <EDL_API.hxx>
+#include <EDL_Variable.hxx>
 #include <WOKTools_Messages.hxx>
 #include <MS_ParamWithValue.hxx>
 #include <MS_HArray1OfParam.hxx>
@@ -438,28 +440,44 @@ void CPP_BuildMethod(const Handle(MS_MetaSchema)& aMeta,
     
     api->AddVariable(VIsCreateMethod,"no");
 
-    if (!im->IsDeferred() || !forDeclaration) {
-      if (!im->IsStatic() && forDeclaration) {
-	api->AddVariable(VVirtual,"virtual ");
+    TCollection_AsciiString aVMetSpec = "";
+    Standard_Boolean isDerived = TCollection_AsciiString (api->GetVariable (VInherits).GetValue()).Length();
+
+    if (!im->IsDeferred() || !forDeclaration)
+    {
+      if (!im->IsStatic() && forDeclaration)
+      {
+        api->AddVariable(VVirtual,"virtual ");
       }
     
-      if (im->IsConst()) {
-	api->AddVariable(VMetSpec," const");
+      if (im->IsConst())
+      {
+        aVMetSpec += " const";
       }
-      else {
-	api->AddVariable(VMetSpec,"");
+
+      if (im->IsRedefined() && isDerived)
+      {
+        aVMetSpec += " Standard_OVERRIDE";
       }
     }
-    else if (forDeclaration) {
+    else if (forDeclaration)
+    {
       api->AddVariable(VVirtual,"virtual ");
 
-      if (im->IsConst()) {
-	api->AddVariable(VMetSpec," const = 0");
+      if (im->IsConst())
+      {
+        aVMetSpec += " const";
       }
-      else {
-	api->AddVariable(VMetSpec," = 0");
+
+      if (im->IsRedefined() && isDerived)
+      {
+        aVMetSpec += " Standard_OVERRIDE";
       }
+
+      aVMetSpec += " = 0";
     }
+
+    api->AddVariable(VMetSpec, aVMetSpec.ToCString());
 
     api->Apply(VMethod,MetTemplate->ToCString());
     
