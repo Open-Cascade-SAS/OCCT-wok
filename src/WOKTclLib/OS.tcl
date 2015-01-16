@@ -2993,10 +2993,10 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
   set aBuff [list]
   foreach aModule $theModules {
     if {$aModule == "Draw"} {
-      lappend aBuff "IF (NOT DEFINED ANDROID)"
+      lappend aBuff "if (NOT DEFINED ANDROID)"
     }
     
-    lappend aBuff "SET(BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
+    lappend aBuff "set (BUILD_${aModule} ON CACHE BOOL \"include ${aModule}\"  )"
     
     if {$aModule == "Draw"} {
       lappend aBuff "ENDIF()"
@@ -3030,21 +3030,26 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
         set anIndent "  "
       }
       if {$isVTK} {
-        lappend aBuff " if (USE_VTK)"
+        lappend aBuff "  if (USE_VTK)"
       }
-      lappend aBuff "${anIndent} LIST(APPEND USED_TOOLKITS ${aToolKit} )"
-      lappend aBuff "${anIndent} foreach( TK \$\{${aToolKit}_DEPS\})"
+      lappend aBuff "${anIndent}  list (APPEND USED_TOOLKITS ${aToolKit} )"
+      lappend aBuff "${anIndent}  foreach( TK \$\{${aToolKit}_DEPS\})"
       lappend aBuff "${anIndent}    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
-      lappend aBuff "${anIndent} endforeach()"
+      lappend aBuff "${anIndent}  endforeach()"
       if {$isVTK} {
         lappend aBuff " endif()"
       }
     }
     foreach anExecutable [OS:executable ${aModule}] {
-      lappend aBuff " LIST(APPEND USED_TOOLKITS ${anExecutable} )"
-      lappend aBuff " foreach( TK \$\{${anExecutable}_DEPS\})"
-      lappend aBuff "    LIST(APPEND USED_TOOLKITS \$\{TK\} )"
-      lappend aBuff " endforeach()"
+      lappend aBuff "  if (\"\$\{BUILD_LIBRARY_TYPE\}\" STREQUAL \"Shared\")"
+      lappend aBuff "    list (APPEND USED_TOOLKITS ${anExecutable} )"
+      lappend aBuff "    foreach( TK \$\{${anExecutable}_DEPS\})"
+      lappend aBuff "      list (APPEND USED_TOOLKITS \$\{TK\} )"
+      lappend aBuff "    endforeach()"
+      lappend aBuff "  else()"
+      lappend aBuff "    message (STATUS \"Info: ${anExecutable} is not included due to \$\{BUILD_LIBRARY_TYPE\} build library type\")"
+      lappend aBuff "  endif()"
+      lappend aBuff ""
     }
     lappend aBuff "endif()"
   }
@@ -3068,11 +3073,11 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
         lappend aBuff "IF (USE_VTK)"
       }
       #add directory to main cmake metafile
-      lappend aBuff "${anIndent}IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit}\")"
+      lappend aBuff "${anIndent}if (EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit}\")"
       lappend aBuff "${anIndent}  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${aToolKit})"
-      lappend aBuff "${anIndent}ELSE()"
-      lappend aBuff "${anIndent}  LIST(APPEND UNSUBDIRS \"$aSubPath/${aToolKit}\")"
-      lappend aBuff "${anIndent}ENDIF()"
+      lappend aBuff "${anIndent}else()"
+      lappend aBuff "${anIndent}  list (APPEND UNSUBDIRS \"$aSubPath/${aToolKit}\")"
+      lappend aBuff "${anIndent}endif()"
       if {$isVTK} {
         lappend aBuff "ENDIF()"
       }
@@ -3087,11 +3092,11 @@ proc OS:MKCMK { theOutDir {theModules {}} {theAllSolution ""} } {
       }
 
       #add directory to main cmake metafile
-      lappend aBuff "IF(EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${anExecutable}\")"
+      lappend aBuff "if (EXISTS \"\$\{TK_ROOT_DIR\}/$aSubPath/${anExecutable}\")"
       lappend aBuff "  add_subdirectory(\$\{TK_ROOT_DIR\}/$aSubPath/${anExecutable})"
-      lappend aBuff "ELSE()"
-      lappend aBuff "  LIST(APPEND UNSUBDIRS \"$aSubPath/${anExecutable}\")"
-      lappend aBuff "ENDIF()\n"
+      lappend aBuff "else()"
+      lappend aBuff "  list (APPEND UNSUBDIRS \"$aSubPath/${anExecutable}\")"
+      lappend aBuff "endif()\n"
 
       # create cmake metafile into target subdir
       osutils:cmktk $theOutDir/$aSubPath $anExecutable true ${aModule}

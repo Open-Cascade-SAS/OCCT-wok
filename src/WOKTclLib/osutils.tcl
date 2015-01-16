@@ -2374,7 +2374,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
     lappend aFileBuff ""
     lappend aFileBuff " install( TARGETS ${theToolKit} DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_POSTFIX\}\" )"
   } else {
-    lappend aFileBuff " add_library( ${theToolKit} SHARED \$\{${theToolKit}_USED_SRCFILES\} )"
+    lappend aFileBuff " add_library( ${theToolKit} \$\{${theToolKit}_USED_SRCFILES\} )"
     lappend aFileBuff ""
     lappend aFileBuff " set_property(TARGET ${theToolKit} PROPERTY FOLDER ${theModule})"
     lappend aFileBuff ""
