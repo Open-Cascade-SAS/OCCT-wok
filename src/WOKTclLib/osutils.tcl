@@ -1036,9 +1036,17 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     set WOKSteps_exec_link [wokparam -v %WOKSteps_exec_link [woklocate -u $theToolKit]]
     if { [regexp {WOKStep_DLLink} $WOKSteps_exec_link] || [regexp {WOKStep_Libink} $WOKSteps_exec_link] } {
       set aUsedToolKits [concat $aUsedToolKits "\/dll"]
-      set binext 2
+      set aConfType 2
+      if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+        set aConfType "DynamicLibrary"
+      }
+      set aBinExt ".dll"
     } else {
-      set binext 1
+      set aConfType 1
+      if { "$theVcVer" == "vc10" || "$theVcVer" == "vc11" || "$theVcVer" == "vc12" } {
+        set aConfType "Application"
+      }
+      set aBinExt ".exe"
     }
 
     # correct names of referred third-party libraries that are named with suffix
@@ -1077,12 +1085,8 @@ proc osutils:vcprojx { theVcVer theOutDir theToolKit theGuidsMap {theProjTmpl {}
     regsub -all -- {__TKINC__}  $aProjTmpl $anIncPaths    aProjTmpl
     regsub -all -- {__TKDEFS__} $aProjTmpl $aTKDefines    aProjTmpl
     regsub -all -- {__FILES__}  $aProjTmpl $aFilesSection aProjTmpl
-    regsub -all -- {__CONF__}   $aProjTmpl $binext        aProjTmpl
-    if { $binext == 2 } {
-      regsub -all -- {__XQTEXT__} $aProjTmpl "dll" aProjTmpl
-    } else {
-      regsub -all -- {__XQTEXT__} $aProjTmpl "exe" aProjTmpl
-    }
+    regsub -all -- {__CONF__}   $aProjTmpl $aConfType     aProjTmpl
+    regsub -all -- {__XQTEXT__} $aProjTmpl $aBinExt       aProjTmpl
 
     set aFile [open [set aVcFilePath [file join $theOutDir ${aProjName}.[osutils:vcproj:ext $theVcVer]]] w]
     fconfigure $aFile -translation crlf
