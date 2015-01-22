@@ -2744,7 +2744,7 @@ proc relativePath {thePathFrom thePathTo} {
 }
 
 # Generates dependencies section for Xcode project files.
-proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids} {
+proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection theDepsGuids theDepsRefGuids theIsStatic} {
   upvar $theGuidsMap         aGuidsMap
   upvar $theFileRefSection   aFileRefSection
   upvar $theDepsGuids        aDepsGuids
@@ -2796,6 +2796,14 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
     }
   }
 
+  set aLibExt "dylib"
+  if { $theIsStatic == 1 } {
+    set aLibExt "a"
+    if { "$theTargetType" != "executable" } {
+      return $aBuildFileSection
+    }
+  }
+
   foreach tkx $aUsedToolKits {
     set aDepLib    "${tkx}_Dep"
     set aDepLibRef "${tkx}_DepRef"
@@ -2809,7 +2817,7 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
 
     append aBuildFileSection "\t\t$aGuidsMap($aDepLib) = \{isa = PBXBuildFile; fileRef = $aGuidsMap($aDepLibRef) ; \};\n"
     if {[lsearch -nocase $aFrameworks $tkx] == -1} {
-      append aFileRefSection   "\t\t$aGuidsMap($aDepLibRef) = \{isa = PBXFileReference; lastKnownFileType = file; name = lib${tkx}.dylib; path = lib${tkx}.dylib; sourceTree = \"<group>\"; \};\n"
+      append aFileRefSection   "\t\t$aGuidsMap($aDepLibRef) = \{isa = PBXFileReference; lastKnownFileType = file; name = lib${tkx}.${aLibExt}; path = lib${tkx}.${aLibExt}; sourceTree = \"<group>\"; \};\n"
     } else {
       append aFileRefSection   "\t\t$aGuidsMap($aDepLibRef) = \{isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ${tkx}.framework; path = /System/Library/Frameworks/${tkx}.framework; sourceTree = \"<absolute>\"; \};\n"
     }
@@ -2896,7 +2904,7 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
 }
 
 # Creates folders structure and all necessary files for Xcode project.
-proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } {
+proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {theTargetType "dylib"} } {
   set aPBXBuildPhase "Headers"
   set aRunOnlyForDeployment "0"
   set aProductType "library.dynamic"
@@ -2912,6 +2920,10 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
     set anExecExtension ""
     set anExecPrefix ""
     set aWrapperExtension ""
+  } elseif { $theIsStatic == 1 } {
+    set aProductType "library.static"
+    set anExecExtension "\t\t\t\tEXECUTABLE_EXTENSION = a;"
+    set aWrapperExtension "\t\t\t\tWRAPPER_EXTENSION = a;"
   }
 
   set aUsername [exec whoami]
@@ -2987,8 +2999,26 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   set aDepsGuids ""
   set aDepsRefGuids ""
   set anIncPaths [list "../../../inc" $::env(WOK_LIBRARY)]
+  set anLibPaths ""
+
+  if { [info exists ::env(CSF_OPT_INC)] } {
+    set anIncCfg [split "$::env(CSF_OPT_INC)" ":"]
+    foreach anIncCfgPath $anIncCfg {
+      lappend anIncPaths $anIncCfgPath
+    }
+  }
+  if { "$::MACOSX_USE_GLX" == "true" } {
+    lappend anLibPaths "/usr/X11/lib"
+  }
+  if { [info exists ::env(CSF_OPT_LIB64)] } {
+    set anLibCfg [split "$::env(CSF_OPT_LIB64)" ":"]
+    foreach anLibCfgPath $anLibCfg {
+      lappend anLibPaths $anLibCfgPath
+    }
+  }
+
   puts $aPbxprojFile [osutils:xcdtk:sources $theToolKit $theTargetType aSrcFileRefSection aGroupSection aPackagesGuids aSrcFileGuids aGuidsMap anIncPaths]
-  puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids]
+  puts $aPbxprojFile [osutils:xcdtk:deps    $theToolKit $theTargetType aGuidsMap aDepsFileRefSection aDepsGuids aDepsRefGuids $theIsStatic]
   # End PBXBuildFile section
 
   # Begin PBXFileReference section
@@ -2996,6 +3026,8 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   set aPath "$aToolkitLib"
   if { "$theTargetType" == "executable" } {
     set aPath "$theToolKit"
+  } elseif { $theIsStatic == 1 } {
+    set aToolkitLib "lib${theToolKit}.a"
   }
 
   if { ! [info exists aGuidsMap($aToolkitLib)] } {
@@ -3168,7 +3200,19 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   puts $aPbxprojFile "\t\t$aGuidsMap($aTkDebugProject) = \{"
   puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
   puts $aPbxprojFile "\t\t\tbuildSettings = \{"
-  puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+
+  if { "$thePlatform" == "ios" } {
+    puts $aPbxprojFile "\t\t\t\tDEBUG_INFORMATION_FORMAT = dwarf;"
+    puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+    puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphoneos\*\]\" = \"\$(ARCHS_STANDARD)\";";
+    puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphonesimulator\*\]\" = \"x86_64\";";
+    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"gnu++0x\";"
+    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
+    puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_MODULES = YES;"
+    puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_OBJC_ARC = YES;"
+  } else {
+    puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+  }
   puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
   puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = NO;"
   puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
@@ -3186,17 +3230,35 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNINITIALIZED_AUTOS = YES;"
   puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNUSED_VARIABLE = YES;"
   puts $aPbxprojFile "\t\t\t\tOTHER_LDFLAGS = \"\$(CSF_OPT_LNK64)\"; "
-  puts $aPbxprojFile "\t\t\t\tONLY_ACTIVE_ARCH = YES;"
+  if { "$thePlatform" == "ios" } {
+    puts $aPbxprojFile "\t\t\t\tONLY_ACTIVE_ARCH = NO;"
+    puts $aPbxprojFile "\t\t\t\tSDKROOT = iphoneos;"
+  } else {
+    puts $aPbxprojFile "\t\t\t\tONLY_ACTIVE_ARCH = YES;"
+  }
   puts $aPbxprojFile "\t\t\t\};"
+
   puts $aPbxprojFile "\t\t\tname = Debug;"
   puts $aPbxprojFile "\t\t\};"
   puts $aPbxprojFile "\t\t$aGuidsMap($aTkReleaseProject) = \{"
   puts $aPbxprojFile "\t\t\tisa = XCBuildConfiguration;"
   puts $aPbxprojFile "\t\t\tbuildSettings = \{"
-  puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+
+  if { "$thePlatform" == "ios" } {
+    puts $aPbxprojFile "\t\t\t\tDEBUG_INFORMATION_FORMAT = dwarf;"
+    puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+    puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphoneos\*\]\" = \"\$(ARCHS_STANDARD)\";";
+    puts $aPbxprojFile "\t\t\t\t\"ARCHS\[sdk=iphonesimulator\*\]\" = \"x86_64\";";
+    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LANGUAGE_STANDARD = \"gnu++0x\";"
+    puts $aPbxprojFile "\t\t\t\tCLANG_CXX_LIBRARY = \"libc++\";"
+    puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_MODULES = YES;"
+    puts $aPbxprojFile "\t\t\t\tCLANG_ENABLE_OBJC_ARC = YES;"
+  } else {
+    puts $aPbxprojFile "\t\t\t\tDEBUG_INFORMATION_FORMAT = \"dwarf-with-dsym\";"
+    puts $aPbxprojFile "\t\t\t\tALWAYS_SEARCH_USER_PATHS = NO;"
+  }
   puts $aPbxprojFile "\t\t\t\tARCHS = \"\$(ARCHS_STANDARD_64_BIT)\";"
   puts $aPbxprojFile "\t\t\t\tCOPY_PHASE_STRIP = YES;"
-  puts $aPbxprojFile "\t\t\t\tDEBUG_INFORMATION_FORMAT = \"dwarf-with-dsym\";"
   puts $aPbxprojFile "\t\t\t\tGCC_C_LANGUAGE_STANDARD = gnu99;"
   puts $aPbxprojFile "\t\t\t\tGCC_ENABLE_OBJC_EXCEPTIONS = YES;"
   puts $aPbxprojFile "\t\t\t\tGCC_VERSION = com.apple.compilers.llvm.clang.1_0;"
@@ -3205,6 +3267,11 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNINITIALIZED_AUTOS = YES;"
   puts $aPbxprojFile "\t\t\t\tGCC_WARN_UNUSED_VARIABLE = YES;"
   puts $aPbxprojFile "\t\t\t\tOTHER_LDFLAGS = \"\$(CSF_OPT_LNK64D)\";"
+  if { "$thePlatform" == "ios" } {
+    puts $aPbxprojFile "\t\t\t\tGCC_OPTIMIZATION_LEVEL = fast;"
+    puts $aPbxprojFile "\t\t\t\tIPHONEOS_DEPLOYMENT_TARGET = 7.0;"
+    puts $aPbxprojFile "\t\t\t\tSDKROOT = iphoneos;"
+  }
   puts $aPbxprojFile "\t\t\t\};"
   puts $aPbxprojFile "\t\t\tname = Release;"
   puts $aPbxprojFile "\t\t\};"
@@ -3218,15 +3285,20 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
     puts $aPbxprojFile "\t\t\t\t\t${aMacro} ,"
   }
   puts $aPbxprojFile "\t\t\t\t);"
+
   puts $aPbxprojFile "\t\t\t\tHEADER_SEARCH_PATHS = ("
   foreach anIncPath $anIncPaths {
     puts $aPbxprojFile "\t\t\t\t\t${anIncPath},"
   }
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
   puts $aPbxprojFile "\t\t\t\t);"
-  if { "$::MACOSX_USE_GLX" == "true" } {
-    puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+
+  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = ("
+  foreach anLibPath $anLibPaths {
+    puts $aPbxprojFile "\t\t\t\t\t${anLibPath},"
   }
+  puts $aPbxprojFile "\t\t\t\t);"
+
   puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
   puts $aPbxprojFile "\t\t\t\t);"
@@ -3260,9 +3332,13 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap {theTargetType "dylib"} } 
   }
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_INC)\","
   puts $aPbxprojFile "\t\t\t\t);"
-  if { "$::MACOSX_USE_GLX" == "true" } {
-    puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = /usr/X11/lib;"
+
+  puts $aPbxprojFile "\t\t\t\tLIBRARY_SEARCH_PATHS = ("
+  foreach anLibPath $anLibPaths {
+    puts $aPbxprojFile "\t\t\t\t\t${anLibPath},"
   }
+  puts $aPbxprojFile "\t\t\t\t);"
+
   puts $aPbxprojFile "\t\t\t\tOTHER_CFLAGS = ("
   puts $aPbxprojFile "\t\t\t\t\t\"\$(CSF_OPT_CMPL)\","
   puts $aPbxprojFile "\t\t\t\t);"

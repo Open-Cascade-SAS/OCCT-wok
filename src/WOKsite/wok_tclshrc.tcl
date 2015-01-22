@@ -319,11 +319,11 @@ proc wgenproj { args } {
 
   # Setting default IDE.
   # For Windows - Visual Studio (vc), Linux - Code Blocks (cbp), Mac OS X - Xcode (cmake).
-  set anTarget ""
+  set anIde ""
   switch -exact -- "$::env(WOKSTATION)" {
-    "wnt"   {set anTarget "$::VCVER"}
-    "lin"   {set anTarget "cmake"}
-    "mac"   {set anTarget "cmake"}
+    "wnt"   {set anIde "$::VCVER"}
+    "lin"   {set anIde "cmake"}
+    "mac"   {set anIde "cmake"}
   }
 
   set isTargetDefault true
@@ -334,19 +334,19 @@ proc wgenproj { args } {
   }
 
   if { [set anIndex [lsearch -nocase $anArgs -ide=*]] != -1 } {
-    regsub -nocase "\\-ide=" [lindex $anArgs $anIndex] "" anTarget
+    regsub -nocase "\\-ide=" [lindex $anArgs $anIndex] "" anIde
     set anArgs [removeAllOccurrencesOf -ide=* $anArgs]
     set isTargetDefault false
   }
 
   if { [set anIndex [lsearch -nocase $anArgs -target=*]] != -1 } {
-    regsub -nocase "\\-target=" [lindex $anArgs $anIndex] "" anTarget
+    regsub -nocase "\\-target=" [lindex $anArgs $anIndex] "" anIde
     set anArgs [removeAllOccurrencesOf -target=* $anArgs]
     set isTargetDefault false
   }
 
   if { [llength $anArgs] == 0 && $isTargetDefault == true } {
-    puts "the default \'$anTarget\' target has been applied"
+    puts "the default \'$anIde\' target has been applied"
   }
 
   set isHelpRequire false
@@ -355,8 +355,25 @@ proc wgenproj { args } {
     set isHelpRequire true
   }
 
-  if { [lsearch -nocase $aSupportedTargets $anTarget] == -1} {
-    puts "the \'$anTarget\' is wrong TARGET"
+  set aLibType "dynamic"
+  if { [lsearch -nocase $anArgs "-static"] != -1} {
+    set anArgs [removeAllOccurrencesOf "-static" $anArgs]
+    set aLibType "static"
+    puts "static build has been selected"
+  } elseif { [lsearch -nocase $anArgs "-dynamic"] != -1} {
+    set anArgs [removeAllOccurrencesOf "-dynamic" $anArgs]
+    set aLibType "dynamic"
+    puts "dynamic build has been selected"
+  }
+
+  set aPlatform ""
+  if { [lsearch -nocase $anArgs "-ios"] != -1} {
+    set anArgs [removeAllOccurrencesOf "-ios" $anArgs]
+    set aPlatform "ios"
+  }
+
+  if { [lsearch -nocase $aSupportedTargets $anIde] == -1} {
+    puts "the \'$anIde\' is wrong TARGET"
     set isHelpRequire true
   }
 
@@ -384,16 +401,16 @@ proc wgenproj { args } {
       return
   }
 
-  puts "the \'$anTarget\' target has been applied"
+  puts "the \'$anIde\' target has been applied"
 
   source "$::env(WOKHOME)/lib/osutils.tcl"
   source "$::env(WOKHOME)/lib/OS.tcl"
 
   # change station if it is necessary
   set anOldStation "$::env(WOKSTATION)"
-  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12} $anTarget] != -1 && "$anOldStation" != "wnt"} {
+  if { [lsearch -exact {vc7 vc8 vc9 vc10 vc11 vc12} $anIde] != -1 && "$anOldStation" != "wnt"} {
     changeStationAndDependentEnvironment wnt
-  } elseif { "$anTarget" == "amk" && "$anOldStation" != "lin"} {
+  } elseif { "$anIde" == "amk" && "$anOldStation" != "lin"} {
     changeStationAndDependentEnvironment lin
   }
 
@@ -415,13 +432,13 @@ proc wgenproj { args } {
   wokcd $aWokCD
 
   if { [wokinfo -x OS] } {
-    OS:MKPRC "$anAdmPath" "OS"  "$anTarget"
+    OS:MKPRC "$anAdmPath" "OS"  "$anIde" "$aLibType" "$aPlatform"
   }
   if { [wokinfo -x VAS] } {
-    OS:MKPRC "$anAdmPath" "VAS" "$anTarget"
+    OS:MKPRC "$anAdmPath" "VAS" "$anIde" "$aLibType" "$aPlatform"
   }
 
-  wgenprojbat "$anAdmPath" "$anTarget"
+  wgenprojbat "$anAdmPath" "$anIde"
   
   # change back station if it is require
   changeStationAndDependentEnvironment "$anOldStation"

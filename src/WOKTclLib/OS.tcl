@@ -3315,30 +3315,37 @@ proc OS:xcworkspace { theWorkspaceName theModules theOutDir } {
 }
 
 # Generates Xcode project files.
-proc OS:xcodeproj { theModules theOutDir theGuidsMap} {
+proc OS:xcodeproj { theModules theOutDir theGuidsMap theLibType thePlatform} {
   upvar $theGuidsMap aGuidsMap
+
+  set isStatic 0
+  if { "$theLibType" == "static" } {
+    set isStatic 1
+  } elseif { "$thePlatform" == "ios" } {
+    set isStatic 1
+  }
 
   set aProjectFiles {}
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
-      lappend aProjectFiles [osutils:xcdtk $theOutDir $aToolKit      aGuidsMap "dylib"]
+      lappend aProjectFiles [osutils:xcdtk $theOutDir $aToolKit     aGuidsMap $isStatic $thePlatform "dylib"]
     }
     foreach anExecutable [OS:executable ${aModule}] {
-      lappend aProjectFiles [osutils:xcdtk  $theOutDir $anExecutable aGuidsMap "executable"]
+      lappend aProjectFiles [osutils:xcdtk $theOutDir $anExecutable aGuidsMap $isStatic $thePlatform "executable"]
     }
   }
   return $aProjectFiles
 }
 
 # Function to generate Xcode workspace and project files
-proc OS:MKXCD { theOutDir {theModules {}} {theAllSolution ""} } {
+proc OS:MKXCD { theOutDir {theModules {}} {theAllSolution ""} {theLibType "dynamic"} {thePlatform ""} } {
 
   puts stderr "Generating project files for Xcode"
 
   # Generate projects for toolkits and separate workspace for each module
   foreach aModule $theModules {
     OS:xcworkspace $aModule $aModule $theOutDir
-    OS:xcodeproj   $aModule          $theOutDir ::THE_GUIDS_LIST
+    OS:xcodeproj   $aModule          $theOutDir ::THE_GUIDS_LIST $theLibType $thePlatform
   }
 
   # Generate single workspace "OCCT" containing projects from all modules
@@ -3352,7 +3359,7 @@ set aTKNullKey "TKNull"
 set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 
 # Entry function to generate project files and solutions for IDE
-proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
+proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} {theLibType "dynamic"} {thePlatform ""} } {
   set aSupportedIDE { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "cbp" "cmake" "amk" "xcd"}
 
   if { [lsearch $aSupportedIDE $theIDE] < 0 } {
@@ -3423,7 +3430,7 @@ proc OS:MKPRC { {theOutDir {}} {theProjectType {}} {theIDE ""} } {
     "amk"   { OS:MKAMK $anOutDir $aModules "adm/${aWokStation}/${theIDE}"}
     "xcd"   {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000" 
-      OS:MKXCD $anOutDir $aModules $anAllSolution
+      OS:MKXCD $anOutDir $aModules $anAllSolution $theLibType $thePlatform
     }
   }
 
