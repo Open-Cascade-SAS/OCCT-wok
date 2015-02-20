@@ -2384,7 +2384,7 @@ proc osutils:cmktk { theOutDir theToolKit {theIsExec false} theModule} {
                                  LIBRARY DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/lib\$\{BUILD_POSTFIX\}\")"
     lappend aFileBuff ""
     lappend aFileBuff " if (MSVC)"
-    lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bind/Debug/${theToolKit}.pdb CONFIGURATIONS Debug
+    lappend aFileBuff "  install( FILES  \$\{CMAKE_BINARY_DIR\}/out/bind/${theToolKit}.pdb CONFIGURATIONS Debug
                                   DESTINATION \"\$\{INSTALL_DIR\}/\$\{OS_WITH_BIT\}/\$\{COMPILER\}/bin\$\{BUILD_POSTFIX\}\")"
     lappend aFileBuff " endif()"
     lappend aFileBuff ""
