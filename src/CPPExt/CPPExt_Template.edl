@@ -200,7 +200,7 @@ $#define _%Class_HeaderFile
 $
 $#include <Standard.hxx>
 $#include <Standard_DefineAlloc.hxx>
-$#include <Standard_Macro.hxx>
+$#include <Standard_Handle.hxx>
 $
 $%TICIncludes
 $
@@ -413,7 +413,8 @@ $#include <Standard_DefineException.hxx>
 $#include <Standard_SStream.hxx>
 $#include <%Inherits.hxx>
 $
-$DEFINE_STANDARD_EXCEPTION(%Class, %Inherits)
+$class %Class;
+$DEFINE_STANDARD_HANDLE(%Class, %Inherits)
 $
 $#if !defined No_Exception && !defined No_%Class
 $  #define %Class_Raise_if(CONDITION, MESSAGE) \
@@ -421,6 +422,8 @@ $  if (CONDITION) %Class::Raise(MESSAGE);
 $#else
 $  #define %Class_Raise_if(CONDITION, MESSAGE)
 $#endif
+$
+$DEFINE_STANDARD_EXCEPTION(%Class, %Inherits)
 $
 $#endif // _%Class_HeaderFile
 @end;
@@ -451,11 +454,11 @@ $#define %DName_hxx <%DBaseValue.hxx>
 @end;
 
 @template ItemConstraintHandle(%DName,%DValue) is
-$#define Handle_%DName Handle_%DValue
+$#define Handle_%DName Handle(%DValue)
 @end;
 
 @template ItemHandleDefine (%DName,%DValue) is
-$#define Handle_%DName Handle_%DValue
+$#define Handle_%DName Handle(%DValue)
 @end;
 
 @template Undefine(%DName) is
@@ -488,7 +491,7 @@ $%Class(%Arguments)\^
 @end;
 
 @template MethodHeader(%Virtual,%RetSpec,%Return,%And,%MethodName,%Arguments,%MetSpec) is
-$%Virtual %RetSpec %Return%And %MethodName(%Arguments) %MetSpec\^
+$%Virtual%RetSpec%Return%And %MethodName(%Arguments)%MetSpec\^
 @end;
 
 @template ExternalConstructorHeader(%Class,%Arguments) is
@@ -496,7 +499,7 @@ $%Class::%Class(%Arguments)\^
 @end;
 
 @template ExternalMethodHeader(%Class,%Virtual,%RetSpec,%Return,%And,%MethodName,%Arguments,%MetSpec) is
-$%Virtual %RetSpec %Return%And %Class::%MethodName(%Arguments) %MetSpec\^
+$%Virtual%RetSpec%Return%And %Class::%MethodName(%Arguments)%MetSpec\^
 @end;
 
 @template MethodTemplateDec(%MethodComment,%Method) is

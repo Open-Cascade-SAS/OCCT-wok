@@ -230,9 +230,18 @@ void CPP_Package(const Handle(MS_MetaSchema)& aMeta,
         continue;
       }
 
-      //if (!CPP_HaveHandleHeaders())
+      if (!CPP_HaveHandleHeaders())
       {
-        aName = CPP_WithoutHandleSuffix (aName);
+//        aName = CPP_WithoutHandleSuffix (aName);
+/**/
+        // do not include any header instead of "Handle_...hxx"
+        // forward declaration will be added separately and will be sufficient
+        Handle(TCollection_HAsciiString) aNonHandledName = CPP_WithoutHandleSuffix (aName);
+        if (! aNonHandledName->IsSameString (aName))
+        {
+          continue;
+        }
+/**/
       }
 
       api->AddVariable (VIClass, aName->ToCString());
