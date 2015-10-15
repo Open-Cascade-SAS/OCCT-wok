@@ -299,6 +299,7 @@ Handle(MS_MemberMet) MS::BuildStdMethod(const Handle(MS_MemberMet)& aMethod,
     }
     //
     // Some attributes
+    aNewMethod->SetComment(aMethod->Comment());
     aNewMethod->Private(aMethod->Private());
     aNewMethod->Inline(aMethod->IsInline());
     aNewMethod->ConstReturn(aMethod->IsConstReturn());
